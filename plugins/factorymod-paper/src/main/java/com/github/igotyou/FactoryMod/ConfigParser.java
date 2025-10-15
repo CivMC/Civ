@@ -555,7 +555,7 @@ public class ConfigParser {
             input = ConfigHelper.parseItemMap(inputSection);
         }
         switch (type) {
-            case "PRODUCTION":
+            case "PRODUCTION": {
                 ConfigurationSection outputSection = config.getConfigurationSection("output");
                 ItemMap output;
                 ItemStack recipeRepresentation;
@@ -577,7 +577,8 @@ public class ConfigParser {
                 }
                 result = new ProductionRecipe(identifier, name, productionTime, input, output, recipeRepresentation, modi);
                 break;
-            case "COMPACT":
+            }
+            case "COMPACT": {
                 String compactedLore = config.getString("compact_lore",
                     (parentRecipe instanceof CompactingRecipe) ? ((CompactingRecipe) parentRecipe).getCompactedLore()
                         : null);
@@ -607,7 +608,8 @@ public class ConfigParser {
                 }
                 result = new CompactingRecipe(identifier, input, excluded, name, productionTime, compactedLore);
                 break;
-            case "DECOMPACT":
+            }
+            case "DECOMPACT": {
                 String decompactedLore = config.getString("compact_lore",
                     (parentRecipe instanceof DecompactingRecipe)
                         ? ((DecompactingRecipe) parentRecipe).getCompactedLore()
@@ -620,7 +622,8 @@ public class ConfigParser {
                 manager.addCompactLore(decompactedLore);
                 result = new DecompactingRecipe(identifier, input, name, productionTime, decompactedLore);
                 break;
-            case "REPAIR":
+            }
+            case "REPAIR": {
                 int health = config.getInt("health_gained",
                     (parentRecipe instanceof RepairRecipe) ? ((RepairRecipe) parentRecipe).getHealth() : 0);
                 if (health == 0) {
@@ -629,7 +632,8 @@ public class ConfigParser {
                 }
                 result = new RepairRecipe(identifier, name, productionTime, input, health);
                 break;
-            case "UPGRADE":
+            }
+            case "UPGRADE": {
                 String upgradeName = config.getString("factory");
                 IFactoryEgg egg;
                 if (upgradeName == null) {
@@ -648,7 +652,8 @@ public class ConfigParser {
                     result = new Upgraderecipe(identifier, name, productionTime, input, (FurnCraftChestEgg) egg);
                 }
                 break;
-            case "AOEREPAIR":
+            }
+            case "AOEREPAIR": {
                 // This is untested and should not be used for now
                 plugin.warning(
                     "This recipe is not tested or even completly developed, use it with great care and don't expect it to work");
@@ -663,7 +668,8 @@ public class ConfigParser {
                     result = null;
                 }
                 break;
-            case "PYLON":
+            }
+            case "PYLON": {
                 ConfigurationSection outputSec = config.getConfigurationSection("output");
                 ItemMap outputMap;
                 if (outputSec == null) {
@@ -682,7 +688,8 @@ public class ConfigParser {
                     (parentRecipe instanceof PylonRecipe) ? ((PylonRecipe) parentRecipe).getWeight() : 20);
                 result = new PylonRecipe(identifier, name, productionTime, input, outputMap, weight);
                 break;
-            case "ENCHANT":
+            }
+            case "ENCHANT": {
                 Enchantment enchant;
                 if (parentRecipe instanceof DeterministicEnchantingRecipe) {
                     enchant = ((DeterministicEnchantingRecipe) parentRecipe).getEnchant();
@@ -718,60 +725,82 @@ public class ConfigParser {
                 }
                 result = new DeterministicEnchantingRecipe(identifier, name, productionTime, input, tool, enchant, level);
                 break;
-            case "RANDOM":
-                ConfigurationSection outputSect = config.getConfigurationSection("outputs");
-                Map<ItemMap, Double> outputs = new HashMap<>();
+            }
+            case "RANDOM": {
+                final ConfigurationSection outputsSection = config.getConfigurationSection("outputs");
+                final Map<ItemMap, Double> outputs = new HashMap<>();
                 ItemMap displayThis = null;
-                if (outputSect == null) {
-                    if (parentRecipe instanceof RandomOutputRecipe) {
-                        // clone it
-                        for (Entry<ItemMap, Double> entry : ((RandomOutputRecipe) parentRecipe).getOutputs().entrySet()) {
-                            outputs.put(entry.getKey().clone(), entry.getValue());
-                        }
-                        displayThis = ((RandomOutputRecipe) parentRecipe).getDisplayMap();
-                    } else {
-                        plugin.severe("No outputs specified for random recipe " + name + " it was skipped");
-                        result = null;
-                        break;
+                if (outputsSection == null) {
+                    if (!(parentRecipe instanceof final RandomOutputRecipe parentRandomOutput)) {
+                        throw new IllegalStateException("No outputs specified for random recipe at [" + config.getCurrentPath() + ".outputs]");
                     }
-                } else {
+                    // clone it
+                    for (final Entry<ItemMap, Double> entry : parentRandomOutput.getOutputs().entrySet()) {
+                        outputs.put(entry.getKey().clone(), entry.getValue());
+                    }
+                    displayThis = parentRandomOutput.getDisplayMap();
+                }
+                else {
+                    /// Outputs config needs to look something like this:
+                    /// ```
+                    /// outputs:
+                    ///   cobblestone:
+                    ///     chance: 0.175
+                    ///     cobblestone:
+                    ///       v: 3839
+                    ///       ==: org.bukkit.inventory.ItemStack
+                    ///       type: COBBLESTONE
+                    ///       amount: 1
+                    /// ```
+                    /// Where the key for the serialized item matches (cobblestone) the name of the output
+
                     double totalChance = 0.0;
-                    String displayMap = outputSect.getString("display");
-                    for (String key : outputSect.getKeys(false)) {
-                        ConfigurationSection keySec = outputSect.getConfigurationSection(key);
-                        if (keySec != null) {
-                            double chance = keySec.getDouble("chance");
-                            totalChance += chance;
+                    String displayMap = outputsSection.getString("display");
+                    for (final String outputKey : outputsSection.getKeys(false)) {
+                        final ConfigurationSection outputSection = outputsSection.getConfigurationSection(outputKey);
+                        if (outputSection == null) {
+                            continue;
+                        }
 
-                            ItemMap im = new ItemMap();
-                            @Nullable ItemStack stack = ConfigHelper.parseItemStackAt(keySec, key);
-                            if (stack == null) {
-                                throw new IllegalArgumentException("Could not parse itemstack for random recipe at " + keySec.getCurrentPath() + "." + key);
-                            }
-                            im.addItemAmount(stack, 1);
+                        final double chance = outputSection.getDouble("chance");
+                        if (chance == 0d) {
+                            continue;
+                        }
+                        else if (chance < 0d) {
+                            throw new IllegalStateException("Random-output chance at [" + outputSection.getCurrentPath() + ".chance] is negative! [" + chance + "]");
+                        }
+                        totalChance += chance;
 
-                            outputs.put(im, chance);
-                            if (key.equals(displayMap)) {
-                                displayThis = im;
-                                plugin.debug("Displaying " + displayMap + " as recipe label");
-                            }
+                        final ItemStack outputItem = ConfigHelper.parseItemStackAt(outputSection, outputKey);
+                        if (outputItem == null) {
+                            throw new IllegalStateException("Could not parse output item for random recipe at [" + outputSection.getCurrentPath() + "." + outputKey + "]!");
+                        }
+
+                        final var outputItemMap = new ItemMap();
+                        outputItemMap.addItemStack(outputItem);
+                        outputs.put(outputItemMap, chance);
+
+                        if (outputKey.equals(displayMap)) {
+                            displayThis = outputItemMap;
+                            this.plugin.debug("Displaying " + displayMap + " as recipe label");
                         }
                     }
-                    if (Math.abs(totalChance - 1.0) > 0.0001) {
-                        plugin.warning(
-                            "Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
+                    if (Math.abs(totalChance - 1.0d) > 0.0001d) {
+                        throw new IllegalStateException("Random-output recipe at [" + outputsSection.getCurrentPath() + "] total chance does not equal 1.0! [" + totalChance + "]");
                     }
                 }
                 result = new RandomOutputRecipe(identifier, name, productionTime, input, outputs, displayThis);
                 break;
-            case "COSTRETURN":
+            }
+            case "COSTRETURN": {
                 double factor = config.getDouble("factor",
                     (parentRecipe instanceof FactoryMaterialReturnRecipe)
                         ? ((FactoryMaterialReturnRecipe) parentRecipe).getFactor()
                         : 1.0);
                 result = new FactoryMaterialReturnRecipe(identifier, name, productionTime, input, factor);
                 break;
-            case "LOREENCHANT":
+            }
+            case "LOREENCHANT": {
                 ConfigurationSection toolSec = config.getConfigurationSection("loredItem");
                 ItemMap toolMap;
                 if (toolSec == null) {
@@ -810,7 +839,8 @@ public class ConfigParser {
                 result = new LoreEnchantRecipe(identifier, name, productionTime, input, toolMap, appliedLore,
                     overwrittenLore);
                 break;
-            case "RECIPEMODIFIERUPGRADE":
+            }
+            case "RECIPEMODIFIERUPGRADE": {
                 int rank = config.getInt("rank");
                 String toUpgrade = config.getString("recipeUpgraded");
                 if (toUpgrade == null) {
@@ -822,10 +852,12 @@ public class ConfigParser {
                 String[] data = {toUpgrade, followUpRecipe};
                 recipeScalingUpgradeMapping.put((RecipeScalingUpgradeRecipe) result, data);
                 break;
-            case "DUMMY":
+            }
+            case "DUMMY": {
                 result = new DummyParsingRecipe(identifier, name, productionTime, null);
                 break;
-            case "PRINTINGPLATE":
+            }
+            case "PRINTINGPLATE": {
                 ConfigurationSection printingPlateOutputSection = config.getConfigurationSection("output");
                 ItemMap printingPlateOutput;
                 if (printingPlateOutputSection == null) {
@@ -839,7 +871,8 @@ public class ConfigParser {
                 }
                 result = new PrintingPlateRecipe(identifier, name, productionTime, input, printingPlateOutput);
                 break;
-            case "PRINTINGPLATEJSON":
+            }
+            case "PRINTINGPLATEJSON": {
                 ConfigurationSection printingPlateJsonOutputSection = config.getConfigurationSection("output");
                 ItemMap printingPlateJsonOutput;
                 if (printingPlateJsonOutputSection == null) {
@@ -853,13 +886,15 @@ public class ConfigParser {
                 }
                 result = new PrintingPlateJsonRecipe(identifier, name, productionTime, input, printingPlateJsonOutput);
                 break;
-            case "PRINTBOOK":
+            }
+            case "PRINTBOOK": {
                 ItemMap printBookPlate = ConfigHelper.parseItemMap(config.getConfigurationSection("printingplate"));
                 int printBookOutputAmount = config.getInt("outputamount", 1);
                 result = new PrintBookRecipe(identifier, name, productionTime, input, printBookPlate,
                     printBookOutputAmount);
                 break;
-            case "PRINTNOTE":
+            }
+            case "PRINTNOTE": {
                 ItemMap printNotePlate = ConfigHelper.parseItemMap(config.getConfigurationSection("printingplate"));
                 int printBookNoteAmount = config.getInt("outputamount", 1);
                 boolean secureNote = config.getBoolean("securenote", false);
@@ -867,7 +902,8 @@ public class ConfigParser {
                 result = new PrintNoteRecipe(identifier, name, productionTime, input, printNotePlate, printBookNoteAmount,
                     secureNote, noteTitle);
                 break;
-            case "WORDBANK":
+            }
+            case "WORDBANK": {
                 String key = config.getString("seed", "defaultSeed");
                 if ("defaultSeed".equals(key)) {
                     plugin.getLogger().warning("Word bank recipe is using default seed, this is not secure and allows predicting output");
@@ -900,10 +936,12 @@ public class ConfigParser {
                 int wordCount = config.getInt("word_count", 2);
                 result = new WordBankRecipe(identifier, name, productionTime, key, words, colors, wordCount);
                 break;
-            case "PLAYERHEAD":
+            }
+            case "PLAYERHEAD": {
                 result = new PlayerHeadRecipe(identifier, name, productionTime, input);
                 break;
-            case "HELIODOR_CREATE":
+            }
+            case "HELIODOR_CREATE": {
                 if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
                     plugin.warning("Heliodor plugin must be enabled for Heliodor gems");
                     result = null;
@@ -923,7 +961,8 @@ public class ConfigParser {
                 }
                 result = new HeliodorCreateRecipe(identifier, name, productionTime, input, outputCount, maxCharge);
                 break;
-            case "HELIODOR_REFILL":
+            }
+            case "HELIODOR_REFILL": {
                 if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
                     plugin.warning("Heliodor plugin must be enabled for Heliodor gems");
                     result = null;
@@ -943,7 +982,8 @@ public class ConfigParser {
                 }
                 result = new HeliodorRefillRecipe(identifier, name, productionTime, input, count, addMaxCharge);
                 break;
-            case "HELIODOR_FINISH":
+            }
+            case "HELIODOR_FINISH": {
                 if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
                     plugin.warning("Heliodor plugin must be enabled for Heliodor gems");
                     result = null;
@@ -963,9 +1003,10 @@ public class ConfigParser {
                 }
                 result = new HeliodorFinishRecipe(identifier, name, productionTime, input, inputCount, outputCountFinish);
                 break;
-            default:
-                plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");
-                result = null;
+            }
+            default: {
+                throw new IllegalArgumentException("Unknown recipe type " + config.getString("type") + " at "+ config.getCurrentPath());
+            }
         }
         if (result != null) {
             int interval = 0;
