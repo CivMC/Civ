@@ -12,6 +12,7 @@ CREATE DATABASE essenceglue;
 CREATE DATABASE exilepearl;
 CREATE DATABASE realisticbiomes;
 CREATE DATABASE heliodor;
+CREATE DATABASE railswitch;
 
 GRANT ALL PRIVILEGES ON `donum`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `banstick`.* TO 'mariadb'@'%';
@@ -27,6 +28,7 @@ GRANT ALL PRIVILEGES ON `essenceglue`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `exilepearl`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `realisticbiomes`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `heliodor`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `railswitch`.* TO 'mariadb'@'%';
 
 CREATE DATABASE pvp_civduties;
 CREATE DATABASE pvp_civmodcore;
@@ -49,6 +51,7 @@ CREATE DATABASE gamma_namelayer;
 CREATE DATABASE gamma_exilepearl;
 CREATE DATABASE gamma_heliodor;
 CREATE DATABASE gamma_realisticbiomes;
+CREATE DATABASE gamma_railswitch;
 
 GRANT ALL PRIVILEGES ON `gamma_civduties`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_civmodcore`.* TO 'mariadb'@'%';
@@ -63,3 +66,4 @@ GRANT ALL PRIVILEGES ON `gamma_heliodor`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_realisticbiomes`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_namelayer`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_exilepearl`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `gamma_railswitch`.* TO 'mariadb'@'%';

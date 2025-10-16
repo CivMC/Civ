@@ -22,6 +22,10 @@ public enum SwitchType {
         this.tag = tag;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
     /**
      * Attempts to match a switch type to a switch tag.
      *

@@ -1,7 +1,8 @@
 package sh.okx.railswitch.switches;
 
 import com.google.common.base.Strings;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -16,6 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import sh.okx.railswitch.RailSwitchPlugin;
 import sh.okx.railswitch.glue.CitadelGlue;
+import sh.okx.railswitch.storage.RailSwitchRecord;
+import sh.okx.railswitch.storage.RailSwitchStorage;
 import sh.okx.railswitch.settings.SettingsManager;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -44,15 +47,33 @@ public class SwitchListener implements Listener {
             || event.getNewCurrent() != 15) {
             return;
         }
-        // Check that the block above the rail is a sign
+        // Attempt to resolve configuration from persistent storage or from a sign
         Block above = block.getRelative(BlockFace.UP);
-        if (!Tag.SIGNS.isTagged(above.getType())
-            || !(above.getState() instanceof Sign)) {
-            return;
+        Sign sign = null;
+        if (Tag.SIGNS.isTagged(above.getType())
+            && above.getState() instanceof Sign) {
+            sign = (Sign) above.getState();
         }
-        // Check that the sign has a valid switch type
-        String[] lines = ((Sign) above.getState()).getLines();
-        SwitchType type = SwitchType.find(lines[0]);
+        RailSwitchStorage storage = RailSwitchPlugin.getPlugin(RailSwitchPlugin.class).getRailSwitchStorage();
+        SwitchType type = null;
+        List<String> positiveDestinations = new ArrayList<>();
+        List<String> negativeDestinations = new ArrayList<>();
+        if (storage != null) {
+            RailSwitchRecord record = storage.get(block).orElse(null);
+            if (record != null) {
+                type = SwitchType.find(record.getHeader());
+                parseDestinations(record.getLines(), positiveDestinations, negativeDestinations);
+            }
+        }
+        if (type == null && sign != null) {
+            String[] signLines = sign.getLines();
+            type = SwitchType.find(signLines[0]);
+            if (type != null) {
+                for (int i = 1; i < signLines.length; i++) {
+                    addDestination(signLines[i], positiveDestinations, negativeDestinations);
+                }
+            }
+        }
         if (type == null) {
             return;
         }
@@ -84,7 +105,7 @@ public class SwitchListener implements Listener {
             return;
         }
         // If Citadel is enabled, check that the sign and the rail are on the same group
-        if (CITADEL_GLUE.isSafeToUse()) {
+        if (sign != null && CITADEL_GLUE.isSafeToUse()) {
             if (!CITADEL_GLUE.doSignAndRailHaveSameReinforcement(above, block)) {
                 return;
             }
@@ -95,7 +116,6 @@ public class SwitchListener implements Listener {
         String setDest = SettingsManager.getDestination(player);
         if (!Strings.isNullOrEmpty(setDest)) {
             String[] playerDestinations = setDest.split(" ");
-            String[] switchDestinations = Arrays.copyOfRange(lines, 1, lines.length);
             matcher:
             for (String playerDestination : playerDestinations) {
                 if (Strings.isNullOrEmpty(playerDestination)) {
@@ -105,7 +125,10 @@ public class SwitchListener implements Listener {
                     matched = true;
                     break;
                 }
-                for (String switchDestination : switchDestinations) {
+                if (containsIgnoreCase(negativeDestinations, playerDestination)) {
+                    continue;
+                }
+                for (String switchDestination : positiveDestinations) {
                     if (Strings.isNullOrEmpty(switchDestination)) {
                         continue;
                     }
@@ -125,6 +148,42 @@ public class SwitchListener implements Listener {
                 event.setNewCurrent(matched ? 0 : 15);
                 break;
         }
+    }
+
+    private void parseDestinations(Iterable<String> values, List<String> positive, List<String> negative) {
+        if (values == null) {
+            return;
+        }
+        for (String value : values) {
+            addDestination(value, positive, negative);
+        }
+    }
+
+    private void addDestination(String value, List<String> positive, List<String> negative) {
+        if (Strings.isNullOrEmpty(value)) {
+            return;
+        }
+        String trimmed = value.trim();
+        if (trimmed.isEmpty()) {
+            return;
+        }
+        if (trimmed.startsWith("!")) {
+            String neg = trimmed.substring(1).trim();
+            if (!Strings.isNullOrEmpty(neg)) {
+                negative.add(neg);
+            }
+        } else {
+            positive.add(trimmed);
+        }
+    }
+
+    private boolean containsIgnoreCase(List<String> values, String target) {
+        for (String value : values) {
+            if (value.equalsIgnoreCase(target)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

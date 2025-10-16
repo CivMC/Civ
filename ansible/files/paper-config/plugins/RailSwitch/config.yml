@@ -1,0 +1,14 @@
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  host: ${CIV_MYSQL_HOST}
+  port: 3306
+  database: ${CIV_DATABASE_PREFIX}railswitch
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+configuration-tool: STICK
+display-range: 10.0
