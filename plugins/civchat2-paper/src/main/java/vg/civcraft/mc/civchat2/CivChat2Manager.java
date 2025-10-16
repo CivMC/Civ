@@ -509,12 +509,6 @@ public class CivChat2Manager {
             }
         }
 
-
-        Component compMessage = Component.text("[" + group.getName() + "] ", NamedTextColor.GRAY)
-            .append(senderName)
-            .append(Component.text(": ", NamedTextColor.GRAY))
-            .append(Component.empty().color(NamedTextColor.WHITE).append(message));
-
         for (Player receiver : members) {
             if (DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())) {
                 continue;
@@ -522,6 +516,19 @@ public class CivChat2Manager {
             if (DBM.isIgnoringPlayer(receiver.getUniqueId(), senderId)) {
                 continue;
             }
+
+            TextColor color =
+                CivChat2.getInstance().getCivChat2SettingsManager()
+                    .showGroupColors(receiver.getUniqueId())
+                    ? group.getGroupColor() : NamedTextColor.GRAY;
+
+            Component compMessage = Component.text("[", NamedTextColor.GRAY)
+                .append(Component.text(group.getName(), color))
+                .append(Component.text("]", NamedTextColor.GRAY))
+                .append(senderName)
+                .append(Component.text(": ", NamedTextColor.GRAY))
+                .append(Component.empty().color(NamedTextColor.WHITE).append(message));
+
             receiver.sendMessage(compMessage);
         }
 
