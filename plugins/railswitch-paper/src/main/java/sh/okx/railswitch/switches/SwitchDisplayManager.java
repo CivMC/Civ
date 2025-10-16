@@ -199,31 +199,23 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             // Straight rails don't have exit directions for curves
             case NORTH_SOUTH, ASCENDING_NORTH, ASCENDING_SOUTH, EAST_WEST, ASCENDING_EAST, ASCENDING_WEST -> null;
             case NORTH_EAST -> switch (incoming) {
-                case NORTH -> BlockFace.EAST;
-                case EAST -> BlockFace.NORTH;
-                case WEST -> BlockFace.WEST;
-                case SOUTH -> BlockFace.SOUTH;
+                case NORTH, WEST -> BlockFace.EAST;
+                case EAST, SOUTH -> BlockFace.NORTH;
                 default -> null;
             };
             case NORTH_WEST -> switch (incoming) {
-                case NORTH -> BlockFace.WEST;
-                case WEST -> BlockFace.NORTH;
-                case EAST -> BlockFace.EAST;
-                case SOUTH -> BlockFace.SOUTH;
+                case NORTH, EAST -> BlockFace.WEST;
+                case WEST, SOUTH -> BlockFace.NORTH;
                 default -> null;
             };
             case SOUTH_EAST -> switch (incoming) {
-                case EAST -> BlockFace.SOUTH;
-                case WEST -> BlockFace.WEST;
-                case NORTH -> BlockFace.NORTH;
-                case SOUTH -> BlockFace.EAST;
+                case EAST, NORTH -> BlockFace.SOUTH;
+                case WEST, SOUTH -> BlockFace.EAST;
                 default -> null;
             };
             case SOUTH_WEST -> switch (incoming) {
-                case SOUTH -> BlockFace.WEST;
-                case WEST -> BlockFace.SOUTH;
-                case NORTH -> BlockFace.NORTH;
-                case EAST -> BlockFace.EAST;
+                case SOUTH, EAST -> BlockFace.WEST;
+                case WEST, NORTH -> BlockFace.SOUTH;
                 default -> null;
             };
         };
@@ -278,7 +270,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
                 if (isCurvedShape(targetRail.getShape())) {
                     contexts.add(new CurveContext(
                         prev,
-                        leg.getOppositeFace(),
+                        leg,
                         getExpectedRailShape(prev, false),
                         getExpectedRailShape(prev, true)
                     ));
@@ -343,7 +335,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
 
         // Step 3: If ambiguous, use redstone-powered priority order to choose a curve
         if (shape == null) {
-            List<Rail.Shape> order = isPowered
+            List<Rail.Shape> order = !isPowered
                 ? List.of(Rail.Shape.SOUTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.NORTH_WEST)
                 : List.of(Rail.Shape.NORTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.SOUTH_EAST);
 
@@ -456,15 +448,10 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     }
 
     private boolean isCurvedShape(Rail.Shape shape) {
-        switch (shape) {
-            case NORTH_EAST:
-            case NORTH_WEST:
-            case SOUTH_EAST:
-            case SOUTH_WEST:
-                return true;
-            default:
-                return false;
-        }
+        return switch (shape) {
+            case NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST -> true;
+            default -> false;
+        };
     }
 
     /**
@@ -508,7 +495,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         for (BlockFace f : HORIZ) {
             Block n = neighborRail(current, f);  // neighborRail already tolerates ±1Y
             if (n == null) continue;
-            if (previous != null && n.equals(previous)) continue;
+            if (n.equals(previous)) continue;
             if (railsConnect(current, n)) return n;
         }
         return null;
