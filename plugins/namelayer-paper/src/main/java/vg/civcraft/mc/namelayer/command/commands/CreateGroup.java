@@ -70,7 +70,7 @@ public class CreateGroup extends BaseCommandMiddle {
             password = null;
         }
         final UUID uuid = NameAPI.getUUID(p.getName());
-        Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis());
+        Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis(), "GRAY");
         gm.createGroupAsync(g, new RunnableOnGroup() {
             @Override
             public void run() {
