@@ -11,10 +11,12 @@ public final class SwitchPluginConfiguration {
 
     private static final String TOOL_PATH = "configuration-tool";
     private static final String DISPLAY_RANGE_PATH = "display-range";
+    private static final String MAX_DESTINATIONS_PATH = "max-destinations-per-switch";
 
     private final RailSwitchPlugin plugin;
     private Material toolMaterial;
     private double displayRange;
+    private int maxDestinationsPerSwitch;
 
     public SwitchPluginConfiguration(RailSwitchPlugin plugin) {
         this.plugin = plugin;
@@ -35,6 +37,12 @@ public final class SwitchPluginConfiguration {
             configuredRange = 1.0D;
         }
         displayRange = configuredRange;
+        int configuredMax = config.getInt(MAX_DESTINATIONS_PATH, 32);
+        if (configuredMax < 0) {
+            configuredMax = 0;
+            plugin.getLogger().warning("max-destinations-per-switch cannot be negative; treating as unlimited.");
+        }
+        maxDestinationsPerSwitch = configuredMax;
     }
 
     public Material getToolMaterial() {
@@ -43,5 +51,9 @@ public final class SwitchPluginConfiguration {
 
     public double getDisplayRange() {
         return displayRange;
+    }
+
+    public int getMaxDestinationsPerSwitch() {
+        return maxDestinationsPerSwitch;
     }
 }

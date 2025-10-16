@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import sh.okx.railswitch.RailSwitchPlugin;
+import sh.okx.railswitch.glue.CitadelGlue;
 
 /**
  * Handles configuration interactions with detector rails using the configured tool.
@@ -44,6 +45,11 @@ public final class SwitchConfiguratorListener implements Listener {
         }
         Player player = event.getPlayer();
         if (sessionManager == null) {
+            return;
+        }
+        CitadelGlue citadel = plugin.getCitadelGlue();
+        if (citadel != null && !citadel.canModify(player, clicked)) {
+            player.sendMessage(ChatColor.RED + "You lack permission to reconfigure this reinforced rail.");
             return;
         }
         if (sessionManager.isEditing(player)) {

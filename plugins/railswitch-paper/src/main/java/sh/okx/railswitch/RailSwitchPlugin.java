@@ -27,6 +27,7 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
     private SwitchDisplayManager switchDisplayManager;
     private SwitchConfigurationSessionManager configurationSessionManager;
     private ManagedDatasource database;
+    private CitadelGlue citadelGlue;
 
     @Override
     public void onEnable() {
@@ -50,8 +51,9 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
         railSwitchStorage.load();
         SettingsManager.init(this);
         configurationSessionManager = new SwitchConfigurationSessionManager(this);
-        registerListener(new CitadelGlue(this));
-        registerListener(new SwitchListener());
+        citadelGlue = new CitadelGlue(this);
+        registerListener(citadelGlue);
+        registerListener(new SwitchListener(citadelGlue));
         registerListener(configurationSessionManager);
         registerListener(new SwitchConfiguratorListener(this, configurationSessionManager));
         registerListener(new SwitchMaintenanceListener(this));
@@ -81,6 +83,7 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
             configurationSessionManager.shutdown();
             configurationSessionManager = null;
         }
+        citadelGlue = null;
         if (database != null) {
             database.close();
             database = null;
@@ -99,6 +102,10 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
 
     public SwitchConfigurationSessionManager getConfigurationSessionManager() {
         return configurationSessionManager;
+    }
+
+    public CitadelGlue getCitadelGlue() {
+        return citadelGlue;
     }
 
     private DatabaseCredentials resolveCredentials() {

@@ -29,7 +29,11 @@ public class SwitchListener implements Listener {
 
     public static final String WILDCARD = "*";
 
-    public static final CitadelGlue CITADEL_GLUE = new CitadelGlue(RailSwitchPlugin.getPlugin(RailSwitchPlugin.class));
+    private final CitadelGlue citadelGlue;
+
+    public SwitchListener(CitadelGlue citadelGlue) {
+        this.citadelGlue = citadelGlue;
+    }
 
     /**
      * Event handler for rail switches. Will determine if a switch exists at the target location, and if so will process
@@ -54,23 +58,26 @@ public class SwitchListener implements Listener {
             && above.getState() instanceof Sign) {
             sign = (Sign) above.getState();
         }
-        RailSwitchStorage storage = RailSwitchPlugin.getPlugin(RailSwitchPlugin.class).getRailSwitchStorage();
         SwitchType type = null;
         List<String> positiveDestinations = new ArrayList<>();
         List<String> negativeDestinations = new ArrayList<>();
-        if (storage != null) {
-            RailSwitchRecord record = storage.get(block).orElse(null);
-            if (record != null) {
-                type = SwitchType.find(record.getHeader());
-                parseDestinations(record.getLines(), positiveDestinations, negativeDestinations);
-            }
-        }
-        if (type == null && sign != null) {
+        if (sign != null) {
             String[] signLines = sign.getLines();
             type = SwitchType.find(signLines[0]);
             if (type != null) {
                 for (int i = 1; i < signLines.length; i++) {
                     addDestination(signLines[i], positiveDestinations, negativeDestinations);
+                }
+            }
+        }
+
+        if (type == null) {
+            RailSwitchStorage storage = RailSwitchPlugin.getPlugin(RailSwitchPlugin.class).getRailSwitchStorage();
+            if (storage != null) {
+                RailSwitchRecord record = storage.get(block).orElse(null);
+                if (record != null) {
+                    type = SwitchType.find(record.getHeader());
+                    parseDestinations(record.getLines(), positiveDestinations, negativeDestinations);
                 }
             }
         }
@@ -105,8 +112,8 @@ public class SwitchListener implements Listener {
             return;
         }
         // If Citadel is enabled, check that the sign and the rail are on the same group
-        if (sign != null && CITADEL_GLUE.isSafeToUse()) {
-            if (!CITADEL_GLUE.doSignAndRailHaveSameReinforcement(above, block)) {
+        if (sign != null && citadelGlue != null && citadelGlue.isSafeToUse()) {
+            if (!citadelGlue.doSignAndRailHaveSameReinforcement(above, block)) {
                 return;
             }
         }

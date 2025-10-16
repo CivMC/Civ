@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -70,7 +71,11 @@ public final class SwitchConfigurationSessionManager implements Listener {
         RailSwitchRecord record = storage.get(detectorRail).orElse(null);
         String header = record != null ? record.getHeader() : SwitchType.NORMAL.getTag();
         List<String> destinations = record != null ? new ArrayList<>(record.getLines()) : new ArrayList<>();
-        Session session = new Session(RailSwitchKey.from(detectorRail), header, destinations);
+        int maxDestinations = 0;
+        if (plugin.getSwitchConfiguration() != null) {
+            maxDestinations = plugin.getSwitchConfiguration().getMaxDestinationsPerSwitch();
+        }
+        Session session = new Session(RailSwitchKey.from(detectorRail), header, destinations, maxDestinations);
         sessions.put(player.getUniqueId(), session);
         sendPrompt(player, destinations);
     }
@@ -131,7 +136,11 @@ public final class SwitchConfigurationSessionManager implements Listener {
             return;
         }
         String[] tokens = trimmed.split("\\s+");
-        boolean modified = session.applyTokens(tokens);
+        boolean modified = session.applyTokens(tokens, token -> {
+            if (!Strings.isNullOrEmpty(token)) {
+                player.sendMessage(token);
+            }
+        });
         RailSwitchStorage storage = plugin.getRailSwitchStorage();
         if (storage != null && modified) {
             storage.upsert(session.getKey(), session.getHeader(), session.getDestinations());
@@ -216,12 +225,14 @@ public final class SwitchConfigurationSessionManager implements Listener {
         private final RailSwitchKey key;
         private final String header;
         private final List<String> destinations;
+        private final int maxDestinations;
         private Instant expiresAt;
 
-        Session(RailSwitchKey key, String header, List<String> destinations) {
+        Session(RailSwitchKey key, String header, List<String> destinations, int maxDestinations) {
             this.key = key;
             this.header = header;
             this.destinations = destinations == null ? new ArrayList<>() : new ArrayList<>(destinations);
+            this.maxDestinations = Math.max(0, maxDestinations);
             refresh();
         }
 
@@ -245,7 +256,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
             return now.isAfter(expiresAt);
         }
 
-        boolean applyTokens(String[] tokens) {
+        boolean applyTokens(String[] tokens, Consumer<String> feedback) {
             boolean modified = false;
             for (String rawToken : tokens) {
                 if (Strings.isNullOrEmpty(rawToken)) {
@@ -265,19 +276,19 @@ public final class SwitchConfigurationSessionManager implements Listener {
                     continue;
                 }
                 if (token.startsWith("!") && token.length() > 1) {
-                    if (toggleDestination(token.substring(1))) {
+                    if (toggleDestination(token.substring(1), feedback)) {
                         modified = true;
                     }
                     continue;
                 }
-                if (addDestination(token)) {
+                if (addDestination(token, feedback)) {
                     modified = true;
                 }
             }
             return modified;
         }
 
-        private boolean addDestination(String destination) {
+        private boolean addDestination(String destination, Consumer<String> feedback) {
             String value = sanitize(destination);
             if (value.isEmpty()) {
                 return false;
@@ -295,6 +306,9 @@ public final class SwitchConfigurationSessionManager implements Listener {
             if (negativeIndex >= 0) {
                 destinations.set(negativeIndex, value);
                 return true;
+            }
+            if (!canAddAnother(feedback)) {
+                return false;
             }
             destinations.add(value);
             return true;
@@ -318,7 +332,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
             return false;
         }
 
-        private boolean toggleDestination(String destination) {
+        private boolean toggleDestination(String destination, Consumer<String> feedback) {
             String value = sanitize(destination);
             if (value.isEmpty()) {
                 return false;
@@ -339,6 +353,9 @@ public final class SwitchConfigurationSessionManager implements Listener {
                 destinations.set(negativeIndex, existing.substring(1));
                 return true;
             }
+            if (!canAddAnother(feedback)) {
+                return false;
+            }
             destinations.add("!" + value);
             return true;
         }
@@ -354,6 +371,16 @@ public final class SwitchConfigurationSessionManager implements Listener {
 
         private String sanitize(String destination) {
             return destination == null ? "" : destination.trim();
+        }
+
+        private boolean canAddAnother(Consumer<String> feedback) {
+            if (maxDestinations > 0 && destinations.size() >= maxDestinations) {
+                if (feedback != null) {
+                    feedback.accept(ChatColor.RED + "Rail switches can have at most " + maxDestinations + " destinations.");
+                }
+                return false;
+            }
+            return true;
         }
     }
 }

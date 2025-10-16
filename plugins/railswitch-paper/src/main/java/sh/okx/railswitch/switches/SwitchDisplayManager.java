@@ -15,6 +15,7 @@ import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.block.data.Rail;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
@@ -164,42 +166,33 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         List<String> negativeNames = new ArrayList<>();
         splitDestinations(record.getLines(), positiveNames, negativeNames);
 
-        Component positiveText = positiveNames.isEmpty() ? null : buildText(positiveNames, NamedTextColor.GREEN);
-        Component negativeText = negativeNames.isEmpty() ? null : buildText(negativeNames, NamedTextColor.RED);
-        Component neutralText  = (positiveText == null && negativeText == null)
-            ? buildText(record.getLines(), NamedTextColor.WHITE) : null;
+        List<Component> positiveText = positiveNames.isEmpty() ? null : buildText(positiveNames, NamedTextColor.GREEN);
+        List<Component> negativeText = negativeNames.isEmpty() ? null : buildText(negativeNames, NamedTextColor.RED);
 
         List<DisplayTarget> results = new ArrayList<>(2);
 
         for (CurveContext context : locateCurve(detector)) {
-
-            System.out.println("Off: " + context.off_shape);
-            System.out.println("On: " + context.on_shape);
-
             BlockFace[] exits = {getExitDirection(context.off_shape, context.incoming), getExitDirection(context.on_shape, context.incoming)};
 
-            System.out.println("Exits: " + Arrays.toString(exits));
             BlockFace exit1 = null, exit2 = null;
             for (BlockFace face : exits) {
                 if (exit1 == null) exit1 = face;
                 else exit2 = face;
             }
-            System.out.println("Exits: " + exit1 + " " + exit2);
-            System.out.println();
             if (exit1 != null && exit2 != null) {
                 Block block1 = firstRailAfter(context.curve, exit1);
                 Block block2 = firstRailAfter(context.curve, exit2);
                 if (block1 != null && block2 != null) {
-                    Component defaultText = negativeText != null ? negativeText : neutralText;
-                    Component poweredText = positiveText;
 
-                    if (defaultText != null) {
+                    if (negativeText != null) {
                         Location marker = computeDisplayLocation(block1, exit1);
-                        results.add(new DisplayTarget(marker, defaultText));
+                        Component text = Component.join(JoinConfiguration.separator(Component.newline()), negativeText);
+                        results.add(new DisplayTarget(marker, text));
                     }
-                    if (poweredText != null) {
+                    if (positiveText != null) {
                         Location marker = computeDisplayLocation(block2, exit2);
-                        results.add(new DisplayTarget(marker, poweredText));
+                        Component text = Component.join(JoinConfiguration.separator(Component.newline()), positiveText);
+                        results.add(new DisplayTarget(marker, text));
                     }
                 }
             }
@@ -208,32 +201,21 @@ public final class SwitchDisplayManager implements Listener, Runnable {
 
         if (results.isEmpty()) {
             Component fallback = combineComponents(positiveText, negativeText);
-            if (fallback == null) {
-                fallback = neutralText;
-            }
-            if (fallback != null) {
-                Location fallbackLocation = detector.getLocation().add(0.5D, DISPLAY_HEIGHT, 0.5D);
-                results.add(new DisplayTarget(fallbackLocation, fallback));
-            }
+            if (fallback == null) return List.of();
+            Location fallbackLocation = detector.getLocation().add(0.5D, DISPLAY_HEIGHT, 0.5D);
+            results.add(new DisplayTarget(fallbackLocation, fallback));
         }
         return results;
     }
 
     public BlockFace getExitDirection(Rail.Shape shape, BlockFace incoming) {
         return switch (shape) {
-            case NORTH_SOUTH, ASCENDING_NORTH, ASCENDING_SOUTH -> switch (incoming) {
-                case NORTH -> BlockFace.SOUTH;
-                case SOUTH -> BlockFace.NORTH;
-                default -> null;
-            };
-            case EAST_WEST, ASCENDING_EAST, ASCENDING_WEST -> switch (incoming) {
-                case EAST -> BlockFace.WEST;
-                case WEST -> BlockFace.EAST;
-                default -> null;
-            };
+            case NORTH_SOUTH, ASCENDING_NORTH, ASCENDING_SOUTH, EAST_WEST, ASCENDING_EAST, ASCENDING_WEST -> null;
             case NORTH_EAST -> switch (incoming) {
-                case NORTH, WEST -> BlockFace.EAST;
-                case EAST, SOUTH -> BlockFace.NORTH;
+                case NORTH -> BlockFace.EAST;
+                case EAST -> BlockFace.NORTH;
+                case WEST -> BlockFace.WEST;
+                case SOUTH -> BlockFace.SOUTH;
                 default -> null;
             };
             case NORTH_WEST -> switch (incoming) {
@@ -244,22 +226,25 @@ public final class SwitchDisplayManager implements Listener, Runnable {
                 default -> null;
             };
             case SOUTH_EAST -> switch (incoming) {
-                case SOUTH -> BlockFace.EAST;
                 case EAST -> BlockFace.SOUTH;
                 case WEST -> BlockFace.WEST;
                 case NORTH -> BlockFace.NORTH;
+                case SOUTH -> BlockFace.EAST;
 
                 default -> null;
             };
             case SOUTH_WEST -> switch (incoming) {
                 case SOUTH -> BlockFace.WEST;
                 case WEST -> BlockFace.SOUTH;
+                case NORTH -> BlockFace.NORTH;
+                case EAST -> BlockFace.EAST;
                 default -> null;
             };
         };
     }
 
-    private Component buildText(List<String> lines, NamedTextColor color) {
+
+    private List<Component> buildText(List<String> lines, NamedTextColor color) {
         List<Component> components = new ArrayList<>();
         for (String line : lines) {
             if (Strings.isNullOrEmpty(line)) continue;
@@ -268,7 +253,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         if (components.isEmpty()) {
             components.add(Component.text("No stations configured", color));
         }
-        return Component.join(JoinConfiguration.separator(Component.newline()), components);
+        return components;
     }
 
     private void splitDestinations(List<String> lines, List<String> positives, List<String> negatives) {
@@ -296,9 +281,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             Block prev = neighborRail(detector, leg.getOppositeFace());
             if (prev != null) {
                 if (!(prev.getBlockData() instanceof Rail targetRail)) return List.of();
-                System.out.println("Detected curve: " + targetRail.getShape());
-                System.out.println("Outgoing: " + leg.getOppositeFace());
-                System.out.println("Pos " + prev.getLocation());
+
                 if (isCurvedShape(targetRail.getShape())) {
                     contexts.add(new CurveContext(
                         prev,
@@ -402,14 +385,11 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     }
 
 
-    private Component combineComponents(Component first, Component second) {
+    private Component combineComponents(List<Component> first, List<Component> second) {
         List<Component> components = new ArrayList<>();
-        if (first != null) {
-            components.add(first);
-        }
-        if (second != null) {
-            components.add(second);
-        }
+        if (first != null) components.addAll(first);
+        if (second != null) components.addAll(second);
+
         if (components.isEmpty()) {
             return null;
         }

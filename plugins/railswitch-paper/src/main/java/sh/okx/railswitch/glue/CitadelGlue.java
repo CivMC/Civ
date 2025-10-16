@@ -1,10 +1,12 @@
 package sh.okx.railswitch.glue;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.civmodcore.utilities.DependencyGlue;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
@@ -52,6 +54,24 @@ public final class CitadelGlue extends DependencyGlue {
         return NullUtils.equalsNotNull(
             signReinforcement.getGroup(),
             railReinforcement.getGroup());
+    }
+
+    /**
+     * Determines whether a player may modify the provided block according to Citadel permissions.
+     *
+     * @param player The player attempting to modify the block.
+     * @param block The target block.
+     * @return Returns true if the player may modify the block, or if Citadel isn't active for this server.
+     */
+    public boolean canModify(Player player, Block block) {
+        if (player == null || !WorldUtils.isValidBlock(block) || !isSafeToUse()) {
+            return true;
+        }
+        Reinforcement reinforcement = this.manager.getReinforcement(block);
+        if (reinforcement == null) {
+            return true;
+        }
+        return reinforcement.hasPermission(player, CitadelPermissionHandler.getModifyBlocks());
     }
 
     @Override

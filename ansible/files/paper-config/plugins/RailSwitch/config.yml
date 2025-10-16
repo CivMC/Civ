@@ -10,5 +10,6 @@ database:
   idle_timeout: 600000
   max_lifetime: 7200000
 
+max-destinations-per-switch: 32
 configuration-tool: STICK
 display-range: 10.0
