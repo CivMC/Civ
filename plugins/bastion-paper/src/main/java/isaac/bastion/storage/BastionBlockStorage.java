@@ -338,7 +338,7 @@ public class BastionBlockStorage {
     //@SuppressWarnings("deprecation")
     public void loadBastions() {
         for (World world : Bukkit.getWorlds()) {
-            blocks.put(world, RTree.create());
+            blocks.put(world, RTree.star().create());
             try (Connection conn = db.getConnection();
                  PreparedStatement ps = conn.prepareStatement("select * from bastion_blocks where loc_world=?;")) {
                 ps.setString(1, world.getName());
