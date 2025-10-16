@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -161,7 +160,15 @@ public final class SwitchConfigurationSessionManager implements Listener {
         boolean modified = session.applyTokens(tokens);
         List<String> failed = session.getAndClearFailedDestinations();
         if (!failed.isEmpty()) {
-            player.sendMessage(Component.text("The following stations could not be added due to the destination limit (" + plugin.getSwitchConfiguration().getMaxDestinationsPerSwitch() + " max): " + String.join(", ", failed), NamedTextColor.RED));
+            int limit = session.getMaxDestinations();
+            if (limit <= 0 && plugin.getSwitchConfiguration() != null) {
+                limit = plugin.getSwitchConfiguration().getMaxDestinationsPerSwitch();
+            }
+            String joined = String.join(", ", failed);
+            Component errorMessage = limit > 0
+                ? Component.text("Error: could not add [" + joined + "] because this track has reached the max station count (" + limit + ").", NamedTextColor.RED)
+                : Component.text("Error: could not add [" + joined + "] because this track has reached the max station count.", NamedTextColor.RED);
+            player.sendMessage(errorMessage);
         }
         RailSwitchStorage storage = plugin.getRailSwitchStorage();
         if (storage != null && modified) {
@@ -201,7 +208,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
             if (player == null || !player.isOnline()) {
                 return true;
             }
-            if (!isHoldingConfigurationTool(player)) {
+            if (isHoldingConfigurationTool(player)) {
                 player.sendMessage(Component.text("Stopped editing; hold the configuration tool to edit again.", NamedTextColor.YELLOW));
                 return true;
             }
@@ -221,7 +228,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
             return;
         }
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if (!isHoldingConfigurationTool(player)) {
+            if (isHoldingConfigurationTool(player)) {
                 sessions.remove(player.getUniqueId());
                 player.sendMessage(Component.text("Rail switch editing session closed; configuration tool no longer held.", NamedTextColor.YELLOW));
             }
@@ -230,16 +237,14 @@ public final class SwitchConfigurationSessionManager implements Listener {
 
     private boolean isHoldingConfigurationTool(Player player) {
         if (player == null) {
-            return false;
+            return true;
         }
         Material tool = plugin.getSwitchConfiguration() != null ? plugin.getSwitchConfiguration().getToolMaterial() : null;
         if (tool == null) {
-            return false;
+            return true;
         }
-        return (player.getInventory().getItemInMainHand() != null
-            && player.getInventory().getItemInMainHand().getType() == tool)
-            || (player.getInventory().getItemInOffHand() != null
-            && player.getInventory().getItemInOffHand().getType() == tool);
+        if (player.getInventory().getItemInMainHand().getType() == tool) return false;
+        return player.getInventory().getItemInOffHand().getType() != tool;
     }
 
     private static final class Session {
@@ -337,7 +342,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
                 destinations.set(negativeIndex, value);
                 return true;
             }
-            if (!canAddAnother()) {
+            if (canAddAnother()) {
                 failedDestinations.add(value);
                 return false;
             }
@@ -363,6 +368,10 @@ public final class SwitchConfigurationSessionManager implements Listener {
             return false;
         }
 
+        int getMaxDestinations() {
+            return maxDestinations;
+        }
+
         private boolean toggleDestination(String destination) {
             String value = sanitize(destination);
             if (value.isEmpty()) {
@@ -384,7 +393,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
                 destinations.set(negativeIndex, existing.substring(1));
                 return true;
             }
-            if (!canAddAnother()) {
+            if (canAddAnother()) {
                 failedDestinations.add("!" + value);
                 return false;
             }
@@ -406,7 +415,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
         }
 
         private boolean canAddAnother() {
-            return maxDestinations <= 0 || destinations.size() < maxDestinations;
+            return maxDestinations > 0 && destinations.size() >= maxDestinations;
         }
     }
 }

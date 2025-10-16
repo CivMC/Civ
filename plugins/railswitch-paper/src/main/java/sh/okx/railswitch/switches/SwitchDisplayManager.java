@@ -473,48 +473,6 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         };
     }
 
-    // True if rails at A and B are connected through the shared face (with 1-block vertical tolerance)
-    private static boolean railsConnect(Block a, Block b) {
-        if (!(a.getBlockData() instanceof Rail ra) || !(b.getBlockData() instanceof Rail rb)) return false;
-
-        BlockFace face = directionTo(a, b);
-        if (face == null || face == BlockFace.UP || face == BlockFace.DOWN) return false;
-
-        int dy = b.getY() - a.getY();
-        if (Math.abs(dy) > 1) return false;
-
-        boolean aOk = Arrays.asList(connectedFaces(ra.getShape())).contains(face);
-        boolean bOk = Arrays.asList(connectedFaces(rb.getShape())).contains(face.getOppositeFace());
-        return aOk && bOk;
-    }
-
-
-    // Move from 'current' to the next rail that actually connects (ignores 'previous')
-    @Nullable
-    private Block nextRailFollowing(Block current, @Nullable Block previous) {
-        for (BlockFace f : HORIZ) {
-            Block n = neighborRail(current, f);  // neighborRail already tolerates ±1Y
-            if (n == null) continue;
-            if (n.equals(previous)) continue;
-            if (railsConnect(current, n)) return n;
-        }
-        return null;
-    }
-
-
-
-    private static BlockFace opposite(BlockFace face) {
-        return switch (face) {
-            case NORTH -> BlockFace.SOUTH;
-            case SOUTH -> BlockFace.NORTH;
-            case EAST -> BlockFace.WEST;
-            case WEST -> BlockFace.EAST;
-            case UP -> BlockFace.DOWN;
-            case DOWN -> BlockFace.UP;
-            default -> face.getOppositeFace();
-        };
-    }
-
     // Get neighboring rail with vertical tolerance (-1/0/+1)
     @Nullable
     private Block neighborRail(Block base, BlockFace horiz) {
