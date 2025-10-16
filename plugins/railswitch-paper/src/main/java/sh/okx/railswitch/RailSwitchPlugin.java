@@ -109,26 +109,33 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
     }
 
     private DatabaseCredentials resolveCredentials() {
-        DatabaseCredentials credentials = (DatabaseCredentials) getConfig().get("database");
+        DatabaseCredentials credentials = loadCredentialsFromConfig();
         if (credentials != null) {
-            String envHost = System.getenv("CIV_MYSQL_HOST");
-            if (envHost != null && isLocalhost(credentials.host())) {
-                getLogger().info("Replacing localhost database host with CIV_MYSQL_HOST environment override.");
-                int port = parseInteger(System.getenv("CIV_MYSQL_PORT"), credentials.port());
-                return new DatabaseCredentials(
-                    credentials.username(),
-                    credentials.password(),
-                    envHost,
-                    port,
-                    credentials.driver(),
-                    credentials.database(),
-                    credentials.poolSize(),
-                    credentials.connectionTimeout(),
-                    credentials.idleTimeout(),
-                    credentials.maxLifetime());
-            }
             return credentials;
         }
+        return loadCredentialsFromEnvironment();
+    }
+
+    /**
+     * Loads database credentials from the plugin configuration.
+     * Applies localhost environment override if applicable.
+     *
+     * @return Database credentials from config, or null if not configured
+     */
+    private DatabaseCredentials loadCredentialsFromConfig() {
+        DatabaseCredentials credentials = (DatabaseCredentials) getConfig().get("database");
+        if (credentials != null) {
+            return applyLocalhostOverride(credentials);
+        }
+        return null;
+    }
+
+    /**
+     * Loads database credentials from environment variables.
+     *
+     * @return Database credentials from environment, or null if incomplete
+     */
+    private DatabaseCredentials loadCredentialsFromEnvironment() {
         String username = System.getenv("CIV_MYSQL_USERNAME");
         String password = System.getenv("CIV_MYSQL_PASSWORD");
         String host = System.getenv("CIV_MYSQL_HOST");
@@ -148,6 +155,32 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
         getLogger().info("Loaded rail switch database credentials from environment variables.");
         return new DatabaseCredentials(username, password, host, port, "mysql", databaseName, poolSize,
             connectionTimeout, idleTimeout, maxLifetime);
+    }
+
+    /**
+     * Applies localhost environment override to credentials if the host is localhost.
+     *
+     * @param credentials The original credentials
+     * @return Modified credentials with override, or original if no override
+     */
+    private DatabaseCredentials applyLocalhostOverride(DatabaseCredentials credentials) {
+        String envHost = System.getenv("CIV_MYSQL_HOST");
+        if (envHost != null && isLocalhost(credentials.host())) {
+            getLogger().info("Replacing localhost database host with CIV_MYSQL_HOST environment override.");
+            int port = parseInteger(System.getenv("CIV_MYSQL_PORT"), credentials.port());
+            return new DatabaseCredentials(
+                credentials.username(),
+                credentials.password(),
+                envHost,
+                port,
+                credentials.driver(),
+                credentials.database(),
+                credentials.poolSize(),
+                credentials.connectionTimeout(),
+                credentials.idleTimeout(),
+                credentials.maxLifetime());
+        }
+        return credentials;
     }
 
     private int parseInteger(String value, int fallback) {

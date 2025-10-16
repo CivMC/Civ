@@ -2,7 +2,8 @@ package sh.okx.railswitch.settings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import sh.okx.railswitch.RailSwitchPlugin;
 
@@ -35,13 +36,13 @@ public final class SettingsManager {
 
     /**
      * Gracefully resets the settings manager. This should only be called within RailSwitch onDisable().
-     */
-    public static void reset() {
-        // TODO: Deregister and unload all the menu elements once PlayerSettingAPI becomes reload safe
-        menu = null;
-        destSetting = null;
-        resetSetting = null;
-    }
+      * Note: Menu elements are not deregistered as PlayerSettingAPI does not currently support safe deregistration.
+      */
+     public static void reset() {
+         menu = null;
+         destSetting = null;
+         resetSetting = null;
+     }
 
     /**
      * Sets a player's destination. This is for when the player settings don't themselves provide a way to do so.
@@ -56,14 +57,14 @@ public final class SettingsManager {
                 resetSetting.resetPlayerDestination(player);
                 // Do not put a message here since the message is sent in the method above.
             } else {
-                player.sendMessage(ChatColor.RED + "Could not reset your destination.");
+                player.sendMessage(Component.text("Could not reset your destination.", NamedTextColor.RED));
             }
         } else {
             if (destSetting != null) {
                 destSetting.setValue(player, destination);
-                player.sendMessage(ChatColor.GREEN + "Destination set to: " + destination);
+                player.sendMessage(Component.text("Destination set to: " + destination, NamedTextColor.GREEN));
             } else {
-                player.sendMessage(ChatColor.RED + "Could not set your destination.");
+                player.sendMessage(Component.text("Could not set your destination.", NamedTextColor.RED));
             }
         }
     }

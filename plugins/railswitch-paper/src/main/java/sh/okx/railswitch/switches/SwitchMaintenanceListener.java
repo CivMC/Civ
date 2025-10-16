@@ -24,16 +24,31 @@ public final class SwitchMaintenanceListener implements Listener {
         this.plugin = plugin;
     }
 
+    /**
+     * Handles block break events to clean up switch data.
+     *
+     * @param event The block break event
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         removeSwitch(event.getBlock());
     }
 
+    /**
+     * Handles block explosion events to clean up switch data.
+     *
+     * @param event The block explode event
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         cleanupBlocks(event.blockList());
     }
 
+    /**
+     * Handles entity explosion events to clean up switch data.
+     *
+     * @param event The entity explode event
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         cleanupBlocks(event.blockList());

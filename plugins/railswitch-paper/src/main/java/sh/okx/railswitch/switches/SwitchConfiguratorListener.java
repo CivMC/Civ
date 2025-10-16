@@ -1,6 +1,7 @@
 package sh.okx.railswitch.switches;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,6 +28,12 @@ public final class SwitchConfiguratorListener implements Listener {
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * Handles player interaction with detector rails using the configuration tool.
+     * Initiates configuration session if conditions are met.
+     *
+     * @param event The player interact event
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onConfigureRail(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
@@ -49,11 +56,11 @@ public final class SwitchConfiguratorListener implements Listener {
         }
         CitadelGlue citadel = plugin.getCitadelGlue();
         if (citadel != null && !citadel.canModify(player, clicked)) {
-            player.sendMessage(ChatColor.RED + "You lack permission to reconfigure this reinforced rail.");
+            player.sendMessage(Component.text("You lack permission to reconfigure this reinforced rail.", NamedTextColor.RED));
             return;
         }
         if (sessionManager.isEditing(player)) {
-            player.sendMessage(ChatColor.YELLOW + "You are already editing a rail. Finish or cancel via chat before starting another.");
+            player.sendMessage(Component.text("You are already editing a rail. Finish or cancel via chat before starting another.", NamedTextColor.YELLOW));
             return;
         }
         sessionManager.beginSession(player, clicked);

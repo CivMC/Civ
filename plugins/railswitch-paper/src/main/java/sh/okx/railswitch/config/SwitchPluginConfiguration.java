@@ -26,7 +26,7 @@ public final class SwitchPluginConfiguration {
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
         String materialName = config.getString(TOOL_PATH, "STICK");
-        Material material = materialName == null ? null : Material.matchMaterial(materialName, true);
+        Material material = Material.matchMaterial(materialName, true);
         if (material == null) {
             material = Material.STICK;
             plugin.getLogger().warning("Invalid configuration tool material '" + materialName + "', defaulting to STICK.");
@@ -37,10 +37,10 @@ public final class SwitchPluginConfiguration {
             configuredRange = 1.0D;
         }
         displayRange = configuredRange;
-        int configuredMax = config.getInt(MAX_DESTINATIONS_PATH, 32);
-        if (configuredMax < 0) {
-            configuredMax = 0;
-            plugin.getLogger().warning("max-destinations-per-switch cannot be negative; treating as unlimited.");
+        int configuredMax = config.getInt(MAX_DESTINATIONS_PATH, 16);
+        if (configuredMax <= 0) {
+            configuredMax = 16;
+            plugin.getLogger().warning("max-destinations-per-switch must be positive; defaulting to 16.");
         }
         maxDestinationsPerSwitch = configuredMax;
     }

@@ -53,19 +53,24 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     };
 
     private final RailSwitchPlugin plugin;
-    private final Map<UUID, PlayerDisplays> activeDisplays;
+    private final Map<UUID, PlayerDisplays> activeDisplays = new HashMap<>();
     private BukkitTask ticker;
 
     public SwitchDisplayManager(RailSwitchPlugin plugin) {
         this.plugin = plugin;
-        this.activeDisplays = new HashMap<>();
     }
 
+    /**
+     * Starts the display manager, scheduling the update task.
+     */
     public void start() {
         if (ticker != null) return;
         ticker = Bukkit.getScheduler().runTaskTimer(plugin, this, 20L, 20L);
     }
 
+    /**
+     * Shuts down the display manager, canceling the update task and clearing displays.
+     */
     public void shutdown() {
         if (ticker != null) {
             ticker.cancel();
@@ -135,7 +140,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             clearPlayer(player);
             return;
         }
-        PlayerDisplays displays = activeDisplays.computeIfAbsent(player.getUniqueId(), ignored -> new PlayerDisplays());
+        PlayerDisplays displays = activeDisplays.computeIfAbsent(player.getUniqueId(), ignored -> new PlayerDisplays(plugin));
         displays.sync(targets, player);
     }
 
@@ -169,47 +174,29 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         List<Component> positiveText = positiveNames.isEmpty() ? null : buildText(positiveNames, NamedTextColor.GREEN);
         List<Component> negativeText = negativeNames.isEmpty() ? null : buildText(negativeNames, NamedTextColor.RED);
 
-        List<DisplayTarget> results = new ArrayList<>(2);
-
-        for (CurveContext context : locateCurve(detector)) {
-            BlockFace[] exits = {getExitDirection(context.off_shape, context.incoming), getExitDirection(context.on_shape, context.incoming)};
-
-            BlockFace exit1 = null, exit2 = null;
-            for (BlockFace face : exits) {
-                if (exit1 == null) exit1 = face;
-                else exit2 = face;
-            }
-            if (exit1 != null && exit2 != null) {
-                Block block1 = firstRailAfter(context.curve, exit1);
-                Block block2 = firstRailAfter(context.curve, exit2);
-                if (block1 != null && block2 != null) {
-
-                    if (negativeText != null) {
-                        Location marker = computeDisplayLocation(block1, exit1);
-                        Component text = Component.join(JoinConfiguration.separator(Component.newline()), negativeText);
-                        results.add(new DisplayTarget(marker, text));
-                    }
-                    if (positiveText != null) {
-                        Location marker = computeDisplayLocation(block2, exit2);
-                        Component text = Component.join(JoinConfiguration.separator(Component.newline()), positiveText);
-                        results.add(new DisplayTarget(marker, text));
-                    }
-                }
-            }
-        }
-
+        List<DisplayTarget> results = createDisplayTargetsForCurves(detector, positiveText, negativeText);
 
         if (results.isEmpty()) {
             Component fallback = combineComponents(positiveText, negativeText);
-            if (fallback == null) return List.of();
-            Location fallbackLocation = detector.getLocation().add(0.5D, DISPLAY_HEIGHT, 0.5D);
-            results.add(new DisplayTarget(fallbackLocation, fallback));
+            DisplayTarget fallbackTarget = createFallbackDisplayTarget(detector, fallback);
+            if (fallbackTarget != null) {
+                results.add(fallbackTarget);
+            }
         }
         return results;
     }
 
+    /**
+     * Determines the exit direction for a curved rail based on its shape and the incoming direction.
+     * This simulates how Minecraft's rail mechanics route minecarts through curves.
+     *
+     * @param shape The shape of the curved rail
+     * @param incoming The direction the minecart is coming from
+     * @return The exit direction, or null if not applicable (straight rails or invalid cases)
+     */
     public BlockFace getExitDirection(Rail.Shape shape, BlockFace incoming) {
         return switch (shape) {
+            // Straight rails don't have exit directions for curves
             case NORTH_SOUTH, ASCENDING_NORTH, ASCENDING_SOUTH, EAST_WEST, ASCENDING_EAST, ASCENDING_WEST -> null;
             case NORTH_EAST -> switch (incoming) {
                 case NORTH -> BlockFace.EAST;
@@ -230,7 +217,6 @@ public final class SwitchDisplayManager implements Listener, Runnable {
                 case WEST -> BlockFace.WEST;
                 case NORTH -> BlockFace.NORTH;
                 case SOUTH -> BlockFace.EAST;
-
                 default -> null;
             };
             case SOUTH_WEST -> switch (incoming) {
@@ -271,6 +257,13 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         }
     }
 
+    /**
+     * Locates curved rails connected to the detector rail that could form a switch junction.
+     * Examines adjacent rails to find curves that might route minecarts differently based on power state.
+     *
+     * @param detector The detector rail block
+     * @return A list of curve contexts representing potential switch curves
+     */
     @NotNull
     private List<CurveContext> locateCurve(Block detector) {
         if (!(detector.getBlockData() instanceof Rail detectorRail)) return List.of();
@@ -308,12 +301,21 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     }
 
 
+    /**
+     * Determines the expected rail shape for a given block based on surrounding rails and power state.
+     * This replicates Minecraft's rail placement logic to predict how rails behave in junctions.
+     *
+     * @param railBlock The rail block to analyze
+     * @param isPowered Whether the rail is powered (affects curve priority)
+     * @return The expected rail shape, or NORTH_SOUTH as fallback
+     */
     public Rail.Shape getExpectedRailShape(Block railBlock, boolean isPowered) {
         if (!(railBlock.getBlockData() instanceof Rail)) return null;
 
         Location loc = railBlock.getLocation();
         World world = railBlock.getWorld();
 
+        // Check adjacent blocks for connected rails
         boolean north = isRail(world.getBlockAt(loc.clone().add(0, 0, -1)));
         boolean south = isRail(world.getBlockAt(loc.clone().add(0, 0, 1)));
         boolean west  = isRail(world.getBlockAt(loc.clone().add(-1, 0, 0)));
@@ -324,11 +326,11 @@ public final class SwitchDisplayManager implements Listener, Runnable {
 
         Rail.Shape shape = null;
 
-        // Step 1: straight-only logic
+        // Step 1: Determine if it's a straight rail
         if (northSouth && !eastWest) shape = Rail.Shape.NORTH_SOUTH;
         else if (eastWest && !northSouth) shape = Rail.Shape.EAST_WEST;
 
-        // Step 2: check for curves if allowed
+        // Step 2: Check for perfect curve matches (only one direction pair connected)
         boolean se = south && east && !north && !west;
         boolean sw = south && west && !north && !east;
         boolean nw = north && west && !south && !east;
@@ -339,7 +341,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         else if (nw) shape = Rail.Shape.NORTH_WEST;
         else if (ne) shape = Rail.Shape.NORTH_EAST;
 
-        // Step 3: if still ambiguous, use redstone toggle priority
+        // Step 3: If ambiguous, use redstone-powered priority order to choose a curve
         if (shape == null) {
             List<Rail.Shape> order = isPowered
                 ? List.of(Rail.Shape.SOUTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.NORTH_WEST)
@@ -356,7 +358,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             }
         }
 
-        // Step 4: check for ascending slopes if straight
+        // Step 4: Check for ascending slopes on straight rails
         if (shape == Rail.Shape.NORTH_SOUTH) {
             if (isRail(world.getBlockAt(loc.clone().add(0, 1, -1)))) shape = Rail.Shape.ASCENDING_NORTH;
             else if (isRail(world.getBlockAt(loc.clone().add(0, 1, 1)))) shape = Rail.Shape.ASCENDING_SOUTH;
@@ -365,7 +367,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             else if (isRail(world.getBlockAt(loc.clone().add(-1, 1, 0)))) shape = Rail.Shape.ASCENDING_WEST;
         }
 
-        // Fallback
+        // Fallback to straight north-south if nothing determined
         return shape != null ? shape : Rail.Shape.NORTH_SOUTH;
     }
 
@@ -396,6 +398,63 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         return Component.join(JoinConfiguration.separator(Component.newline()), components);
     }
 
+    /**
+     * Creates display targets for curved rail switches by determining exit directions and positions.
+     *
+     * @param detector The detector rail block
+     * @param positiveText The text component for positive destinations
+     * @param negativeText The text component for negative destinations
+     * @return A list of display targets for the curves
+     */
+    private List<DisplayTarget> createDisplayTargetsForCurves(Block detector, List<Component> positiveText, List<Component> negativeText) {
+        List<DisplayTarget> results = new ArrayList<>();
+        for (CurveContext context : locateCurve(detector)) {
+            BlockFace[] exits = {getExitDirection(context.off_shape, context.incoming), getExitDirection(context.on_shape, context.incoming)};
+
+            System.out.println("Incoming: " + context.incoming);
+            System.out.println("Curve: " + context.off_shape + " -> " + context.on_shape + " (" + Arrays.toString(exits) + ")");
+
+
+            BlockFace exit1 = null, exit2 = null;
+            for (BlockFace face : exits) {
+                if (exit1 == null) exit1 = face;
+                else exit2 = face;
+            }
+            if (exit1 != null && exit2 != null) {
+                Block block1 = firstRailAfter(context.curve, exit1);
+                Block block2 = firstRailAfter(context.curve, exit2);
+                if (block1 != null && block2 != null) {
+                    if (negativeText != null) {
+                        Location marker = computeDisplayLocation(block1, exit1);
+                        Component text = Component.join(JoinConfiguration.separator(Component.newline()), negativeText);
+                        results.add(new DisplayTarget(marker, text));
+                    }
+                    if (positiveText != null) {
+                        Location marker = computeDisplayLocation(block2, exit2);
+                        Component text = Component.join(JoinConfiguration.separator(Component.newline()), positiveText);
+                        results.add(new DisplayTarget(marker, text));
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Creates a fallback display target when no curve-based targets are available.
+     *
+     * @param detector The detector rail block
+     * @param combinedText The combined text component for all destinations
+     * @return A single display target, or null if no text
+     */
+    private DisplayTarget createFallbackDisplayTarget(Block detector, Component combinedText) {
+        if (combinedText == null) {
+            return null;
+        }
+        Location fallbackLocation = detector.getLocation().add(0.5D, DISPLAY_HEIGHT, 0.5D);
+        return new DisplayTarget(fallbackLocation, combinedText);
+    }
+
     private boolean isCurvedShape(Rail.Shape shape) {
         switch (shape) {
             case NORTH_EAST:
@@ -408,6 +467,13 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         }
     }
 
+    /**
+     * Returns the possible connection faces for a given rail shape.
+     * This defines which directions a rail can connect to adjacent rails.
+     *
+     * @param s The rail shape
+     * @return Array of block faces that this rail shape can connect to
+     */
     private static BlockFace[] connectedFaces(Rail.Shape s) {
         return switch (s) {
             case NORTH_SOUTH, ASCENDING_NORTH, ASCENDING_SOUTH -> new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH};
@@ -448,20 +514,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         return null;
     }
 
-    private static final class CurveContext {
-        final Block curve;
-        final BlockFace incoming;
-        final Rail.Shape off_shape;
-        final Rail.Shape on_shape;
 
-
-        CurveContext(Block curve, BlockFace incoming, Rail.Shape off_shape, Rail.Shape on_shape) {
-            this.curve = curve;
-            this.incoming = incoming;
-            this.off_shape = off_shape;
-            this.on_shape = on_shape;
-        }
-    }
 
     private static BlockFace opposite(BlockFace face) {
         return switch (face) {
@@ -517,126 +570,10 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     }
 
 
-    private static final class DisplayTarget {
-        private final Location location;
-        private final Component text;
 
-        private DisplayTarget(Location location, Component text) {
-            this.location = location.clone();
-            this.text = text;
-        }
 
-        public Location getLocation() { return location.clone(); }
-        public Component getText() { return text; }
 
-        @Override
-        public boolean equals(Object other) {
-            if (this == other) return true;
-            if (!(other instanceof DisplayTarget)) return false;
-            DisplayTarget that = (DisplayTarget) other;
-            UUID w1 = this.location.getWorld() != null ? this.location.getWorld().getUID() : null;
-            UUID w2 = that.location.getWorld() != null ? that.location.getWorld().getUID() : null;
-            return Objects.equals(w1, w2)
-                && location.getBlockX() == that.location.getBlockX()
-                && location.getBlockY() == that.location.getBlockY()
-                && location.getBlockZ() == that.location.getBlockZ()
-                && Objects.equals(text, that.text);
-        }
 
-        @Override
-        public int hashCode() {
-            UUID w = location.getWorld() != null ? location.getWorld().getUID() : null;
-            return Objects.hash(w, location.getBlockX(), location.getBlockY(), location.getBlockZ(), text);
-        }
-    }
 
-    private final class PlayerDisplays {
-        private final Map<RailSwitchKey, DisplayEntry> displays = new HashMap<>();
-
-        void sync(Map<RailSwitchKey, List<DisplayTarget>> targets, Player player) {
-            displays.entrySet().removeIf(entry -> {
-                if (!targets.containsKey(entry.getKey())) {
-                    entry.getValue().destroy(player);
-                    return true;
-                }
-                return false;
-            });
-
-            for (Map.Entry<RailSwitchKey, List<DisplayTarget>> entry : targets.entrySet()) {
-                DisplayEntry existing = displays.get(entry.getKey());
-                if (existing != null && existing.matches(entry.getValue())) continue;
-
-                if (existing != null) existing.destroy(player);
-                DisplayEntry replacement = DisplayEntry.spawn(plugin, player, entry.getValue());
-                if (replacement != null) {
-                    displays.put(entry.getKey(), replacement);
-                }
-            }
-        }
-
-        void clear(@Nullable Player player) {
-            for (DisplayEntry entry : displays.values()) {
-                entry.destroy(player);
-            }
-            displays.clear();
-        }
-    }
-
-    private static final class DisplayEntry {
-        private final RailSwitchPlugin plugin;
-        private final List<DisplayTarget> targets;
-        private final List<TextDisplay> entities;
-
-        private DisplayEntry(RailSwitchPlugin plugin, List<DisplayTarget> targets, List<TextDisplay> entities) {
-            this.plugin = plugin;
-            this.targets = targets;
-            this.entities = entities;
-        }
-
-        static DisplayEntry spawn(RailSwitchPlugin plugin, Player player, List<DisplayTarget> targets) {
-            if (targets.isEmpty()) return null;
-            List<TextDisplay> spawned = new ArrayList<>(targets.size());
-            for (DisplayTarget target : targets) {
-                Location spawnLocation = target.getLocation();
-                TextDisplay entity = spawnDisplay(plugin, player, spawnLocation, target.getText());
-                if (entity != null) spawned.add(entity);
-            }
-            if (spawned.isEmpty()) return null;
-            return new DisplayEntry(plugin, targets, spawned);
-        }
-
-        boolean matches(List<DisplayTarget> other) {
-            if (targets.size() != other.size()) return false;
-            for (int i = 0; i < targets.size(); i++) {
-                if (!targets.get(i).equals(other.get(i))) return false;
-            }
-            return true;
-        }
-
-        void destroy(@Nullable Player player) {
-            for (TextDisplay entity : entities) {
-                if (entity == null || !entity.isValid()) continue;
-                if (player != null) player.hideEntity(plugin, entity);
-                entity.remove();
-            }
-            entities.clear();
-        }
-
-        private static TextDisplay spawnDisplay(RailSwitchPlugin plugin, Player player, Location location, Component text) {
-            return location.getWorld().spawn(location, TextDisplay.class, display -> {
-                display.text(text);
-                display.setBillboard(Display.Billboard.CENTER);
-                display.setShadowed(false);
-                display.setGravity(false);
-                display.setPersistent(false);
-                display.setSeeThrough(true);
-                display.setViewRange((float) plugin.getSwitchConfiguration().getDisplayRange() + 2.0F);
-                display.setTeleportDuration(0);
-                display.setVisibleByDefault(false);
-                display.setAlignment(TextDisplay.TextAlignment.CENTER);
-                player.showEntity(plugin, display);
-            });
-        }
-    }
 
 }

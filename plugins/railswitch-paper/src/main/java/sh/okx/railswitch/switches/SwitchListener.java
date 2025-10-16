@@ -94,13 +94,13 @@ public class SwitchListener implements Listener {
                 if (!(entity instanceof Player)) {
                     continue;
                 }
-                Entity vehicle = entity.getVehicle();
-                // TODO: This should be abstracted into CivModCore
-                if (vehicle == null
-                    || vehicle.getType() != EntityType.MINECART
-                    || !(vehicle instanceof Minecart)) {
-                    continue;
-                }
+                 Entity vehicle = entity.getVehicle();
+                 // Check if player is riding a minecart (potential candidate for CivModCore utility)
+                 if (vehicle == null
+                     || vehicle.getType() != EntityType.MINECART
+                     || !(vehicle instanceof Minecart)) {
+                     continue;
+                 }
                 double distance = block.getLocation().distanceSquared(entity.getLocation());
                 if (distance < searchDistance) {
                     searchDistance = distance;
