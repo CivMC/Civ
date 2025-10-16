@@ -36,6 +36,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sh.okx.railswitch.RailSwitchPlugin;
+import sh.okx.railswitch.settings.SettingsManager;
 import sh.okx.railswitch.storage.RailSwitchKey;
 import sh.okx.railswitch.storage.RailSwitchRecord;
 import sh.okx.railswitch.storage.RailSwitchStorage;
@@ -107,7 +108,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             clearPlayer(player);
             return;
         }
-        if (!isHoldingConfigurationTool(player)) {
+        if (!isHoldingConfigurationTool(player) || !SettingsManager.isVisualsEnabled(player)) {
             clearPlayer(player);
             return;
         }
@@ -130,7 +131,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             Location center = recordLocation.clone().add(0.5D, 0.0D, 0.5D);
             if (center.distanceSquared(playerLocation) > rangeSquared) continue;
 
-            List<DisplayTarget> recordTargets = computeTargets(record);
+            List<DisplayTarget> recordTargets = computeTargets(record, player);
             if (recordTargets.isEmpty()) continue;
 
             targets.put(record.toKey(), recordTargets);
@@ -160,7 +161,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         return main.getType() == tool || off.getType() == tool;
     }
 
-    private List<DisplayTarget> computeTargets(RailSwitchRecord record) {
+    private List<DisplayTarget> computeTargets(RailSwitchRecord record, Player viewer) {
         Location location = record.toLocation();
         if (location == null || location.getWorld() == null) return List.of();
 
@@ -174,7 +175,10 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         List<Component> positiveText = positiveNames.isEmpty() ? null : buildText(positiveNames, NamedTextColor.GREEN);
         List<Component> negativeText = negativeNames.isEmpty() ? null : buildText(negativeNames, NamedTextColor.RED);
 
-        List<DisplayTarget> results = createDisplayTargetsForCurves(detector, positiveText, negativeText);
+        List<DisplayTarget> results = new ArrayList<>();
+        if (SettingsManager.isPredictionEnabled(viewer)) {
+            results = createDisplayTargetsForCurves(detector, positiveText, negativeText);
+        }
 
         if (results.isEmpty()) {
             Component fallback = combineComponents(positiveText, negativeText);
@@ -268,11 +272,15 @@ public final class SwitchDisplayManager implements Listener, Runnable {
                 if (!(prev.getBlockData() instanceof Rail targetRail)) return List.of();
 
                 if (isCurvedShape(targetRail.getShape())) {
+
+                    ExpectedShapes expected = getExpectedRailShapes(prev);
+
+                    if (expected == null) continue;
                     contexts.add(new CurveContext(
                         prev,
                         leg,
-                        getExpectedRailShape(prev, false),
-                        getExpectedRailShape(prev, true)
+                        expected.unpowered,
+                        expected.powered
                     ));
                 }
             }
@@ -293,21 +301,15 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     }
 
 
-    /**
-     * Determines the expected rail shape for a given block based on surrounding rails and power state.
-     * This replicates Minecraft's rail placement logic to predict how rails behave in junctions.
-     *
-     * @param railBlock The rail block to analyze
-     * @param isPowered Whether the rail is powered (affects curve priority)
-     * @return The expected rail shape, or NORTH_SOUTH as fallback
-     */
-    public Rail.Shape getExpectedRailShape(Block railBlock, boolean isPowered) {
+    public record ExpectedShapes(Rail.Shape powered, Rail.Shape unpowered) {}
+
+    public ExpectedShapes getExpectedRailShapes(Block railBlock) {
         if (!(railBlock.getBlockData() instanceof Rail)) return null;
 
         Location loc = railBlock.getLocation();
         World world = railBlock.getWorld();
 
-        // Check adjacent blocks for connected rails
+        // Adjacency
         boolean north = isRail(world.getBlockAt(loc.clone().add(0, 0, -1)));
         boolean south = isRail(world.getBlockAt(loc.clone().add(0, 0, 1)));
         boolean west  = isRail(world.getBlockAt(loc.clone().add(-1, 0, 0)));
@@ -316,51 +318,53 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         boolean northSouth = north || south;
         boolean eastWest   = east  || west;
 
-        Rail.Shape shape = null;
+        Rail.Shape resolved = null;
 
-        // Step 1: Determine if it's a straight rail
-        if (northSouth && !eastWest) shape = Rail.Shape.NORTH_SOUTH;
-        else if (eastWest && !northSouth) shape = Rail.Shape.EAST_WEST;
+        // Straight?
+        if (northSouth && !eastWest) resolved = Rail.Shape.NORTH_SOUTH;
+        else if (eastWest && !northSouth) resolved = Rail.Shape.EAST_WEST;
 
-        // Step 2: Check for perfect curve matches (only one direction pair connected)
+        // Perfect curve?
         boolean se = south && east && !north && !west;
         boolean sw = south && west && !north && !east;
         boolean nw = north && west && !south && !east;
         boolean ne = north && east && !south && !west;
 
-        if (se) shape = Rail.Shape.SOUTH_EAST;
-        else if (sw) shape = Rail.Shape.SOUTH_WEST;
-        else if (nw) shape = Rail.Shape.NORTH_WEST;
-        else if (ne) shape = Rail.Shape.NORTH_EAST;
+        if (se) resolved = Rail.Shape.SOUTH_EAST;
+        else if (sw) resolved = Rail.Shape.SOUTH_WEST;
+        else if (nw) resolved = Rail.Shape.NORTH_WEST;
+        else if (ne) resolved = Rail.Shape.NORTH_EAST;
 
-        // Step 3: If ambiguous, use redstone-powered priority order to choose a curve
-        if (shape == null) {
-            List<Rail.Shape> order = !isPowered
-                ? List.of(Rail.Shape.SOUTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.NORTH_WEST)
-                : List.of(Rail.Shape.NORTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.SOUTH_EAST);
-
-            for (Rail.Shape candidate : order) {
-                Set<BlockFace> req = getFacesForCurve(candidate);
-                if (req.contains(BlockFace.NORTH) && !north) continue;
-                if (req.contains(BlockFace.SOUTH) && !south) continue;
-                if (req.contains(BlockFace.EAST)  && !east)  continue;
-                if (req.contains(BlockFace.WEST)  && !west)  continue;
-                shape = candidate;
-                break;
-            }
+        // If unambiguous, both states are identical
+        if (resolved != null) {
+            return new ExpectedShapes(resolved, resolved);
         }
 
-        // Step 4: Check for ascending slopes on straight rails
-        if (shape == Rail.Shape.NORTH_SOUTH) {
-            if (isRail(world.getBlockAt(loc.clone().add(0, 1, -1)))) shape = Rail.Shape.ASCENDING_NORTH;
-            else if (isRail(world.getBlockAt(loc.clone().add(0, 1, 1)))) shape = Rail.Shape.ASCENDING_SOUTH;
-        } else if (shape == Rail.Shape.EAST_WEST) {
-            if (isRail(world.getBlockAt(loc.clone().add(1, 1, 0)))) shape = Rail.Shape.ASCENDING_EAST;
-            else if (isRail(world.getBlockAt(loc.clone().add(-1, 1, 0)))) shape = Rail.Shape.ASCENDING_WEST;
-        }
+        // Ambiguous: choose per-state via priority orders
+        List<Rail.Shape> offOrder = List.of(
+            Rail.Shape.SOUTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.NORTH_WEST
+        );
+        List<Rail.Shape> onOrder = List.of(
+            Rail.Shape.NORTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.SOUTH_EAST
+        );
 
-        // Fallback to straight north-south if nothing determined
-        return shape != null ? shape : Rail.Shape.NORTH_SOUTH;
+        Rail.Shape unpowered = firstFitting(offOrder, north, south, east, west);
+        Rail.Shape powered   = firstFitting(onOrder,  north, south, east, west);
+
+        return new ExpectedShapes(powered, unpowered);
+    }
+
+    private Rail.Shape firstFitting(List<Rail.Shape> order,
+                                    boolean north, boolean south, boolean east, boolean west) {
+        for (Rail.Shape candidate : order) {
+            Set<BlockFace> req = getFacesForCurve(candidate);
+            if (req.contains(BlockFace.NORTH) && !north) continue;
+            if (req.contains(BlockFace.SOUTH) && !south) continue;
+            if (req.contains(BlockFace.EAST)  && !east)  continue;
+            if (req.contains(BlockFace.WEST)  && !west)  continue;
+            return candidate;
+        }
+        return null; // No curve fits given the neighbors
     }
 
 
@@ -402,10 +406,6 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         List<DisplayTarget> results = new ArrayList<>();
         for (CurveContext context : locateCurve(detector)) {
             BlockFace[] exits = {getExitDirection(context.off_shape, context.incoming), getExitDirection(context.on_shape, context.incoming)};
-
-            System.out.println("Incoming: " + context.incoming);
-            System.out.println("Curve: " + context.off_shape + " -> " + context.on_shape + " (" + Arrays.toString(exits) + ")");
-
 
             BlockFace exit1 = null, exit2 = null;
             for (BlockFace face : exits) {

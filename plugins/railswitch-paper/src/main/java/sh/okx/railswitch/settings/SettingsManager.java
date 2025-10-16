@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import sh.okx.railswitch.RailSwitchPlugin;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 
 /**
  * Manages the initialisation and registration of menu settings.
@@ -18,6 +19,9 @@ public final class SettingsManager {
 
     private static ResetSetting resetSetting;
 
+    private static VisualizationSetting visualModeSetting;
+
+
     /**
      * Initialise the settings manager. This should only be called within RailSwitch onEnable().
      *
@@ -28,10 +32,19 @@ public final class SettingsManager {
         menu = new RailSwitchMenu();
         destSetting = new DestinationSetting(plugin);
         resetSetting = new ResetSetting(plugin, destSetting);
+
+        visualModeSetting = new VisualizationSetting(
+            plugin,
+            VisualizationMode.VISUALS,
+            "Visualization mode",
+            "railswitchVizMode",
+            "Cycle between Disabled, Visuals, and Prediction to control how routing overlays are displayed when holding the RailSwitch tool."
+        );
         // Register those elements
         menu.registerToParentMenu();
         menu.registerSetting(destSetting);
         menu.registerSetting(resetSetting);
+        menu.registerSetting(visualModeSetting);
     }
 
     /**
@@ -83,4 +96,37 @@ public final class SettingsManager {
         return value;
     }
 
+    /**
+     * Determines whether prediction displays are enabled for the given player.
+     *
+     * @param player The player to query.
+     * @return {@code true} if prediction displays should be shown, {@code false} otherwise.
+     */
+    public static boolean isPredictionEnabled(Player player) {
+        if (visualModeSetting == null || player == null) {
+            return true;
+        }
+        VisualizationMode mode = visualModeSetting.getValue(player);
+        if (mode == null) {
+            mode = VisualizationMode.PREDICTION;
+        }
+        return mode == VisualizationMode.PREDICTION;
+    }
+
+    /**
+     * Determines whether visualizations are enabled for the given player.
+     *
+     * @param player The player to query.
+     * @return {@code true} if visualizations should be shown, {@code false} otherwise.
+     */
+    public static boolean isVisualsEnabled(Player player) {
+        if (visualModeSetting == null || player == null) {
+            return true;
+        }
+        VisualizationMode mode = visualModeSetting.getValue(player);
+        if (mode == null) {
+            mode = VisualizationMode.PREDICTION;
+        }
+        return mode != VisualizationMode.DISABLED;
+    }
 }
