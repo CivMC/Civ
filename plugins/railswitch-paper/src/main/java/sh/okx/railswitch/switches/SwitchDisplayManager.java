@@ -483,9 +483,6 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     private List<DisplayTarget> createDisplayTargetsForCurves(Block detector, List<Component> positiveText, List<Component> negativeText) {
         List<DisplayTarget> results = new ArrayList<>();
         for (CurveContext context : locateCurve(detector)) {
-            System.out.println("Curve: " + context.curve() + " incoming: " + context.incoming());
-            System.out.println("Unpowered: " + context.unpoweredShape() + " Powered: " + context.poweredShape());
-
             BlockFace exit1 = getExitDirection(context.unpoweredShape(), context.incoming());
             BlockFace exit2 = getExitDirection(context.poweredShape(), context.incoming());
 
