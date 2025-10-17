@@ -61,6 +61,11 @@ services:
       - ./PrivateConfig/paper/config/Votifier/config.yml:/privateconfig/plugins/Votifier/config.yml
       - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/privateconfig/plugins/Votifier/rsa/public.key
       - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/privateconfig/plugins/Votifier/rsa/private.key
+      - ./PrivateConfig/paper/config/EvenMoreFish/baits:/privateconfig/plugins/EvenMoreFish/baits
+      - ./PrivateConfig/paper/config/EvenMoreFish/rods:/privateconfig/plugins/EvenMoreFish/rods
+      - ./PrivateConfig/paper/config/EvenMoreFish/rarities:/privateconfig/plugins/EvenMoreFish/rarities
+      - ./PrivateConfig/paper/config/EvenMoreFish/competitions:/privateconfig/plugins/EvenMoreFish/competitions
+      - ./PrivateConfig/paper/config/EvenMoreFish/config.yml:/privateconfig/plugins/EvenMoreFish/config.yml
 
   pvp:
     environment:
