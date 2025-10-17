@@ -77,13 +77,12 @@ public final class SwitchConfigurationSessionManager implements Listener {
             return;
         }
         RailSwitchRecord record = storage.get(detectorRail).orElse(null);
-        String header = record != null ? record.getHeader() : SwitchType.NORMAL.getTag();
         List<String> destinations = record != null ? new ArrayList<>(record.getLines()) : new ArrayList<>();
         int maxDestinations = 0;
         if (plugin.getSwitchConfiguration() != null) {
             maxDestinations = plugin.getSwitchConfiguration().getMaxDestinationsPerSwitch();
         }
-        Session session = new Session(RailSwitchKey.from(detectorRail), header, destinations, maxDestinations);
+        Session session = new Session(RailSwitchKey.from(detectorRail), destinations, maxDestinations);
         sessions.put(player.getUniqueId(), session);
         sendPrompt(player, destinations);
     }
@@ -179,7 +178,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
         }
         RailSwitchStorage storage = plugin.getRailSwitchStorage();
         if (storage != null && modified) {
-            storage.upsert(session.getKey(), session.getHeader(), session.getDestinations());
+            storage.upsert(session.getKey(), session.getDestinations());
         }
         sendFinalList(player, session.getDestinations(), modified);
     }
@@ -261,15 +260,13 @@ public final class SwitchConfigurationSessionManager implements Listener {
     private static final class Session {
 
         private final RailSwitchKey key;
-        private final String header;
         private final List<String> destinations;
         private final int maxDestinations;
         private final List<String> failedDestinations;
         private Instant expiresAt;
 
-        Session(RailSwitchKey key, String header, List<String> destinations, int maxDestinations) {
+        Session(RailSwitchKey key, List<String> destinations, int maxDestinations) {
             this.key = key;
-            this.header = header;
             this.destinations = destinations == null ? new ArrayList<>() : new ArrayList<>(destinations);
             this.maxDestinations = Math.max(0, maxDestinations);
             this.failedDestinations = new ArrayList<>();
@@ -278,10 +275,6 @@ public final class SwitchConfigurationSessionManager implements Listener {
 
         RailSwitchKey getKey() {
             return key;
-        }
-
-        String getHeader() {
-            return header;
         }
 
         List<String> getDestinations() {

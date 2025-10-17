@@ -84,11 +84,9 @@ public final class SwitchListener implements Listener {
         if (type == null) {
             RailSwitchStorage storage = plugin.getRailSwitchStorage();
             if (storage != null) {
-                RailSwitchRecord record = storage.get(block).orElse(null);
-                if (record != null) {
-                    type = SwitchType.find(record.getHeader());
-                    DestinationLists.splitDestinations(record.getLines(), positiveDestinations, negativeDestinations);
-                }
+                storage.get(block).ifPresent(record ->
+                    DestinationLists.splitDestinations(record.getLines(), positiveDestinations, negativeDestinations)
+                );
             }
         }
         if (type == null) {

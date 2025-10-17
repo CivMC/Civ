@@ -17,20 +17,18 @@ public final class RailSwitchRecord {
     private final int x;
     private final int y;
     private final int z;
-    private final String header;
     private final List<String> lines;
 
-    public RailSwitchRecord(UUID worldId, int x, int y, int z, String header, List<String> lines) {
+    public RailSwitchRecord(UUID worldId, int x, int y, int z, List<String> lines) {
         this.worldId = worldId;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.header = header;
-        this.lines = lines == null ? Collections.emptyList() : Collections.unmodifiableList(new ArrayList<>(lines));
+        this.lines = lines == null ? Collections.emptyList() : List.copyOf(lines);
     }
 
-    public RailSwitchRecord(RailSwitchKey key, String header, List<String> lines) {
-        this(key.getWorldId(), key.getX(), key.getY(), key.getZ(), header, lines);
+    public RailSwitchRecord(RailSwitchKey key, List<String> lines) {
+        this(key.getWorldId(), key.getX(), key.getY(), key.getZ(), lines);
     }
 
     public UUID getWorldId() {
@@ -49,9 +47,6 @@ public final class RailSwitchRecord {
         return z;
     }
 
-    public String getHeader() {
-        return header;
-    }
 
     public List<String> getLines() {
         return lines;

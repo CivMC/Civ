@@ -35,6 +35,8 @@ run
 
 temp
 
+logs
+
 ### Docker ###
 containers/data
 

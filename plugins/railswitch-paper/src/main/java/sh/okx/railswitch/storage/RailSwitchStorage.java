@@ -28,22 +28,20 @@ public final class RailSwitchStorage {
             x INT NOT NULL,
             y INT NOT NULL,
             z INT NOT NULL,
-            header VARCHAR(64) NOT NULL,
             `lines` TEXT NOT NULL,
             PRIMARY KEY (world_uuid, x, y, z)
         )
         """;
     private static final String SELECT_ALL = """
-        SELECT world_uuid, x, y, z, header, `lines`
+        SELECT world_uuid, x, y, z, `lines`
         FROM railswitch_switches
         """;
     private static final String UPSERT_STATEMENT = """
-        INSERT INTO railswitch_switches (world_uuid, x, y, z, header, `lines`)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO railswitch_switches (world_uuid, x, y, z, `lines`)
+        VALUES (?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
-            header = VALUES(header),
             `lines` = VALUES(`lines`)
-        """;
+    """;
     private static final String DELETE_STATEMENT = """
         DELETE FROM railswitch_switches
         WHERE world_uuid = ? AND x = ? AND y = ? AND z = ?
@@ -83,17 +81,11 @@ public final class RailSwitchStorage {
         return Optional.ofNullable(entries.get(key));
     }
 
-    public RailSwitchRecord upsert(Block block, String header, Collection<String> lines) {
-        RailSwitchKey key = RailSwitchKey.from(block);
-        return upsert(key, header, lines);
-    }
-
-    public RailSwitchRecord upsert(RailSwitchKey key, String header, Collection<String> lines) {
-        RailSwitchRecord record = new RailSwitchRecord(key, header,
+    public void upsert(RailSwitchKey key, Collection<String> lines) {
+        RailSwitchRecord record = new RailSwitchRecord(key,
             lines == null ? Collections.emptyList() : List.copyOf(lines));
         entries.put(key, record);
         persistRecord(record);
-        return record;
     }
 
     public Optional<RailSwitchRecord> remove(Block block) {
@@ -142,14 +134,11 @@ public final class RailSwitchStorage {
                 int x = results.getInt("x");
                 int y = results.getInt("y");
                 int z = results.getInt("z");
-                String header = results.getString("header");
-                if (header == null) {
-                    header = "";
-                }
+
                 String linesRaw = results.getString("lines");
                 List<String> lines = decodeLines(linesRaw);
                 RailSwitchKey key = RailSwitchKey.of(worldId, x, y, z);
-                RailSwitchRecord record = new RailSwitchRecord(key, header, lines);
+                RailSwitchRecord record = new RailSwitchRecord(key, lines);
                 entries.put(key, record);
             }
         } catch (SQLException exception) {
@@ -164,8 +153,7 @@ public final class RailSwitchStorage {
             statement.setInt(2, record.getX());
             statement.setInt(3, record.getY());
             statement.setInt(4, record.getZ());
-            statement.setString(5, record.getHeader() == null ? "" : record.getHeader());
-            statement.setString(6, encodeLines(record.getLines()));
+            statement.setString(5, encodeLines(record.getLines()));
             statement.executeUpdate();
         } catch (SQLException exception) {
             plugin.getLogger().log(Level.SEVERE, "Failed to store rail switch data for " + record.toKey(), exception);
