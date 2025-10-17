@@ -70,6 +70,9 @@ public final class SwitchConfiguratorListener implements Listener {
         if (stack == null) {
             return false;
         }
+        if (plugin.getSwitchConfiguration() == null) {
+            return false;
+        }
         Material configured = plugin.getSwitchConfiguration().getToolMaterial();
         return stack.getType() == configured;
     }

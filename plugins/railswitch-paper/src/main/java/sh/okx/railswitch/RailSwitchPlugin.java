@@ -35,60 +35,27 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
         saveDefaultConfig();
         switchConfiguration = new SwitchPluginConfiguration(this);
         switchConfiguration.reload();
-        DatabaseCredentials credentials = resolveCredentials();
-        database = ManagedDatasource.construct(this, credentials);
-        if (database == null) {
-            getLogger().severe("Failed to create rail switch datasource; disabling plugin.");
+        if (!initialiseStorage()) {
             disable();
             return;
         }
-        railSwitchStorage = new RailSwitchStorage(this, database);
-        if (!database.updateDatabase()) {
-            getLogger().severe("Failed to run rail switch database migrations; disabling plugin.");
-            disable();
-            return;
-        }
-        railSwitchStorage.load();
         SettingsManager.init(this);
         configurationSessionManager = new SwitchConfigurationSessionManager(this);
         citadelGlue = new CitadelGlue(this);
-        registerListener(citadelGlue);
-        registerListener(new SwitchListener(citadelGlue));
-        registerListener(configurationSessionManager);
-        registerListener(new SwitchConfiguratorListener(this, configurationSessionManager));
-        registerListener(new SwitchMaintenanceListener(this));
-        switchDisplayManager = new SwitchDisplayManager(this);
-        registerListener(switchDisplayManager);
-        switchDisplayManager.start();
-        commandManager = new CommandManager(this);
-        commandManager.init();
-        commandManager.registerCommand(new DestinationCommand());
+        registerCoreListeners();
+        startDisplayManager();
+        initialiseCommands();
     }
 
     @Override
     public void onDisable() {
-        if (railSwitchStorage != null) {
-            railSwitchStorage = null;
-        }
+        shutdownDisplayManager();
+        shutdownConfigurationSession();
+        resetCommandManager();
         SettingsManager.reset();
-        if (commandManager != null) {
-            commandManager.reset();
-            commandManager = null;
-        }
-        if (switchDisplayManager != null) {
-            switchDisplayManager.shutdown();
-            switchDisplayManager = null;
-        }
-        if (configurationSessionManager != null) {
-            configurationSessionManager.shutdown();
-            configurationSessionManager = null;
-        }
-        citadelGlue = null;
-        if (database != null) {
-            database.close();
-            database = null;
-        }
+        cleanupDatabase();
         switchConfiguration = null;
+        citadelGlue = null;
         super.onDisable();
     }
 
@@ -114,6 +81,72 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
             return credentials;
         }
         return loadCredentialsFromEnvironment();
+    }
+
+    private boolean initialiseStorage() {
+        DatabaseCredentials credentials = resolveCredentials();
+        database = ManagedDatasource.construct(this, credentials);
+        if (database == null) {
+            getLogger().severe("Failed to create rail switch datasource; disabling plugin.");
+            return false;
+        }
+        railSwitchStorage = new RailSwitchStorage(this, database);
+        if (!database.updateDatabase()) {
+            getLogger().severe("Failed to run rail switch database migrations; disabling plugin.");
+            cleanupDatabase();
+            return false;
+        }
+        railSwitchStorage.load();
+        return true;
+    }
+
+    private void registerCoreListeners() {
+        registerListener(citadelGlue);
+        registerListener(new SwitchListener(this, citadelGlue));
+        registerListener(configurationSessionManager);
+        registerListener(new SwitchConfiguratorListener(this, configurationSessionManager));
+        registerListener(new SwitchMaintenanceListener(this));
+    }
+
+    private void startDisplayManager() {
+        switchDisplayManager = new SwitchDisplayManager(this);
+        registerListener(switchDisplayManager);
+        switchDisplayManager.start();
+    }
+
+    private void shutdownDisplayManager() {
+        if (switchDisplayManager != null) {
+            switchDisplayManager.shutdown();
+            switchDisplayManager = null;
+        }
+    }
+
+    private void initialiseCommands() {
+        commandManager = new CommandManager(this);
+        commandManager.init();
+        commandManager.registerCommand(new DestinationCommand());
+    }
+
+    private void resetCommandManager() {
+        if (commandManager != null) {
+            commandManager.reset();
+            commandManager = null;
+        }
+    }
+
+    private void shutdownConfigurationSession() {
+        if (configurationSessionManager != null) {
+            configurationSessionManager.shutdown();
+            configurationSessionManager = null;
+        }
+    }
+
+    private void cleanupDatabase() {
+        if (database != null) {
+            database.close();
+            database = null;
+        }
+        railSwitchStorage = null;
     }
 
     /**
@@ -190,6 +223,7 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException exception) {
+            getLogger().warning("Invalid integer value '" + value + "'; using fallback " + fallback + ".");
             return fallback;
         }
     }
@@ -201,6 +235,7 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
         try {
             return Long.parseLong(value);
         } catch (NumberFormatException exception) {
+            getLogger().warning("Invalid long value '" + value + "'; using fallback " + fallback + ".");
             return fallback;
         }
     }

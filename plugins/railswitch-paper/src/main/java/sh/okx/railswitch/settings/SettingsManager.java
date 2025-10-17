@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import sh.okx.railswitch.RailSwitchPlugin;
-import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 
 /**
  * Manages the initialisation and registration of menu settings.
@@ -52,9 +51,10 @@ public final class SettingsManager {
       * Note: Menu elements are not deregistered as PlayerSettingAPI does not currently support safe deregistration.
       */
      public static void reset() {
-         menu = null;
-         destSetting = null;
-         resetSetting = null;
+        menu = null;
+        destSetting = null;
+        resetSetting = null;
+        visualModeSetting = null;
      }
 
     /**
@@ -89,6 +89,9 @@ public final class SettingsManager {
      * @return Returns the player's destination, which will never be null.
      */
     public static String getDestination(Player player) {
+        if (destSetting == null) {
+            return "";
+        }
         String value = destSetting.getValue(player);
         if (value == null) {
             return "";

@@ -3,11 +3,14 @@ package sh.okx.railswitch.switches;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
@@ -25,13 +28,15 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 /**
  * Switch listener that implements switch functionality.
  */
-public class SwitchListener implements Listener {
+public final class SwitchListener implements Listener {
 
     public static final String WILDCARD = "*";
 
+    private final RailSwitchPlugin plugin;
     private final CitadelGlue citadelGlue;
 
-    public SwitchListener(CitadelGlue citadelGlue) {
+    public SwitchListener(RailSwitchPlugin plugin, CitadelGlue citadelGlue) {
+        this.plugin = plugin;
         this.citadelGlue = citadelGlue;
     }
 
@@ -62,22 +67,27 @@ public class SwitchListener implements Listener {
         List<String> positiveDestinations = new ArrayList<>();
         List<String> negativeDestinations = new ArrayList<>();
         if (sign != null) {
-            String[] signLines = sign.getLines();
+            // Use the front side (you can also check BOTH if needed)
+            List<Component> lines = sign.getSide(Side.FRONT).lines();
+
+            // Convert Adventure Components to plain text
+            String[] signLines = lines.stream()
+                .map(line -> PlainTextComponentSerializer.plainText().serialize(line))
+                .toArray(String[]::new);
+
             type = SwitchType.find(signLines[0]);
             if (type != null) {
-                for (int i = 1; i < signLines.length; i++) {
-                    addDestination(signLines[i], positiveDestinations, negativeDestinations);
-                }
+                DestinationLists.splitDestinations(signLines, 1, positiveDestinations, negativeDestinations);
             }
         }
 
         if (type == null) {
-            RailSwitchStorage storage = RailSwitchPlugin.getPlugin(RailSwitchPlugin.class).getRailSwitchStorage();
+            RailSwitchStorage storage = plugin.getRailSwitchStorage();
             if (storage != null) {
                 RailSwitchRecord record = storage.get(block).orElse(null);
                 if (record != null) {
                     type = SwitchType.find(record.getHeader());
-                    parseDestinations(record.getLines(), positiveDestinations, negativeDestinations);
+                    DestinationLists.splitDestinations(record.getLines(), positiveDestinations, negativeDestinations);
                 }
             }
         }
@@ -132,7 +142,7 @@ public class SwitchListener implements Listener {
                     matched = true;
                     break;
                 }
-                if (containsIgnoreCase(negativeDestinations, playerDestination)) {
+                if (DestinationLists.containsIgnoreCase(negativeDestinations, playerDestination)) {
                     continue;
                 }
                 for (String switchDestination : positiveDestinations) {
@@ -155,42 +165,6 @@ public class SwitchListener implements Listener {
                 event.setNewCurrent(matched ? 0 : 15);
                 break;
         }
-    }
-
-    private void parseDestinations(Iterable<String> values, List<String> positive, List<String> negative) {
-        if (values == null) {
-            return;
-        }
-        for (String value : values) {
-            addDestination(value, positive, negative);
-        }
-    }
-
-    private void addDestination(String value, List<String> positive, List<String> negative) {
-        if (Strings.isNullOrEmpty(value)) {
-            return;
-        }
-        String trimmed = value.trim();
-        if (trimmed.isEmpty()) {
-            return;
-        }
-        if (trimmed.startsWith("!")) {
-            String neg = trimmed.substring(1).trim();
-            if (!Strings.isNullOrEmpty(neg)) {
-                negative.add(neg);
-            }
-        } else {
-            positive.add(trimmed);
-        }
-    }
-
-    private boolean containsIgnoreCase(List<String> values, String target) {
-        for (String value : values) {
-            if (value.equalsIgnoreCase(target)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

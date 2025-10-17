@@ -14,29 +14,13 @@ import java.util.List;
 /**
  * Manages a collection of text display entities for a set of display targets.
  */
-public final class DisplayEntry {
-    private final RailSwitchPlugin plugin;
-    private final List<DisplayTarget> targets;
-    private final List<TextDisplay> entities;
-
-    /**
-     * Creates a new display entry.
-     *
-     * @param plugin The plugin instance
-     * @param targets The display targets
-     * @param entities The spawned text display entities
-     */
-    private DisplayEntry(RailSwitchPlugin plugin, List<DisplayTarget> targets, List<TextDisplay> entities) {
-        this.plugin = plugin;
-        this.targets = targets;
-        this.entities = entities;
-    }
+public record DisplayEntry(RailSwitchPlugin plugin, List<DisplayTarget> targets, List<TextDisplay> entities) {
 
     /**
      * Spawns display entities for the given targets.
      *
-     * @param plugin The plugin instance
-     * @param player The player to show the entities to
+     * @param plugin  The plugin instance
+     * @param player  The player to show the entities to
      * @param targets The display targets
      * @return A new display entry, or null if spawning failed
      */
@@ -44,11 +28,10 @@ public final class DisplayEntry {
         if (targets.isEmpty()) return null;
         List<TextDisplay> spawned = new ArrayList<>(targets.size());
         for (DisplayTarget target : targets) {
-            Location spawnLocation = target.getLocation();
-            TextDisplay entity = spawnDisplay(plugin, player, spawnLocation, target.getText());
-            if (entity != null) spawned.add(entity);
+            Location spawnLocation = target.location();
+            TextDisplay entity = spawnDisplay(plugin, player, spawnLocation, target.text());
+            spawned.add(entity);
         }
-        if (spawned.isEmpty()) return null;
         return new DisplayEntry(plugin, targets, spawned);
     }
 
@@ -83,10 +66,10 @@ public final class DisplayEntry {
     /**
      * Spawns a single text display entity.
      *
-     * @param plugin The plugin instance
-     * @param player The player to show the entity to
+     * @param plugin   The plugin instance
+     * @param player   The player to show the entity to
      * @param location The spawn location
-     * @param text The text to display
+     * @param text     The text to display
      * @return The spawned text display, or null if failed
      */
     private static TextDisplay spawnDisplay(RailSwitchPlugin plugin, Player player, Location location, Component text) {

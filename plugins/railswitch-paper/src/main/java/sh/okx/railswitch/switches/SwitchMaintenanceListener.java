@@ -16,13 +16,7 @@ import sh.okx.railswitch.storage.RailSwitchStorage;
 /**
  * Handles cleanup of stored switch data when detector rails are destroyed.
  */
-public final class SwitchMaintenanceListener implements Listener {
-
-    private final RailSwitchPlugin plugin;
-
-    public SwitchMaintenanceListener(RailSwitchPlugin plugin) {
-        this.plugin = plugin;
-    }
+public record SwitchMaintenanceListener(RailSwitchPlugin plugin) implements Listener {
 
     /**
      * Handles block break events to clean up switch data.
@@ -69,7 +63,7 @@ public final class SwitchMaintenanceListener implements Listener {
             return;
         }
         RailSwitchKey key = RailSwitchKey.from(block);
-        if (storage.remove(block).isPresent()) {
+        if (storage.remove(key).isPresent()) {
             SwitchConfigurationSessionManager sessionManager = plugin.getConfigurationSessionManager();
             if (sessionManager != null) {
                 sessionManager.cancelSessionsFor(key, "Detector rail removed; editing session cancelled.");

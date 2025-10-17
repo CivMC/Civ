@@ -8,15 +8,13 @@ import java.util.UUID;
 /**
  * Represents a target location and text for displaying rail switch information.
  */
-public final class DisplayTarget {
-    private final Location location;
-    private final Component text;
+public record DisplayTarget(Location location, Component text) {
 
     /**
      * Creates a new display target.
      *
      * @param location The location to display the text
-     * @param text The text component to display
+     * @param text     The text component to display
      */
     public DisplayTarget(Location location, Component text) {
         this.location = location.clone();
@@ -28,7 +26,8 @@ public final class DisplayTarget {
      *
      * @return The location
      */
-    public Location getLocation() {
+    @Override
+    public Location location() {
         return location.clone();
     }
 
@@ -37,7 +36,8 @@ public final class DisplayTarget {
      *
      * @return The text component
      */
-    public Component getText() {
+    @Override
+    public Component text() {
         return text;
     }
 

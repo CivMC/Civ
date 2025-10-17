@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,11 +20,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 import sh.okx.railswitch.RailSwitchPlugin;
 import sh.okx.railswitch.storage.RailSwitchKey;
 import sh.okx.railswitch.storage.RailSwitchRecord;
@@ -37,22 +39,19 @@ public final class SwitchConfigurationSessionManager implements Listener {
 
     private final RailSwitchPlugin plugin;
     private final Map<UUID, Session> sessions;
+    private final BukkitTask cleanupTask;
 
     public SwitchConfigurationSessionManager(RailSwitchPlugin plugin) {
         this.plugin = plugin;
         this.sessions = new HashMap<>();
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                cleanupSessions();
-            }
-        }.runTaskTimer(plugin, 100L, 100L);
+        this.cleanupTask = Bukkit.getScheduler().runTaskTimer(plugin, this::cleanupSessions, 100L, 100L);
     }
 
     /**
      * Shuts down the session manager, closing all active sessions.
      */
     public void shutdown() {
+        cleanupTask.cancel();
         for (UUID uuid : new ArrayList<>(sessions.keySet())) {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null && player.isOnline()) {
@@ -100,16 +99,24 @@ public final class SwitchConfigurationSessionManager implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onAsyncChat(AsyncPlayerChatEvent event) {
+    public void onAsyncChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
         Session session = sessions.get(player.getUniqueId());
         if (session == null) {
             return;
         }
+
+        // Cancel chat so message doesn't get broadcast
         event.setCancelled(true);
         sessions.remove(player.getUniqueId());
-        Bukkit.getScheduler().runTask(plugin, () -> handleInput(player, session, event.getMessage()));
+
+        // Extract plain text message from the Adventure Component
+        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
+
+        // Run synchronously on main thread
+        Bukkit.getScheduler().runTask(plugin, () -> handleInput(player, session, message));
     }
+
 
     @EventHandler
     public void onPlayerSwapHand(PlayerSwapHandItemsEvent event) {
@@ -208,7 +215,7 @@ public final class SwitchConfigurationSessionManager implements Listener {
             if (player == null || !player.isOnline()) {
                 return true;
             }
-            if (isHoldingConfigurationTool(player)) {
+            if (isMissingConfigurationTool(player)) {
                 player.sendMessage(Component.text("Stopped editing; hold the configuration tool to edit again.", NamedTextColor.YELLOW));
                 return true;
             }
@@ -228,23 +235,27 @@ public final class SwitchConfigurationSessionManager implements Listener {
             return;
         }
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if (isHoldingConfigurationTool(player)) {
+            if (isMissingConfigurationTool(player)) {
                 sessions.remove(player.getUniqueId());
                 player.sendMessage(Component.text("Rail switch editing session closed; configuration tool no longer held.", NamedTextColor.YELLOW));
             }
         });
     }
 
-    private boolean isHoldingConfigurationTool(Player player) {
+    private boolean isMissingConfigurationTool(Player player) {
         if (player == null) {
             return true;
         }
         Material tool = plugin.getSwitchConfiguration() != null ? plugin.getSwitchConfiguration().getToolMaterial() : null;
         if (tool == null) {
-            return true;
+            return false;
         }
-        if (player.getInventory().getItemInMainHand().getType() == tool) return false;
-        return player.getInventory().getItemInOffHand().getType() != tool;
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (mainHand.getType() == tool) {
+            return false;
+        }
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+        return offHand.getType() != tool;
     }
 
     private static final class Session {

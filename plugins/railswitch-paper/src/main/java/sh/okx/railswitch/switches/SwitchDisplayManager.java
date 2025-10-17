@@ -2,20 +2,15 @@ package sh.okx.railswitch.switches;
 
 import com.google.common.base.Strings;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,11 +18,9 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Rail;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -37,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sh.okx.railswitch.RailSwitchPlugin;
 import sh.okx.railswitch.settings.SettingsManager;
+import sh.okx.railswitch.config.SwitchPluginConfiguration;
 import sh.okx.railswitch.storage.RailSwitchKey;
 import sh.okx.railswitch.storage.RailSwitchRecord;
 import sh.okx.railswitch.storage.RailSwitchStorage;
@@ -118,7 +112,13 @@ public final class SwitchDisplayManager implements Listener, Runnable {
             return;
         }
 
-        double range = plugin.getSwitchConfiguration().getDisplayRange();
+        SwitchPluginConfiguration configuration = plugin.getSwitchConfiguration();
+        if (configuration == null) {
+            clearPlayer(player);
+            return;
+        }
+
+        double range = configuration.getDisplayRange();
         double rangeSquared = range * range;
         Map<RailSwitchKey, List<DisplayTarget>> targets = new HashMap<>();
         Location playerLocation = player.getLocation();
@@ -146,6 +146,9 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     }
 
     private void clearPlayer(Player player) {
+        if (player == null) {
+            return;
+        }
         PlayerDisplays displays = activeDisplays.remove(player.getUniqueId());
         if (displays != null) {
             // Force-null so destroy() won't call hideEntity on an offline player
@@ -154,9 +157,16 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     }
 
     private boolean isHoldingConfigurationTool(Player player) {
+        if (plugin.getSwitchConfiguration() == null) {
+            return false;
+        }
         ItemStack main = player.getInventory().getItemInMainHand();
         ItemStack off = player.getInventory().getItemInOffHand();
-        Material tool = plugin.getSwitchConfiguration().getToolMaterial();
+        SwitchPluginConfiguration configuration = plugin.getSwitchConfiguration();
+        if (configuration == null) {
+            return false;
+        }
+        Material tool = configuration.getToolMaterial();
         if (tool == null) return false;
         return main.getType() == tool || off.getType() == tool;
     }
@@ -170,7 +180,7 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         // Split configured destinations into + / - for preview (no live power logic).
         List<String> positiveNames = new ArrayList<>();
         List<String> negativeNames = new ArrayList<>();
-        splitDestinations(record.getLines(), positiveNames, negativeNames);
+        DestinationLists.splitDestinations(record.getLines(), positiveNames, negativeNames);
 
         List<Component> positiveText = positiveNames.isEmpty() ? null : buildText(positiveNames, NamedTextColor.GREEN);
         List<Component> negativeText = negativeNames.isEmpty() ? null : buildText(negativeNames, NamedTextColor.RED);
@@ -238,21 +248,6 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         return components;
     }
 
-    private void splitDestinations(List<String> lines, List<String> positives, List<String> negatives) {
-        if (lines == null) return;
-        for (String raw : lines) {
-            if (Strings.isNullOrEmpty(raw)) continue;
-            String value = raw.trim();
-            if (value.isEmpty()) continue;
-            if (value.startsWith("!")) {
-                String neg = value.substring(1).trim();
-                if (!neg.isEmpty()) negatives.add(neg);
-            } else {
-                positives.add(value);
-            }
-        }
-    }
-
     /**
      * Locates curved rails connected to the detector rail that could form a switch junction.
      * Examines adjacent rails to find curves that might route minecarts differently based on power state.
@@ -289,97 +284,180 @@ public final class SwitchDisplayManager implements Listener, Runnable {
         return contexts;
     }
 
-
-    private Block firstRailAfter(Block curve, BlockFace exit) {
-        return neighborRail(curve, exit);
-    }
-
     private Location computeDisplayLocation(Block target, BlockFace exit) {
         Location location = target.getLocation().add(0.5D, DISPLAY_HEIGHT, 0.5D);
         location.add(exit.getModX() * 0.25D, exit.getModY() * 0.25D, exit.getModZ() * 0.25D);
         return location;
     }
 
+    enum Dir { NORTH, SOUTH, WEST, EAST;
+        Dir opposite() { return switch (this) {
+            case NORTH -> SOUTH; case SOUTH -> NORTH; case WEST -> EAST; case EAST -> WEST; }; }
+    }
 
+    private static Set<Dir> connectionsOf(Rail.Shape s) {
+        return switch (s) {
+            case NORTH_SOUTH, ASCENDING_NORTH, ASCENDING_SOUTH -> EnumSet.of(Dir.NORTH, Dir.SOUTH);
+            case EAST_WEST,   ASCENDING_EAST,  ASCENDING_WEST  -> EnumSet.of(Dir.EAST,  Dir.WEST);
+            case NORTH_EAST -> EnumSet.of(Dir.NORTH, Dir.EAST);
+            case NORTH_WEST -> EnumSet.of(Dir.NORTH, Dir.WEST);
+            case SOUTH_EAST -> EnumSet.of(Dir.SOUTH, Dir.EAST);
+            case SOUTH_WEST -> EnumSet.of(Dir.SOUTH, Dir.WEST);
+        };
+    }
+    private static Rail.Shape ascendingToward(Dir toward) {
+        return switch (toward) {
+            case NORTH -> Rail.Shape.ASCENDING_NORTH;
+            case SOUTH -> Rail.Shape.ASCENDING_SOUTH;
+            case EAST  -> Rail.Shape.ASCENDING_EAST;
+            case WEST  -> Rail.Shape.ASCENDING_WEST;
+        };
+    }
+
+    record RailConnection(boolean anyRail, boolean openEnd) {}
+
+    private RailConnection checkConnection(World world, Location base, Dir dir) {
+        int dx = (dir == Dir.EAST ? 1 : dir == Dir.WEST ? -1 : 0);
+        int dz = (dir == Dir.SOUTH ? 1 : dir == Dir.NORTH ? -1 : 0);
+        int x = base.getBlockX(), y = base.getBlockY(), z = base.getBlockZ();
+
+        boolean anyRail = false;
+        boolean openEnd = false;
+
+        for (int ny : new int[]{y, y + 1, y - 1}) {
+            Block b = world.getBlockAt(x + dx, ny, z + dz);
+            BlockData bd = b.getBlockData();
+            if (!(bd instanceof Rail r)) continue;
+
+            anyRail = true; // found at least one rail
+
+            Rail.Shape shape = r.getShape();
+            if (!connectionsOf(shape).contains(dir.opposite())) continue;
+
+            int dy = ny - y;
+            if (dy == 0) {
+                openEnd = true;
+            } else if (dy == 1) {
+                openEnd = shape == ascendingToward(dir.opposite());
+            } else if (dy == -1) {
+                openEnd = shape == ascendingToward(dir);
+            }
+
+            if (openEnd) break; // good enough
+        }
+
+        return new RailConnection(anyRail, openEnd);
+    }
+
+    public record CurveContext(Block curve, BlockFace incoming, Rail.Shape unpoweredShape, Rail.Shape poweredShape){}
     public record ExpectedShapes(Rail.Shape powered, Rail.Shape unpowered) {}
 
     public ExpectedShapes getExpectedRailShapes(Block railBlock) {
-        if (!(railBlock.getBlockData() instanceof Rail)) return null;
+        if (!(railBlock.getBlockData() instanceof Rail r)) return null;
 
-        Location loc = railBlock.getLocation();
-        World world = railBlock.getWorld();
+        final World world = railBlock.getWorld();
+        final Location loc = railBlock.getLocation();
+        final Rail.Shape current = r.getShape();
+        final boolean forbidCurves = railBlock.getType() != Material.RAIL; // vanilla: only plain rails curve
 
-        // Adjacency
-        boolean north = isRail(world.getBlockAt(loc.clone().add(0, 0, -1)));
-        boolean south = isRail(world.getBlockAt(loc.clone().add(0, 0, 1)));
-        boolean west  = isRail(world.getBlockAt(loc.clone().add(-1, 0, 0)));
-        boolean east  = isRail(world.getBlockAt(loc.clone().add(1, 0, 0)));
+        // --- snapshot neighbors (Mojang's bl..bl10) ---
+        RailConnection north = checkConnection(world, loc, Dir.NORTH);
+        RailConnection south = checkConnection(world, loc, Dir.SOUTH);
+        RailConnection west  = checkConnection(world, loc, Dir.WEST);
+        RailConnection east  = checkConnection(world, loc, Dir.EAST);
 
-        boolean northSouth = north || south;
-        boolean eastWest   = east  || west;
-
-        Rail.Shape resolved = null;
-
-        // Straight?
-        if (northSouth && !eastWest) resolved = Rail.Shape.NORTH_SOUTH;
-        else if (eastWest && !northSouth) resolved = Rail.Shape.EAST_WEST;
-
-        // Perfect curve?
-        boolean se = south && east && !north && !west;
-        boolean sw = south && west && !north && !east;
-        boolean nw = north && west && !south && !east;
-        boolean ne = north && east && !south && !west;
-
-        if (se) resolved = Rail.Shape.SOUTH_EAST;
-        else if (sw) resolved = Rail.Shape.SOUTH_WEST;
-        else if (nw) resolved = Rail.Shape.NORTH_WEST;
-        else if (ne) resolved = Rail.Shape.NORTH_EAST;
-
-        // If unambiguous, both states are identical
-        if (resolved != null) {
-            return new ExpectedShapes(resolved, resolved);
+        if (north.anyRail() && south.anyRail() && east.anyRail() && west.anyRail()) {
+            return new ExpectedShapes(current, current);
         }
 
-        // Ambiguous: choose per-state via priority orders
-        List<Rail.Shape> offOrder = List.of(
-            Rail.Shape.SOUTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.NORTH_WEST
-        );
-        List<Rail.Shape> onOrder = List.of(
-            Rail.Shape.NORTH_WEST, Rail.Shape.NORTH_EAST, Rail.Shape.SOUTH_WEST, Rail.Shape.SOUTH_EAST
-        );
+        // Connection flags for shape logic:
+        boolean bl  = north.openEnd();
+        boolean bl2 = south.openEnd();
+        boolean bl3 = west.openEnd();
+        boolean bl4 = east.openEnd();
 
-        Rail.Shape unpowered = firstFitting(offOrder, north, south, east, west);
-        Rail.Shape powered   = firstFitting(onOrder,  north, south, east, west);
+        final boolean bl5 = bl  || bl2; // any N/S
+        final boolean bl6 = bl3 || bl4; // any W/E
+
+        final boolean bl7  = bl2 && bl4; // S & E
+        final boolean bl8  = bl2 && bl3; // S & W
+        final boolean bl9  = bl  && bl4; // N & E
+        final boolean bl10 = bl  && bl3; // N & W
+
+        // rails ABOVE forward neighbors (for ascending)
+        final boolean nUp = isRailAbove(world, loc, 0, -1);
+        final boolean sUp = isRailAbove(world, loc, 0,  1);
+        final boolean eUp = isRailAbove(world, loc,  1, 0);
+        final boolean wUp = isRailAbove(world, loc, -1, 0);
+
+        // --- immediate resolution (straight / explicit curve) ---
+        Rail.Shape shape = null;
+        if (bl5 && !bl6) shape = Rail.Shape.NORTH_SOUTH;
+        if (bl6 && !bl5) shape = Rail.Shape.EAST_WEST;
+
+        if (!forbidCurves) { // explicit corner cases
+            if (bl7  && !bl && !bl3) shape = Rail.Shape.SOUTH_EAST;
+            if (bl8  && !bl && !bl4) shape = Rail.Shape.SOUTH_WEST;
+            if (bl10 && !bl2 && !bl4) shape = Rail.Shape.NORTH_WEST;
+            if (bl9  && !bl2 && !bl3) shape = Rail.Shape.NORTH_EAST;
+        }
+
+        // If shape chosen, apply ascending (only for straights) and return same for both states
+        if (shape != null) {
+            shape = withAscending(shape, nUp, sUp, eUp, wUp);
+            return new ExpectedShapes(shape, shape);
+        }
+
+        // --- ambiguous: choose per-state base with vanilla priorities ---
+        Rail.Shape baseOn;
+        Rail.Shape baseOff;
+
+        if (bl5 && bl6) {                 // crossroads → keep current (no redstone effect)
+            baseOn = baseOff = current;
+        } else if (bl5) {
+            baseOn = baseOff = Rail.Shape.NORTH_SOUTH;
+        } else if (bl6) {
+            baseOn = baseOff = Rail.Shape.EAST_WEST;
+        } else {                          // no neighbors → keep current
+            baseOn = baseOff = current;
+        }
+
+        if (!forbidCurves) {
+            // powered priority
+            if (bl7)  baseOn = Rail.Shape.SOUTH_EAST;
+            if (bl8)  baseOn = Rail.Shape.SOUTH_WEST;
+            if (bl9)  baseOn = Rail.Shape.NORTH_EAST;
+            if (bl10) baseOn = Rail.Shape.NORTH_WEST;
+
+            // unpowered priority
+            if (bl10) baseOff = Rail.Shape.NORTH_WEST;
+            if (bl9)  baseOff = Rail.Shape.NORTH_EAST;
+            if (bl8)  baseOff = Rail.Shape.SOUTH_WEST;
+            if (bl7)  baseOff = Rail.Shape.SOUTH_EAST;
+        }
+
+        // --- ascending after base chosen (only affects straight bases) ---
+        Rail.Shape powered   = withAscending(baseOn,  nUp, sUp, eUp, wUp);
+        Rail.Shape unpowered = withAscending(baseOff, nUp, sUp, eUp, wUp);
 
         return new ExpectedShapes(powered, unpowered);
     }
 
-    private Rail.Shape firstFitting(List<Rail.Shape> order,
-                                    boolean north, boolean south, boolean east, boolean west) {
-        for (Rail.Shape candidate : order) {
-            Set<BlockFace> req = getFacesForCurve(candidate);
-            if (req.contains(BlockFace.NORTH) && !north) continue;
-            if (req.contains(BlockFace.SOUTH) && !south) continue;
-            if (req.contains(BlockFace.EAST)  && !east)  continue;
-            if (req.contains(BlockFace.WEST)  && !west)  continue;
-            return candidate;
+    private Rail.Shape withAscending(Rail.Shape base, boolean nUp, boolean sUp, boolean eUp, boolean wUp) {
+        if (base == Rail.Shape.NORTH_SOUTH) {
+            if (nUp) return Rail.Shape.ASCENDING_NORTH;
+            if (sUp) return Rail.Shape.ASCENDING_SOUTH;
+        } else if (base == Rail.Shape.EAST_WEST) {
+            if (eUp) return Rail.Shape.ASCENDING_EAST;
+            if (wUp) return Rail.Shape.ASCENDING_WEST;
         }
-        return null; // No curve fits given the neighbors
+        return base;
     }
 
 
-    private boolean isRail(Block block) {
-        return block.getBlockData() instanceof Rail;
-    }
-
-    private Set<BlockFace> getFacesForCurve(Rail.Shape shape) {
-        return switch (shape) {
-            case NORTH_EAST -> Set.of(BlockFace.NORTH, BlockFace.EAST);
-            case NORTH_WEST -> Set.of(BlockFace.NORTH, BlockFace.WEST);
-            case SOUTH_EAST -> Set.of(BlockFace.SOUTH, BlockFace.EAST);
-            case SOUTH_WEST -> Set.of(BlockFace.SOUTH, BlockFace.WEST);
-            default -> Set.of();
-        };
+    private boolean isRailAbove(World world, Location base, int dx, int dz) {
+        Block b = world.getBlockAt(base.getBlockX() + dx, base.getBlockY() + 1, base.getBlockZ() + dz);
+        return b.getBlockData() instanceof Rail;
     }
 
 
@@ -405,17 +483,19 @@ public final class SwitchDisplayManager implements Listener, Runnable {
     private List<DisplayTarget> createDisplayTargetsForCurves(Block detector, List<Component> positiveText, List<Component> negativeText) {
         List<DisplayTarget> results = new ArrayList<>();
         for (CurveContext context : locateCurve(detector)) {
-            BlockFace[] exits = {getExitDirection(context.off_shape, context.incoming), getExitDirection(context.on_shape, context.incoming)};
+            System.out.println("Curve: " + context.curve() + " incoming: " + context.incoming());
+            System.out.println("Unpowered: " + context.unpoweredShape() + " Powered: " + context.poweredShape());
 
-            BlockFace exit1 = null, exit2 = null;
-            for (BlockFace face : exits) {
-                if (exit1 == null) exit1 = face;
-                else exit2 = face;
-            }
+            BlockFace exit1 = getExitDirection(context.unpoweredShape(), context.incoming());
+            BlockFace exit2 = getExitDirection(context.poweredShape(), context.incoming());
+
             if (exit1 != null && exit2 != null) {
-                Block block1 = firstRailAfter(context.curve, exit1);
-                Block block2 = firstRailAfter(context.curve, exit2);
-                if (block1 != null && block2 != null) {
+                Block block1 = context.curve().getRelative(exit1);
+                Block block2 = context.curve().getRelative(exit2);
+                if (exit1 == exit2) {
+                    Location marker = computeDisplayLocation(block1, exit1);
+                    results.add(new DisplayTarget(marker, combineComponents(positiveText, negativeText)));
+                } else {
                     if (negativeText != null) {
                         Location marker = computeDisplayLocation(block1, exit1);
                         Component text = Component.join(JoinConfiguration.separator(Component.newline()), negativeText);
