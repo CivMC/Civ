@@ -15,7 +15,8 @@ import java.util.List;
 
 public interface CompactedItem {
 
-    NamespacedKey COMPACTED_ITEM_KEY = new NamespacedKey(JavaPlugin.getPlugin(CivModCorePlugin.class), "custom_item");
+    String COMPACTED_ITEM_KEY_STRING = "compacted_item";
+    NamespacedKey COMPACTED_ITEM_KEY = new NamespacedKey(JavaPlugin.getPlugin(CivModCorePlugin.class), COMPACTED_ITEM_KEY_STRING);
     Component COMPACTED_ITEM_LORE = Component.text("Compacted Item");
 
     /**
@@ -51,6 +52,7 @@ public interface CompactedItem {
         ItemMeta meta = item.getItemMeta();
         MetaUtils.addComponentLore(meta, COMPACTED_ITEM_LORE);
         item.setItemMeta(meta);
+        CustomItem.addCustomModelData(item,  COMPACTED_ITEM_KEY_STRING);
     }
 
     /**
@@ -76,5 +78,6 @@ public interface CompactedItem {
         lore.remove(COMPACTED_ITEM_LORE);
         MetaUtils.setComponentLore(meta, lore);
         item.setItemMeta(meta);
+        CustomItem.removeCustomModelData(item, COMPACTED_ITEM_KEY_STRING);
     }
 }

@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.inventory.items.custom;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,11 @@ public final class CustomItem {
 
         // build final item with additional metadata
         final ItemStack template = Objects.requireNonNull(factory.createItem());
+        if (ItemUtils.isEmptyItem(template)) {
+            throw new IllegalArgumentException("Custom item factory for key '" + itemKey + "' produced an empty item");
+        }
         setCustomItemKey(template, itemKey);
-        setCustomItemModel(template, itemKey);
+        addCustomModelData(template, itemKey);
         customItems.put(
             Objects.requireNonNull(itemKey),
             template::clone
@@ -55,6 +59,7 @@ public final class CustomItem {
 
     /**
      * Get a custom item by its key
+     *
      * @param customKey The custom item key
      * @return The custom item, or null if not found
      */
@@ -110,11 +115,14 @@ public final class CustomItem {
     /// Adds a "civ:"-prefixed version of the given key to the item's custom model data string set.
     @ApiStatus.Internal
     @SuppressWarnings("UnstableApiUsage")
-    public static void setCustomItemModel(
+    public static void addCustomModelData(
         final @NotNull ItemStack item,
         @NotNull String customKey
     ) {
         customKey = "civ:" + Objects.requireNonNull(customKey);
+        if (ItemUtils.isEmptyItem(item)) {
+            return;
+        }
         // Java *really* needs https://openjdk.org/jeps/468, these builder patterns are so unergonomic!
         final CustomModelData.Builder builder;
         if (item.getData(DataComponentTypes.CUSTOM_MODEL_DATA) instanceof final CustomModelData existing) {
@@ -131,6 +139,35 @@ public final class CustomItem {
             builder = CustomModelData.customModelData();
         }
         builder.addString(customKey);
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, builder.build());
+    }
+
+    /// Removes a "civ:"-prefixed version of the given key from the item's custom model data string set.
+    @ApiStatus.Internal
+    @SuppressWarnings("UnstableApiUsage")
+    public static void removeCustomModelData(
+        final @NotNull ItemStack item,
+        @NotNull String customKey
+    ) {
+        customKey = "civ:" + Objects.requireNonNull(customKey);
+        if (ItemUtils.isEmptyItem(item)) {
+            return;
+        }
+        if (!(item.getData(DataComponentTypes.CUSTOM_MODEL_DATA) instanceof final CustomModelData existing)) {
+            return; // it doesn't have any custom model data at all!
+        }
+        final ArrayList<String> strings = new ArrayList<>(existing.strings());
+        if (!strings.contains(customKey)) {
+            return; // it doesn't include the custom-item key!
+        } else {
+            strings.remove(customKey);
+        }
+        // add all existing data except the removed key
+        final CustomModelData.Builder builder = CustomModelData.customModelData()
+            .addFloats(existing.floats())
+            .addFlags(existing.flags())
+            .addStrings(strings)
+            .addColors(existing.colors());
         item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, builder.build());
     }
 
