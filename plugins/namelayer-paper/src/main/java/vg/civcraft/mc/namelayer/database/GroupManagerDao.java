@@ -498,7 +498,7 @@ public class GroupManagerDao {
 
         //Adding support for groups to have a color assigned to them
         db.registerMigration(15, false,
-            "alter table faction add group_color varchar(10) NOT NULL DEFAULT 'gray';");
+            "alter table faction add group_color varchar(12) NOT NULL DEFAULT 'gray';");
     }
 
     public int createGroup(String group, UUID owner, String password) {
