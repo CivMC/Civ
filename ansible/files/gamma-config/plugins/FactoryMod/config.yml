@@ -7647,7 +7647,7 @@ recipes:
       PALE_OAK_LOG:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: PALE_OAK_FENCE
+        type: PALE_OAK_LOG
         amount: 16
     output:
       fence:
