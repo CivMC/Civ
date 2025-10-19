@@ -524,7 +524,7 @@ public class CivChat2Manager {
 
             Component compMessage = Component.text("[", NamedTextColor.GRAY)
                 .append(Component.text(group.getName(), color))
-                .append(Component.text("]", NamedTextColor.GRAY))
+                .append(Component.text("] ", NamedTextColor.GRAY))
                 .append(senderName)
                 .append(Component.text(": ", NamedTextColor.GRAY))
                 .append(Component.empty().color(NamedTextColor.WHITE).append(message));
