@@ -26,7 +26,7 @@ There are three ways to create an Exchange Rule, each via the `/iecreate` comman
 
 Exchange Rules can be modified using the `/ieset` command (`/ies`) while holding the button:
 - `/ieset material <material>` will update the material. See [Paper's Material list](https://jd.papermc.io/paper/1.21.5/org/bukkit/Material.html) for reference.
-- `/ieset amount <amount>` will update teh amount, which must be higher than zero.
+- `/ieset amount <amount>` will update the amount, which must be higher than zero.
 - `/ieset switchio` will filp the exchange rule from an input to an output, and vice versa.
 
 Exchange Rules can also contain *modifiers*, which are additional bits of critieria that can increase the specificity of an exchange:
