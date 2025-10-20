@@ -14,7 +14,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.Instrument;
 import org.bukkit.Material;
+import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -144,7 +146,8 @@ public final class SwitchConfigurationSessionManager implements Listener {
             if (session.getKey().equals(key)) {
                 Player player = Bukkit.getPlayer(entry.getKey());
                 if (player != null && player.isOnline() && !Strings.isNullOrEmpty(reason)) {
-                    player.sendMessage(Component.text(reason, NamedTextColor.YELLOW));
+                    player.sendMessage(Component.text(reason, NamedTextColor.RED));
+                    player.playNote(player.getLocation(), Instrument.BASS_GUITAR, Note.flat(0, Note.Tone.A));
                 }
                 return true;
             }
@@ -184,8 +187,8 @@ public final class SwitchConfigurationSessionManager implements Listener {
     }
 
     private void sendPrompt(Player player, List<String> destinations) {
-        player.sendMessage(Component.text("Editing rail destinations. Reply once with space-separated tokens.", NamedTextColor.AQUA));
-        player.sendMessage(Component.text("Use 'name' to add, '!name' to toggle exclusion, '-name' to remove, or 'cancel' to exit.", NamedTextColor.AQUA));
+        player.sendMessage(Component.text("Editing rail destinations. Reply once with space-separated tokens.", NamedTextColor.GOLD));
+        player.sendMessage(Component.text("Use 'name' to add, '!name' to toggle exclusion, '-name' to remove, or 'cancel' to exit. Use a \\ to escape special starting characters (e.g. '\\-,-' for '-,-')", NamedTextColor.GOLD));
         sendCurrentList(player, destinations);
     }
 
@@ -236,7 +239,8 @@ public final class SwitchConfigurationSessionManager implements Listener {
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (isMissingConfigurationTool(player)) {
                 sessions.remove(player.getUniqueId());
-                player.sendMessage(Component.text("Rail switch editing session closed; configuration tool no longer held.", NamedTextColor.YELLOW));
+                player.sendMessage(Component.text("Rail switch editing session closed; configuration tool no longer held.", NamedTextColor.RED));
+                player.playNote(player.getLocation(), Instrument.BASS_GUITAR, Note.flat(0, Note.Tone.A));
             }
         });
     }
@@ -306,6 +310,12 @@ public final class SwitchConfigurationSessionManager implements Listener {
                     continue;
                 }
                 if (token.equalsIgnoreCase("cancel") || token.equalsIgnoreCase("exit")) {
+                    continue;
+                }
+                if (token.startsWith("\\") && token.length() > 1) {
+                    if (addDestination(token.substring(1))) {
+                        modified = true;
+                    }
                     continue;
                 }
                 if (token.startsWith("-") && token.length() > 1) {
