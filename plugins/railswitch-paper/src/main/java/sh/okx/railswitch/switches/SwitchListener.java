@@ -2,6 +2,7 @@ package sh.okx.railswitch.switches;
 
 import com.google.common.base.Strings;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -76,8 +77,21 @@ public final class SwitchListener implements Listener {
                 .toArray(String[]::new);
 
             type = SwitchType.find(signLines[0]);
-            if (type != null) {
-                DestinationLists.splitDestinations(signLines, 1, positiveDestinations, negativeDestinations);
+
+            switch (type) {
+                case NORMAL -> {
+                    Arrays.stream(signLines)
+                        .skip(1)
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .forEach(positiveDestinations::add);                }
+                case INVERTED -> {
+                    Arrays.stream(signLines)
+                        .skip(1)
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .forEach(negativeDestinations::add);
+                }
             }
         }
 
@@ -89,9 +103,9 @@ public final class SwitchListener implements Listener {
                 );
             }
         }
-        if (type == null) {
-            return;
-        }
+
+        if (positiveDestinations.isEmpty() && negativeDestinations.isEmpty()) {return;}
+
         // Check that a player is triggering the switch
         // NOTE: The event doesn't provide the information and so the next best thing is searching for a
         //       player who is nearby and riding a minecart.
@@ -102,13 +116,13 @@ public final class SwitchListener implements Listener {
                 if (!(entity instanceof Player)) {
                     continue;
                 }
-                 Entity vehicle = entity.getVehicle();
-                 // Check if player is riding a minecart (potential candidate for CivModCore utility)
-                 if (vehicle == null
-                     || vehicle.getType() != EntityType.MINECART
-                     || !(vehicle instanceof Minecart)) {
-                     continue;
-                 }
+                Entity vehicle = entity.getVehicle();
+                // Check if player is riding a minecart (potential candidate for CivModCore utility)
+                if (vehicle == null
+                    || vehicle.getType() != EntityType.MINECART
+                    || !(vehicle instanceof Minecart)) {
+                    continue;
+                }
                 double distance = block.getLocation().distanceSquared(entity.getLocation());
                 if (distance < searchDistance) {
                     searchDistance = distance;
@@ -125,43 +139,99 @@ public final class SwitchListener implements Listener {
                 return;
             }
         }
-        // Determine whether a player has a destination that matches one of the destinations
-        // listed on the switch signs, or match if there's a wildcard.
-        boolean matched = false;
-        String setDest = SettingsManager.getDestination(player);
-        if (!Strings.isNullOrEmpty(setDest)) {
-            String[] playerDestinations = setDest.split(" ");
-            matcher:
-            for (String playerDestination : playerDestinations) {
-                if (Strings.isNullOrEmpty(playerDestination)) {
-                    continue;
-                }
-                if (playerDestination.equals(WILDCARD)) {
-                    matched = true;
-                    break;
-                }
-                if (DestinationLists.containsIgnoreCase(negativeDestinations, playerDestination)) {
-                    continue;
-                }
-                for (String switchDestination : positiveDestinations) {
-                    if (Strings.isNullOrEmpty(switchDestination)) {
+        // --- resolve player on cart (leave your existing player-finding code as-is above) ---
+// (we're already past the Citadel check)
+
+// From here, branch based on whether config came from a sign (type != null)
+// or storage (type == null).
+
+        if (type == null) {
+            // STORAGE-BACKED: choose output by which list matches
+            boolean matchedPositive = false;
+            boolean matchedNegative = false;
+
+            String setDest = SettingsManager.getDestination(player);
+            if (!Strings.isNullOrEmpty(setDest)) {
+                String[] playerDestinations = setDest.split(" ");
+                outer:
+                for (String playerDestination : playerDestinations) {
+                    if (Strings.isNullOrEmpty(playerDestination)) {
                         continue;
                     }
-                    if (switchDestination.equals(WILDCARD)
-                        || playerDestination.equalsIgnoreCase(switchDestination)) {
+                    // Negative match takes precedence
+                    if (DestinationLists.containsIgnoreCase(negativeDestinations, playerDestination)) {
+                        matchedNegative = true;
+                        break;
+                    }
+                    // Player wildcard => treat as positive match
+                    if (playerDestination.equals(WILDCARD)) {
+                        matchedPositive = true;
+                        break;
+                    }
+                    // Positive match (including switch-side wildcard)
+                    for (String switchDestination : positiveDestinations) {
+                        if (Strings.isNullOrEmpty(switchDestination)) {
+                            continue;
+                        }
+                        if (switchDestination.equals(WILDCARD)
+                            || playerDestination.equalsIgnoreCase(switchDestination)) {
+                            matchedPositive = true;
+                            break outer;
+                        }
+                    }
+                }
+            }
+
+
+            // Apply power based on match source
+            if (matchedNegative) {
+                event.setNewCurrent(0);   // INVERTED behavior: OFF
+                return;
+            }
+            if (matchedPositive) {
+                event.setNewCurrent(15);  // NORMAL behavior: ON
+                return;
+            }
+            // No match for storage-backed => OFF
+            event.setNewCurrent(0);
+            return;
+        }
+
+// SIGN-BACKED: preserve your legacy behavior exactly
+        boolean matched = false;
+        {
+            String setDest = SettingsManager.getDestination(player);
+            if (!Strings.isNullOrEmpty(setDest)) {
+                String[] playerDestinations = setDest.split(" ");
+                matcher:
+                for (String playerDestination : playerDestinations) {
+                    if (Strings.isNullOrEmpty(playerDestination)) {
+                        continue;
+                    }
+                    if (playerDestination.equals(WILDCARD)) {
                         matched = true;
-                        break matcher;
+                        break;
+                    }
+                    if (DestinationLists.containsIgnoreCase(negativeDestinations, playerDestination)) {
+                        continue; // negative list excludes this destination
+                    }
+                    for (String switchDestination : positiveDestinations) {
+                        if (Strings.isNullOrEmpty(switchDestination)) {
+                            continue;
+                        }
+                        if (switchDestination.equals(WILDCARD)
+                            || playerDestination.equalsIgnoreCase(switchDestination)) {
+                            matched = true;
+                            break matcher;
+                        }
                     }
                 }
             }
         }
+
         switch (type) {
-            case NORMAL:
-                event.setNewCurrent(matched ? 15 : 0);
-                break;
-            case INVERTED:
-                event.setNewCurrent(matched ? 0 : 15);
-                break;
+            case NORMAL -> event.setNewCurrent(matched ? 15 : 0);
+            case INVERTED -> event.setNewCurrent(matched ? 0 : 15);
         }
     }
 
