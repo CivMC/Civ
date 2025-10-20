@@ -161,12 +161,10 @@ public final class SwitchListener implements Listener {
                     // Negative match takes precedence
                     if (DestinationLists.containsIgnoreCase(negativeDestinations, playerDestination)) {
                         matchedNegative = true;
-                        break;
                     }
                     // Player wildcard => treat as positive match
                     if (playerDestination.equals(WILDCARD)) {
                         matchedPositive = true;
-                        break;
                     }
                     // Positive match (including switch-side wildcard)
                     for (String switchDestination : positiveDestinations) {
