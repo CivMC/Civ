@@ -15,7 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.world.model.EllipseArea;
@@ -117,23 +117,52 @@ public final class ConfigHelper {
             return result;
         }
         for (final String key : config.getKeys(false)) {
-            ItemMap partMap = new ItemMap();
-            ConfigurationSection section = config.getConfigurationSection(key);
-            String custom = section == null ? null : section.getString("custom-key");
-            if (custom != null) {
-                ItemStack item = CustomItem.getCustomItem(custom);
-                if (item == null) {
-                    throw new IllegalArgumentException("Unknown custom item key " + custom);
-                } else {
-                    int amount = section.getInt("amount", 1);
-                    partMap.addItemAmount(item, amount);
-                }
-            } else {
-                partMap.addItemStack(config.getItemStack(key, ItemStack.empty()));
+            final ItemStack found = parseItemStackAt(config, key);
+            if (found == null) {
+                continue;
             }
-            result.merge(partMap);
+            result.addItemStack(found);
         }
         return result;
+    }
+
+    /**
+     * Parses an item stack at the given path of the given configuration section. This
+     * supports both standard item stacks and custom items.
+     *
+     * @param parent The configuration section to parse the item from
+     * @param path   The path to parse the item from
+     * @return The parsed item stack, or null if no item was found at the given path
+     */
+    public static @Nullable ItemStack parseItemStackAt(
+        final @NotNull ConfigurationSection parent,
+        final @NotNull String path
+    ) {
+        final Object raw = parent.get(path, null);
+        if (raw == null) {
+            return null;
+        }
+        if (raw instanceof final ItemStack item) {
+            return item;
+        }
+        // Presume from here that it's a custom item
+        if (!(raw instanceof final ConfigurationSection itemSection)) {
+            throw new IllegalArgumentException("Unsupported custom-item format at [" + parent.getCurrentPath() + "." + path + "]!");
+        }
+        final String customKey = itemSection.getString("custom-key", null);
+        if (customKey == null) {
+            throw new IllegalArgumentException("Missing custom-item key at [" + itemSection.getCurrentPath() + ".custom-key]!");
+        }
+        final ItemStack customItem = CustomItem.getCustomItem(customKey);
+        if (customItem == null) {
+            throw new IllegalArgumentException("Unknown custom-item key '" + customKey + "' at [" + itemSection.getCurrentPath() + ".custom-key]!");
+        }
+        final int amount = itemSection.getInt("amount", 1);
+        if (amount < 1) {
+            throw new IllegalArgumentException("Invalid item amount [" + amount + "] at [" + itemSection.getCurrentPath() + ".amount]!");
+        }
+        customItem.setAmount(amount);
+        return customItem;
     }
 
     public static int parseTimeAsTicks(@NotNull final String arg) {

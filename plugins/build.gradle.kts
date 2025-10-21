@@ -73,6 +73,9 @@ subprojects {
             filesMatching("plugin.yml") {
                 expand(project.properties)
             }
+            filesMatching("paper-plugin.yml") {
+                expand(project.properties)
+            }
         }
     }
 

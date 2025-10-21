@@ -38,7 +38,7 @@ public class BastionBreakListener implements Listener {
     }
 
     private void dropBastionItem(Location loc, BastionType type, Player player, TextComponent chatMessage) {
-        ItemStack item = type.getItemRepresentation();
+        ItemStack item = type.getItem();
         new BukkitRunnable() {
             @Override
             public void run() {

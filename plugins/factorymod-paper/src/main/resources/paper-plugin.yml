@@ -1,0 +1,43 @@
+name: FactoryMod
+version: ${version}
+main: com.github.igotyou.FactoryMod.FactoryMod
+description: FactoryMod is a Minecraft plugin with specialized crafting machines that can consume and produce any goods.
+api-version: '1.21.8'
+author: Maxopoly, igotyou
+permissions:
+  fm.public:
+    default: true
+  fm.op:
+    default: op
+dependencies:
+  server:
+    CivModCore:
+      load: BEFORE
+      required: true
+      join-classpath: true # Defaults to true
+
+    # Soft dependencies
+    NameLayer:
+      load: BEFORE
+      required: false
+      join-classpath: true # Defaults to true
+    Citadel:
+      load: BEFORE
+      required: false
+      join-classpath: true # Defaults to true
+    Heliodor:
+      load: BEFORE
+      required: false
+      join-classpath: true # Defaults to true
+    EssenceGlue:
+      load: BEFORE
+      required: false
+      join-classpath: true # Defaults to true
+    Bastion:
+      load: BEFORE
+      required: false
+      join-classpath: true # Defaults to true
+    HiddenOre:
+      load: BEFORE
+      required: false
+      join-classpath: true # Defaults to true

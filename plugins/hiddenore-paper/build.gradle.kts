@@ -8,4 +8,6 @@ dependencies {
     paperweight {
         paperDevBundle(libs.versions.paper)
     }
+
+    compileOnly(project(":plugins:civmodcore-paper"))
 }
