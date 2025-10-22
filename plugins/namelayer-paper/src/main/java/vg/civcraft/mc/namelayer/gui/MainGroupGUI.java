@@ -628,9 +628,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
                 }
                 g.removeMember(toChange);
                 g.addMember(toChange, newRank);
-                oProm.sendMessage(ChatColor.GREEN
-                    + "You have been promoted to " + getRankName(toChange)
-                    + " in (Group) " + g.getName());
+                oProm.sendMessage(Component.text("You have been promoted to "
+                    + getRankName(toChange) + " in (Group) ", NamedTextColor.GREEN)
+                    .append(g.getGroupNameColored()));
             } else {
                 // player is offline change their perms
                 g.removeMember(toChange);
@@ -1051,8 +1051,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                             NameLayerPlugin.log(Level.INFO, p.getName()
                                 + " left " + g.getName() + " via the gui");
                             g.removeMember(p.getUniqueId());
-                            p.sendMessage(ChatColor.GREEN + "You have left "
-                                + g.getName());
+                            p.sendMessage(Component.text("You have left ", NamedTextColor.GREEN).append(g.getGroupNameColored()));
                         }
                     }, 11);
                     confirmInv.setSlot(new Clickable(no) {
@@ -1073,7 +1072,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
     private Clickable getInfoStack() {
         Clickable c;
         ItemStack is = new ItemStack(Material.PAPER);
-        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Stats for " + g.getName());
+        ItemUtils.setComponentDisplayName(is, Component.text("Stats for ", NamedTextColor.GOLD).append(g.getGroupNameColored()));
         ItemUtils.addLore(is,
             ChatColor.DARK_AQUA + "Your current rank: " + ChatColor.YELLOW
                 + PlayerType.getNiceRankName(g.getPlayerType(p.getUniqueId())));

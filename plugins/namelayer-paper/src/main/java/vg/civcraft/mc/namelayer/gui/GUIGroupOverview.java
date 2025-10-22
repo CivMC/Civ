@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -212,7 +214,7 @@ public class GUIGroupOverview {
                         + " member"
                         + (g.getAllMembers().size() > 1 ? "s" : ""));
             }
-            ItemUtils.setDisplayName(is, ChatColor.GOLD + g.getName());
+            ItemUtils.setComponentDisplayName(is, g.getGroupNameColored());
             if (gm.hasAccess(g, p.getUniqueId(),
                 PermissionType.getPermission("OPEN_GUI"))) {
                 c = new Clickable(is) {
@@ -420,7 +422,7 @@ public class GUIGroupOverview {
                                             + " to group " + g.getName()
                                             + " via the gui");
                                     gro.addMember(p.getUniqueId(), pType);
-                                    p.sendMessage(ChatColor.GREEN + "You have successfully been added to " + gro.getName());
+                                    p.sendMessage(Component.text("You have successfully been added to ", NamedTextColor.GREEN).append(gro.getGroupNameColored()));
                                     showScreen();
                                 }
 
