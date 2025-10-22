@@ -5,9 +5,12 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
@@ -40,10 +43,13 @@ public class SetDefaultGroup extends BaseCommandMiddle {
         String x = gm.getDefaultGroup(uuid);
         if (x == null) {
             g.setDefaultGroup(uuid);
-            p.sendMessage(ChatColor.GREEN + "You have set your default group to " + g.getName());
+            p.sendMessage(Component.text("You have set your default group to ", NamedTextColor.GREEN).append(g.getGroupNameColored()));
         } else {
             g.changeDefaultGroup(uuid);
-            p.sendMessage(ChatColor.GREEN + "You changed your default group from " + x + " to " + gm.getDefaultGroup(uuid));
+            p.sendMessage(Component.text("You changed your default group from ", NamedTextColor.GREEN)
+                .append(gm.getGroup(x).getGroupNameColored())
+                .append(Component.text(" to ", NamedTextColor.GREEN))
+                .append(gm.getGroup(gm.getDefaultGroup(uuid)).getGroupNameColored()));
         }
     }
 }

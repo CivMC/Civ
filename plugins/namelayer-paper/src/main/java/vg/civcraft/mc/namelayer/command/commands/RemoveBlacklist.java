@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -51,6 +53,9 @@ public class RemoveBlacklist extends BaseCommandMiddle {
             return;
         }
         bl.removeBlacklistMember(g, targetUUID, true);
-        p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully removed from the blacklist for the group " + g.getName());
+
+        p.sendMessage(Component.text(NameAPI.getCurrentName(targetUUID)
+            + " was successfully removed from the blacklist for the group ", NamedTextColor.GREEN)
+            .append(g.getGroupNameColored()));
     }
 }

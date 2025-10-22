@@ -48,7 +48,11 @@ public class AcceptInvite extends BaseCommandMiddle {
         group.addMember(uuid, type);
         group.removeInvite(uuid, true);
         PlayerListener.removeNotification(uuid, group);
-        p.sendMessage(Component.text("You have successfully been added to the group as a " + type.name() + ".").color(NamedTextColor.GREEN));
+        Component accepted = Component.text("You have successfully been added to ", NamedTextColor.GREEN)
+                .append(group.getGroupNameColored())
+                .append(Component.text(" as a ", NamedTextColor.GREEN))
+                .append(Component.text(type.name() + ".", NamedTextColor.GREEN));
+        p.sendMessage(accepted);
     }
 
     @TabComplete("NL_Invites")

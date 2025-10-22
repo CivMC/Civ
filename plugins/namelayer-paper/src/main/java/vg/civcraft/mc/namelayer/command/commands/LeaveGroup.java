@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -33,6 +35,8 @@ public class LeaveGroup extends BaseCommandMiddle {
             return;
         }
         g.removeMember(uuid);
-        p.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
+        Component removed = Component.text("You have been removed from ", NamedTextColor.GREEN)
+                .append(g.getGroupNameColored());
+        p.sendMessage(removed);
     }
 }

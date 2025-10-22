@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -138,16 +140,18 @@ public class PromotePlayer extends BaseCommandMiddle {
             }
             group.removeMember(promotee);
             group.addMember(promotee, promoteeType);
-            sender.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
-                promoteeType.toString() + " in (Group) " + group.getName());
-            oProm.sendMessage(ChatColor.GREEN + "You have been promoted to (PlayerType) " +
-                promoteeType.toString() + " in (Group) " + group.getName());
+
+            sender.sendMessage(Component.text(NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) "
+                + promoteeType + " in (Group) ", NamedTextColor.GREEN).append(group.getGroupNameColored()));
+
+            oProm.sendMessage(Component.text("You have been promoted to (PlayerType) "
+                + promoteeType + " in (Group) ", NamedTextColor.GREEN).append(group.getGroupNameColored()));
         } else {
             //player is offline change their perms
             group.removeMember(promotee);
             group.addMember(promotee, promoteeType);
-            sender.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
-                promoteeType.toString() + " in (Group) " + group.getName());
+            sender.sendMessage(Component.text(NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) "
+                + promoteeType + " in (Group) ", NamedTextColor.GREEN).append(group.getGroupNameColored()));
         }
     }
 }

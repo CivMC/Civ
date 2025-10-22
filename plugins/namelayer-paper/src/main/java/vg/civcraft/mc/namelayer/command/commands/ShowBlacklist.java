@@ -6,6 +6,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.Set;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,17 +43,21 @@ public class ShowBlacklist extends BaseCommandMiddle {
         }
         Set<UUID> ids = NameLayerPlugin.getBlackList().getBlacklist(g);
         if (ids.size() == 0) {
-            p.sendMessage(ChatColor.GOLD + "There are no blacklisted players for the group " + g.getName());
+            p.sendMessage(Component.text("There are no blacklisted players for the group ", NamedTextColor.GOLD).append(g.getGroupNameColored()));
             return;
         }
+        Component header = Component.text("Blacklisted players for group ", NamedTextColor.GOLD)
+            .append(g.getGroupNameColored()
+            .append(Component.text(" are: ", NamedTextColor.GOLD)));
         StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.GOLD + "Blacklisted players for group " + g.getName() + " are: ");
+        sb.append(ChatColor.GOLD);
         for (UUID id : ids) {
             sb.append(NameAPI.getCurrentName(id));
             sb.append(", ");
         }
         String reply = sb.toString();
         //remove last ", "
+        p.sendMessage(header);
         p.sendMessage(reply.substring(0, reply.length() - 2));
     }
 }

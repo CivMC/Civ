@@ -4,6 +4,8 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -54,6 +56,8 @@ public class JoinGroup extends BaseCommandMiddle {
         }
 
         g.addMember(uuid, pType);
-        p.sendMessage(ChatColor.GREEN + "You have successfully been added to this group.");
+        Component added = Component.text("You have successfully been added to ", NamedTextColor.GREEN)
+                .append(g.getGroupNameColored());
+        p.sendMessage(added);
     }
 }
