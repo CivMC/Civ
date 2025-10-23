@@ -165,4 +165,10 @@ public class PermissionType {
     public boolean getCanBeBlacklisted() {
         return canBeBlacklisted;
     }
+
+    /// Tests whether this permission is an "owner" permission, meaning that, ***by default***, only [PlayerType#OWNER]
+    /// can use it.
+    public boolean isOwnerPermission() {
+        return List.of(PlayerType.OWNER).equals(this.defaultPermLevels);
+    }
 }
