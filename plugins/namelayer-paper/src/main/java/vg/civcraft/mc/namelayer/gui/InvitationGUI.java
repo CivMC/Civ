@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -80,7 +82,7 @@ public class InvitationGUI extends AbstractGroupGUI {
                                         continue;
                                     }
                                     if (g.isMember(inviteUUID)) { // So a player can't demote someone who is above them.
-                                        p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(inviteUUID) + " is already a member of " + g.getName());
+                                        p.sendMessage(Component.text(NameAPI.getCurrentName(inviteUUID) + " is already a member of ", NamedTextColor.RED).append(g.getGroupNameColored()));
                                         continue;
                                     }
                                     if (NameLayerPlugin.getBlackList().isBlacklisted(g, inviteUUID)) {

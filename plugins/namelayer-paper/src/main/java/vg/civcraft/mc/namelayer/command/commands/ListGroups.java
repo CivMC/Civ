@@ -4,8 +4,11 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -69,23 +72,15 @@ public class ListGroups extends BaseCommandMiddle {
         if (!autopages) {
             pages = target;
         }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.GREEN);
+        Component holder = null;
         for (int page = target; page <= pages; page++) {
-            sb.append("Page ");
-            sb.append(page);
-            sb.append(" of ");
-            sb.append(actualPages);
-            sb.append(".\n");
-
+            Component header = Component.text("Page " + page + " of " + actualPages, NamedTextColor.GREEN).append(Component.newline());
             int first = (page - 1) * 10;
             for (int x = first; x < first + 10 && x < groups.size(); x++) {
                 Group g = GroupManager.getGroup(groups.get(x));
-                sb.append(String.format("%s : (%s)\n",
-                    g.getName(), g.getPlayerType(uuid).toString()));
+                holder = header.append(g.getGroupNameColored().append(Component.text(" : " + g.getPlayerType(uuid).toString(), NamedTextColor.GREEN).appendNewline()));
             }
         }
-        sender.sendMessage(sb.toString());
+        sender.sendMessage(holder);
     }
 }

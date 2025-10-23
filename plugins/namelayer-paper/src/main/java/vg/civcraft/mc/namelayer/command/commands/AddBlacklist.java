@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -49,6 +51,9 @@ public class AddBlacklist extends BaseCommandMiddle {
             return;
         }
         bl.addBlacklistMember(g, targetUUID, true);
-        p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
+        Component blacklisted = Component.text(NameAPI.getCurrentName(targetUUID), NamedTextColor.GREEN)
+                .append(Component.text(" was successfully blacklisted on the group: ", NamedTextColor.GREEN))
+                .append(g.getGroupNameColored());
+        p.sendMessage(blacklisted);
     }
 }

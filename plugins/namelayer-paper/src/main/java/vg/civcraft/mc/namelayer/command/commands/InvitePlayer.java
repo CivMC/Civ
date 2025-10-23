@@ -6,6 +6,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -124,25 +126,28 @@ public class InvitePlayer extends BaseCommandMiddle {
                 } else {
                     group.addMember(invitedPlayer, pType, false);
                 }
-                invitee.sendMessage(
-                    ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
+                invitee.sendMessage(Component.text("You have auto-accepted the invite to the group: ", NamedTextColor.GREEN)
+                    .append(group.getGroupNameColored()));
             } else {
                 group.addInvite(invitedPlayer, pType, saveToDB);
                 PlayerListener.addNotification(invitedPlayer, group);
-                String msg;
+                Component msg;
                 if (inviter != null) {
                     String inviterName = NameAPI.getCurrentName(inviter);
-                    msg = "You have been invited to the group " + group.getName()
-                        + " by " + inviterName + ".\n";
+                    msg = Component.text("You have been invited to the group ", NamedTextColor.GREEN)
+                        .append(group.getGroupNameColored())
+                        .append(Component.text(" by " + inviterName + ".", NamedTextColor.GREEN))
+                        .append(Component.newline());
                 } else {
-                    msg = "You have been invited to the group " + group.getName() + ".\n";
+                    msg = Component.text("You have been invited to the group ", NamedTextColor.GREEN)
+                        .append(group.getGroupNameColored())
+                        .append(Component.newline());;
                 }
-                TextComponent message = new TextComponent(msg + "Click this message to accept. If you wish to toggle invites "
-                    + "so they always are accepted please run /autoaccept");
-                message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/nlag " + group.getName()));
-                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("  ---  Click to accept").create()));
-                invitee.spigot().sendMessage(message);
+                Component clickable = Component.text("Click this message to accept. If you wish to toggle invites so they are always accepted, please run /autoaccept", NamedTextColor.GREEN);
+                clickable.clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/nlag " + group.getName()));
+                clickable.hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("  ---  Click to accept", NamedTextColor.GREEN)));
+                invitee.sendMessage(msg);
+                invitee.sendMessage(clickable);
             }
         } else {
             // invitee is offline or on a different shard
