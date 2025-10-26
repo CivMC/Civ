@@ -7,11 +7,9 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -143,9 +141,9 @@ public class InvitePlayer extends BaseCommandMiddle {
                         .append(group.getGroupNameColored())
                         .append(Component.newline());;
                 }
-                Component clickable = Component.text("Click this message to accept. If you wish to toggle invites so they are always accepted, please run /autoaccept", NamedTextColor.GREEN);
-                clickable.clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/nlag " + group.getName()));
-                clickable.hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("  ---  Click to accept", NamedTextColor.GREEN)));
+                Component clickable = Component.text("Click this message to accept. If you wish to toggle invites so they are always accepted, please run /autoaccept", NamedTextColor.GREEN)
+                    .clickEvent(ClickEvent.runCommand("/nlag " + group.getName()))
+                    .hoverEvent(HoverEvent.showText(Component.text("  ---  Click to accept", NamedTextColor.WHITE)));
                 invitee.sendMessage(msg);
                 invitee.sendMessage(clickable);
             }
