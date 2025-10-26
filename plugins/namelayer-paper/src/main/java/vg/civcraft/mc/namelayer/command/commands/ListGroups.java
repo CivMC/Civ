@@ -4,10 +4,11 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilder;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -72,13 +73,22 @@ public class ListGroups extends BaseCommandMiddle {
         if (!autopages) {
             pages = target;
         }
-        Component holder = null;
+        ComponentBuilder<TextComponent, TextComponent.Builder> holder = Component.text();
         for (int page = target; page <= pages; page++) {
-            Component header = Component.text("Page " + page + " of " + actualPages, NamedTextColor.GREEN).append(Component.newline());
+            if (autopages) {
+                holder.append(Component.newline().append(Component.text("Page " + page + " of " + actualPages + ".", NamedTextColor.GREEN)));
+            } else {
+                holder.append(Component.text("Page " + page + " of " + actualPages + ".", NamedTextColor.GREEN));
+            }
             int first = (page - 1) * 10;
             for (int x = first; x < first + 10 && x < groups.size(); x++) {
                 Group g = GroupManager.getGroup(groups.get(x));
-                holder = header.append(g.getGroupNameColored().append(Component.text(" : " + g.getPlayerType(uuid).toString(), NamedTextColor.GREEN).appendNewline()));
+                Component content = Component.text()
+                        .appendNewline()
+                        .append(g.getGroupNameColored())
+                        .append(Component.text(" : " + g.getPlayerType(uuid), NamedTextColor.GREEN))
+                        .build();
+                holder.append(content);
             }
         }
         sender.sendMessage(holder);
