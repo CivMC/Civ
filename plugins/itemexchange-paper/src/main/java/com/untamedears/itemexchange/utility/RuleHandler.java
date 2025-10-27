@@ -17,6 +17,8 @@ public class RuleHandler implements Closeable {
 
     private final Player player;
     private final ExchangeRule rule;
+    /// How many of the literal exchange-rule buttons was the held-stack?
+    private final int buttonAmount;
     private final List<String> messages;
     private boolean saveChanges;
 
@@ -30,10 +32,12 @@ public class RuleHandler implements Closeable {
             throw new InvalidCommandArgument("You must be a player to do that.", false);
         }
         this.player = player;
-        this.rule = ExchangeRule.fromItem(player.getInventory().getItemInMainHand());
+        final ItemStack held = player.getInventory().getItemInMainHand();
+        this.rule = ExchangeRule.fromItem(held);
         if (this.rule == null) {
             throw new InvalidCommandArgument("You must be holding an exchange rule.", false);
         }
+        this.buttonAmount = held.getAmount();
         this.messages = Lists.newArrayList();
         this.saveChanges = true;
     }
@@ -74,7 +78,8 @@ public class RuleHandler implements Closeable {
 
     @Override
     public void close() {
-        ItemStack item = this.rule.toItem();
+        final ItemStack item = this.rule.toItem();
+        item.setAmount(this.buttonAmount);
         if (!ItemUtils.isValidItem(item)) {
             throw new InvalidCommandArgument("Could not replace that rule.", false);
         }
