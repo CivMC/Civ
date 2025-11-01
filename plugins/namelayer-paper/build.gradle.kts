@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.paper.userdev)
+    alias(libs.plugins.shadow)
 }
 
 version = "3.0.6"
@@ -10,4 +11,5 @@ dependencies {
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
+    api(project(":libraries:name-api"))
 }

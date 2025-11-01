@@ -1,4 +1,4 @@
-package net.civmc.civproxy.database;
+package net.civmc.nameApi;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

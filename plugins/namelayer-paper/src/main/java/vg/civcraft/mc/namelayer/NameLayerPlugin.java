@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer;
 
+import com.zaxxer.hikari.HikariConfig;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +46,7 @@ public class NameLayerPlugin extends ACivMod {
         instance = this;
         loadDatabases();
         ClassHandler.Initialize(Bukkit.getServer());
-        new NameAPI(new GroupManager());
+        new NameLayerAPI(new GroupManager(), getNameAPIConfig());
         registerListeners();
         if (loadGroups) {
             PermissionType.initialize();
@@ -72,7 +73,7 @@ public class NameLayerPlugin extends ACivMod {
         return instance;
     }
 
-    public void loadDatabases() {
+    private void loadDatabases() {
         String host = config.getString("sql.hostname", "localhost");
         int port = config.getInt("sql.port", 3306);
         String dbname = config.getString("sql.dbname", "namelayer");
@@ -159,6 +160,24 @@ public class NameLayerPlugin extends ACivMod {
 
     }
 
+    private HikariConfig getNameAPIConfig() {
+        final String nameAPIPrefix = "nameAPI.database.";
+
+        HikariConfig dbConfig = new HikariConfig();
+        dbConfig.setJdbcUrl("jdbc:" + config.getString(nameAPIPrefix + "driver", "mariadb") + "://" + config.getString(nameAPIPrefix + "host", "localhost") + ":" +
+            config.getInt(nameAPIPrefix + "port", 3306) + "/" + config.getString(nameAPIPrefix + "database", "minecraft"));
+        dbConfig.setConnectionTimeout(config.getInt(nameAPIPrefix + "connection_timeout", 10_000));
+        dbConfig.setIdleTimeout(config.getInt(nameAPIPrefix + "idle_timeout", 600_000));
+        dbConfig.setMaxLifetime(config.getInt(nameAPIPrefix + "max_lifetime", 7_200_000));
+        dbConfig.setMaximumPoolSize(config.getInt(nameAPIPrefix + "poolsize", 10));
+        dbConfig.setUsername(config.getString(nameAPIPrefix + "user", "root"));
+        String password = config.getString(nameAPIPrefix + "password");
+        if (password != null && !password.isBlank()) {
+            dbConfig.setPassword(password);
+        }
+        return dbConfig;
+    }
+
     /**
      * @return Returns the GroupManagerDatabase.
      */
@@ -168,16 +187,11 @@ public class NameLayerPlugin extends ACivMod {
 
     public static void log(Level level, String message) {
         if (level == Level.INFO) {
-            Bukkit.getLogger().log(level, "[NameLayer:] Info follows\n" +
-                message);
+            NameLayerPlugin.getInstance().getSLF4JLogger().info(message);
         } else if (level == Level.WARNING) {
-            Bukkit.getLogger().log(level, "[NameLayer:] Warning follows\n" +
-                message);
+            NameLayerPlugin.getInstance().getSLF4JLogger().warn(message);
         } else if (level == Level.SEVERE) {
-            Bukkit.getLogger()
-                .log(level, "[NameLayer:] Stack Trace follows\n --------------------------------------\n" +
-                    message +
-                    "\n --------------------------------------");
+            NameLayerPlugin.getInstance().getSLF4JLogger().error(message);
         }
     }
 

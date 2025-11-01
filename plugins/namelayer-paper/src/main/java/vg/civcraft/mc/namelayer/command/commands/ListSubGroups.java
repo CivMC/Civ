@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -30,7 +30,7 @@ public class ListSubGroups extends BaseCommandMiddle {
             return;
         }
 
-        UUID uuid = NameAPI.getUUID(sender.getName());
+        UUID uuid = NameLayerAPI.getUUID(sender.getName());
 
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GREEN);

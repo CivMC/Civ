@@ -9,7 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -34,15 +34,15 @@ public class RemoveMember extends BaseCommandMiddle {
             p.sendMessage(ChatColor.RED + "This group is disiplined.");
             return;
         }
-        UUID executor = NameAPI.getUUID(p.getName());
-        UUID uuid = NameAPI.getUUID(targetPlayer);
+        UUID executor = NameLayerAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(targetPlayer);
 
         if (uuid == null) {
             p.sendMessage(ChatColor.RED + "The player has never played before.");
             return;
         }
 
-        String playerName = NameAPI.getCurrentName(uuid);
+        String playerName = NameLayerAPI.getCurrentName(uuid);
         PlayerType toBeRemoved = group.getPlayerType(uuid);
         if (toBeRemoved == null) {
             //hides who is actually on the group

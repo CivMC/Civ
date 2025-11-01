@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.BlackList;
@@ -34,7 +34,7 @@ public class AddBlacklist extends BaseCommandMiddle {
             p.sendMessage(ChatColor.RED + "You do not have the required permissions to do this");
             return;
         }
-        UUID targetUUID = NameAPI.getUUID(playerName);
+        UUID targetUUID = NameLayerAPI.getUUID(playerName);
         if (targetUUID == null) {
             p.sendMessage(ChatColor.RED + "This player does not exist");
             return;
@@ -49,6 +49,6 @@ public class AddBlacklist extends BaseCommandMiddle {
             return;
         }
         bl.addBlacklistMember(g, targetUUID, true);
-        p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
+        p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
     }
 }

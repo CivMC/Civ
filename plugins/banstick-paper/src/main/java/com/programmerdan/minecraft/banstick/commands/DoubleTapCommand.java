@@ -23,7 +23,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * Always finish with a DoubleTap to the head -- handles manually unpardoning and perhaps banning nerds who multiaccount
@@ -160,7 +160,7 @@ public class DoubleTapCommand implements CommandExecutor {
                     playerId = null;
 
                     try {
-                        playerId = NameAPI.getUUID(toBan);
+                        playerId = NameLayerAPI.getUUID(toBan);
                     } catch (NoClassDefFoundError ncde) {
                     }
 
@@ -192,7 +192,7 @@ public class DoubleTapCommand implements CommandExecutor {
                     secondPlayerId = null;
 
                     try {
-                        secondPlayerId = NameAPI.getUUID(secondBan);
+                        secondPlayerId = NameLayerAPI.getUUID(secondBan);
                     } catch (NoClassDefFoundError ncde) {
                     }
 

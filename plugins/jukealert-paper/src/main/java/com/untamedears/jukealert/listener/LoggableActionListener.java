@@ -75,7 +75,7 @@ import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.Plugin;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class LoggableActionListener implements Listener {
 
@@ -322,7 +322,7 @@ public class LoggableActionListener implements Listener {
         if (isPlayerSnitchImmune(player)) {
             return;
         }
-        if (!player.getMetadata("NPC").isEmpty() || NameAPI.getCurrentName(player.getUniqueId()) == null) {
+        if (!player.getMetadata("NPC").isEmpty() || NameLayerAPI.getCurrentName(player.getUniqueId()) == null) {
             //CombatTagPlus
             return;
         }

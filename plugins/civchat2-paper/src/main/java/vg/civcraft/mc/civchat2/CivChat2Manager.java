@@ -34,7 +34,7 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -62,7 +62,7 @@ public class CivChat2Manager {
 
     private ScoreboardHUD scoreboardHUD;
 
-    protected static final GroupManager GM = NameAPI.getGroupManager();
+    protected static final GroupManager GM = NameLayerAPI.getGroupManager();
 
     private String defaultColor;
 
@@ -503,7 +503,7 @@ public class CivChat2Manager {
         for (UUID uuid : membersUUID) {
             // Only add online players to members
             Player toAdd = Bukkit.getPlayer(uuid);
-            if (toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(group, toAdd.getUniqueId(),
+            if (toAdd != null && toAdd.isOnline() && NameLayerAPI.getGroupManager().hasAccess(group, toAdd.getUniqueId(),
                 PermissionType.getPermission("READ_CHAT"))) {
                 members.add(toAdd);
             }
@@ -535,7 +535,7 @@ public class CivChat2Manager {
         Set<String> players = new HashSet<>();
         for (Player player : members) {
             if (!senderId.equals(player.getUniqueId())) {
-                players.add(NameAPI.getCurrentName(player.getUniqueId()));
+                players.add(NameLayerAPI.getCurrentName(player.getUniqueId()));
             }
         }
         return players;

@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -27,7 +27,7 @@ public class ListPermissions extends BaseCommandMiddle {
         if (groupIsNull(sender, groupName, g)) {
             return;
         }
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
         PlayerType playerType = g.getPlayerType(uuid);
         if (playerType == null) {
             p.sendMessage(ChatColor.RED + "You do not have access to this group.");

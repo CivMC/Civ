@@ -20,7 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * The best thing is forgiveness. This command can pardon most kinds of bans.
@@ -94,7 +94,7 @@ public class ForgiveCommand implements CommandExecutor {
                     playerId = null;
 
                     try {
-                        playerId = NameAPI.getUUID(toForgive);
+                        playerId = NameLayerAPI.getUUID(toForgive);
                     } catch (NoClassDefFoundError ncde) {
                     }
 
@@ -223,7 +223,7 @@ public class ForgiveCommand implements CommandExecutor {
                                 playerId2 = null;
 
                                 try {
-                                    playerId2 = NameAPI.getUUID(toForgive);
+                                    playerId2 = NameLayerAPI.getUUID(toForgive);
                                 } catch (NoClassDefFoundError ncde) {
                                 }
 

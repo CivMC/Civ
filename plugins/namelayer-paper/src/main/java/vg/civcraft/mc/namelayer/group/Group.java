@@ -9,7 +9,7 @@ import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
@@ -165,7 +165,7 @@ public class Group {
 
         prefix = prefix.toLowerCase();
         for (UUID member : members) {
-            String name = NameAPI.getCurrentName(member);
+            String name = NameLayerAPI.getCurrentName(member);
             if (name.toLowerCase().startsWith(prefix)) {
                 uuids.add(member);
             }
@@ -186,7 +186,7 @@ public class Group {
         List<UUID> members = getAllMembers();
 
         for (UUID member : members) {
-            String name = NameAPI.getCurrentName(member);
+            String name = NameLayerAPI.getCurrentName(member);
             if (name.compareToIgnoreCase(lowerLimit) >= 0
                 && name.compareToIgnoreCase(upperLimit) <= 0) {
                 uuids.add(member);

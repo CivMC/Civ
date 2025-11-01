@@ -12,7 +12,7 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class AreaReinforce extends BaseCommand {
@@ -23,7 +23,7 @@ public class AreaReinforce extends BaseCommand {
     @CommandCompletion("@CT_Groups @nothing @nothing @nothing @nothing @nothing @nothing true")
     @CommandPermission("citadel.admin")
     public void execute(Player p, @Optional String targetGroup, String minX, String minY, String minZ, String maxX, String maxY, String maxZ, @Optional String skipReinforcements) {
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
         ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
             .getByItemStack(p.getInventory().getItemInMainHand(), p.getWorld().getName());
         if (reinType == null) {
@@ -32,7 +32,7 @@ public class AreaReinforce extends BaseCommand {
         }
         String groupName = null;
         if (targetGroup == null) {
-            groupName = NameAPI.getGroupManager().getDefaultGroup(uuid);
+            groupName = NameLayerAPI.getGroupManager().getDefaultGroup(uuid);
             if (groupName == null) {
                 CitadelUtility.sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
                 return;

@@ -13,7 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -26,8 +26,6 @@ public class PlayerListener implements Listener {
     public void playerJoinEvent(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         UUID uuid = p.getUniqueId();
-
-        NameAPI.associate(p.getName(), p.getUniqueId());
 
         if (!p.hasPlayedBefore()) {
             handleFirstJoin(p);
@@ -113,7 +111,7 @@ public class PlayerListener implements Listener {
         }
 
         public void bootstrap() {
-            GroupManager gm = NameAPI.getGroupManager();
+            GroupManager gm = NameLayerAPI.getGroupManager();
             gm.createGroupAsync(new Group(name, uuid, false, null, -1, System.currentTimeMillis(), "GRAY"), this, true);
         }
 
@@ -122,7 +120,7 @@ public class PlayerListener implements Listener {
             Group g = getGroup();
             if (g.getGroupId() == -1) { // now try + num
                 NameLayerPlugin.log(Level.WARNING, "Newfriend automatic group creation failed for " + g.getName() + " " + uuid);
-                GroupManager gm = NameAPI.getGroupManager();
+                GroupManager gm = NameLayerAPI.getGroupManager();
                 if (inc == null) {
                     inc = 0;
                 } else {

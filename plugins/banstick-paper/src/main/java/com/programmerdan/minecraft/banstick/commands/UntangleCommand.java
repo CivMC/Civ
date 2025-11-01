@@ -12,7 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * Untangle command, creates a new altgraph based on imputs.
@@ -106,7 +106,7 @@ public class UntangleCommand implements CommandExecutor {
         if (input.length() <= 16) {
             // interpret as player name
             try {
-                return NameAPI.getUUID(input);
+                return NameLayerAPI.getUUID(input);
             } catch (NoClassDefFoundError ncde) {
             }
             Player match = Bukkit.getPlayer(input);

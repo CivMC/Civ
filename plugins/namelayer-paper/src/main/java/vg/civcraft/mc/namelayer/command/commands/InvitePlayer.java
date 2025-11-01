@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -44,7 +44,7 @@ public class InvitePlayer extends BaseCommandMiddle {
             s.sendMessage(ChatColor.RED + "This group is disiplined.");
             return;
         }
-        final UUID targetAccount = NameAPI.getUUID(targetPlayer);
+        final UUID targetAccount = NameLayerAPI.getUUID(targetPlayer);
         if (targetAccount == null) {
             s.sendMessage(ChatColor.RED + "The player has never played before.");
             return;
@@ -131,7 +131,7 @@ public class InvitePlayer extends BaseCommandMiddle {
                 PlayerListener.addNotification(invitedPlayer, group);
                 String msg;
                 if (inviter != null) {
-                    String inviterName = NameAPI.getCurrentName(inviter);
+                    String inviterName = NameLayerAPI.getCurrentName(inviter);
                     msg = "You have been invited to the group " + group.getName()
                         + " by " + inviterName + ".\n";
                 } else {

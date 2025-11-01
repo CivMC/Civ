@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
@@ -26,7 +26,7 @@ public abstract class AbstractGroupGUI {
 
     public AbstractGroupGUI(Group g, Player p) {
         if (gm == null) {
-            gm = NameAPI.getGroupManager();
+            gm = NameLayerAPI.getGroupManager();
         }
         this.g = g;
         this.p = p;

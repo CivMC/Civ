@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -15,8 +15,8 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class GroupTabCompleter {
 
     public static List<String> complete(String lastArg, PermissionType accessLevel, Player sender) {
-        UUID uuid = NameAPI.getUUID(sender.getName());
-        GroupManager gm = NameAPI.getGroupManager();
+        UUID uuid = NameLayerAPI.getUUID(sender.getName());
+        GroupManager gm = NameLayerAPI.getGroupManager();
         List<String> groups = gm.getAllGroupNames(uuid);
         List<String> fittingGroups = new ArrayList<>();
         List<String> result = new ArrayList<>();

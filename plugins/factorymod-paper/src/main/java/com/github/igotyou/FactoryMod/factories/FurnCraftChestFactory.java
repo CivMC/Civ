@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
@@ -370,7 +370,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
                 if (p == null) {
                     return;
                 }
-                if (!NameAPI.getGroupManager().hasAccess(rein.getGroup().getName(), p.getUniqueId(),
+                if (!NameLayerAPI.getGroupManager().hasAccess(rein.getGroup().getName(), p.getUniqueId(),
                     PermissionType.getPermission("UPGRADE_FACTORY"))) {
                     p.sendMessage(ChatColor.RED + "You dont have permission to upgrade this factory");
                     return;

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -108,7 +108,7 @@ public class Reinforcement extends TableBasedDataObject {
         if (g == null) {
             return false;
         }
-        return NameAPI.getGroupManager().hasAccess(g, uuid, permission);
+        return NameLayerAPI.getGroupManager().hasAccess(g, uuid, permission);
     }
 
     /**

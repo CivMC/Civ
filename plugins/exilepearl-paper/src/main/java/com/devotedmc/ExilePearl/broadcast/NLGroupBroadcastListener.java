@@ -10,7 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -31,7 +31,7 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 
         String msg = String.format(ChatUtils.parseColor(Lang.groupPearlBroadcast), group.getName(), pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 
-        GroupManager gm = NameAPI.getGroupManager();
+        GroupManager gm = NameLayerAPI.getGroupManager();
 
         if (!gm.hasAccess(group, pearl.getPlayerId(), PermissionType.getPermission(NameLayerPermissions.ALLOW_EXILE_BROADCAST)))
             return;
