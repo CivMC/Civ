@@ -1,5 +1,6 @@
-package net.civmc.nameApi;
+package net.civmc.nameapi;
 
+import org.intellij.lang.annotations.Language;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +15,7 @@ public class Migrator {
 
     private final Map<String, NavigableMap<Integer, String[]>> migrations = new HashMap<>();
 
-    public void registerMigration(String namespace, int id, String... sql) {
+    public void registerMigration(String namespace, int id, @Language("mariadb") String... sql) {
         Objects.requireNonNull(namespace);
         Objects.requireNonNull(sql);
         if (namespace.length() > 64) {

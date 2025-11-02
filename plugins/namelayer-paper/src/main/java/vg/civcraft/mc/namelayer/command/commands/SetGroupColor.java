@@ -4,16 +4,16 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-import java.util.UUID;
 
 public class SetGroupColor extends BaseCommandMiddle {
 
@@ -22,7 +22,7 @@ public class SetGroupColor extends BaseCommandMiddle {
     @Description("Set the groups color")
     @CommandCompletion("@NL_Groups @ADV_Colors")
     public void execute(Player player, String groupName, String targetColor) {
-        UUID uuid = NameAPI.getUUID(player.getName());
+        UUID uuid = NameLayerAPI.getUUID(player.getName());
         Group group = gm.getGroup(groupName);
         if (groupIsNull(player, groupName, group)) {
             return;

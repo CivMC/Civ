@@ -1,12 +1,15 @@
 package vg.civcraft.mc.namelayer;
 
 import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import javax.sql.DataSource;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
@@ -46,8 +49,12 @@ public class NameLayerPlugin extends ACivMod {
         instance = this;
         loadDatabases();
         ClassHandler.Initialize(Bukkit.getServer());
-        new NameLayerAPI(new GroupManager(), getNameAPIConfig());
-        registerListeners();
+
+        NameLayerAPI.init(new GroupManager(), getNameApiDataSource());
+        getServer().getPluginManager().registerEvents(new NameLayerAPI(), this);
+
+        registerListener(new PlayerListener());
+
         if (loadGroups) {
             PermissionType.initialize();
             blackList = new BlackList();
@@ -58,10 +65,6 @@ public class NameLayerPlugin extends ACivMod {
                 handle = new CommandHandler(this);
             }
         }
-    }
-
-    public void registerListeners() {
-        registerListener(new PlayerListener());
     }
 
     @Override
@@ -160,22 +163,22 @@ public class NameLayerPlugin extends ACivMod {
 
     }
 
-    private HikariConfig getNameAPIConfig() {
-        final String nameAPIPrefix = "nameAPI.database.";
+    private DataSource getNameApiDataSource() {
+        ConfigurationSection section = config.getConfigurationSection("nameapi.database");
 
         HikariConfig dbConfig = new HikariConfig();
-        dbConfig.setJdbcUrl("jdbc:" + config.getString(nameAPIPrefix + "driver", "mariadb") + "://" + config.getString(nameAPIPrefix + "host", "localhost") + ":" +
-            config.getInt(nameAPIPrefix + "port", 3306) + "/" + config.getString(nameAPIPrefix + "database", "minecraft"));
-        dbConfig.setConnectionTimeout(config.getInt(nameAPIPrefix + "connection_timeout", 10_000));
-        dbConfig.setIdleTimeout(config.getInt(nameAPIPrefix + "idle_timeout", 600_000));
-        dbConfig.setMaxLifetime(config.getInt(nameAPIPrefix + "max_lifetime", 7_200_000));
-        dbConfig.setMaximumPoolSize(config.getInt(nameAPIPrefix + "poolsize", 10));
-        dbConfig.setUsername(config.getString(nameAPIPrefix + "user", "root"));
-        String password = config.getString(nameAPIPrefix + "password");
+        dbConfig.setJdbcUrl("jdbc:" + section.getString("driver", "mariadb") + "://" + section.getString("host", "localhost") + ":" +
+            section.getInt("port", 3306) + "/" + section.getString("database", "minecraft"));
+        dbConfig.setConnectionTimeout(section.getInt("connection_timeout", 10_000));
+        dbConfig.setIdleTimeout(section.getInt("idle_timeout", 600_000));
+        dbConfig.setMaxLifetime(section.getInt("max_lifetime", 7_200_000));
+        dbConfig.setMaximumPoolSize(section.getInt("poolsize", 1));
+        dbConfig.setUsername(section.getString("user", "root"));
+        String password = section.getString("password");
         if (password != null && !password.isBlank()) {
             dbConfig.setPassword(password);
         }
-        return dbConfig;
+        return new HikariDataSource(dbConfig);
     }
 
     /**

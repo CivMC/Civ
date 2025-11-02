@@ -8,11 +8,12 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import javax.sql.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import net.civmc.civproxy.renamer.PlayerRenamer;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -26,8 +27,7 @@ public class CivProxyPlugin {
 
     private CommentedConfigurationNode config;
 
-    private HikariConfig nameAPIConfig;
-
+    private DataSource source;
     @Inject
     public CivProxyPlugin(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
@@ -44,7 +44,7 @@ public class CivProxyPlugin {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         loadNameAPIConfig();
         new PlayerCount(this, server).start();
-        new PlayerRenamer(this, server, nameAPIConfig).start();
+        new PlayerRenamer(this, server, source).start();
         new QueueListener(this, server).start();
     }
 
@@ -63,7 +63,7 @@ public class CivProxyPlugin {
         if (password != null && !password.isBlank()) {
             config.setPassword(password);
         }
-        this.nameAPIConfig = config;
+        this.source = new HikariDataSource(config);
     }
 
     /**

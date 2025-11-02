@@ -1,4 +1,4 @@
-package net.civmc.nameApi;
+package net.civmc.nameapi;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.sql.DataSource;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -21,10 +19,10 @@ public class NameAPI {
     private static final String addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid
     private static final String getUUIDfromPlayer = "select uuid from Name_player where player=?";
     private static final String getPlayerfromUUID = "select player from Name_player where uuid=?";
-    private static final String changePlayerName = "update Name_player set player=? where uuid=?";
-    private static final String getAllPlayerInfo = "select * from Name_player";
+    private static final String changePlayerName = "REPLACE INTO Name_player (player, uuid) VALUES (?, ?)";
+    private static final String getAllPlayerInfo = "select * from Name_player WHERE id > ?";
 
-    public NameAPI(Logger logger, HikariConfig dbConfig) {
+    public NameAPI(Logger logger, DataSource source) {
         this.logger = logger;
 
         try {
@@ -32,7 +30,8 @@ public class NameAPI {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        this.db = new HikariDataSource(dbConfig);
+
+        this.db = source;
     }
 
     public void migrate() {
@@ -93,11 +92,16 @@ public class NameAPI {
                 + "end if;"
                 + "end");
 
-      try {
-        migrator.migrate(db.getConnection());
-      } catch (SQLException e) {
-        throw new RuntimeException(e);
-      }
+        migrator.registerMigration("renamer", 2,
+            "ALTER TABLE Name_player ADD COLUMN id SERIAL",
+            "ALTER TABLE Name_player DROP INDEX `uuid_player_combo`",
+            "ALTER TABLE Name_player ADD UNIQUE INDEX on_uuid(uuid)");
+
+        try {
+            migrator.migrate(db.getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -191,34 +195,38 @@ public class NameAPI {
      * As such PlayerMappingInfo.nameMapping will return Map&lt;String, UUID&gt;
      * while PlayerMappingInfo.uuidMapping will return Map&lt;UUID, String&gt;
      *
-     * @return the player mapping info is possible
+     * @param highestKnown only includes rows with a higher id than this. Use 0 to get all player mappings.
+     * @return the player mapping info
      */
-    public PlayerMappingInfo getAllPlayerInfo() {
+    public PlayerMappingInfo getAllPlayerInfo(long highestKnown) {
+        if (highestKnown < 0) {
+            throw new IllegalArgumentException("highestKnown < 0");
+        }
+
         Map<String, UUID> nameMapping = new HashMap<String, UUID>();
         Map<UUID, String> uuidMapping = new HashMap<UUID, String>();
-        try (Connection connection = db.getConnection();
-             PreparedStatement getAllPlayerInfo = connection.prepareStatement(NameAPI.getAllPlayerInfo);
-             ResultSet set = getAllPlayerInfo.executeQuery();) {
+        long highest = highestKnown;
+        try (Connection connection = db.getConnection()) {
+            PreparedStatement getAllPlayerInfo = connection.prepareStatement(NameAPI.getAllPlayerInfo);
+            getAllPlayerInfo.setLong(1, highestKnown);
+            ResultSet set = getAllPlayerInfo.executeQuery();
             while (set.next()) {
                 UUID uuid = UUID.fromString(set.getString("uuid"));
                 String playername = set.getString("player");
                 nameMapping.put(playername, uuid);
                 uuidMapping.put(uuid, playername);
+                int id = set.getInt("id");
+                if (id > highest) {
+                    highest = id;
+                }
             }
         } catch (SQLException e) {
             logger.warn("Failed to get all player info", e);
         }
-        return new PlayerMappingInfo(nameMapping, uuidMapping);
+        return new PlayerMappingInfo(nameMapping, uuidMapping, highest);
     }
 
-    public static class PlayerMappingInfo {
+    public record PlayerMappingInfo(Map<String, UUID> nameMapping, Map<UUID, String> uuidMapping, long highest) {
 
-        public final Map<String, UUID> nameMapping;
-        public final Map<UUID, String> uuidMapping;
-
-        public PlayerMappingInfo(Map<String, UUID> nameMap, Map<UUID, String> uuidMap) {
-            this.nameMapping = nameMap;
-            this.uuidMapping = uuidMap;
-        }
     }
 }

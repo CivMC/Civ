@@ -41,7 +41,7 @@ nameRandomizer:
   active: false
   grace: 600000
 
-nameAPI:
+nameapi:
   database:
     user: 'user'
     password: 'password'

@@ -1,12 +1,10 @@
-
-# Database configuration for NameAPI
 database:
   user: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
   port: 3306
-  database: nameapi
-  poolsize: 10
+  database: civproxy
+  poolsize: 5
   connection_timeout: 10000
   idle_timeout: 600000
   max_lifetime: 7200000

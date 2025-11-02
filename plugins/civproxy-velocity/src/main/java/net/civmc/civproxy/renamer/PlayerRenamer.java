@@ -5,9 +5,8 @@ import com.velocitypowered.api.event.player.GameProfileRequestEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.util.GameProfile;
 import javax.sql.DataSource;
-import com.zaxxer.hikari.HikariConfig;
 import net.civmc.civproxy.CivProxyPlugin;
-import net.civmc.nameApi.NameAPI;
+import net.civmc.nameapi.NameAPI;
 
 public class PlayerRenamer {
 
@@ -16,10 +15,10 @@ public class PlayerRenamer {
 
     private final NameAPI nameAPI;
 
-    public PlayerRenamer(CivProxyPlugin plugin, ProxyServer server, HikariConfig nameAPIConfig) {
+    public PlayerRenamer(CivProxyPlugin plugin, ProxyServer server, DataSource source) {
         this.plugin = plugin;
         this.server = server;
-        this.nameAPI = new NameAPI(plugin.getLogger(), nameAPIConfig);
+        this.nameAPI = new NameAPI(plugin.getLogger(), source);
     }
 
     @Subscribe
@@ -29,9 +28,7 @@ public class PlayerRenamer {
 
         String name = nameAPI.getCurrentName(profile.getId());
         if (name == null) {
-            // shouldn't the above call have added them?
-            nameAPI.addPlayer(profile.getName(), profile.getId());
-            name = nameAPI.getCurrentName(profile.getId());
+            throw new IllegalStateException("Unknown name for " + profile.getName());
         }
 
         requestEvent.setGameProfile(requestEvent.getGameProfile().withName(name));
