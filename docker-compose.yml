@@ -20,8 +20,8 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      TYPE: 'CUSTOM'
-      BUNGEE_JAR_FILE: 'velocity.jar'
+      VELOCITY_VERSION: '3.4.0-SNAPSHOT'
+      TYPE: 'VELOCITY'
 
       REMOVE_OLD_MODS: 'TRUE'
       SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
