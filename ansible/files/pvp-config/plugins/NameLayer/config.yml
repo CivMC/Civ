@@ -19,14 +19,14 @@ nameRandomizer:
  active: false
  grace: 600000
 
-nameAPI:
+nameapi:
   database:
     user: ${CIV_MYSQL_USERNAME}
     password: ${CIV_MYSQL_PASSWORD}
     host: ${CIV_MYSQL_HOST}
     port: 3306
-    database: nameapi
-    poolsize: 10
+    database: civproxy
+    poolsize: 1
     connection_timeout: 10000
     idle_timeout: 600000
     max_lifetime: 7200000
