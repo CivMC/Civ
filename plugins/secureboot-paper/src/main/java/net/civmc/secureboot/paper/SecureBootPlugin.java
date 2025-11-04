@@ -128,7 +128,24 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
+    private void onPlayerLogin(
+        final @NotNull AsyncPlayerPreLoginEvent event
+    ) {
+        if (this.acceptLogins) {
+            return;
+        }
+        final OfflinePlayer player = Bukkit.getOfflinePlayer(event.getUniqueId());
+        if (player.isOp()) {
+            return;
+        }
+        event.disallow(
+            AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+            kickMessage
+        );
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
     private void onPlayerJoin(PlayerJoinEvent event) {
         if (this.acceptLogins) {
             return;
@@ -138,8 +155,6 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         if (player.isOp()) {
             player.sendMessage(mm.deserialize("<red>[Secureboot] Server started in invalid state</red>"));
-            return;
         }
-        event.getPlayer().kick(kickMessage);
     }
 }
