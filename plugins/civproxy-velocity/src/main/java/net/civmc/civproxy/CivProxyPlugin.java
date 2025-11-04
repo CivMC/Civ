@@ -42,13 +42,19 @@ public class CivProxyPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        loadNameAPIConfig();
+        loadNameApiConfig();
         new PlayerCount(this, server).start();
         new PlayerRenamer(this, server, source).start();
         new QueueListener(this, server).start();
     }
 
-    private void loadNameAPIConfig() {
+    private void loadNameApiConfig() {
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         CommentedConfigurationNode database = config.node("database");
 
         HikariConfig config = new HikariConfig();

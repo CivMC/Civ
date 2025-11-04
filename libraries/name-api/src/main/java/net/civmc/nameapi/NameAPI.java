@@ -25,12 +25,6 @@ public class NameAPI {
     public NameAPI(Logger logger, DataSource source) {
         this.logger = logger;
 
-        try {
-            Class.forName("org.mariadb.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
         this.db = source;
     }
 

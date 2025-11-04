@@ -166,6 +166,12 @@ public class NameLayerPlugin extends ACivMod {
     private DataSource getNameApiDataSource() {
         ConfigurationSection section = config.getConfigurationSection("nameapi.database");
 
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         HikariConfig dbConfig = new HikariConfig();
         dbConfig.setJdbcUrl("jdbc:" + section.getString("driver", "mariadb") + "://" + section.getString("host", "localhost") + ":" +
             section.getInt("port", 3306) + "/" + section.getString("database", "minecraft"));
