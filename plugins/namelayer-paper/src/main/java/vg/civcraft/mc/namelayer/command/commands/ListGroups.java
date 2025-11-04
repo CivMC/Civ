@@ -73,7 +73,7 @@ public class ListGroups extends BaseCommandMiddle {
         if (!autopages) {
             pages = target;
         }
-        ComponentBuilder<TextComponent, TextComponent.Builder> holder = Component.text();
+        Component holder = Component.empty();
         for (int page = target; page <= pages; page++) {
             if (autopages) {
                 holder.append(Component.newline().append(Component.text("Page " + page + " of " + actualPages + ".", NamedTextColor.GREEN)));
