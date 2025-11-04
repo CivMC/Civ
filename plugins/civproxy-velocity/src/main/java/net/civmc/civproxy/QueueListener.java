@@ -25,6 +25,7 @@ import us.ajg0702.queue.api.players.AdaptedPlayer;
 public class QueueListener {
 
     private final Map<Player, QueueRecord> players = new ConcurrentHashMap<>();
+    private final Map<Player, KickRecord> kickReasons = new ConcurrentHashMap<>();
 
     private final CivProxyPlugin plugin;
     private final ProxyServer server;
@@ -35,6 +36,10 @@ public class QueueListener {
     }
 
     record QueueRecord(Instant instant, String server) {
+
+    }
+
+    record KickRecord(Instant instant, Component reason) {
 
     }
 
@@ -54,6 +59,7 @@ public class QueueListener {
             return;
         }
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
+        event.getServerKickReason().ifPresent(reason -> kickReasons.put(event.getPlayer(), new KickRecord(Instant.now(), reason)));
 
         players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
     }
@@ -69,7 +75,14 @@ public class QueueListener {
             return;
         }
 
-        event.setResult(KickedFromServerEvent.DisconnectPlayer.create(event.getServerKickReason().orElse(Component.text("Disconnected"))));
+        KickRecord record = kickReasons.remove(event.getPlayer());
+        Component defaultReason;
+        if (record != null && record.instant().isAfter(Instant.now().minusSeconds(60))) {
+            defaultReason = record.reason();
+        } else {
+            defaultReason = Component.text("Disconnected");
+        }
+        event.setResult(KickedFromServerEvent.DisconnectPlayer.create(event.getServerKickReason().orElse(defaultReason)));
     }
 
     @Subscribe

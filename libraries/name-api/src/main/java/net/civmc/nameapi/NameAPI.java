@@ -87,9 +87,9 @@ public class NameAPI {
                 + "end");
 
         migrator.registerMigration("renamer", 2,
-            "ALTER TABLE Name_player ADD COLUMN id SERIAL",
-            "ALTER TABLE Name_player DROP INDEX `uuid_player_combo`",
-            "ALTER TABLE Name_player ADD UNIQUE INDEX on_uuid(uuid)");
+            "ALTER TABLE Name_player ADD COLUMN IF NOT EXISTS id SERIAL",
+            "ALTER TABLE Name_player DROP INDEX IF EXISTS `uuid_player_combo`",
+            "ALTER TABLE Name_player ADD UNIQUE INDEX IF NOT EXISTS on_uuid(uuid)");
 
         try {
             migrator.migrate(db.getConnection());
