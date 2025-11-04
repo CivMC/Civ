@@ -28,6 +28,7 @@ dependencies {
     paperPlugin(project(path = ":plugins:realisticbiomes-paper"))
     paperPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     paperPlugin(project(path = ":plugins:heliodor-paper"))
+    paperPlugin(project(path = ":plugins:secureboot-paper"))
 
     gammaPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     gammaPlugin(project(path = ":plugins:bastion-paper"))
@@ -52,6 +53,7 @@ dependencies {
     gammaPlugin(project(path = ":plugins:realisticbiomes2-paper"))
     gammaPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     gammaPlugin(project(path = ":plugins:heliodor-paper"))
+    gammaPlugin(project(path = ":plugins:secureboot-paper"))
     gammaPlugin(project(path = ":plugins:kirabukkitgateway-paper", configuration = "shadow"))
 
     pvpPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
@@ -65,6 +67,7 @@ dependencies {
     pvpPlugin(project(path = ":plugins:namelayer-paper", configuration = "shadow"))
     pvpPlugin(project(path = ":plugins:civchat2-paper"))
     pvpPlugin(project(path = ":plugins:namecolors-paper"))
+    pvpPlugin(project(path = ":plugins:secureboot-paper"))
 
     proxyPlugin(project(path = ":plugins:civproxy-velocity", configuration = "shadow"))
     proxyPlugin(project(path = ":plugins:announcements-velocity", configuration = "shadow"))

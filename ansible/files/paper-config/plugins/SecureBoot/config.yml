@@ -1,0 +1,9 @@
+kick_message: "<red>Server did not startup properly, please contact an @Admin!</red>"
+
+# enable or disable secureboot
+enable: ${CIV_SECUREBOOT_ENABLE}
+
+# Plugin names that SecureBoot will require to be enabled
+required_plugins:
+  - "CivModCore"
+  - "testpluginthatdoesnotexist"

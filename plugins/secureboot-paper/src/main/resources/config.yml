@@ -1,0 +1,17 @@
+# kick message sent to users if secureboot finds a required plugin missing or disabled
+kick_message: "<red>Server did not startup properly, please contact an @Admin!</red>"
+
+# enable or disable secureboot
+enable: true
+
+# Plugin names that SecureBoot will require to be enabled
+required_plugins:
+  - "CivModCore"
+#  - "NameLayer"
+#  - "Bastion"
+#  - "CivChat2"
+#  - "JukeAlert"
+#  - "Citadel"
+#  - "ExilePearl"
+#  - "CombatTagPlus"
+#  - "BanStick"
