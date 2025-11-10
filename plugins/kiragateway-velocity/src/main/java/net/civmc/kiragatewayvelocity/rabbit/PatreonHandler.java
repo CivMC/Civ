@@ -33,7 +33,7 @@ public class PatreonHandler extends RabbitInput {
             String tier = input.get(key).getAsString();
             String group = this.groups.get(tier);
 
-            if (cache.get(uuid).equals(group == null ? "" : group)) {
+            if ((group == null ? "" : group).equals(cache.get(uuid))) {
                 continue;
             }
 
