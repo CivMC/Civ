@@ -8,3 +8,5 @@ rabbitmq:
   outgoingQueue: gateway-to-kira
 
 ops: []
+
+tier_groups: {}

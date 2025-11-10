@@ -20,6 +20,7 @@ public class RabbitInputHandler {
 
     private void registerCommands() {
         registerCommand(new RequestSessionHandler());
+        registerCommand(new PatreonHandler());
     }
 
     private void registerCommand(RabbitInput command) {

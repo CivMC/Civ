@@ -9,7 +9,7 @@ services:
 
   proxy:
     image: itzg/mc-proxy:java24
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -55,7 +55,7 @@ services:
 
   paper:
     image: itzg/minecraft-server:stable-java24-graalvm
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -113,7 +113,7 @@ services:
 
   gamma:
     image: itzg/minecraft-server:stable-java24-graalvm
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -169,7 +169,7 @@ services:
 
   pvp:
     image: itzg/minecraft-server:stable-java24-graalvm
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -229,7 +229,7 @@ services:
 
   mariadb:
     image: mariadb:10.7.1
-    restart: unless-stopped
+    restart: on-failure
     command: --max-connections 500
     healthcheck:
       test: [ "CMD-SHELL", 'mysqladmin ping --user "$$MYSQL_USER" --password="$$MYSQL_PASSWORD"' ]
@@ -250,7 +250,7 @@ services:
 
   postgres:
     image: timescale/timescaledb:latest-pg14
-    restart: unless-stopped
+    restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER"' ]
       interval: 10s
@@ -270,7 +270,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.9.16-management
-    restart: unless-stopped
+    restart: on-failure
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
       interval: 60s
@@ -291,7 +291,7 @@ services:
 
   grafana:
     image: grafana/grafana-oss:latest
-    restart: unless-stopped
+    restart: on-failure
     depends_on:
       postgres:
         condition: service_healthy

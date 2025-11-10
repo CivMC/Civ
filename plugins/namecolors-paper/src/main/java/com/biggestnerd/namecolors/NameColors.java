@@ -46,7 +46,26 @@ public class NameColors extends ACivMod implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        updatePlayerName(event.getPlayer(), setting.getValue(event.getPlayer()));
+        Player player = event.getPlayer();
+        if (!player.hasPermission("namecolor.retainprefix")) {
+            resetPrefix(player);
+        }
+
+        if (!player.hasPermission(NameColorSetting.RAINBOW_PERMISSION) && !player.hasPermission(NameColorSetting.COLOR_PERMISSION)) {
+            setting.setValue(player, ChatColor.RESET);
+        }
+        updatePlayerName(player, setting.getValue(player));
+    }
+
+    private void resetPrefix(Player player) {
+        if (getServer().getPluginManager().isPluginEnabled("TAB")) {
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                TabPlayer tabPlayer = TabAPI.getInstance().getPlayer(player.getUniqueId());
+                if (tabPlayer != null) {
+                    TabAPI.getInstance().getTabListFormatManager().setPrefix(tabPlayer, null);
+                }
+            }, 20l);
+        }
     }
 
     public void updatePlayerName(Player player, ChatColor color) {
