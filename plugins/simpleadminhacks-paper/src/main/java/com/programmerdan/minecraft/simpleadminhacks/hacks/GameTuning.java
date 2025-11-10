@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.PortalType;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -300,7 +301,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
         if (!config.isEnabled()) {
             return;
         }
-        if (!config.allowNetherTravel() && event.getTo() != null && event.getTo().getWorld().getEnvironment() == Environment.NETHER) {
+        if (!config.allowNetherTravel() && event.getPortalType() == PortalType.NETHER) {
             event.setCancelled(true);
             return;
         }
