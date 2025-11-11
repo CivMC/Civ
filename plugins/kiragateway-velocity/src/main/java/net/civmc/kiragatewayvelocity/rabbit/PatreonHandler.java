@@ -45,7 +45,7 @@ public class PatreonHandler extends RabbitInput {
                     }
                     if (user.data().remove(InheritanceNode.builder(listedGroup).build()).wasSuccessful()) {
                         modified = true;
-                        KiraGateway.getInstance().logger.info("Pateron: Removed {} from {} ({})", listedGroup, user.getUsername(), uuid);
+                        KiraGateway.getInstance().logger.info("Patreon: Removed {} from {} ({})", listedGroup, user.getUsername(), uuid);
                     }
                 }
                 if (group == null) {
