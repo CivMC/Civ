@@ -2,12 +2,15 @@ package net.civmc.kiragatewayvelocity.rabbit;
 
 import com.google.gson.JsonObject;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.civmc.kiragatewayvelocity.KiraGateway;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.UserManager;
+import net.luckperms.api.node.matcher.NodeMatcher;
 import net.luckperms.api.node.types.InheritanceNode;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
@@ -27,13 +30,18 @@ public class PatreonHandler extends RabbitInput {
     @Override
     public void handle(JsonObject input) {
         UserManager users = LuckPermsProvider.get().getUserManager();
+        Set<UUID> hasGroup = new HashSet<>();
         for (String key : input.keySet()) {
             UUID uuid = UUID.fromString(key);
 
             String tier = input.get(key).getAsString();
-            String group = this.groups.get(tier);
+            String tgroup = this.groups.get(tier);
+            if (tgroup != null) {
+                hasGroup.add(uuid);
+            }
+            String group = tgroup == null ? "" : tgroup;
 
-            if ((group == null ? "" : group).equals(cache.get(uuid))) {
+            if (group.equals(cache.get(uuid))) {
                 continue;
             }
 
@@ -48,7 +56,7 @@ public class PatreonHandler extends RabbitInput {
                         KiraGateway.getInstance().logger.info("Patreon: Removed {} from {} ({})", listedGroup, user.getUsername(), uuid);
                     }
                 }
-                if (group == null) {
+                if ("" .equals(group)) {
                     cache.put(uuid, "");
                 } else if (user.data().add(InheritanceNode.builder(group).build()).wasSuccessful()) {
                     modified = true;
@@ -57,6 +65,20 @@ public class PatreonHandler extends RabbitInput {
                 }
                 if (modified) {
                     users.saveUser(user);
+                }
+            });
+        }
+        for (String groupName : this.groups.values()) {
+            users.searchAll(NodeMatcher.key(InheritanceNode.builder(groupName).build())).thenAccept(uuids -> {
+                for (UUID member : uuids.keySet()) {
+                    if (!hasGroup.contains(member)) {
+                        users.loadUser(member).thenAccept(user -> {
+                            if (user.data().remove(InheritanceNode.builder(groupName).build()).wasSuccessful() ){
+                                KiraGateway.getInstance().logger.info("Patreon post: Removed {} from {} ({})", groupName, user.getUsername(), member);
+                                users.saveUser(user);
+                            }
+                        });
+                    }
                 }
             });
         }
