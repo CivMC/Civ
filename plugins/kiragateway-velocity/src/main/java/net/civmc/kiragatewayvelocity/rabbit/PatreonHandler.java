@@ -52,7 +52,7 @@ public class PatreonHandler extends RabbitInput {
                     cache.put(uuid, "");
                 } else if (user.data().add(InheritanceNode.builder(group).build()).wasSuccessful()) {
                     modified = true;
-                    KiraGateway.getInstance().logger.info("Patreon: Added {} from {} ({})", group, user.getUsername(), uuid);
+                    KiraGateway.getInstance().logger.info("Patreon: Added {} to {} ({})", group, user.getUsername(), uuid);
                     cache.put(uuid, group);
                 }
                 if (modified) {
