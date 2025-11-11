@@ -64,13 +64,13 @@ public final class AutoRespawn extends BasicHack {
     public void onPlayerDeath(final PlayerDeathEvent event) {
         final Player player = event.getEntity();
         if (this.respawnDelay <= 0) {
-            plugin().info("Player [" + player.getName() + "] died, respawning.");
+            plugin().info("Player [" + player.getName() + "] died, respawning. Position:" + player.getLocation());
             // This is necessary as respawning the player IMMEDIATELY means also not allowing the
             // death process to occur (such as dropping items) to occur prior to the respawn.
             Bukkit.getScheduler().runTask(this.plugin, () -> autoRespawnPlayer(player));
         } else {
             plugin().info("Player [" + player.getName() + "] died, " +
-                "setting respawn timer: " + this.respawnDelay);
+                "setting respawn timer: " + this.respawnDelay + ", position: " + player.getLocation());
             this.respawnTimers.computeIfPresent(player, (_player, timer) -> timer.stop());
             this.respawnTimers.put(player, new RespawnTimer(this, player,
                 this.respawnDelay, this::autoRespawnPlayer));
