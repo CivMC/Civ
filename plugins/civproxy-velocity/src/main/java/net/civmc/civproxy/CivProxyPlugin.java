@@ -45,7 +45,9 @@ public class CivProxyPlugin {
         loadNameApiConfig();
         new PlayerCount(this, server).start();
         new PlayerRenamer(this, server, source).start();
-        new QueueListener(this, server).start();
+        if (server.getPluginManager().isLoaded("ajqueue")) {
+            new QueueListener(this, server).start();
+        }
     }
 
     private void loadNameApiConfig() {
