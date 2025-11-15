@@ -458,6 +458,15 @@ public class GroupManager {
      */
     private boolean hasPlayerInheritsPerms(Group group, UUID player, PermissionType perm) {
         while (group != null) {
+            // TODO: Revisit this. Being the primary owner of a group should arguably work like OP where you, in-effect,
+            //       have all grantable permissions. However, this would break certain civ-mechanics that use NameLayer
+            //       permissions as feature-toggles, notably JukeAlert with snitch immunity where having the permission
+            //       by definition means you *are* immune to snitches. Contrast this with SuperVanish where having the
+            //       permission means you *can* vanish. Thus the .isOwnerPermission() check has been added to only give
+            //       the OP-like behaviour to existential group permissions like "DELETE", "MERGE", and "PERMS".
+            if (group.isOwner(player) && perm.isOwnerPermission()) {
+                return true;
+            }
             PlayerType type = group.getPlayerType(player);
             if (type != null && getPermissionforGroup(group).hasPermission(type, perm)) {
                 return true;
