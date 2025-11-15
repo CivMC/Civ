@@ -25,7 +25,7 @@ reinforcements:
       v: 1
       type: STONE
     effect:
-      type: ENCHANTING_TABLE
+      type: ENCHANTMENT_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 5m
@@ -39,7 +39,7 @@ reinforcements:
       v: 1
       type: IRON_INGOT
     effect:
-      type: ENCHANTING_TABLE
+      type: ENCHANTMENT_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 30m
@@ -53,7 +53,7 @@ reinforcements:
       v: 1
       type: DIAMOND
     effect:
-      type: ENCHANTING_TABLE
+      type: ENCHANTMENT_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 4h
@@ -67,7 +67,7 @@ reinforcements:
       v: 1
       type: BEDROCK
     effect:
-      type: ENCHANTING_TABLE
+      type: ENCHANTMENT_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 1s
