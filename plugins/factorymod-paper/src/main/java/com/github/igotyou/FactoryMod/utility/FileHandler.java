@@ -133,8 +133,7 @@ public class FileHandler {
         } catch (Exception e) {
             // In case anything goes wrong while saving we always keep the
             // latest valid backup
-            plugin.severe("Fatal error while trying to save factory data");
-            e.printStackTrace();
+            plugin.getSLF4JLogger().error("Error while trying to save factory data", e);
             saveFile.delete();
         }
     }

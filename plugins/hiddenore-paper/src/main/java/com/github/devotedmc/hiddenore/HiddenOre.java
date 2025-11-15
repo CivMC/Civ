@@ -31,6 +31,7 @@ public class HiddenOre extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
+        HOItems.registerCustomItems();
         saveDefaultConfig();
         reloadConfig();
         Config.loadConfig();

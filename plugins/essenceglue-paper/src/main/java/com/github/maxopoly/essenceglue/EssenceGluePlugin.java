@@ -6,9 +6,18 @@ import com.github.maxopoly.essenceglue.commands.VoteCommand;
 import com.github.maxopoly.essenceglue.reward.PhysicalRewarder;
 import com.github.maxopoly.essenceglue.reward.Rewarder;
 import com.github.maxopoly.essenceglue.reward.VirtualRewarder;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItemFactory;
+import java.util.List;
 
 public final class EssenceGluePlugin extends ACivMod {
 
@@ -23,10 +32,24 @@ public final class EssenceGluePlugin extends ACivMod {
         return instance;
     }
 
+    CustomItemFactory ESSENCE_ITEM = CustomItem.registerCustomItem("player_essence", () -> {
+        ItemStack essence = ItemStack.of(Material.ENDER_EYE);
+        essence.setData(DataComponentTypes.ITEM_NAME, MiniMessage.miniMessage().deserialize("<i>Player Essence</i>"));
+        essence.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("Activity reward used to fuel pearls")
+        )));
+        essence.setAmount(1);
+        return essence;
+    });
+
     @Override
     public void onEnable() {
         super.onEnable();
         instance = this;
+
+        // ensure custom item is registered by creating one
+        ESSENCE_ITEM.createItem();
+
         configMan = new EssenceConfigManager(this);
         if (!configMan.parse()) {
             getLogger().severe("Failed to read config, disabling");

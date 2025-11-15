@@ -5,6 +5,7 @@ author: Soerxpso
 authors: [ ProgrammerDan ]
 load: STARTUP
 api-version: 1.21.3
+depend: [ CivModCore ]
 website: https://www.github.com/DevotedMC/HiddenOre
 description: HiddenOre allows the complete disguising of ores from players by not generating them in the first place, instead using a probability model to generate configurable ore layouts in response to player mining.
 commands:

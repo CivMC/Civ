@@ -20,13 +20,14 @@ bastions:
 #All bastions in the db will be flagged as, in this instance, citybastion
   basic:
     block:
-      material: SPONGE
-      durability: 0
-      name: Bastion
-      lore:
-        - This bastion will protect you from grief
-        - It will also block pearls when they land
-        - As well as stop elytra
+      custom-key: vault_bastion
+#      material: SPONGE
+#      durability: 0
+#      name: Bastion
+#      lore:
+#        - This bastion will protect you from grief
+#        - It will also block pearls when they land
+#        - As well as stop elytra
     squarefield: true
     effectRadius: 10
     includeY: true
@@ -62,11 +63,12 @@ bastions:
       explodeOnBlockStrength: 0
   city:
     block:
-      material: BONE_BLOCK
-      durability: 0
-      name: City Bastion
-      lore:
-        - City bastions block reinforcements and elytra
+      custom-key: city_bastion
+#      material: BONE_BLOCK
+#      durability: 0
+#      name: City Bastion
+#      lore:
+#        - City bastions block reinforcements and elytra
     squarefield: true
     effectRadius: 50
     includeY: true

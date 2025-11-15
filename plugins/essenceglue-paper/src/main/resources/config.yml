@@ -6,15 +6,13 @@ streak_grace_period: 1 day
 #Needs to be a multiple of a full minute
 online_for_reward: 30 minutes
 
-physical: true
+physical: false
+virtual_cap: 64
 
 rewards:
   essence:
-    material: EYE_OF_ENDER
-    name: Player Essence
-    amount: 1
-    lore:
-      - Activity reward used to fuel pearls
+    # use registered custom item
+    custom-key: player_essence
 
 login_reward: 1
 voting_reward: 1
