@@ -39,11 +39,12 @@ public final class SettingsManager {
         destSetting = new DestinationSetting(plugin);
         resetSetting = new ResetSetting(plugin, destSetting);
         destDisplayLocation = new DisplayLocationSetting(plugin, DisplayLocationSetting.DisplayLocation.SIDEBAR,
-            "Dest Display Location", "destDisplayLocation", new ItemStack(Material.ARROW), "the  status");
+            "Dest Display Location", "destDisplayLocation", new ItemStack(Material.ARROW), "the destination");
         // Register those elements
         menu.registerToParentMenu();
         menu.registerSetting(destSetting);
         menu.registerSetting(resetSetting);
+        menu.registerSetting(destDisplayLocation);
 
         destScoreBoard = ScoreBoardAPI.createBoard("RailSwitchDestDisplay");
         destBottomLine = BottomLineAPI.createBottomLine("RailSwitchDestDisplay", 4);
