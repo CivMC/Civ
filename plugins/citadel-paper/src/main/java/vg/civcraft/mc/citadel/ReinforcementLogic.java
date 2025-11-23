@@ -1,9 +1,7 @@
 package vg.civcraft.mc.citadel;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -294,6 +292,7 @@ public final class ReinforcementLogic {
             case OAK_DOOR:
             case CHERRY_DOOR:
             case BAMBOO_DOOR:
+            case PALE_OAK_DOOR:
             case MANGROVE_DOOR: {
                 if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
                     // block is upper half of a door
