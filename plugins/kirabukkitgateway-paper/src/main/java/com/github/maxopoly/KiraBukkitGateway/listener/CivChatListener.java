@@ -9,7 +9,7 @@ public class CivChatListener implements Listener {
 
     @EventHandler
     public void chat(GroupChatEvent e) {
-        KiraBukkitGatewayPlugin.getInstance().getRabbit().sendGroupChatMessage(e.getGroup(), e.getPlayer().getName(),
+        KiraBukkitGatewayPlugin.getInstance().getRabbit().sendGroupChatMessage(e.getGroup(), e.getPlayer(),
             e.getMessage());
     }
 
