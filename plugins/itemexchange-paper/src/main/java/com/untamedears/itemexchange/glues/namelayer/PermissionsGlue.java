@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -71,7 +71,7 @@ public enum PermissionsGlue {
         if (permission == null) {
             return false;
         }
-        return NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), permission);
+        return NameLayerAPI.getGroupManager().hasAccess(group, player.getUniqueId(), permission);
     }
 
     static void init() {

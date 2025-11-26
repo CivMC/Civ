@@ -26,7 +26,7 @@ cron-utils = { group = "com.cronutils", name = "cron-utils", version = "9.2.1" }
 
 configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
 
-rabbitmq-client = { group = "com.rabbitmq", name = "amqp-client", version = "5.17.1" }
+rabbitmq-client = { group = "com.rabbitmq", name = "amqp-client", version = "5.26.0" }
 
 nuvotifier-api = { group = "com.github.NuVotifier.NuVotifier", name = "nuvotifier-api", version.ref = "nuotifier" }
 nuvotifier-bukkit = { group = "com.github.NuVotifier.NuVotifier", name = "nuvotifier-bukkit", version.ref = "nuotifier" }

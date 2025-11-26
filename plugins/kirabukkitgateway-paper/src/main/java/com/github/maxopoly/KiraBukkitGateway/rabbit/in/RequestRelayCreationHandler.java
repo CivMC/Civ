@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import java.util.HashSet;
 import java.util.UUID;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RequestRelayCreationHandler extends RabbitInput {
@@ -34,7 +34,7 @@ public class RequestRelayCreationHandler extends RabbitInput {
             return;
         }
 
-        final var groupManager = NameAPI.getGroupManager();
+        final var groupManager = NameLayerAPI.getGroupManager();
         final var kiraManagePermission = PermissionType.getPermission("KIRA_MANAGE_CHANNEL");
         if (!groupManager.hasAccess(foundGroup, senderUUID, kiraManagePermission)) {
             KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(senderUUID,

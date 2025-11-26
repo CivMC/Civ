@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.huskydog.banstickCore.BanstickCore;
 import xyz.huskydog.banstickCore.cmc.utils.DateUtils;
 import xyz.huskydog.banstickCore.cmc.utils.PluginPlayer;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * A series of static utility classes to facilitate issuing bans.
@@ -104,12 +105,10 @@ public final class BanHandler {
                     player = BSPlayer.create(pluginPlayer);
                 } else {
                     String playerName = null;
-
-                    // TODO: use NameAPI
-                    // try {
-                    //     playerName = NameAPI.getCurrentName(playerId);
-                    // } catch (NoClassDefFoundError ncde) {
-                    // }
+                    try {
+                        playerName = NameLayerAPI.getCurrentName(playerId);
+                    } catch (NoClassDefFoundError ncde) {
+                    }
 
                     player = BSPlayer.create(playerId, playerName);
                 }

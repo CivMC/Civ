@@ -372,7 +372,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
     public void disableChorusFruitTeleportation(PlayerTeleportEvent event) {
         if (!config.isEnabled() || config.isChorusFruitTeleportation()) return;
 
-        if (PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT.equals(event.getCause())) {
+        if (PlayerTeleportEvent.TeleportCause.CONSUMABLE_EFFECT.equals(event.getCause())) {
             event.setCancelled(true);
         }
     }

@@ -3,6 +3,7 @@ package com.biggestnerd.namecolors;
 
 import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
+import me.neznamy.tab.shared.TAB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -46,7 +47,25 @@ public class NameColors extends ACivMod implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        updatePlayerName(event.getPlayer(), setting.getValue(event.getPlayer()));
+        Player player = event.getPlayer();
+        if (!player.hasPermission("namecolor.retainprefix")) {
+            resetPrefix(player);
+        }
+
+        if (!player.hasPermission(NameColorSetting.RAINBOW_PERMISSION) && !player.hasPermission(NameColorSetting.COLOR_PERMISSION)) {
+            setting.setValue(player, ChatColor.RESET);
+        }
+        updatePlayerName(player, setting.getValue(player));
+    }
+
+    private void resetPrefix(Player player) {
+        if (getServer().getPluginManager().isPluginEnabled("TAB")) {
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                // For some reason setPrefix directly doesn't work
+                TAB.getInstance().getConfiguration().getUsers().setProperty(player.getName(), "tabprefix", null, null, null);
+                TAB.getInstance().getFeatureManager().onGroupChange(TAB.getInstance().getPlayer(player.getUniqueId()));
+            }, 20l);
+        }
     }
 
     public void updatePlayerName(Player player, ChatColor color) {

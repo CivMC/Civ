@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
@@ -69,8 +69,8 @@ public class CreateGroup extends BaseCommandMiddle {
         } else {
             password = null;
         }
-        final UUID uuid = NameAPI.getUUID(p.getName());
-        Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis());
+        final UUID uuid = NameLayerAPI.getUUID(p.getName());
+        Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis(), "GRAY");
         gm.createGroupAsync(g, new RunnableOnGroup() {
             @Override
             public void run() {

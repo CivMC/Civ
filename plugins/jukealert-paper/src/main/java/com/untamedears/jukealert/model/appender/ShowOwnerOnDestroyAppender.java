@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
@@ -47,7 +47,7 @@ public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
             ownerName = "unknown";
         } else {
             groupName = group.getName();
-            ownerName = NameAPI.getCurrentName(group.getOwner());
+            ownerName = NameLayerAPI.getCurrentName(group.getOwner());
         }
         player.sendMessage(String.format("%s%s %swas reinforced on %s%s%s owned by %s%s", ChatColor.GOLD,
             snitch.getType().getName(), ChatColor.YELLOW, ChatColor.GREEN, groupName, ChatColor.YELLOW,

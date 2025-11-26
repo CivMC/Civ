@@ -22,8 +22,8 @@ import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 public class NameColorSetting extends PlayerSetting<ChatColor> {
 
     private static Map<ChatColor, Material> colorToGui = new EnumMap<>(ChatColor.class);
-    private static final String RAINBOW_PERMISSION = "namecolor.rainbow";
-    private static final String COLOR_PERMISSION = "namecolor.use";
+    public static final String RAINBOW_PERMISSION = "namecolor.rainbow";
+    public static final String COLOR_PERMISSION = "namecolor.use";
 
     public static final ChatColor RAINBOW_COLOR = ChatColor.STRIKETHROUGH;
 

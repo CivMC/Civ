@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
@@ -23,7 +23,7 @@ public class ToggleAutoAcceptInvites extends BaseCommandMiddle {
             return;
         }
         Player p = (Player) sender;
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
         if (handler.getAutoAccept(uuid)) {
             p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
         } else {

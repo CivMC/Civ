@@ -16,7 +16,7 @@ import vg.civcraft.mc.citadel.playerstate.FortificationState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class Fortification extends BaseCommand {
@@ -42,7 +42,7 @@ public class Fortification extends BaseCommand {
 
         String groupName = null;
         if (targetGroup == null) {
-            groupName = NameAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
+            groupName = NameLayerAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
             if (groupName == null) {
                 CitadelUtility.sendAndLog(player, ChatColor.RED,
                     "You need to fortify to a group! Try /fortify groupname. \n Or use /create groupname if you don't have a group yet.");
@@ -58,7 +58,7 @@ public class Fortification extends BaseCommand {
             stateManager.setState(player, null);
             return;
         }
-        boolean hasAccess = NameAPI.getGroupManager().hasAccess(group.getName(), player.getUniqueId(),
+        boolean hasAccess = NameLayerAPI.getGroupManager().hasAccess(group.getName(), player.getUniqueId(),
             CitadelPermissionHandler.getReinforce());
         if (!hasAccess) {
             CitadelUtility.sendAndLog(player, ChatColor.RED, "You do not have permission to reinforce on " + group.getName());

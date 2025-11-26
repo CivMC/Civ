@@ -8,6 +8,6 @@ dependencies {
     compileOnly(libs.velocity.api)
     annotationProcessor(libs.velocity.api)
 
-    implementation(libs.cron.utils)
-    implementation(libs.configurate.yaml)
+    api(libs.cron.utils)
+    api(libs.configurate.yaml)
 }

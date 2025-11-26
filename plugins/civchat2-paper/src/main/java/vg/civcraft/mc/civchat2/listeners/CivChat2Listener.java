@@ -26,7 +26,7 @@ import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -154,7 +154,7 @@ public class CivChat2Listener implements Listener {
                 }
                 if (groupChat != null) {
                     // Player is group chatting
-                    if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(),
+                    if (NameLayerAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(),
                         PermissionType.getPermission("WRITE_CHAT"))) {
                         chatman.sendGroupMsg(sender, groupChat, chatMessage);
                         return;

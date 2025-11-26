@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class AdminDeliveryGUI {
 
@@ -17,7 +17,7 @@ public class AdminDeliveryGUI {
 
     public static void showInventory(Player admin, UUID target) {
         deliveryInventoriesEdited.put(admin.getUniqueId(), target);
-        Inventory inventory = Bukkit.createInventory(null, 54, NameAPI.getCurrentName(target));
+        Inventory inventory = Bukkit.createInventory(null, 54, NameLayerAPI.getCurrentName(target));
         admin.openInventory(inventory);
     }
 

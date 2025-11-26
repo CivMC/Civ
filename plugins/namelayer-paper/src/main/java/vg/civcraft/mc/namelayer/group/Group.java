@@ -3,10 +3,13 @@ package vg.civcraft.mc.namelayer.group;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
@@ -35,9 +38,10 @@ public class Group {
     private Map<UUID, PlayerType> players = Maps.<UUID, PlayerType>newHashMap();
     private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
     private long activityTimestamp;
+    private TextColor groupColor;
 
     public Group(String name, UUID owner, boolean disciplined,
-                 String password, int id, long activityTimestamp) {
+                 String password, int id, long activityTimestamp, String groupColor) {
         if (db == null) {
             db = NameLayerPlugin.getGroupManagerDao();
         }
@@ -75,6 +79,11 @@ public class Group {
         for (Group subgroup : GroupManager.getSubGroups(name)) {
             link(this, subgroup, false);
         }
+        TextColor color = NamedTextColor.NAMES.value(groupColor);
+        if (color == null) {
+            color = TextColor.fromHexString(groupColor);
+        }
+        this.groupColor = color;
     }
 
     public long getActivityTimeStamp() {
@@ -156,7 +165,7 @@ public class Group {
 
         prefix = prefix.toLowerCase();
         for (UUID member : members) {
-            String name = NameAPI.getCurrentName(member);
+            String name = NameLayerAPI.getCurrentName(member);
             if (name.toLowerCase().startsWith(prefix)) {
                 uuids.add(member);
             }
@@ -177,7 +186,7 @@ public class Group {
         List<UUID> members = getAllMembers();
 
         for (UUID member : members) {
-            String name = NameAPI.getCurrentName(member);
+            String name = NameLayerAPI.getCurrentName(member);
             if (name.compareToIgnoreCase(lowerLimit) >= 0
                 && name.compareToIgnoreCase(upperLimit) <= 0) {
                 uuids.add(member);
@@ -665,6 +674,25 @@ public class Group {
         if (!ids.contains(this.id)) {
             this.ids.add(this.id);
         }
+    }
+
+    public TextColor getGroupColor() {
+        return groupColor;
+    }
+
+    public void setGroupColor(TextColor groupColor) {
+        setGroupColor(groupColor, true);
+    }
+
+    public void setGroupColor(TextColor groupColor, boolean saveToDB) {
+        this.groupColor = groupColor;
+        if (saveToDB) {
+            db.setGroupColor(this.getName(), groupColor.toString());
+        }
+    }
+
+    public Component getGroupNameColored() {
+        return Component.text(this.name, this.groupColor);
     }
 
     /**

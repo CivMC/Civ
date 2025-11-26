@@ -8,7 +8,7 @@ import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -23,7 +23,7 @@ public class DeleteDiscordGroupChatCommand extends BaseCommand {
             player.sendMessage(ChatColor.RED + "That group does not exist");
             return;
         }
-        if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
+        if (!NameLayerAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
             PermissionType.getPermission("KIRA_MANAGE_CHANNEL"))) {
             player.sendMessage(ChatColor.RED + "You do not have permission to do that");
             return;

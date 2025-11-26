@@ -40,13 +40,13 @@ public class GroupManagerDao {
     private static final String removeCycles = "delete a from subgroup a join faction_id a2 ON a.group_id = a2.group_id "
         + "JOIN subgroup b JOIN faction_id b2 on b.sub_group_id = b2.group_id where a2.group_name = b2.group_name;";
     private static final String createGroup = "call createGroup(?,?,?,?)";
-    private static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp " +
+    private static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp, f.group_color " +
         "from faction f "
         + "inner join faction_id fi on fi.group_name = f.group_name "
         + "where f.group_name = ?";
     private static final String getGroupIDs = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
         + "LEFT JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
-    private static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp " +
+    private static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp, f.group_color " +
         "from faction f "
         + "inner join faction_id fi on fi.group_id = ? "
         + "where f.group_name = fi.group_name";
@@ -174,6 +174,7 @@ public class GroupManagerDao {
     private static final String removeBlackListMember = "delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;";
     private static final String getBlackListMembers = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;";
 
+    private static final String setGroupColor = "update faction set faction.group_color =? where faction.group_name =?;";
     private static final String getAllGroupIds = "select group_id from faction_id";
 
 
@@ -494,6 +495,10 @@ public class GroupManagerDao {
             "DELETE FROM permissionByGroup "
                 + "WHERE role='" + PlayerType.NOT_BLACKLISTED + "' "
                 + "AND perm_id=(SELECT perm_id FROM permissionIdMapping WHERE name='BASTION_PLACE');");
+
+        //Adding support for groups to have a color assigned to them
+        db.registerMigration(15, false,
+            "alter table faction add group_color varchar(12) NOT NULL DEFAULT 'gray';");
     }
 
     public int createGroup(String group, UUID owner, String password) {
@@ -528,6 +533,7 @@ public class GroupManagerDao {
         String password = null;
         int id = -1;
         Timestamp timeStamp = null;
+        String color = null;
         try (Connection connection = db.getConnection();
              PreparedStatement getGroup = connection.prepareStatement(GroupManagerDao.getGroup)) {
 
@@ -544,6 +550,7 @@ public class GroupManagerDao {
                 password = set.getString(3);
                 id = set.getInt(5);
                 timeStamp = set.getTimestamp(6);
+                color = set.getString(7);
             } catch (SQLException e) {
                 logger.log(Level.WARNING, "Problem getting group " + groupName, e);
                 return null;
@@ -554,7 +561,7 @@ public class GroupManagerDao {
         }
         Group g = null;
         try {
-            g = new Group(name, owner, discipline, password, id, timeStamp.getTime());
+            g = new Group(name, owner, discipline, password, id, timeStamp.getTime(), color);
         } catch (Exception e) {
             logger.log(Level.WARNING, "Problem retrieving group " + groupName, e);
         }
@@ -570,6 +577,7 @@ public class GroupManagerDao {
         String password = null;
         int id = -1;
         Timestamp timeStamp = null;
+        String color = null;
         try (Connection connection = db.getConnection();
              PreparedStatement getGroupById = connection.prepareStatement(GroupManagerDao.getGroupById)) {
             getGroupById.setInt(1, groupId);
@@ -587,6 +595,7 @@ public class GroupManagerDao {
                 password = set.getString(3);
                 id = set.getInt(5);
                 timeStamp = set.getTimestamp(6);
+                color = set.getString(7);
             } catch (SQLException e) {
                 logger.log(Level.WARNING, "Problem getting group " + groupId, e);
                 return null;
@@ -597,7 +606,7 @@ public class GroupManagerDao {
         }
         Group g = null;
         try {
-            g = new Group(name, owner, dis, password, id, timeStamp.getTime());
+            g = new Group(name, owner, dis, password, id, timeStamp.getTime(), color);
         } catch (Exception e) {
             logger.log(Level.WARNING, "Problem retrieving group " + groupId, e);
         }
@@ -1665,6 +1674,17 @@ public class GroupManagerDao {
             logger.log(Level.WARNING, "Unable to prepare query to fully load group ID set", se);
         }
         return null;
+    }
+
+    public void setGroupColor(String groupName, String groupColor) {
+        try (Connection connection = db.getConnection();
+             PreparedStatement setGroupColor = connection.prepareStatement(GroupManagerDao.setGroupColor)) {
+            setGroupColor.setString(1, groupColor);
+            setGroupColor.setString(2, groupName);
+            setGroupColor.executeUpdate();
+        } catch (SQLException e) {
+            logger.log(Level.WARNING, "Problem setting color for group " + groupName, e);
+        }
     }
 
 

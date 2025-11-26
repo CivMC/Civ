@@ -27,7 +27,7 @@ import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ModeListener implements Listener {
@@ -110,7 +110,7 @@ public class ModeListener implements Listener {
         Set<BastionType> alliedBastions = new HashSet<>();
         Set<BastionType> enemyBastions = new HashSet<>();
         for (BastionBlock bastion : bastionBlocks) {
-            if (NameAPI.getGroupManager().hasAccess(bastion.getGroup(), player.getUniqueId(), placePerm)) {
+            if (NameLayerAPI.getGroupManager().hasAccess(bastion.getGroup(), player.getUniqueId(), placePerm)) {
                 alliedBastions.add(bastion.getType());
             } else {
                 enemyBastions.add(bastion.getType());

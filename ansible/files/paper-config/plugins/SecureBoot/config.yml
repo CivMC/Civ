@@ -1,0 +1,25 @@
+kick_message: "<red>Server did not startup properly, please contact an @Admin!</red>"
+
+# enable or disable secureboot
+enable: ${CIV_SECUREBOOT_ENABLE}
+
+# Plugin names that SecureBoot will require to be enabled
+required_plugins:
+  - "CivModCore"
+  - "NameLayer"
+  - "Bastion"
+  - "CivChat2"
+  - "JukeAlert"
+  - "HiddenOre"
+  - "Orebfuscator"
+  - "EssenceGlue"
+  - "BanStick"
+  - "CombatTagPlus"
+  - "ExilePearl"
+  - "Finale"
+  - "FactoryMod"
+  - "RailSwitch"
+  - "SuperVanish"
+  - "RealisticBiomes"
+  - "Vulcan"
+  - "Heliodor"

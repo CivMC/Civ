@@ -64,12 +64,12 @@ public class IOConfigSection extends StaticDisplaySection {
 
     private Clickable getIoClickable(Material adjacentType, Direction dir, String dirLabel) {
         IOSelector.IOState dirState = ioSelector.getState(dir);
-        boolean chestMissing = adjacentType != Material.CHEST && adjacentType != Material.TRAPPED_CHEST;
+        boolean chestMissing = adjacentType != Material.CHEST && adjacentType != Material.TRAPPED_CHEST && adjacentType != Material.BARREL;
         ItemStack display;
         if (chestMissing) {
             display = new ItemStack(Material.BARRIER);
             ItemUtils.addComponentLore(display, Component
-                .text("<no chest>")
+                .text("<no chest/barrel>")
                 .style(Style.style(TextDecoration.BOLD))
                 .color(TextColor.color(255, 0, 0)));
         } else {

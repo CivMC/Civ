@@ -108,7 +108,7 @@ public class SnitchManager {
         RTree<Snitch, Rectangle> tree = treesByWorld.get(loc.getWorld().getUID());
         if (tree == null) {
             JukeAlert.getInstance().getLogger().info("Tree for world  " + loc.getWorld().getUID() + " does not exist, creating");
-            tree = RTree.create();
+            tree = RTree.star().create();
             treesByWorld.put(loc.getWorld().getUID(), tree);
         }
         return tree;

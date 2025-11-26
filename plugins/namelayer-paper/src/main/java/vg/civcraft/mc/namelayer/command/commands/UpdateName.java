@@ -10,7 +10,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.misc.NameFetcher;
@@ -25,7 +25,7 @@ public class UpdateName extends BaseCommandMiddle {
     public void execute(Player sender, String newNameOrConfirm) {
         final Player p = (Player) sender;
         final UUID uuid = p.getUniqueId();
-        final String oldName = NameAPI.getCurrentName(uuid);
+        final String oldName = NameLayerAPI.getCurrentName(uuid);
 
         if (NameLayerPlugin.getGroupManagerDao().hasChangedNameBefore(uuid)) {
             p.sendMessage(ChatColor.RED + "You already changed your name");
@@ -55,7 +55,7 @@ public class UpdateName extends BaseCommandMiddle {
                                 + "An error occured. Try again later");
                             return;
                         }
-                        UUID existingNameUUID = NameAPI.getUUID(newName);
+                        UUID existingNameUUID = NameLayerAPI.getUUID(newName);
                         if (existingNameUUID != null) {
                             if (!uuid.equals(existingNameUUID)) {
                                 // different person has the name

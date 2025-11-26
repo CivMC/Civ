@@ -121,6 +121,8 @@ public class PermissionType {
 
         //perm level given to members when they join with a password
         registerPermission("JOIN_PASSWORD", members);
+        //allows editing a groups color
+        registerPermission("EDIT_COLOR", new ArrayList<>(adminAndAbove), "Allows editing the color of the group");
     }
 
     private String name;

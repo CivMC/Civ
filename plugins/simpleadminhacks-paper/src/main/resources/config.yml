@@ -555,3 +555,5 @@ hacks:
     enabled: true
   PlayerCount:
     enabled: false
+  Trowel:
+    enabled: true

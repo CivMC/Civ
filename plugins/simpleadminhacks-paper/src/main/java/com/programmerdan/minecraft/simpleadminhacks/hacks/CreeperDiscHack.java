@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 import java.util.Iterator;
 import java.util.List;

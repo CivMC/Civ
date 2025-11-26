@@ -5,11 +5,9 @@ import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.SnitchFactoryType;
 import com.untamedears.jukealert.model.SnitchTypeManager;
-import com.untamedears.jukealert.model.actions.ActionCacheState;
 import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
-import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import com.untamedears.jukealert.model.appender.DormantCullingAppender;
 import com.untamedears.jukealert.model.appender.LeverToggleAppender;
@@ -52,7 +50,7 @@ import vg.civcraft.mc.civmodcore.world.locations.global.GlobalLocationTracker;
 import vg.civcraft.mc.civmodcore.world.locations.global.GlobalTrackableDAO;
 import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
@@ -179,7 +177,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
                             int z = rs.getInt(8);
 
                             actor = ChatColor.stripColor(actor);
-                            UUID actorUUID = NameAPI.getUUID(actor);
+                            UUID actorUUID = NameLayerAPI.getUUID(actor);
                             if (actorUUID == null) {
                                 actorUUID = UUID.fromString("8326bc56-1ed9-40ff-8f24-46bf3e300e51");
                             }

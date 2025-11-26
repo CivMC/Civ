@@ -19,7 +19,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -74,28 +74,28 @@ public class InvitationGUI extends AbstractGroupGUI {
                                         parent.showScreen();
                                         return;
                                     }
-                                    UUID inviteUUID = NameAPI.getUUID(s);
+                                    UUID inviteUUID = NameLayerAPI.getUUID(s);
                                     if (inviteUUID == null) {
                                         p.sendMessage(ChatColor.RED + "The player " + s + " doesn't exist");
                                         continue;
                                     }
                                     if (g.isMember(inviteUUID)) { // So a player can't demote someone who is above them.
-                                        p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(inviteUUID) + " is already a member of " + g.getName());
+                                        p.sendMessage(ChatColor.RED + NameLayerAPI.getCurrentName(inviteUUID) + " is already a member of " + g.getName());
                                         continue;
                                     }
                                     if (NameLayerPlugin.getBlackList().isBlacklisted(g, inviteUUID)) {
-                                        p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(inviteUUID) + " is currently blacklisted, you have to unblacklist him before inviting him to the group");
+                                        p.sendMessage(ChatColor.RED + NameLayerAPI.getCurrentName(inviteUUID) + " is currently blacklisted, you have to unblacklist him before inviting him to the group");
                                         continue;
                                     }
                                     NameLayerPlugin.log(Level.INFO,
                                         p.getName() + " invited "
-                                            + NameAPI.getCurrentName(inviteUUID)
+                                            + NameLayerAPI.getCurrentName(inviteUUID)
                                             + " to group " + g.getName()
                                             + " via the gui");
 
                                     InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
 
-                                    p.sendMessage(ChatColor.GREEN + "Invited " + NameAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
+                                    p.sendMessage(ChatColor.GREEN + "Invited " + NameLayerAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
                                 }
                             } else {
                                 p.sendMessage(ChatColor.RED + "You do not have permission to invite a player to this rank");

@@ -17,7 +17,7 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class GlobalMute extends BaseCommand {
 
@@ -27,7 +27,7 @@ public class GlobalMute extends BaseCommand {
     @Description("Applies, checks or removes a players global mute timer")
     @CommandCompletion("set|check|remove @allplayers @nothing")
     public void execute(CommandSender sender, String getSetOrCheck, String targetPlayer, @Optional String muteTime) {
-        UUID player = NameAPI.getUUID(targetPlayer);
+        UUID player = NameLayerAPI.getUUID(targetPlayer);
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "The player " + targetPlayer + " does not exist");
             return;

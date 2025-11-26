@@ -229,7 +229,7 @@ public class ConfigParser {
             if (en == null) {
                 plugin.warning("Could not parse disabled enchantment " + ench);
             } else {
-                plugin.info("Disabling usage of enchant " + en.getName());
+                plugin.info("Disabling usage of enchant " + en.getKey());
                 enchants.add(en);
             }
         }

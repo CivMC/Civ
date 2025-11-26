@@ -11,6 +11,9 @@ public class SkynetListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void join(PlayerJoinEvent e) {
+        if (e.getPlayer().hasPermission("sv.joinvanished")) {
+            return;
+        }
         if (!e.getPlayer().hasPlayedBefore()) {
             KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginFirstTime(e.getPlayer().getName());
         }
@@ -19,6 +22,9 @@ public class SkynetListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void leave(PlayerQuitEvent e) {
+        if (e.getPlayer().hasPermission("sv.joinvanished")) {
+            return;
+        }
         KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "LOGOUT");
     }
 

@@ -9,7 +9,7 @@ services:
 
   proxy:
     image: itzg/mc-proxy:java24
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -20,15 +20,21 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      TYPE: 'CUSTOM'
-      BUNGEE_JAR_FILE: 'velocity.jar'
+      VELOCITY_VERSION: '3.4.0-SNAPSHOT'
+      TYPE: 'VELOCITY'
 
-      REPLACE_ENV_VARIABLES: 'true'
+      REMOVE_OLD_MODS: 'TRUE'
+      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+      REPLACE_ENV_DURING_SYNC: 'TRUE'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
       CIV_POSTGRES_HOST: postgres
       CIV_POSTGRES_USERNAME: postgres
       CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
 
       CIV_TIMEOUT_TIME: 3000000
       CIV_PVP_HOSTNAME: 'pvp.localhost'
@@ -37,6 +43,10 @@ services:
 
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
       CIV_FORWARDING_SECRET: '1234'
+
+      CIV_MYSQL_HOST: mariadb
+      CIV_MYSQL_USERNAME: mariadb
+      CIV_MYSQL_PASSWORD: mariadb
     ports:
       - "25565:25577"
       - "5008:5008"
@@ -47,7 +57,7 @@ services:
 
   paper:
     image: itzg/minecraft-server:stable-java24-graalvm
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -70,7 +80,7 @@ services:
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
       INIT_MEMORY: 1G
-      MAX_MEMORY: 5G
+      MAX_MEMORY: 3G
 
       CIV_SERVER_NAME: local
 
@@ -91,6 +101,8 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: rabbitmq
 
+      CIV_SECUREBOOT_ENABLE: 'false'
+
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
@@ -103,7 +115,7 @@ services:
 
   gamma:
     image: itzg/minecraft-server:stable-java24-graalvm
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -128,6 +140,7 @@ services:
       INIT_MEMORY: 1G
       MAX_MEMORY: 3G
 
+      CIV_SECUREBOOT_ENABLE: 'false'
       CIV_SERVER_NAME: local
 
       CIV_WORDBANK_SEED: wordbank
@@ -158,7 +171,7 @@ services:
 
   pvp:
     image: itzg/minecraft-server:stable-java24-graalvm
-    restart: unless-stopped
+    restart: on-failure
     tty: true
     stdin_open: true
     depends_on:
@@ -218,12 +231,14 @@ services:
 
   mariadb:
     image: mariadb:10.7.1
-    restart: unless-stopped
+    restart: on-failure
     command: --max-connections 500
     healthcheck:
       test: [ "CMD-SHELL", 'mysqladmin ping --user "$$MYSQL_USER" --password="$$MYSQL_PASSWORD"' ]
       timeout: 20s
       retries: 10
+      start_period: 40s
+      start_interval: 5s
     ports:
       - "3306:3306"
     environment:
@@ -237,12 +252,14 @@ services:
 
   postgres:
     image: timescale/timescaledb:latest-pg14
-    restart: unless-stopped
+    restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER"' ]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 40s
+      start_interval: 5s
     ports:
       - "5432:5432"
     environment:
@@ -255,12 +272,14 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.9.16-management
-    restart: unless-stopped
+    restart: on-failure
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
       interval: 60s
       timeout: 10s
       retries: 5
+      start_period: 40s
+      start_interval: 5s
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -274,7 +293,7 @@ services:
 
   grafana:
     image: grafana/grafana-oss:latest
-    restart: unless-stopped
+    restart: on-failure
     depends_on:
       postgres:
         condition: service_healthy

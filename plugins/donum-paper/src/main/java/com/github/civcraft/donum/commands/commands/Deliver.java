@@ -10,7 +10,7 @@ import com.github.civcraft.donum.gui.AdminDeliveryGUI;
 import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class Deliver extends BaseCommand {
 
@@ -21,7 +21,7 @@ public class Deliver extends BaseCommand {
     @CommandPermission("donum.op")
     public void execute(Player player, String targetPlayer) {
         //TODO make namelayer soft dependency
-        UUID delUUID = NameAPI.getUUID(targetPlayer);
+        UUID delUUID = NameLayerAPI.getUUID(targetPlayer);
         if (delUUID == null) {
             player.sendMessage(ChatColor.RED + "This player has never logged into the server");
             return;
