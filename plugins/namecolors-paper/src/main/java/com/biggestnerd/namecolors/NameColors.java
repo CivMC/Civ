@@ -51,8 +51,8 @@ public class NameColors extends ACivMod implements Listener {
         if (!player.hasPermission("namecolor.retainprefix")) {
             resetPrefix(player);
         }
-
-        if (!player.hasPermission(NameColorSetting.RAINBOW_PERMISSION) && !player.hasPermission(NameColorSetting.COLOR_PERMISSION)) {
+        ChatColor value = setting.getValue(player);
+        if ((value == NameColorSetting.RAINBOW_COLOR && !player.hasPermission(NameColorSetting.RAINBOW_PERMISSION) || !player.hasPermission(NameColorSetting.COLOR_PERMISSION))) {
             setting.setValue(player, ChatColor.RESET);
         }
         updatePlayerName(player, setting.getValue(player));
