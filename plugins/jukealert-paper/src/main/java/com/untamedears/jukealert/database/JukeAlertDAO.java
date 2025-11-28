@@ -253,6 +253,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
             "delete from snitchs using snitchs, snitchs s2 where snitchs.snitch_id < s2.snitch_id "
                 + "and snitchs.snitch_x = s2.snitch_x and snitchs.snitch_y = s2.snitch_y and snitchs.snitch_z = s2.snitch_z and snitchs.snitch_world=s2.snitch_world");
         db.registerMigration(3, false, "delete from ja_snitches where group_id = -1");
+        db.registerMigration(4, false, "alter table ja_snitches add column placer VARCHAR(36)");
     }
 
     // ------------------------------------------------------------
@@ -273,7 +274,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
         final Location snitchLocation = snitch.getLocation();
         try (final Connection connection = this.db.getConnection();
              final PreparedStatement statement = connection.prepareStatement(
-                 "INSERT INTO ja_snitches (group_id,type_id,x,y,z,world_id,name) VALUES (?,?,?,?,?,?,?);",
+                 "INSERT INTO ja_snitches (group_id,type_id,x,y,z,world_id,name, placer) VALUES (?,?,?,?,?,?,?);",
                  Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, snitchGroup.getGroupId());
             statement.setInt(2, snitch.getType().getID());
@@ -282,6 +283,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
             statement.setInt(5, snitchLocation.getBlockZ());
             statement.setShort(6, getWorldID(snitchLocation));
             statement.setString(7, snitch.getName());
+            statement.setString(8, snitch.getPlacer() == null ? null : snitch.getPlacer().toString());
             statement.execute();
             try (final ResultSet results = statement.getGeneratedKeys()) {
                 if (!results.next()) {
@@ -344,7 +346,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
         final WorldIDManager worldIDManager = CivModCorePlugin.getInstance().getWorldIdManager();
         try (final Connection connection = this.db.getConnection();
              final PreparedStatement statement = connection.prepareStatement(
-                 "SELECT ja_snitches.id, x, y, z, world_id, type_id, group_id, name, last_refresh, toggle_lever FROM ja_snitches" +
+                 "SELECT ja_snitches.id, x, y, z, world_id, type_id, group_id, name, last_refresh, toggle_lever, placer FROM ja_snitches" +
                      " LEFT JOIN ja_snitch_refresh ON ja_snitches.id = ja_snitch_refresh.id" +
                      " LEFT JOIN ja_snitch_lever ON ja_snitches.id = ja_snitch_lever.id");
              final ResultSet results = statement.executeQuery()) {
@@ -380,10 +382,13 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 
                 boolean toggleLever = results.getBoolean(10);
 
+                String placerString = results.getString(11);
+                UUID placer = placerString == null ? null : UUID.fromString(placerString);
+
                 // Add the snitch to the system
                 Snitch snitch = snitchType.create(snitchID,
                     new Location(snitchWorld, snitchX, snitchY, snitchZ),
-                    snitchName, groupID, false);
+                    snitchName, groupID, false, placer);
                 callback.accept(snitch);
                 snitchManager.addSnitchToQuadTree(snitch);
                 DormantCullingAppender dormantCullingAppender = snitch.getAppender(DormantCullingAppender.class);

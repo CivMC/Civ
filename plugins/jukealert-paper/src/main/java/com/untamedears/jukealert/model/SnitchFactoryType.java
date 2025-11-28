@@ -2,8 +2,8 @@ package com.untamedears.jukealert.model;
 
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import com.untamedears.jukealert.model.field.FieldManager;
-import com.untamedears.jukealert.model.field.SingleCuboidRangeManager;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -26,9 +26,9 @@ public class SnitchFactoryType {
         this.appenders = appenders;
     }
 
-    public Snitch create(int snitchID, Location location, String name, int groupID, boolean isNew) {
+    public Snitch create(int snitchID, Location location, String name, int groupID, boolean isNew, UUID placer) {
         Snitch snitch = new Snitch(snitchID, location, isNew, groupID, fieldGenerator,
-            this, name);
+            this, name, placer);
         for (Function<Snitch, AbstractSnitchAppender> appenderFunc : appenders) {
             AbstractSnitchAppender appender = appenderFunc.apply(snitch);
             if (appender != null) {

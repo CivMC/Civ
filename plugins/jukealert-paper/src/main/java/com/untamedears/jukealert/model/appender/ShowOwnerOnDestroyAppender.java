@@ -3,7 +3,10 @@ package com.untamedears.jukealert.model.appender;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
+import java.util.Objects;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -40,18 +43,31 @@ public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
             return;
         }
         Group group = snitch.getGroup();
-        String groupName;
-        String ownerName;
         if (group == null) {
-            groupName = "unknown";
-            ownerName = "unknown";
-        } else {
-            groupName = group.getName();
-            ownerName = NameLayerAPI.getCurrentName(group.getOwner());
+            player.sendMessage(Component.empty()
+                .append(Component.text(snitch.getType().getName(), NamedTextColor.GOLD))
+                .append(Component.text(" is on an unknown group.", NamedTextColor.YELLOW)));
+            return;
         }
-        player.sendMessage(String.format("%s%s %swas reinforced on %s%s%s owned by %s%s", ChatColor.GOLD,
-            snitch.getType().getName(), ChatColor.YELLOW, ChatColor.GREEN, groupName, ChatColor.YELLOW,
-            ChatColor.LIGHT_PURPLE, ownerName));
+
+        UUID placer = action.getSnitch().getPlacer();
+        String ownerName = Objects.requireNonNullElse(NameLayerAPI.getCurrentName(group.getOwner()), group.getOwner().toString());
+        String groupName = group.getName();
+
+        if (placer == null) {
+            player.sendMessage(String.format("%s%s %swas reinforced on %s%s%s owned by %s%s", ChatColor.GOLD,
+                snitch.getType().getName(), ChatColor.YELLOW, ChatColor.GREEN, groupName, ChatColor.YELLOW,
+                ChatColor.LIGHT_PURPLE, ownerName));
+        } else {
+            player.sendMessage(Component.empty()
+                .append(Component.text(snitch.getType().getName(), NamedTextColor.GOLD))
+                .append(Component.text(" was placed by ", NamedTextColor.YELLOW))
+                .append(Component.text(Objects.requireNonNullElse(NameLayerAPI.getCurrentName(placer), placer.toString()), NamedTextColor.LIGHT_PURPLE))
+                .append(Component.text(", and was reinforced on ", NamedTextColor.YELLOW))
+                .append(Component.text(groupName, NamedTextColor.GREEN))
+                .append(Component.text(" owned by ", NamedTextColor.YELLOW))
+                .append(Component.text(ownerName, NamedTextColor.LIGHT_PURPLE)));
+        }
     }
 
 }

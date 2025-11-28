@@ -36,6 +36,7 @@ public class Snitch extends LocationTrackable {
     private Map<Class<? extends AbstractSnitchAppender>, AbstractSnitchAppender> appenders;
     private FieldManager fieldManager;
     private SnitchFactoryType type;
+    private UUID placer;
     private boolean active;
 
     /**
@@ -50,13 +51,14 @@ public class Snitch extends LocationTrackable {
      * @param name             Name of the snitch
      */
     public Snitch(int snitchID, Location loc, boolean isNew, int groupID,
-                  Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name) {
+                  Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name, UUID placer) {
         super(isNew, loc);
         this.snitchId = snitchID;
         this.groupID = groupID;
         this.name = name;
         this.fieldManager = fieldManagerFunc.apply(this);
         this.type = type;
+        this.placer = placer;
         this.appenders = new HashMap<>();
         this.active = true;
     }
@@ -272,6 +274,10 @@ public class Snitch extends LocationTrackable {
      */
     public void applyToAppenders(Consumer<AbstractSnitchAppender> con) {
         appenders.values().forEach(con);
+    }
+
+    public UUID getPlacer() {
+        return placer;
     }
 
     @Override
