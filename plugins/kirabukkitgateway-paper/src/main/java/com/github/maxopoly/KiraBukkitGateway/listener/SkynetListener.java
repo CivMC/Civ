@@ -15,9 +15,9 @@ public class SkynetListener implements Listener {
             return;
         }
         if (!e.getPlayer().hasPlayedBefore()) {
-            KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginFirstTime(e.getPlayer().getName());
+            KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginFirstTime(e.getPlayer());
         }
-        KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "LOGIN");
+        KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer(), "LOGIN");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -25,7 +25,7 @@ public class SkynetListener implements Listener {
         if (e.getPlayer().hasPermission("sv.joinvanished")) {
             return;
         }
-        KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "LOGOUT");
+        KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer(), "LOGOUT");
     }
 
 }
