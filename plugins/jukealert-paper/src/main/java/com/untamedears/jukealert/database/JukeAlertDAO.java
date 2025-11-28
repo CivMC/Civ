@@ -274,7 +274,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
         final Location snitchLocation = snitch.getLocation();
         try (final Connection connection = this.db.getConnection();
              final PreparedStatement statement = connection.prepareStatement(
-                 "INSERT INTO ja_snitches (group_id,type_id,x,y,z,world_id,name, placer) VALUES (?,?,?,?,?,?,?);",
+                 "INSERT INTO ja_snitches (group_id,type_id,x,y,z,world_id,name, placer) VALUES (?,?,?,?,?,?,?, ?);",
                  Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, snitchGroup.getGroupId());
             statement.setInt(2, snitch.getType().getID());
