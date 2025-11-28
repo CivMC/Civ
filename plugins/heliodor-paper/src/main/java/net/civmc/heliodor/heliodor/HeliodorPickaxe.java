@@ -14,18 +14,20 @@ import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItemFactory;
 
 public interface HeliodorPickaxe {
 
     NamespacedKey PICKAXE_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "heliodor_pickaxe");
 
-    @SuppressWarnings("UnstableApiUsage")
-    static ItemStack getItem() {
+    CustomItemFactory HELIODOR_PICKAXE = CustomItem.registerCustomItem("heliodor_pickaxe", () -> {
         ItemStack pickaxe = new ItemStack(Material.GOLDEN_PICKAXE);
         Damageable meta = (Damageable) pickaxe.getItemMeta();
 
@@ -49,8 +51,9 @@ public interface HeliodorPickaxe {
         AnvilRepairListener.setNoCombine(meta);
         meta.getPersistentDataContainer().set(PICKAXE_KEY, PersistentDataType.BOOLEAN, true);
         pickaxe.setItemMeta(meta);
+
         return pickaxe;
-    }
+    });
 
     static boolean isPickaxe(ItemStack item) {
         if (item == null || item.getType() != Material.GOLDEN_PICKAXE) {
@@ -60,9 +63,9 @@ public interface HeliodorPickaxe {
     }
 
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
-        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "heliodor_pickaxe"), HeliodorPickaxe.getItem())
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "heliodor_pickaxe"), HeliodorPickaxe.HELIODOR_PICKAXE.createItem())
             .shape("xxx", " s ", " s ")
-            .setIngredient('x', HeliodorGem.createFinishedHeliodorGem())
+            .setIngredient('x', HeliodorGem.FINISHED_HELIODOR_GEM.createItem())
             .setIngredient('s', Material.STICK);
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
         return List.of(recipe);

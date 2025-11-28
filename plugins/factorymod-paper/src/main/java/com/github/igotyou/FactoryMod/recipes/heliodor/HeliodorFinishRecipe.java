@@ -46,7 +46,7 @@ public class HeliodorFinishRecipe extends InputRecipe {
         }
 
         ItemMap toRemove = input.clone();
-        ItemStack gem = HeliodorGem.createFinishedHeliodorGem();
+        ItemStack gem = HeliodorGem.FINISHED_HELIODOR_GEM.createItem();
         gem.setAmount(this.outputCount);
         ItemMap toAdd = new ItemMap(gem);
         if (toRemove.isContainedIn(inputInv)) {
@@ -145,7 +145,7 @@ public class HeliodorFinishRecipe extends InputRecipe {
 
     @Override
     public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-        ItemStack gem = HeliodorGem.createFinishedHeliodorGem();
+        ItemStack gem = HeliodorGem.FINISHED_HELIODOR_GEM.createItem();
         gem.setAmount(this.outputCount);
         return new ItemMap(gem).getItemStackRepresentation();
     }

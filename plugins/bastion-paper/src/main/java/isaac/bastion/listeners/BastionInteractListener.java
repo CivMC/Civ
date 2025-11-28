@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -53,7 +54,7 @@ public class BastionInteractListener implements Listener {
 
         final Player player = event.getPlayer();
 
-        //Stop boat places in bastions
+        // Stop boat places in bastions
         Material isBoat = player.getInventory().getItemInMainHand().getType();
         Material offhand = player.getInventory().getItemInOffHand().getType();
         if (Tag.ITEMS_BOATS.isTagged(isBoat) || Tag.ITEMS_BOATS.isTagged(offhand) && event.getClickedBlock() != null) {
@@ -106,7 +107,7 @@ public class BastionInteractListener implements Listener {
             player.sendMessage(ChatColor.GREEN + "Matured");
         } else if (PlayersStates.playerInMode(player, Mode.BASTION)) {
             final BastionType type = blockStorage.getAndRemovePendingBastion(block.getLocation());
-            if (type == null) return; //if it wasnt stored it cant have been a bastion
+            if (type == null) return; // if it wasnt stored it cant have been a bastion
             Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getLocation());
 
             if (NameLayerAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
@@ -184,16 +185,12 @@ public class BastionInteractListener implements Listener {
 
     public BastionType blockToType(Block block, ItemStack inHand) {
         Material mat = block.getType(); //, block.getData()); -- again, we can't differentiate based on this?
-        String displayName = null;
-        List<String> lore = null;
+        Component displayName = null;
+        List<Component> lore = null;
         if (inHand != null) {
             ItemMeta im = inHand.getItemMeta();
-            if (im != null && im.hasLore()) {
-                lore = im.getLore();
-            }
-            if (im != null && im.hasDisplayName()) {
-                displayName = im.getDisplayName();
-            }
+            lore = im.lore();
+            displayName = im.displayName();
         }
         BastionType type = BastionType.getBastionType(mat, displayName, lore);
         return type;
