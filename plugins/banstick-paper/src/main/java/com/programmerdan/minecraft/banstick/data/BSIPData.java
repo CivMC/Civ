@@ -302,7 +302,8 @@ public final class BSIPData {
                     allIPDataID.put(data.idid, data);
                     return data;
                 } else {
-                    BanStick.getPlugin().warning("Failed to retrieve IP Data by exact IP: {0} - not found", ip);
+                    // No reason to log here, just spams console, especially on import
+                    // BanStick.getPlugin().warning("Failed to retrieve IP Data by exact IP: {0} - not found", ip);
                 }
             }
         } catch (SQLException se) {
