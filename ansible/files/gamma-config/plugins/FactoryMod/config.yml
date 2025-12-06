@@ -10371,12 +10371,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EMERALD_BLOCK
-        amount: 2
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
+        amount: 160
   adv_xp_2:
     production_time: 4s
     name: Make Exp 2
@@ -10581,12 +10576,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EMERALD_BLOCK
-        amount: 2
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
+        amount: 160
   adv_xp_3:
     production_time: 4s
     name: Make Exp 3
@@ -10791,12 +10781,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EMERALD_BLOCK
-        amount: 2
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
+        amount: 160
   upgrade_to_advanced_cauldron:
     production_time: 4s
     name: Upgrade to Advanced Cauldron
