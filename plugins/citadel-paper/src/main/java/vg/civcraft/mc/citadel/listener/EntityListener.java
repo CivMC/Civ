@@ -1,13 +1,11 @@
 package vg.civcraft.mc.citadel.listener;
 
+import io.papermc.paper.event.entity.ItemTransportingEntityValidateTargetEvent;
+import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
-
-import io.papermc.paper.event.entity.ItemTransportingEntityValidateTargetEvent;
-import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -243,9 +241,9 @@ public class EntityListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW)
     public void blockCopperGolem(ItemTransportingEntityValidateTargetEvent itevte) {
-        Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(itevte.getBlock());
+        Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(itevte.getBlock());
         if (rein != null && !rein.isInsecure()) {
             itevte.setAllowed(false);
         }
