@@ -34,8 +34,8 @@ public class NpcPlayer extends ServerPlayer {
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), NpcNameGeneratorFactory.getNameGenerator().generate(player));
         ClientInformation clientInformation = ((CraftPlayer) player).getHandle().clientInformation();
 
-        for (Map.Entry<String, Property> entry : ((CraftPlayer) player).getProfile().getProperties().entries()) {
-            gameProfile.getProperties().put(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Property> entry : ((CraftPlayer) player).getProfile().properties().entries()) {
+            gameProfile.properties().put(entry.getKey(), entry.getValue());
         }
 
         NpcPlayer npcPlayer = new NpcPlayer(minecraftServer, worldServer, gameProfile, clientInformation);

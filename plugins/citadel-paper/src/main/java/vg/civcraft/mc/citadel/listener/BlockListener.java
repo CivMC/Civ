@@ -19,6 +19,7 @@ import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Lectern;
+import org.bukkit.block.data.type.Shelf;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -765,23 +766,48 @@ public class BlockListener implements Listener {
         if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
             return;
         }
-        ItemStack relevant;
         Player p = pie.getPlayer();
-        if (hand == EquipmentSlot.HAND) {
-            relevant = p.getInventory().getItemInMainHand();
-        } else {
-            relevant = p.getInventory().getItemInOffHand();
-        }
-        if (relevant.getType() != Material.AIR && !Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType())) {
-            return;
-        }
         Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
-        if (rein == null) {
+        if (rein == null || rein.isInsecure()) {
             return;
         }
         if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
-            p.sendMessage(ChatColor.RED + "You do not have permission to " +
-                (Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType()) ? "place books in this shelf" : "take books from this shelf"));
+            p.sendMessage(ChatColor.RED + "You do not have permission to interact with this bookshelf");
+            pie.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void preventShelfUse(PlayerInteractEvent pie) {
+        if (!pie.hasBlock()) {
+            return;
+        }
+        if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        Block block = pie.getClickedBlock();
+        Material type = block.getType();
+        if (!Tag.WOODEN_SHELVES.isTagged(type)) {
+            return;
+        }
+        Shelf shelf = (Shelf) block.getBlockData();
+
+        Block authoritative = switch (shelf.getSideChain()) {
+            case UNCONNECTED, CENTER -> block;
+            case RIGHT -> block.getRelative(shelf.getFacing().getModZ(), 0, shelf.getFacing().getModX());
+            case LEFT -> block.getRelative(-shelf.getFacing().getModZ(), 0, -shelf.getFacing().getModX());
+        };
+
+        Player p = pie.getPlayer();
+
+        Reinforcement authoritativeRein = Citadel.getInstance().getReinforcementManager().getReinforcement(authoritative);
+        if (authoritativeRein != null && !authoritativeRein.isInsecure() && !authoritativeRein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+            p.sendMessage(ChatColor.RED + "You do not have permission to use this shelf");
+            pie.setCancelled(true);
+        }
+        Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+        if (rein != null && !rein.isInsecure() && !rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+            p.sendMessage(ChatColor.RED + "You do not have permission to use this shelf");
             pie.setCancelled(true);
         }
     }

@@ -67,9 +67,9 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.8'
+      VERSION: '1.21.10'
       EULA: 'TRUE'
-      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/113/downloads/leaf-1.21.8-113.jar'
+      PAPER_DOWNLOAD_URL: 'https://ci.pufferfish.host/job/Pufferfish-1.21/38/artifact/pufferfish-server/build/libs/pufferfish-paperclip-1.21.10-R0.1-SNAPSHOT-mojmap.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
@@ -125,9 +125,9 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.8'
+      VERSION: '1.21.10'
       EULA: 'TRUE'
-      PAPER_CUSTOM_JAR: 'civpaper.jar'
+      PAPER_DOWNLOAD_URL: 'https://ci.pufferfish.host/job/Pufferfish-1.21/38/artifact/pufferfish-server/build/libs/pufferfish-paperclip-1.21.10-R0.1-SNAPSHOT-mojmap.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
@@ -181,7 +181,7 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.8'
+      VERSION: '1.21.10'
       EULA: 'TRUE'
       PAPER_CUSTOM_JAR: 'asp-server.jar'
 
