@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -216,7 +217,8 @@ public class FileHandler {
                             sortedList.add(center);
                             //we cant guarantee that this will work, it might very well fail for partially broken factories, but it's the best thing I got
                             if (blocks.get(0).getBlock().getType() == Material.CHEST
-                                || blocks.get(0).getBlock().getType() == Material.TRAPPED_CHEST) {
+                                || blocks.get(0).getBlock().getType() == Material.TRAPPED_CHEST
+                                || Tag.COPPER_CHESTS.isTagged(blocks.get(0).getBlock().getType())) {
                                 sortedList.add(blocks.get(1));
                                 sortedList.add(blocks.get(0));
                             } else {

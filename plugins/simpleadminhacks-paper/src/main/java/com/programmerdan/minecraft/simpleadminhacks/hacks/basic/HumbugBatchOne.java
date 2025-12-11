@@ -208,7 +208,7 @@ public class HumbugBatchOne extends BasicHack {
         List<Block> blocks = p.getLineOfSight(s, 8);
         for (Block b : blocks) {
             Material m = b.getType();
-            if (m == Material.CHEST || m == Material.TRAPPED_CHEST) {
+            if (m == Material.CHEST || m == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(m)) {
                 if (b.getRelative(BlockFace.UP).getType().isOccluding()) {
                     // dont show inventory twice if a normal chest is opened
                     final Inventory chestInv = ((InventoryHolder) b.getState()).getInventory();
@@ -288,22 +288,14 @@ public class HumbugBatchOne extends BasicHack {
             height = 0.562;
         } else if (Tag.FLOWER_POTS.isTagged(mat)) {
             height = 0.375;
-        } else switch (mat) {
-            case CHEST:
-            case TRAPPED_CHEST:
-            case ENDER_CHEST:
-                height = 0.875;
-                break;
-            case LILY_PAD:
-                height = 0.016;
-                break;
-            case ENCHANTING_TABLE:
-                height = 0.016;
-                break;
-            case PLAYER_WALL_HEAD:
-            case PLAYER_HEAD:
-                height = 0.5;
-                break;
+        } else if (mat == Material.CHEST || mat == Material.TRAPPED_CHEST || mat == Material.ENDER_CHEST || Tag.COPPER_CHESTS.isTagged(mat)) {
+            height = 0.875;
+        } else if (mat == Material.LILY_PAD) {
+            height = 0.016;
+        } else if (mat == Material.ENCHANTING_TABLE) {
+            height = 0.016;
+        } else if (mat == Material.PLAYER_WALL_HEAD || mat == Material.PLAYER_HEAD) {
+            height = 0.5;
         }
 
         // Check if the below block is difficult

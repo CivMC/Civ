@@ -25,6 +25,7 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.block.Dispenser;
@@ -94,6 +95,7 @@ public class FactoryModManager {
         possibleInteractionBlock.add(Material.CRAFTING_TABLE);
         possibleInteractionBlock.add(Material.FURNACE);
         possibleInteractionBlock.add(Material.CHEST);
+        possibleInteractionBlock.addAll(Tag.COPPER_CHESTS.getValues());
         possibleInteractionBlock.add(Material.BARREL);
         possibleInteractionBlock.add(Material.TRAPPED_CHEST);
 

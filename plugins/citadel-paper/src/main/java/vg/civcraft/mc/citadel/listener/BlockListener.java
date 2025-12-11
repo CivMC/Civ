@@ -349,7 +349,7 @@ public class BlockListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void preventBypassChestAccess(BlockPlaceEvent e) {
         Material mat = e.getBlock().getType();
-        if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST) {
+        if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST && !Tag.COPPER_CHESTS.isTagged(mat)) {
             return;
         }
         for (Block rel : WorldUtils.getPlanarBlockSides(e.getBlock(), true)) {

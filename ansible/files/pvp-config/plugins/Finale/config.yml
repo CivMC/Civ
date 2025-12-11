@@ -98,6 +98,12 @@ weaponModification:
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
+  copperAxe:
+    material: COPPER_AXE
+    damage: 5
+  copperSword:
+    material: COPPER_SWORD
+    damage: 5
   ironAxe:
     material: IRON_AXE
     damage: 4
