@@ -316,8 +316,7 @@ hacks:
     trackingDepth: 16
     clearOnMatch: true
     minDepthToMatch: 2
-    watchedMaterials:
-      - []
+    watchedMaterials: []
   CTAnnounce:
     enabled: true
     delay: 10000
