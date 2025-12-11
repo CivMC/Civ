@@ -767,6 +767,10 @@ public class BlockListener implements Listener {
             return;
         }
         Player p = pie.getPlayer();
+        boolean hasItem = p.getInventory().getItemInMainHand().getType() != Material.AIR || p.getInventory().getItemInOffHand().getType() != Material.AIR;
+        if (p.isSneaking() && hasItem) {
+            return;
+        }
         Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
         if (rein == null || rein.isInsecure()) {
             return;
@@ -790,15 +794,19 @@ public class BlockListener implements Listener {
         if (!Tag.WOODEN_SHELVES.isTagged(type)) {
             return;
         }
-        Shelf shelf = (Shelf) block.getBlockData();
 
+        Player p = pie.getPlayer();
+        boolean hasItem = p.getInventory().getItemInMainHand().getType() != Material.AIR || p.getInventory().getItemInOffHand().getType() != Material.AIR;
+        if (p.isSneaking() && hasItem) {
+            return;
+        }
+
+        Shelf shelf = (Shelf) block.getBlockData();
         Block authoritative = switch (shelf.getSideChain()) {
             case UNCONNECTED, CENTER -> block;
             case RIGHT -> block.getRelative(shelf.getFacing().getModZ(), 0, shelf.getFacing().getModX());
             case LEFT -> block.getRelative(-shelf.getFacing().getModZ(), 0, -shelf.getFacing().getModX());
         };
-
-        Player p = pie.getPlayer();
 
         Reinforcement authoritativeRein = Citadel.getInstance().getReinforcementManager().getReinforcement(authoritative);
         if (authoritativeRein != null && !authoritativeRein.isInsecure() && !authoritativeRein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {

@@ -9158,7 +9158,7 @@ recipes:
       chain:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: CHAIN
+        type: IRON_CHAIN
         amount: 64
   make_lantern:
     production_time: 4s
@@ -14595,32 +14595,39 @@ recipes:
           type: BEACON
           amount: 1
       diamond_horse_armor:
-        chance: 0.00012
+        chance: 0.0001
         diamond_horse_armor:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: DIAMOND_HORSE_ARMOR
           amount: 1
       golden_horse_armor:
-        chance: 0.00012
+        chance: 0.0001
         golden_horse_armor:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_HORSE_ARMOR
           amount: 1
       iron_horse_armor:
-        chance: 0.00012
+        chance: 0.0001
         iron_horse_armor:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: IRON_HORSE_ARMOR
           amount: 1
       leather_horse_armor:
-        chance: 0.00012
+        chance: 0.0001
         leather_horse_armor:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: LEATHER_HORSE_ARMOR
+          amount: 1
+      copper_horse_armor:
+        chance: 0.0001
+        copper_horse_armor:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: COPPER_HORSE_ARMOR
           amount: 1
       jukebox:
         chance: 0.0092974999
