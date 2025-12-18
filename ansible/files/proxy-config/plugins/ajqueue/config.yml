@@ -64,8 +64,8 @@ enable-bypasspaused-permission: false
 # For example, if one of the below kick reasons is 'banned' and the player gets kicked when trying to connect to
 #  a server in a queue with a message saying "You are banned from this server!" then it will kick them from the queue too.
 kick-reasons:
-  - 'banned'
-  - 'blacklisted'
+  - "banned"
+  - "blacklisted"
 
 
 # When a player is kicked from a server, should we automatically add that player to the queue?
@@ -145,6 +145,8 @@ server-groups: []
 #  default - Will send the player to the server in the group with the least number of players
 #  minigame - Will send the player to the server with the most players, until that server is full, which it will then send to the next server
 #  first - Will send the player to the first available server in the group (as long as it is joinable)
+#  first-strict - Will always send the player to the first server in the group, whether it's available or not.
+#    With first-strict, if the first server is offline/full/etc, the group will show as offline/full/etc and won't send players.
 balancer-types: []
 
 # If a player is in a server that is in a group and they re-queue for that group, should we allow it?
@@ -249,7 +251,9 @@ server-aliases:
 offline-time: 200
 
 # On velocity, should we send a player a message when they are kicked while trying to connect to a server with the queue?
-# This has no effect on bungee, because the message is sent from bungee and there's no way to change that in ajQueue
+# Note this does NOT apply if the server is offline/full. ajQueue does not attempt to send players to offline/full servers.
+# This would only apply to things like bans or temporary join errors.
+# This has no effect on bungee, because the message is sent from bungee and there's no way to change that in ajQueue.
 #  Default: false
 velocity-kick-message: false
 
@@ -328,6 +332,17 @@ require-queueserver-permission: false
 #  Default: 10
 max-tries: 10
 
+# What ratio of express to standard players should we send? (express:standard)
+# The default of 1:1 will send one express player, then one standard player.
+# If you set this to 2:1, ajQueue will attempt to send 2 players from the express queue for every standard queue attempt.
+# You can also set this to 1:2, so ajQueue will send 2 standard players for every express player.
+# Note that I specify "send attempts." This does not track players actually sent, but attempts.
+#  So if ajQueue attempts to send a player, but they are not actually sent (due to a kick or long join),
+#  then that would still count.
+# The format of this is "express:standard"
+#  Default: 1:1
+express-ratio: "1:1"
+
 # What QueueHolder should we use?
 # By default, the only QueueHolder available is 'default'
 # But more may be available via addons (registered via the API)
@@ -336,7 +351,7 @@ queue-holder: default
 
 # Should we enable the ajqueue.make-room permission?
 # The make-room permission will force there to be room in a server.
-#  So, if a player with this permission queues for a server and has this permission,
+#  So, if a player with this permission queues for a server that is full,
 #   someone from the server will be moved to the lobby to make room
 # This can be further configured using the next few options
 #  Default: false
@@ -362,6 +377,11 @@ re-check-priority: true
 # Should we check to make sure that people don't get sent quicker than wait-time?
 #  Default: true
 check-last-player-sent-time: true
+
+# Should we treat servers with a max player count of -1 as an infinite player count?
+# Limbo servers do this, which is why its enabled by default
+#  Default: true
+treat-negative-one-max-player-as-infinite: true
 
 # Should we send debug info to the console when priority queue is used?
 # This will print several lines to the console when a player joins a queue,
@@ -399,13 +419,23 @@ include-server-switch-in-cooldown: false
 
 # The minimum time between pinging the server. (in seconds)
 # If ajQueue is pinging your backend servers too often, raise this number
-minimum-ping-time: 1.0
+minimum-ping-time: "1.0"
 
 # In ajQueuePlus, if your permission plugin isn't yet supported, you can use this workaround to
 #  be able to use levels 1-10 for priority, or 15, 30, 60, and 120 for stayqueued
 # If you want more levels than that, contact aj to add support for your permission plugin if possible.
 # Does nothing if you are not on ajQueuePlus, or if you have a supported permission plugin
 plus-level-fallback: false
+
+# How many send times should we keep track of for calculating ETAs?
+# The time between players being sent to the server is averaged to get the ETA.
+# This amount of "time between sends" will be used in that average.
+# Increasing this will result in a more stable ETA, but will take longer to update for big changes in send times.
+# Lowering this will result in the ETA updating faster to big changes,
+#  but may result in inaccurate ETAs for infrequent sends (like for full servers)
+# Set to 0 or negative to go back to the old ETA system (queue position * wait-time)
+#  Default: 10
+send-times-to-keep: 10
 
 
 # Enabling this option will prevent ajQueue from communicating with ajQueue on the backend using Plugin Messaging.
@@ -414,6 +444,13 @@ plus-level-fallback: false
 # ** If you do not fully understand this option, please leave it disabled! **
 #  Default: false
 disable-proxy-communication: false
+
+# How long should we wait before giving up pinging a server (for checking if its online and player count)
+# This only applies if you are running Velocity.
+# If left at the default value of 0 (or changed to a negative value), it will use `read-timeout` in velocity.toml
+# This is in seconds. Decimals are supported.
+#  Default: 0 (uses read-timeout from the velocity config)
+ping-timeout: 0
 
 # Should we print some extra stuff to the console that might help aj diagnose some issues?
 debug: false
@@ -430,7 +467,7 @@ debug: false
 
 
 # Don't touch this number please
-config-version: 53
+config-version: 62
 
 
 # This is ONLY here so that they can be moved to messages.yml. Please edit these in messages.yml!

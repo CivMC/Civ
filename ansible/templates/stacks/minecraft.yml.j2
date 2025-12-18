@@ -55,6 +55,7 @@ services:
             # Config & Plugins
             - /opt/stacks/minecraft/proxy-config:/config
             - /opt/stacks/minecraft/proxy-plugins:/plugins
+            - /opt/PrivateConfig/proxy/plugins/ajQueue-2.9.0-all.jar:/config/plugins/ajQueue-2.9.0-all.jar
             - /opt/PrivateConfig/proxy/config/nuvotifier/config.toml:/config/plugins/nuvotifier/config.toml
             - /opt/PrivateConfig/proxy/config/nuvotifier/rsa/public.key:/config/plugins/nuvotifier/rsa/public.key
             - /opt/PrivateConfig/proxy/config/nuvotifier/rsa/private.key:/config/plugins/nuvotifier/rsa/private.key
@@ -76,7 +77,7 @@ services:
             TYPE: 'paper'
             VERSION: '1.21.8'
             EULA: 'TRUE'
-            PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/113/downloads/leaf-1.21.8-113.jar'
+            PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/156/downloads/leaf-1.21.8-156.jar'
 
             REMOVE_OLD_MODS: 'TRUE'
             COPY_CONFIG_DEST: '/data'
@@ -178,7 +179,7 @@ services:
             TYPE: 'paper'
             VERSION: '1.21.8'
             EULA: 'TRUE'
-            PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/113/downloads/leaf-1.21.8-113.jar'
+            PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/156/downloads/leaf-1.21.8-156.jar'
 
             REMOVE_OLD_MODS: 'TRUE'
             COPY_CONFIG_DEST: '/data'
