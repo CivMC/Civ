@@ -66,8 +66,8 @@ public class RebalanceTntMinecartListener implements Listener {
 
         double exposure = (0.5 * (Math.sqrt(4 * 2 * ((unscaledDamage - 1) / 7 / f) + 1) - 1)) / (1 - distance / f);
 
-        // Round up to next 0.5
-        distance = Math.round(distance * 2) / 2.0;
+        // Round down to next 0.5
+        distance = Math.floor(distance * 2) / 2.0;
 
         double d = distance / f;
         double impact = (1.0 - d) * exposure;
