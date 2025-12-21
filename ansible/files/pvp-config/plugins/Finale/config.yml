@@ -315,9 +315,6 @@ damageModifiers:
   FIREWORK:
     mode: DIRECT
     multiplier: 1.0
-  CART:
-    mode: DIRECT
-    multiplier: 0.75
 
 invulTicksEnabled: false
 invulnerableTicks:
@@ -644,3 +641,4 @@ netheriteFireResistance: true
 meteoricIronSlowness: true
 
 fireworkExplosions: true
+rebalanceTntMinecart: true

@@ -50,6 +50,7 @@ public class ConfigParser {
     private boolean combatTagOnPearl;
     private boolean netheriteFireResistanceEnabled;
     private boolean meteoricIronSlowness;
+    private boolean rebalanceTntMinecart;
     private PotionHandler potionHandler;
     private Collection<Enchantment> disabledEnchants;
     private VelocityHandler velocityHandler;
@@ -99,6 +100,10 @@ public class ConfigParser {
 
     public boolean isMeteoricIronSlownessEnabled() {
         return meteoricIronSlowness;
+    }
+
+    public boolean isRebalanceTntMinecartEnabled() {
+        return rebalanceTntMinecart;
     }
 
     public boolean isFireworkExplosions() {
@@ -173,6 +178,7 @@ public class ConfigParser {
         netheriteFireResistanceEnabled = config.getBoolean("netheriteFireResistance");
         meteoricIronSlowness = config.getBoolean("meteoricIronSlowness");
         fireworkExplosions = config.getBoolean("fireworkExplosions");
+        rebalanceTntMinecart = config.getBoolean("rebalanceTntMinecart");
 
         // Initialize the manager
         manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,

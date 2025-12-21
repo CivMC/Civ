@@ -644,3 +644,4 @@ netheriteFireResistance: true
 meteoricIronSlowness: true
 
 fireworkExplosions: false
+rebalanceTntMinecart: false
