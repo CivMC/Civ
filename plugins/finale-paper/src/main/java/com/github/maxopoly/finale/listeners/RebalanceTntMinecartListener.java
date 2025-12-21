@@ -1,10 +1,7 @@
 package com.github.maxopoly.finale.listeners;
 
 import java.util.concurrent.ThreadLocalRandom;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,16 +11,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
 public class RebalanceTntMinecartListener implements Listener {
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on(EntityDamageEvent event) {
-        if (!((event.getEntity() instanceof Player))) {
-            return;
-        }
-
-        Bukkit.broadcast(Component.text(event.getFinalDamage()));
-    }
-
     private float radius;
 
     @EventHandler
