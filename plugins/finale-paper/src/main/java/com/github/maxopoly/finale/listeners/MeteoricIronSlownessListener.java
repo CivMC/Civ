@@ -1,7 +1,6 @@
 package com.github.maxopoly.finale.listeners;
 
 import org.bukkit.damage.DamageType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,7 +51,7 @@ public class MeteoricIronSlownessListener implements Listener {
             return;
         }
 
-        if (event.getDamageSource().getDamageType() != DamageType.FALL) {
+        if (event.getDamageSource().getDamageType() != DamageType.FALL && event.getDamageSource().getDamageType() != DamageType.STALAGMITE) {
             return;
         }
 
