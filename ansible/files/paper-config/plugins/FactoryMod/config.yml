@@ -12859,7 +12859,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_TRAPDOOR
-        amount: 48
+        amount: 64
   wax_copper_trapdoors:
     production_time: 4s
     name: Wax Copper Trap Doors
