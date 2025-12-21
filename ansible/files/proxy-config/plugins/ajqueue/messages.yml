@@ -130,14 +130,9 @@ max-tries-reached: '&cUnable to connect to {SERVER}. Max retries reached.'
 auto-queued: '&aYou''ve been auto-queued for {SERVER} because you were kicked.'
 velocity-kick-message: '<red>You were kicked while trying to join {SERVER}: <white>{REASON}'
 updater:
-  update-available: |-
-    <gray><strikethrough>                                                         <reset>
-      <green>An update is available for ajQueue!
-      <dark_green>You can download it by <click:run_command:/ajqueue update><bold>clicking here</bold>
-        or running <gray>/ajQueue update</click>
-    <gray><strikethrough>                                                         <reset>
-  no-update: <red>There is not an update available
-  success: <green>The update has been downloaded! Now just restart the server
+  update-available: ""
+  no-update: ""
+  success: ""
   already-downloaded: '&aYou have already downloaded an update! &7Restart the server
         to apply it'
   slow-feedback: '&7Checking for update and downloading...'
