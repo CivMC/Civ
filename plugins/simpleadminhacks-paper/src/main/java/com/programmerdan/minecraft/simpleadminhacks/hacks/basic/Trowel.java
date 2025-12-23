@@ -6,9 +6,12 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,30 +41,19 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItemFactory;
 
 public class Trowel extends BasicHack {
 
     private static final NamespacedKey TROWEL_ROW = new NamespacedKey(SimpleAdminHacks.instance(), "trowel_row");
-    private static final ItemStack TROWEL = getTrowel(0);
-
-    public Trowel(SimpleAdminHacks plugin, BasicHackConfig config) {
-        super(plugin, config);
-    }
-
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(SimpleAdminHacks.instance(), "trowel"), TROWEL)
-            .shape("  s", "ii ").setIngredient('i', Material.IRON_INGOT).setIngredient('s', Material.STICK));
-    }
-
-    private static ItemStack getTrowel(int row) {
-        ItemStack trowel = new ItemStack(Material.IRON_HOE);
+    private static final CustomItemFactory TROWEL = CustomItem.registerCustomItem("trowel", () -> {
+        final int defaultRow = 0;
+        final ItemStack trowel = new ItemStack(Material.IRON_HOE);
         ItemMeta meta = trowel.getItemMeta();
         meta.itemName(Component.text("Trowel"));
         meta.lore(List.of(
-            Component.empty().append((Component.text("Selected row: ", NamedTextColor.GRAY).append(Component.text(row + 1, NamedTextColor.WHITE))).decoration(TextDecoration.ITALIC, false)),
+            Component.empty().append((Component.text("Selected row: ", NamedTextColor.GRAY).append(Component.text(defaultRow + 1, NamedTextColor.WHITE))).decoration(TextDecoration.ITALIC, false)),
             Component.text("Shift left click to cycle row."),
             Component.text("Right click to place a block from that row in your inventory."),
             Component.text("Row 1 is the top row; row 4 is the hotbar.")
@@ -70,12 +62,20 @@ public class Trowel extends BasicHack {
         meta.setRarity(ItemRarity.COMMON);
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(new NamespacedKey("heliodor", "no_combine"), PersistentDataType.BOOLEAN, true);
-        pdc.set(TROWEL_ROW, PersistentDataType.INTEGER, row);
+        pdc.set(TROWEL_ROW, PersistentDataType.INTEGER, defaultRow);
         trowel.setItemMeta(meta);
-
-        CustomItem.registerCustomItem("trowel", trowel);
-
         return trowel;
+    });
+
+    public Trowel(SimpleAdminHacks plugin, BasicHackConfig config) {
+        super(plugin, config);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        Bukkit.getServer().addRecipe(new ShapedRecipe(new NamespacedKey(SimpleAdminHacks.instance(), "trowel"), TROWEL.createItem())
+            .shape("  s", "ii ").setIngredient('i', Material.IRON_INGOT).setIngredient('s', Material.STICK));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

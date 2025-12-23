@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
@@ -18,9 +19,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+@CommandAlias("fmco")
 public class CheatOutput extends BaseCommand {
 
-    @CommandAlias("fmco")
+    @Default
     @CommandPermission("fm.op")
     @Description("Gives you the output of the selected recipe in the factory you are looking at")
     public void execute(Player sender) {

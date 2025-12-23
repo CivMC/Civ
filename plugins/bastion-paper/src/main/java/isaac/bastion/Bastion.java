@@ -39,6 +39,7 @@ public final class Bastion extends ACivMod {
         plugin = this;
         saveDefaultConfig();
         reloadConfig();
+        BastionItems.registerCustomItems();
         BastionType.loadBastionTypes(getConfig().getConfigurationSection("bastions"));
         commonSettings = CommonSettings.load(getConfig().getConfigurationSection("commonSettings"));
         setupDatabase();
@@ -46,7 +47,7 @@ public final class Bastion extends ACivMod {
         blockManager = new BastionBlockManager();
         settingManager = new BastionSettingManager();
 
-        if (!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
+        if (!this.isEnabled()) // check that the plugin was not disabled in setting up any of the static variables
             return;
 
         BastionType.startRegenAndErosionTasks();
@@ -111,7 +112,7 @@ public final class Bastion extends ACivMod {
         groupStorage.loadGroups();
     }
 
-    //Sets up the command managers
+    // Sets up the command managers
     private void setupCommands() {
         getCommand("Bastion").setExecutor(new BastionCommandManager());
         getCommand("bsi").setExecutor(new ModeChangeCommand(Mode.INFO));

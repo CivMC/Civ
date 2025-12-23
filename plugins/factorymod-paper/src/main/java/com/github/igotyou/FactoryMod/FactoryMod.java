@@ -18,6 +18,7 @@ public class FactoryMod extends ACivMod {
     public void onEnable() {
         super.onEnable();
         plugin = this;
+        FMItems.registerCustomItems();
         ConfigParser cp = new ConfigParser(this);
         manager = cp.parse();
         manager.loadFactories();
@@ -31,7 +32,9 @@ public class FactoryMod extends ACivMod {
 
     @Override
     public void onDisable() {
-        manager.shutDown();
+        if (manager != null) {
+            manager.shutDown();
+        }
         plugin.info("Shutting down");
     }
 

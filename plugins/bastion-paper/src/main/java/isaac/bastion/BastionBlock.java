@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +27,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
     private Location location;
     private int id = -1;
-    private long placed; //time when the bastion block was created
+    private long placed; // time when the bastion block was created
     private BastionType type;
     private Integer listGroupId;
 
@@ -95,13 +96,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
      */
     public boolean inField(Location loc) {
         return !(yLevelCheck(loc) || // don't add parens if you don't know why it wasn't there.
-            (type.isSquare() &&
-                (Math.abs(loc.getBlockX() - location.getBlockX()) > type.getEffectRadius() ||
-                    Math.abs(loc.getBlockZ() - location.getBlockZ()) > type.getEffectRadius())) ||
-            (!type.isSquare() &&
-                ((loc.getBlockX() - location.getX()) * (float) (loc.getBlockX() - location.getX()) +
-                    (loc.getBlockZ() - location.getZ()) * (float) (loc.getBlockZ() - location.getZ()) >= type.getRadiusSquared()))
-        );
+            (type.isSquare() && (Math.abs(loc.getBlockX() - location.getBlockX()) > type.getEffectRadius() || Math.abs(loc.getBlockZ() - location.getBlockZ()) > type.getEffectRadius())) || (!type.isSquare() && ((loc.getBlockX() - location.getX()) * (float) (loc.getBlockX() - location.getX()) + (loc.getBlockZ() - location.getZ()) * (float) (loc.getBlockZ() - location.getZ()) >= type.getRadiusSquared())));
     }
 
     public boolean yLevelCheck(Location loc) {
@@ -122,7 +117,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
         Reinforcement reinforcement = getReinforcement();
 
         if (reinforcement != null) {
-            return reinforcement.hasPermission(player, CitadelPermissionHandler.getBypass()); //should return true if founder or moderator, but I feel this is more consistant
+            return reinforcement.hasPermission(player, CitadelPermissionHandler.getBypass()); // should return true if founder or moderator, but I feel this is more consistant
         }
         return true;
     }
@@ -181,7 +176,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
      */
     public boolean oneCanPlace(Set<UUID> players) {
         Reinforcement reinforcement = getReinforcement();
-        //the object will have been closed if null but we still don't want things to crash
+        // the object will have been closed if null but we still don't want things to crash
         if (reinforcement == null) {
             return true;
         }
@@ -404,7 +399,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
         hoverText.append("\n");
 
         hoverText.append("Type: ");
-        hoverText.append(this.type.getItemName());
+        hoverText.append(PlainTextComponentSerializer.plainText().serialize(this.type.getItemName()));
         hoverText.append("\n");
 
         hoverText.append("Shape: ");
@@ -421,10 +416,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
     public String getLocationText() {
         String worldText = "";
 
-        if (this.location != null
-            && this.location.getWorld() != null
-            && this.location.getWorld().getName() != null
-        ) {
+        if (this.location != null && this.location.getWorld() != null) {
             worldText = String.format("%s ", this.location.getWorld().getName());
         }
 

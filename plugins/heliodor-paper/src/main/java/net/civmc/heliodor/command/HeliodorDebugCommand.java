@@ -37,10 +37,10 @@ public class HeliodorDebugCommand implements CommandExecutor {
         }
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("givemeteoricironnugget")) {
-                player.getInventory().addItem(MeteoricIron.createMeteoricIronNugget());
+                player.getInventory().addItem(MeteoricIron.METEORIC_IRON_NUGGET.createItem());
                 return true;
             } else if (args[0].equalsIgnoreCase("givefinishedheliodorgem")) {
-                player.getInventory().addItem(HeliodorGem.createFinishedHeliodorGem());
+                player.getInventory().addItem(HeliodorGem.FINISHED_HELIODOR_GEM.createItem());
                 return true;
             } else if (args[0].equalsIgnoreCase("giveheliodorgem")) {
                 player.getInventory().addItem(HeliodorGem.createHeliodorGem(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
