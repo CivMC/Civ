@@ -190,7 +190,8 @@ public class NameAPI {
      * while PlayerMappingInfo.uuidMapping will return Map&lt;UUID, String&gt;
      *
      * @param highestKnown only includes rows with a higher id than this. Use 0 to get all player mappings.
-     * @return the player mapping info
+     * @return the player mapping info. nameMapping will contain the player name in lower case
+     *  for case-insensitive matching
      */
     public PlayerMappingInfo getAllPlayerInfo(long highestKnown) {
         if (highestKnown < 0) {
@@ -207,7 +208,7 @@ public class NameAPI {
             while (set.next()) {
                 UUID uuid = UUID.fromString(set.getString("uuid"));
                 String playername = set.getString("player");
-                nameMapping.put(playername, uuid);
+                nameMapping.put(playername.toLowerCase(), uuid);
                 uuidMapping.put(uuid, playername);
                 int id = set.getInt("id");
                 if (id > highest) {

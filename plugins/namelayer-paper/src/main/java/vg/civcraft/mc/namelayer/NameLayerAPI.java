@@ -48,8 +48,8 @@ public class NameLayerAPI implements Listener {
         return groupManager;
     }
 
-    public static @Nullable UUID getUUID(String s) {
-        return toUuid.get(s);
+    public static @Nullable UUID getUUID(String name) {
+        return toUuid.get(name.toLowerCase());
     }
 
     public static @Nullable String getCurrentName(UUID uuid) {
@@ -59,7 +59,7 @@ public class NameLayerAPI implements Listener {
     @EventHandler
     public void on(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        toUuid.put(player.getName(), player.getUniqueId());
+        toUuid.put(player.getName().toLowerCase(), player.getUniqueId());
         toName.put(player.getUniqueId(), player.getName());
     }
 }
