@@ -21,6 +21,7 @@ import com.github.maxopoly.finale.listeners.NetheriteFireResistanceListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
 import com.github.maxopoly.finale.listeners.PotionListener;
+import com.github.maxopoly.finale.listeners.RebalanceTntMinecartListener;
 import com.github.maxopoly.finale.listeners.ShieldListener;
 import com.github.maxopoly.finale.listeners.ToolProtectionListener;
 import com.github.maxopoly.finale.listeners.TridentListener;
@@ -121,6 +122,9 @@ public class Finale extends ACivMod {
         }
         if (config.isMeteoricIronSlownessEnabled()) {
             Bukkit.getPluginManager().registerEvents(new MeteoricIronSlownessListener(), this);
+        }
+        if (config.isRebalanceTntMinecartEnabled()) {
+            Bukkit.getPluginManager().registerEvents(new RebalanceTntMinecartListener(), this);
         }
         Bukkit.getPluginManager().registerEvents(new WarpFruitListener(), this);
         Bukkit.getPluginManager().registerEvents(new TridentListener(), this);

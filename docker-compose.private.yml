@@ -7,6 +7,13 @@ services:
   ### Minecraft ###
   #################
 
+  proxy:
+    environment:
+      REMOVE_OLD_MODS_EXCLUDE: "ajQueue-2.9.0-all.jar"
+      SYNC_SKIP_NEWER_IN_DESTINATION: "true"
+    volumes:
+      - ./PrivateConfig/proxy/plugins/ajQueue-2.9.0-all.jar:/config/plugins/ajQueue-2.9.0-all.jar
+
   paper:
     environment:
       # Any Jars need to be here, comma separated so that they are not removed during sync
@@ -17,7 +24,7 @@ services:
     # Note that config and plugins are mounted into the DATA directory, to avoid propagating to the config bind mount
     volumes:
       - ./PrivateConfig/paper/plugins/Vulcan.jar:/privateconfig/plugins/Vulcan.jar
-      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.10.1.jar:/privateconfig/plugins/packetevents-spgiot-2.9.4.jar
+      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.10.1.jar:/privateconfig/plugins/packetevents-spigot-2.10.1.jar
       - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml
       - ./PrivateConfig/paper/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
       - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/privateconfig/plugins/KiraBukkitGateway/config.yml
@@ -26,9 +33,6 @@ services:
       - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
       - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/privateconfig/plugins/BreweryX/recipes.yml
       - ./PrivateConfig/paper/config/Terra/packs/CivMC:/privateconfig/plugins/Terra/packs/CivMC
-      - ./PrivateConfig/paper/config/Votifier/config.yml:/privateconfig/plugins/Votifier/config.yml
-      - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/privateconfig/plugins/Votifier/rsa/public.key
-      - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/privateconfig/plugins/Votifier/rsa/private.key
       - ./PrivateConfig/paper/config/DiscordSRV/config.yml:/privateconfig/plugins/DiscordSRV/config.yml
       - ./PrivateConfig/paper/config/DiscordSRV/alerts.yml:/privateconfig/plugins/DiscordSRV/alerts.yml
       - ./PrivateConfig/paper/config/MythicMobs:/privateconfig/plugins/MythicMobs
@@ -58,9 +62,6 @@ services:
       - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/privateconfig/plugins/BreweryX/cauldron.yml
       - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
       - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/privateconfig/plugins/BreweryX/recipes.yml
-      - ./PrivateConfig/paper/config/Votifier/config.yml:/privateconfig/plugins/Votifier/config.yml
-      - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/privateconfig/plugins/Votifier/rsa/public.key
-      - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/privateconfig/plugins/Votifier/rsa/private.key
       - ./PrivateConfig/paper/config/EvenMoreFish/baits:/privateconfig/plugins/EvenMoreFish/baits
       - ./PrivateConfig/paper/config/EvenMoreFish/rods:/privateconfig/plugins/EvenMoreFish/rods
       - ./PrivateConfig/paper/config/EvenMoreFish/rarities:/privateconfig/plugins/EvenMoreFish/rarities

@@ -4,8 +4,10 @@ package com.biggestnerd.namecolors;
 import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
 import me.neznamy.tab.shared.TAB;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,20 +20,12 @@ public class NameColors extends ACivMod implements Listener {
 
     private static NameColors instance;
 
-    private static final ChatColor[] rainbow = {ChatColor.RED, ChatColor.GOLD, ChatColor.YELLOW, ChatColor.GREEN,
-        ChatColor.DARK_AQUA, ChatColor.AQUA, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE};
-
     public static NameColors getInstance() {
         return instance;
     }
 
-    public static String rainbowify(String text) {
-        StringBuilder nameBuilder = new StringBuilder();
-        char[] letters = text.toCharArray();
-        for (int i = 0; i < letters.length; i++) {
-            nameBuilder.append(rainbow[i % rainbow.length]).append(letters[i]);
-        }
-        return nameBuilder.toString();
+    public static Component rainbowify(String text) {
+        return MiniMessage.miniMessage().deserialize("<rainbow><name>", Placeholder.component("name", Component.text(text)));
     }
 
     private NameColorSetting setting;
@@ -51,9 +45,9 @@ public class NameColors extends ACivMod implements Listener {
         if (!player.hasPermission("namecolor.retainprefix")) {
             resetPrefix(player);
         }
-        ChatColor value = setting.getValue(player);
-        if ((value == NameColorSetting.RAINBOW_COLOR && !player.hasPermission(NameColorSetting.RAINBOW_PERMISSION) || !player.hasPermission(NameColorSetting.COLOR_PERMISSION))) {
-            setting.setValue(player, ChatColor.RESET);
+        String value = setting.getValue(player);
+        if (("rainbow".equals(value) && !player.hasPermission(NameColorSetting.RAINBOW_PERMISSION) || !player.hasPermission(NameColorSetting.COLOR_PERMISSION))) {
+            setting.setValue(player, "");
         }
         updatePlayerName(player, setting.getValue(player));
     }
@@ -64,12 +58,12 @@ public class NameColors extends ACivMod implements Listener {
                 // For some reason setPrefix directly doesn't work
                 TAB.getInstance().getConfiguration().getUsers().setProperty(player.getName(), "tabprefix", null, null, null);
                 TAB.getInstance().getFeatureManager().onGroupChange(TAB.getInstance().getPlayer(player.getUniqueId()));
-            }, 20l);
+            }, 20L);
         }
     }
 
-    public void updatePlayerName(Player player, ChatColor color) {
-        if (color == null || color == ChatColor.RESET) {
+    public void updatePlayerName(Player player, String tag) {
+        if (tag == null || tag.isEmpty()) {
             CivChat2.getInstance().getCivChat2Manager().removeCustomName(player.getUniqueId());
             if (getServer().getPluginManager().isPluginEnabled("TAB")) {
                 //TAB is enabled, so lets reset the player name.
@@ -79,35 +73,19 @@ public class NameColors extends ACivMod implements Listener {
                     if (tabPlayer != null) {
                         TabAPI.getInstance().getTabListFormatManager().setName(tabPlayer, null);
                     }
-                }, 20l);
+                }, 20L);
             }
         } else {
-            if (color == NameColorSetting.RAINBOW_COLOR) {
-                CivChat2.getInstance().getCivChat2Manager().setCustomName(player.getUniqueId(),
-                    rainbowify(player.getName()) + ChatColor.RESET);
-                if (getServer().getPluginManager().isPluginEnabled("TAB")) {
-                    //TAB enabled, so now we need to re-apply this name as a "custom name"
-                    //Side note: we do this temporarily so players if they lose their permission don't keep their colored name in TAB.
-                    Bukkit.getScheduler().runTaskLater(this, () -> {
-                        TabPlayer tabPlayer = TabAPI.getInstance()
-                            .getPlayer(player.getUniqueId());
-                        if (tabPlayer != null) {
-                            TabAPI.getInstance().getTabListFormatManager().setName(tabPlayer, rainbowify(player.getName()));
-                        }
-                    }, 20);
-                }
-                return;
-            }
-            CivChat2.getInstance().getCivChat2Manager().setCustomName(player.getUniqueId(),
-                color + player.getName() + ChatColor.RESET);
-            //Same deal as for rainbow
+            Component name = MiniMessage.miniMessage().deserialize("<" + tag + "><name>", Placeholder.component("name", Component.text(player.getName())));
+            CivChat2.getInstance().getCivChat2Manager().setCustomName(player.getUniqueId(), name);
             if (getServer().getPluginManager().isPluginEnabled("TAB")) {
-                //We delay just in-case TAB hasn't loaded the player into memory yet.
+                //TAB enabled, so now we need to re-apply this name as a "custom name"
+                //Side note: we do this temporarily so players if they lose their permission don't keep their colored name in TAB.
                 Bukkit.getScheduler().runTaskLater(this, () -> {
                     TabPlayer tabPlayer = TabAPI.getInstance()
                         .getPlayer(player.getUniqueId());
                     if (tabPlayer != null) {
-                        TabAPI.getInstance().getTabListFormatManager().setName(tabPlayer, color + player.getName() + ChatColor.RESET);
+                        TabAPI.getInstance().getTabListFormatManager().setName(tabPlayer, MiniMessage.miniMessage().serialize(name));
                     }
                 }, 20);
             }

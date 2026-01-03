@@ -171,46 +171,46 @@ armourModification:
   netheriteHelmet:
     material: NETHERITE_HELMET
     armour: 4
-    toughness: 3
+    toughness: 2.75
     extraDurabilityHits: 1
     knockbackResistance: 0 # knockback resistance is a value between 0 and 1.
   netheriteChestplate:
     material: NETHERITE_CHESTPLATE
     armour: 8
-    toughness: 3
+    toughness: 2.75
     extraDurabilityHits: 1
     knockbackResistance: 0.1
   netheriteLeggings:
     material: NETHERITE_LEGGINGS
     armour: 6
-    toughness: 3
+    toughness: 2.75
     extraDurabilityHits: 1
     knockbackResistance: 0.1
   netheriteBoots:
     material: NETHERITE_BOOTS
     armour: 4
-    toughness: 3
+    toughness: 2.75
     extraDurabilityHits: 1
     knockbackResistance: 0
   meteoricIronHelmet:
     key: meteoric_iron_helmet
     armour: 4
-    toughness: 2
+    toughness: 2.2
     extraDurabilityHits: 1
   meteoricIronChestplate:
     key: meteoric_iron_chestplate
     armour: 8
-    toughness: 3
+    toughness: 2.4
     extraDurabilityHits: 1
   meteoricIronLeggings:
     key: meteoric_iron_leggings
     armour: 6
-    toughness: 2
+    toughness: 2.4
     extraDurabilityHits: 1
   meteoricIronBoots:
     key: meteoric_iron_boots
     armour: 4
-    toughness: 2
+    toughness: 2.2
     extraDurabilityHits: 1
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
@@ -302,7 +302,7 @@ damageModifiers:
     multiplier: 1.0
   CRIT:
     mode: DIRECT
-    multiplier: 0.82
+    multiplier: 0.825
   STRENGTH_EFFECT:
     mode: DIRECT
     multiplier: 0.86
@@ -321,9 +321,6 @@ damageModifiers:
   FIREWORK:
     mode: DIRECT
     multiplier: 1.0
-  CART:
-    mode: DIRECT
-    multiplier: 0.75
 
 invulTicksEnabled: false
 invulnerableTicks:
@@ -650,3 +647,4 @@ netheriteFireResistance: true
 meteoricIronSlowness: true
 
 fireworkExplosions: false
+rebalanceTntMinecart: true
