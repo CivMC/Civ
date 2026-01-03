@@ -66,7 +66,7 @@ public class CivChat2Manager {
 
     private String defaultColor;
 
-    private static Map<UUID, String> customNames = new HashMap<>();
+    private static Map<UUID, Component> customNames = new HashMap<>();
 
     private final ServerBroadcaster broadcaster;
 
@@ -278,7 +278,7 @@ public class CivChat2Manager {
     private Component getCustomName(Player sender) {
         return Component.empty()
             .append(Component.text(starManager.getPrefix(sender)))
-            .append(Component.text(customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : sender.getDisplayName()))
+            .append(customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : sender.displayName())
             .hoverEvent(starManager.hover(sender));
     }
 
@@ -577,7 +577,7 @@ public class CivChat2Manager {
         return String.format(ChatUtils.parseColor(text), args);
     }
 
-    public void setCustomName(UUID player, String name) {
+    public void setCustomName(UUID player, Component name) {
         customNames.put(player, name);
     }
 
