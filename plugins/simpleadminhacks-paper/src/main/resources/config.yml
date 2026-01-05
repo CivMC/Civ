@@ -138,6 +138,8 @@ hacks:
     enabled: true
   MapCopyProtection:
     enabled: true
+  NameLocker:
+    enabled: true
   OldEnchanting:
     enabled: true
     # Hides what enchantment will be granted within the Enchanting Table

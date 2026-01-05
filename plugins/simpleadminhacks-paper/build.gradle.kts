@@ -16,6 +16,7 @@ dependencies {
     compileOnly(project(":plugins:banstick-paper"))
     compileOnly(project(":plugins:bastion-paper"))
     compileOnly(project(":plugins:exilepearl-paper"))
+    compileOnly(project(":plugins:factorymod-paper"))
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     compileOnly(libs.protocollib)
