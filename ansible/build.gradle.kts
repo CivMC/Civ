@@ -71,6 +71,7 @@ dependencies {
     proxyPlugin(project(path = ":plugins:civproxy-velocity", configuration = "shadow"))
     proxyPlugin(project(path = ":plugins:announcements-velocity", configuration = "shadow"))
     proxyPlugin(project(path = ":plugins:kiragateway-velocity", configuration = "shadow"))
+    proxyPlugin(project(path = ":plugins:banstick-velocity", configuration = "shadow"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
