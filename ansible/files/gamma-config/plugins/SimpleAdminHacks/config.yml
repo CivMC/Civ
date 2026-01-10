@@ -616,3 +616,5 @@ hacks:
     enabled: true
   Trowel:
     enabled: true
+  MobCulling:
+    enabled: false

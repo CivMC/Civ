@@ -6,3 +6,15 @@ GRASS:
   ==: org.bukkit.inventory.ItemStack
   v: 2975
   type: GRASS
+IRON_NUGGET:
+  ==: org.bukkit.inventory.ItemStack
+  v: 2975
+  type: IRON_NUGGET
+PAPER:
+  ==: org.bukkit.inventory.ItemStack
+  v: 2975
+  type: PAPER
+NAME_TAG:
+  ==: org.bukkit.inventory.ItemStack
+  v: 2975
+  type: NAME_TAG
