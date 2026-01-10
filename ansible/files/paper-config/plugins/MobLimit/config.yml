@@ -51,6 +51,9 @@ reasons:
     axolotl:
       count: 2
       radius: 32
+    sheep:
+      count: 6
+      radius: 32
   natural:
     turtle:
       count: 5
