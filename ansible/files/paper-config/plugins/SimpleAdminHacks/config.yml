@@ -620,7 +620,7 @@ hacks:
   Trowel:
     enabled: true
   MobCulling:
-    enabled: false
+    enabled: true
     turtleAllowance: 100
     turtleMaxAge: 360000
     striderAllowance: 100
