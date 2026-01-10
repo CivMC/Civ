@@ -14,6 +14,7 @@ settings:
       hostname: 'play.civmc.net'
       gamma_hostname: 'mini.civmc.net'
       resources: &default_minecraft_resources
+        soft_max_memory: 42G
         memory: 44G
         memory_limit: 48G
         pvp_memory: 11G
@@ -47,6 +48,7 @@ settings:
       hostname: 'test.civmc.net'
       resources:
         <<: *default_minecraft_resources
+        soft_max_memory: 2G
         memory: 4G
         memory_limit: 6G
         pvp_memory: 3G
