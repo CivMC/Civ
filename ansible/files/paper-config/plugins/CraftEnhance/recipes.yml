@@ -17,6 +17,7 @@ recipe1:
   slot: -1
   matchmeta: true
   shapeless: true
+  category: MISC
 recipe2:
   ==: com.dutchjelly.craftenhance.crafthandling.recipes.WBRecipe
   result: NAME_TAG
@@ -36,3 +37,4 @@ recipe2:
   slot: -1
   matchmeta: true
   shapeless: true
+  category: MISC
