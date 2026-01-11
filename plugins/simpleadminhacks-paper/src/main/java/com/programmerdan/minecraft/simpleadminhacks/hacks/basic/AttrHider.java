@@ -6,13 +6,10 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
-import com.destroystokyo.paper.MaterialTags;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
@@ -22,20 +19,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityMountEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionType;
 
 public final class AttrHider extends BasicHack {
 
@@ -186,23 +175,5 @@ public final class AttrHider extends BasicHack {
             ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
             customPackets.add(packet.getHandle()); // Allow ignoring this packet when hiding health because EntityMountEvent fires *before* the player is actually a passenger
         }
-    }
-
-    private static boolean shouldBeObfuscated(final Material material) {
-        return MaterialTags.HELMETS.isTagged(material)
-            || MaterialTags.CHEST_EQUIPPABLE.isTagged(material)
-            || MaterialTags.LEGGINGS.isTagged(material)
-            || MaterialTags.BOOTS.isTagged(material)
-            || MaterialTags.SWORDS.isTagged(material)
-            || MaterialTags.AXES.isTagged(material)
-            || MaterialTags.PICKAXES.isTagged(material)
-            || MaterialTags.SHOVELS.isTagged(material)
-            || MaterialTags.HOES.isTagged(material)
-            || material == Material.FIREWORK_ROCKET
-            || material == Material.WRITTEN_BOOK
-            || material == Material.ENCHANTED_BOOK
-            || material == Material.POTION
-            || material == Material.LINGERING_POTION
-            || material == Material.SPLASH_POTION;
     }
 }
