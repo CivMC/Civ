@@ -12,9 +12,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Crafter;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.CrafterCraftEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.AnvilInventory;
@@ -86,10 +88,20 @@ public class ArmourBound extends BasicHack {
             return;
         }
         CraftingInventory inventory = event.getInventory();
-        ItemStack[] matrix = inventory.getMatrix();
+        if (hasBoundArmour(inventory.getMatrix())) {
+            inventory.setResult(null);
+            for (HumanEntity viewer : inventory.getViewers()) {
+                if (viewer instanceof final Player playerViewer) {
+                    playerViewer.updateInventory();
+                }
+            }
+        }
+    }
+
+    private boolean hasBoundArmour(ItemStack[] matrix) {
         ItemStack boundItem = null;
-        PersistentDataContainer container = null;
-        ItemMeta meta = null;
+        PersistentDataContainer container;
+        ItemMeta meta;
         for (ItemStack item : matrix) {
             if (item == null) {
                 continue;
@@ -108,14 +120,13 @@ public class ArmourBound extends BasicHack {
             boundItem = item;
             break;
         }
-        if (boundItem == null) {
-            return;
-        }
-        inventory.setResult(null);
-        for (HumanEntity viewer : inventory.getViewers()) {
-            if (viewer instanceof final Player playerViewer) {
-                playerViewer.updateInventory();
-            }
+        return boundItem != null;
+    }
+
+    @EventHandler
+    public void onItemCraft(CrafterCraftEvent event) {
+        if (hasBoundArmour(((Crafter) event.getBlock().getState(false)).getInventory().getContents())) {
+            event.setCancelled(true);
         }
     }
 
