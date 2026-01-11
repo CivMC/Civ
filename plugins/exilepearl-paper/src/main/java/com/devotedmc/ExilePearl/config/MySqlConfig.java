@@ -66,13 +66,6 @@ public interface MySqlConfig {
     int getMySqlMaxLifetime();
 
     /**
-     * Gets whether to migrate prison pearl data
-     *
-     * @return whether to migrate or not
-     */
-    boolean getMigratePrisonPearl();
-
-    /**
      * Gets the SQL migrate database name
      *
      * @return the SQL migrate database name
