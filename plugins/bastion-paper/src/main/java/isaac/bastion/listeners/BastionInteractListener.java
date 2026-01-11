@@ -61,10 +61,12 @@ public class BastionInteractListener implements Listener {
             blocks.add(event.getClickedBlock());
             Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getClickedBlock().getLocation(),
                 event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-            if (!blocking.isEmpty()) {
-                event.setCancelled(true);
-                player.sendMessage(ChatColor.RED + "Boat blocked by bastion");
-                return;
+            for (BastionBlock b : blocking) {
+                if (!b.getType().isOnlyDirectDestruction()) {
+                    event.setCancelled(true);
+                    player.sendMessage(ChatColor.RED + "Boat blocked by bastion");
+                    return;
+                }
             }
         }
 
