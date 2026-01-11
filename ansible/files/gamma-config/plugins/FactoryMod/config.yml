@@ -3030,7 +3030,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHARCOAL
-        amount: 12
+        amount: 128
   charcoal_from_crimson_stem:
     production_time: 4s
     name: Make Charcoal from Crimson Stems
