@@ -568,6 +568,11 @@ final class CoreExilePearl implements ExilePearl {
 
         long sincePearled = System.currentTimeMillis() - getPearledOn().getTime();
         double days = TimeUnit.MILLISECONDS.toDays(sincePearled);
+        double cap = pearlApi.getPearlConfig().pearlCostMultiplierCapDays();
+        if (cap > 0) {
+            days = Math.min(cap, days);
+        }
+
         return Math.max(1.0, Math.pow(1.25, (days / timer)));
     }
 }

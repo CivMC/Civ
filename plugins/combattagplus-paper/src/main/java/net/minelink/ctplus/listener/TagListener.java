@@ -1,5 +1,10 @@
 package net.minelink.ctplus.listener;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.TagManager;
@@ -16,6 +21,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -29,9 +35,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
-import java.util.Objects;
-
 public final class TagListener implements Listener {
 
     private final CombatTagPlus plugin;
@@ -44,45 +47,51 @@ public final class TagListener implements Listener {
     public void tagPlayer(EntityDamageByEntityEvent event) {
         Entity victimEntity = event.getEntity();
         Entity attackerEntity = event.getDamager();
-        Player victim = determineVictim(victimEntity);
-        if (victim == null) return;
+        for (Player victim : determineVictims(victimEntity)) {
+            // Do not tag the victim if they are in creative mode
+            if (victim.getGameMode() == GameMode.CREATIVE && plugin.getSettings().disableCreativeTags()) {
+                victim = null;
+            }
 
-        // Do not tag the victim if they are in creative mode
-        if (victim.getGameMode() == GameMode.CREATIVE && plugin.getSettings().disableCreativeTags()) {
-            victim = null;
+            LivingEntity attacker = determineAttacker(attackerEntity, victim);
+            if (attacker == null) return;
+            Player attackingPlayer = attacker instanceof Player ? (Player) attacker : null;
+
+            // Do nothing if damage is self-inflicted
+            if (Objects.equals(victim, attacker) && plugin.getSettings().disableSelfTagging()) return;
+
+            // Do not tag the attacker if they are in creative mode
+            if (attackingPlayer != null && attackingPlayer.getGameMode() == GameMode.CREATIVE && plugin.getSettings().disableCreativeTags()) {
+                return;
+            }
+
+            // Combat tag victim and player
+            plugin.getTagManager().tag(victim, attackingPlayer);
         }
-
-        LivingEntity attacker = determineAttacker(attackerEntity, victim);
-        if (attacker == null) return;
-        Player attackingPlayer = attacker instanceof Player ? (Player) attacker : null;
-
-        // Do nothing if damage is self-inflicted
-        if (Objects.equals(victim, attacker) && plugin.getSettings().disableSelfTagging()) return;
-
-        // Do not tag the attacker if they are in creative mode
-        if (attackingPlayer != null && attackingPlayer.getGameMode() == GameMode.CREATIVE && plugin.getSettings().disableCreativeTags()) {
-            return;
-        }
-
-        // Combat tag victim and player
-        plugin.getTagManager().tag(victim, attackingPlayer);
     }
 
-    @Nullable
-    private Player determineVictim(Entity victimEntity) {
+    private List<Player> determineVictims(Entity victimEntity) {
         // Find victim
-        if (victimEntity instanceof Tameable) {
+        if (victimEntity instanceof Vehicle vehicle) {
+            List<Player> players = new ArrayList<>();
+            for (Entity passenger : vehicle.getPassengers()) {
+                if (passenger instanceof Player player) {
+                    players.add(player);
+                }
+            }
+            return players;
+        } else if (victimEntity instanceof Tameable) {
             AnimalTamer owner = ((Tameable) victimEntity).getOwner();
-            if (!(owner instanceof Player)) return null;
+            if (!(owner instanceof Player)) return Collections.emptyList();
 
             // Victim is a player's pet
-            return (Player) owner;
+            return Collections.singletonList((Player) owner);
         } else if (victimEntity instanceof Player) {
             // Victim is a player
-            return (Player) victimEntity;
+            return Collections.singletonList((Player) victimEntity);
         } else {
             // Victim is not a player
-            return null;
+            return Collections.emptyList();
         }
     }
 

@@ -580,3 +580,7 @@ hacks:
     enabled: true
   PlayerCount:
     enabled: true
+  MobCulling:
+    enabled: false
+  NetheriteCrafting:
+    enabled: true

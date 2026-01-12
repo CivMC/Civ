@@ -1,7 +1,6 @@
 package com.devotedmc.ExilePearl;
 
 import java.util.List;
-import java.util.UUID;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,13 +35,6 @@ public interface LoreProvider {
      * @return The pearl ID, or 0 if can't parse
      */
     int getPearlIdFromItemStack(ItemStack is);
-
-    /**
-     * Gets a player ID from a legacy prison pearl
-     *
-     * @return The player ID if it exists
-     */
-    UUID getPlayerIdFromLegacyPearl(ItemStack is);
 
     /**
      * Generates the info for a pearl

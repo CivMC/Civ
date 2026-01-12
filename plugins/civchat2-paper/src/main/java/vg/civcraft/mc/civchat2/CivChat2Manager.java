@@ -278,7 +278,7 @@ public class CivChat2Manager {
     private Component getCustomName(Player sender) {
         return Component.empty()
             .append(Component.text(starManager.getPrefix(sender)))
-            .append(customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : sender.displayName())
+            .append(customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : Component.text(sender.getDisplayName()))
             .hoverEvent(starManager.hover(sender));
     }
 

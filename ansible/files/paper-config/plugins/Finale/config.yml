@@ -93,7 +93,7 @@ gapples:
 weaponModification:
   netheriteAxe:
     material: NETHERITE_AXE
-    damage: 6
+    damage: 5.75
     armourDamageMultiplier: 1.78
   diamondAxe:
     material: DIAMOND_AXE

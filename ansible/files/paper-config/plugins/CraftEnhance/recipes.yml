@@ -17,3 +17,24 @@ recipe1:
   slot: -1
   matchmeta: true
   shapeless: true
+  category: MISC
+recipe2:
+  ==: com.dutchjelly.craftenhance.crafthandling.recipes.WBRecipe
+  result: NAME_TAG
+  hidden: false
+  recipe:
+    - null
+    - null
+    - null
+    - null
+    - PAPER
+    - null
+    - null
+    - IRON_NUGGET
+    - null
+  permission: null
+  page: -1
+  slot: -1
+  matchmeta: true
+  shapeless: true
+  category: MISC

@@ -121,7 +121,7 @@ services:
             CIV_WATCHDOG_TIMEOUT_TIME: 60
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
-            JVM_OPTS: -agentpath:./libti.so
+            JVM_OPTS: '-agentpath:./libti.so'
         volumes:
             # Persistence
             - /opt/stacks/minecraft/paper-data:/data
@@ -224,7 +224,7 @@ services:
             CIV_WATCHDOG_TIMEOUT_TIME: 60
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
-            JVM_OPTS: -agentpath:./libti.so
+            JVM_OPTS: '-agentpath:./libti.so'
         volumes:
             # Persistence
             - /opt/stacks/minecraft/gamma-data:/data
