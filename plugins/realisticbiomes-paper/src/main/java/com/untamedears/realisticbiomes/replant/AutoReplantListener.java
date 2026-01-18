@@ -171,6 +171,7 @@ public class AutoReplantListener implements Listener {
                     } else {
                         drop.setAmount(amount - 1);
                     }
+                    break;
                 }
             }
         }
