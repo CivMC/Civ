@@ -1,8 +1,10 @@
 package vg.civcraft.mc.citadel.listener;
 
 import com.destroystokyo.paper.MaterialTags;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -54,6 +56,8 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class BlockListener implements Listener {
@@ -801,23 +805,86 @@ public class BlockListener implements Listener {
             return;
         }
 
-        Shelf shelf = (Shelf) block.getBlockData();
-        Block authoritative = switch (shelf.getSideChain()) {
-            case UNCONNECTED, CENTER -> block;
-            case RIGHT -> block.getRelative(shelf.getFacing().getModZ(), 0, shelf.getFacing().getModX());
-            case LEFT -> block.getRelative(-shelf.getFacing().getModZ(), 0, -shelf.getFacing().getModX());
-        };
+        List<Block> shelves = getConnectedShelves(block);
+        int reinforcementGroup = -1;
+        boolean unreinforced = false;
+        boolean insecure = true;
 
-        Reinforcement authoritativeRein = Citadel.getInstance().getReinforcementManager().getReinforcement(authoritative);
-        if (authoritativeRein != null && !authoritativeRein.isInsecure() && !authoritativeRein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
-            p.sendMessage(ChatColor.RED + "You do not have permission to use this shelf");
+        for (Block shelf : shelves) {
+            Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(shelf);
+            if (rein != null) {
+                if (unreinforced) {
+                    p.sendMessage(Component.text("Shelf is broken; a shelf is unreinforced.", NamedTextColor.RED));
+                    pie.setCancelled(true);
+                    return;
+                }
+                insecure &= rein.isInsecure();
+                if (reinforcementGroup == -1) {
+                    reinforcementGroup = rein.getGroupId();
+                } else if (reinforcementGroup != rein.getGroupId()) {
+                    p.sendMessage(Component.text("Shelf is broken; reinforcements are on different groups.", NamedTextColor.RED));
+                    pie.setCancelled(true);
+                    return;
+                }
+            } else {
+                if (reinforcementGroup != -1) {
+                    p.sendMessage(Component.text("Shelf is broken; a shelf is unreinforced.", NamedTextColor.RED));
+                    pie.setCancelled(true);
+                    return;
+                }
+                unreinforced = true;
+            }
+        }
+        if (!unreinforced && !insecure && !NameLayerAPI.getGroupManager().hasAccess(GroupManager.getGroup(reinforcementGroup), p.getUniqueId(), CitadelPermissionHandler.getModifyBlocks())) {
+            p.sendMessage(Component.text("You do not have permission to use this shelf", NamedTextColor.RED));
             pie.setCancelled(true);
         }
-        Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
-        if (rein != null && !rein.isInsecure() && !rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
-            p.sendMessage(ChatColor.RED + "You do not have permission to use this shelf");
-            pie.setCancelled(true);
-        }
+    }
+
+    private List<Block> getConnectedShelves(Block block) {
+        Shelf shelf = (Shelf) block.getBlockData();
+        return switch (shelf.getSideChain()) {
+            case UNCONNECTED -> List.of(block);
+            case CENTER -> {
+                List<Block> shelves = new ArrayList<>();
+                shelves.add(block);
+                Block left = block.getRelative(shelf.getFacing().getModZ(), 0, shelf.getFacing().getModX());
+                if (left.getBlockData() instanceof Shelf) {
+                    shelves.add(left);
+                }
+                Block right = block.getRelative(-shelf.getFacing().getModZ(), 0, -shelf.getFacing().getModX());
+                if (right.getBlockData() instanceof Shelf) {
+                    shelves.add(right);
+                }
+                yield shelves;
+            }
+            case RIGHT -> {
+                List<Block> shelves = new ArrayList<>();
+                shelves.add(block);
+                Block centre = block.getRelative(shelf.getFacing().getModZ(), 0, shelf.getFacing().getModX());
+                if (centre.getBlockData() instanceof Shelf) {
+                    shelves.add(centre);
+                    Block left = centre.getRelative(shelf.getFacing().getModZ(), 0, shelf.getFacing().getModX());
+                    if (left.getBlockData() instanceof Shelf) {
+                        shelves.add(left);
+                    }
+                }
+                yield shelves;
+            }
+            case LEFT -> {
+                List<Block> shelves = new ArrayList<>();
+                shelves.add(block);
+                Block centre = block.getRelative(-shelf.getFacing().getModZ(), 0, -shelf.getFacing().getModX());
+                if (centre.getBlockData() instanceof Shelf) {
+                    shelves.add(centre);
+                    Block right = centre.getRelative(-shelf.getFacing().getModZ(), 0, -shelf.getFacing().getModX());
+                    if (right.getBlockData() instanceof Shelf) {
+                        shelves.add(right);
+                    }
+                }
+                yield shelves;
+            }
+        };
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
