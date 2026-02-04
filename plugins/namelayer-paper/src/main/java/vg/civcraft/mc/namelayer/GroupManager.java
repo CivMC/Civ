@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,9 +31,6 @@ public class GroupManager {
     private static Map<Integer, Group> groupsById = new ConcurrentHashMap<>();
 
     private static boolean mergingInProgress = false;
-
-    private List<String> groupNames = null;
-    private final Lock groupNameLock = new ReentrantLock();
 
     public GroupManager() {
         groupManagerDao = NameLayerPlugin.getGroupManagerDao();
@@ -490,20 +485,7 @@ public class GroupManager {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getAllGroupNames failed, caller passed in null", new Exception());
             return new ArrayList<>();
         }
-        if (groupNames != null) {
-            return groupNames;
-        }
-
-        groupNameLock.lock();
-        try {
-            if (groupNames != null) {
-                return groupNames;
-            }
-            groupNames = groupManagerDao.getGroupNames(uuid);
-            return groupNames;
-        } finally {
-            groupNameLock.unlock();
-        }
+        return groupManagerDao.getGroupNames(uuid);
     }
 
     private void initiateDefaultPerms(Integer groupId) {
