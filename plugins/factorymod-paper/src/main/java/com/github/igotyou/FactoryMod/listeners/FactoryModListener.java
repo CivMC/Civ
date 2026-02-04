@@ -5,6 +5,7 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import java.util.List;
+import org.bukkit.ExplosionResult;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -94,6 +95,9 @@ public class FactoryModListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void explosionListener(EntityExplodeEvent e) {
+        if (e.getExplosionResult() == ExplosionResult.KEEP || e.getExplosionResult() == ExplosionResult.TRIGGER_BLOCK) {
+            return;
+        }
         List<Block> blocks = e.blockList();
         for (Block block : blocks) {
             if (manager.isPossibleInteractionBlock(block.getType())) {

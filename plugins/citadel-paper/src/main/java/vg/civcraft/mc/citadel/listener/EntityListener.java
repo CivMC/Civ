@@ -1,12 +1,10 @@
 package vg.civcraft.mc.citadel.listener;
 
+import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
-
-import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -149,9 +147,14 @@ public class EntityListener implements Listener {
             if (rein == null) {
                 continue;
             }
-            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), eee.getEntity());
-            if (!rein.isBroken()) {
-                iterator.remove();
+            switch (eee.getExplosionResult()) {
+                case TRIGGER_BLOCK -> iterator.remove();
+                case DESTROY, DESTROY_WITH_DECAY -> {
+                    ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), eee.getEntity());
+                    if (!rein.isBroken()) {
+                        iterator.remove();
+                    }
+                }
             }
         }
     }
