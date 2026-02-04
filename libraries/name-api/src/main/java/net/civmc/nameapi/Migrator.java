@@ -59,6 +59,7 @@ public class Migrator {
                 PreparedStatement setMigrationId = connection.prepareStatement("REPLACE INTO migations (namespace, id) VALUES (?, ?)");
                 setMigrationId.setString(1, entry.getKey());
                 setMigrationId.setInt(2, maxId);
+                setMigrationId.executeUpdate();
             }
         }
         connection.setAutoCommit(true);
