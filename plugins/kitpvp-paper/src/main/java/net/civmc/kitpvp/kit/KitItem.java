@@ -8,6 +8,9 @@ import java.util.Map;
 import org.bukkit.Material;
 
 public enum KitItem {
+    MACE(Material.MACE, KitCategory.TOOL, 5),
+    WIND_CHARGE(Material.WIND_CHARGE, KitCategory.TOOL, 0),
+
     LEATHER_HELMET(Material.LEATHER_HELMET, KitCategory.ARMOUR, 0),
     LEATHER_CHESTPLATE(Material.LEATHER_CHESTPLATE, KitCategory.ARMOUR, 0),
     LEATHER_LEGGINGS(Material.LEATHER_LEGGINGS, KitCategory.ARMOUR, 0),

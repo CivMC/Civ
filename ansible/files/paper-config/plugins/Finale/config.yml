@@ -91,10 +91,13 @@ gapples:
 
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
+  mace:
+    material: MACE
+    damage: 6
+    armourDamageMultiplier: 2
   netheriteAxe:
     material: NETHERITE_AXE
-    damage: 5.75
-    armourDamageMultiplier: 1.78
+    damage: 6
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
@@ -642,3 +645,9 @@ meteoricIronSlowness: true
 
 fireworkExplosions: false
 rebalanceTntMinecart: true
+
+
+mace:
+  cooldown: 1200
+  max_damage: 38
+  wind_cooldown: 3

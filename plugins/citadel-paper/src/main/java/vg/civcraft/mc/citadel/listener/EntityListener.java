@@ -19,6 +19,7 @@ import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.WindCharge;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -148,7 +149,15 @@ public class EntityListener implements Listener {
                 continue;
             }
             switch (eee.getExplosionResult()) {
-                case TRIGGER_BLOCK -> iterator.remove();
+                case TRIGGER_BLOCK -> {
+                    if (rein.isInsecure()) {
+                        continue;
+                    }
+                    if (eee.getEntity() instanceof WindCharge charge && charge.getShooter() instanceof Player shooter && rein.hasPermission(shooter, CitadelPermissionHandler.getBypass())) {
+                        continue;
+                    }
+                    iterator.remove();
+                }
                 case DESTROY, DESTROY_WITH_DECAY -> {
                     ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), eee.getEntity());
                     if (!rein.isBroken()) {

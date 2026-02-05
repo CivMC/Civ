@@ -16,6 +16,29 @@ log_inventories: true
 force_include_default: true
 can_upgrade: true
 factories:
+  kinetics:
+    type: FCC
+    name: Kinetics Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      wind_essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Wind Essence
+      breeze_rod:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BREEZE_ROD
+        amount: 4
+    recipes:
+      - charge_wind_essence
+      - make_maces
+      - repair_kinetics_factory
   meteoric_iron_sword:
     type: FCC
     name: Meteoric Iron Sword Smith
@@ -16772,4 +16795,85 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
         amount: 56
+    health_gained: 10000
+  charge_wind_essence:
+    production_time: 4s
+    name: Charge Wind Essence
+    type: PRODUCTION
+    input:
+      wind_essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Wind Essence
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 3
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 32
+    output:
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 4
+  make_maces:
+    production_time: 4s
+    name: Make Maces
+    type: PRODUCTION
+    input:
+      breeze_rod:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BREEZE_ROD
+        amount: 3
+      heavy_core:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HEAVY_CORE
+        amount: 3
+    output:
+      mace:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MACE
+        amount: 4
+      mace_cursed:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MACE
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          enchants:
+            vanishing_curse: 1
+  repair_kinetics_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      wind_essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Wind Essence
+      breeze_rod:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BREEZE_ROD
+        amount: 1
     health_gained: 10000

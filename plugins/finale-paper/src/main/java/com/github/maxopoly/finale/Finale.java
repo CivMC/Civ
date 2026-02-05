@@ -16,6 +16,7 @@ import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.FinaleListener;
 import com.github.maxopoly.finale.listeners.GappleListener;
+import com.github.maxopoly.finale.listeners.MaceListener;
 import com.github.maxopoly.finale.listeners.MeteoricIronSlownessListener;
 import com.github.maxopoly.finale.listeners.NetheriteFireResistanceListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
@@ -28,6 +29,7 @@ import com.github.maxopoly.finale.listeners.TridentListener;
 import com.github.maxopoly.finale.listeners.VelocityFixListener;
 import com.github.maxopoly.finale.listeners.WarpFruitListener;
 import com.github.maxopoly.finale.listeners.WeaponModificationListener;
+import com.github.maxopoly.finale.mob.BleezeAI;
 import com.github.maxopoly.finale.overlay.ScoreboardHUD;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
@@ -134,6 +136,12 @@ public class Finale extends ACivMod {
         }
         Bukkit.getPluginManager().registerEvents(new CrossbowListener(config.isFireworkExplosions()), this);
         Bukkit.getPluginManager().registerEvents(new GappleListener(), this);
+
+        getServer().getPluginManager().registerEvents(new MaceListener(config.getMaceCooldown(), config.getMaceMaxDamage(), config.getWindCooldown()), this);
+
+        if (getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+            new BleezeAI().start();
+        }
     }
 
     public PearlCoolDownListener getPearlCoolDownListener() {

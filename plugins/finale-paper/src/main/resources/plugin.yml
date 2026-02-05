@@ -3,7 +3,7 @@ main: com.github.maxopoly.finale.Finale
 author: Maxopoly
 version: ${version}
 depend: [CivModCore, ProtocolLib]
-softdepend: [CombatTagPlus, Citadel, Bastion]
+softdepend: [CombatTagPlus, Citadel, Bastion, MythicMobs]
 api-version: 1.21.3
 permissions:
     finale.op:

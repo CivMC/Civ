@@ -58,6 +58,10 @@ public class ConfigParser {
     private CombatConfig combatConfig;
     private boolean fireworkExplosions;
 
+    private int maceCooldown;
+    private double maceMaxDamage;
+    private float windCooldown;
+
     public ConfigParser(Finale plugin) {
         this.plugin = plugin;
     }
@@ -109,6 +113,19 @@ public class ConfigParser {
     public boolean isFireworkExplosions() {
         return fireworkExplosions;
     }
+
+    public int getMaceCooldown() {
+        return maceCooldown;
+    }
+
+    public double getMaceMaxDamage() {
+        return maceMaxDamage;
+    }
+
+    public float getWindCooldown() {
+        return windCooldown;
+    }
+
 
     public FinaleManager parse() {
         plugin.info("Parsing Finale config...");
@@ -179,6 +196,10 @@ public class ConfigParser {
         meteoricIronSlowness = config.getBoolean("meteoricIronSlowness");
         fireworkExplosions = config.getBoolean("fireworkExplosions");
         rebalanceTntMinecart = config.getBoolean("rebalanceTntMinecart");
+
+        maceCooldown = config.getInt("mace.cooldown");
+        maceMaxDamage = config.getInt("mace.max_damage");
+        windCooldown = config.getInt("mace.wind_cooldown");
 
         // Initialize the manager
         manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,

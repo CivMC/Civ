@@ -33,8 +33,8 @@ public class WeaponsAndToolsSelectionGui extends ItemSelectionGui {
         inventory.setSlot(toClickable(KitItem.WOODEN_SWORD), 0);
         inventory.setSlot(toClickable(KitItem.WOODEN_AXE), 9);
         inventory.setSlot(toClickable(KitItem.WOODEN_PICKAXE), 18);
-        inventory.setSlot(toClickable(KitItem.WOODEN_SHOVEL), 27);
-        inventory.setSlot(toClickable(KitItem.WOODEN_HOE), 36);
+        inventory.setSlot(toClickable(KitItem.WIND_CHARGE), 27);
+        inventory.setSlot(toClickable(KitItem.MACE), 36);
 
         inventory.setSlot(toClickable(KitItem.GOLDEN_SWORD), 1);
         inventory.setSlot(toClickable(KitItem.GOLDEN_AXE), 10);

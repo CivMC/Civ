@@ -86,6 +86,7 @@ public class CombatUtil {
                     }
                     dealtExtraKnockback = true;
                 }
+                damage += attacker.getWeaponItem().getItem().getAttackDamageBonus(victim, damage, damagesource);
 
                 boolean shouldCrit = shouldDamage && attacker.fallDistance > 0 && attacker.fallDistance > (float) (attacker.yOld - attacker.getY()) && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
                     && !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && victim instanceof LivingEntity;

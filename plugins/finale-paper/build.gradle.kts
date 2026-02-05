@@ -14,6 +14,7 @@ dependencies {
     compileOnly(project(":plugins:namelayer-paper"))
     compileOnly(project(":plugins:citadel-paper"))
     compileOnly(project(":plugins:combattagplus-paper"))
+    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
     compileOnly(libs.protocollib)
 }

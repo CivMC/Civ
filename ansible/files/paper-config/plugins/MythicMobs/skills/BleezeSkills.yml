@@ -1,0 +1,50 @@
+WitherFire:
+  CancelIfNoTargets: true
+  TargetConditions:
+    - isburning true
+  Cooldown: 1
+  Skills:
+    - potion{type=WITHER;duration=100;level=1} @target
+BreezeAttack:
+  Cooldown: 8
+  Conditions:
+    - targetwithin{d=25}
+  Skills:
+    - teleport @target
+    - effect:sound{s=mob.endermen.portal;volume=1.0;pitch=0.5}
+    - delay 10
+    - damage{amount=15;ignorearmor=true} @PlayersInRadius{r=5}
+    - throw{velocity=10;velocityY=5} @PlayersInRadius{r=5}
+    - effect:explosion @Self
+BreezePull:
+  Cooldown: 15
+  Skills:
+    - forcepull{spread=5} @PlayersInRadius{r=30}
+    - damage{amount=5;ignorearmor=true} @PlayersInRadius{r=30}
+    - ignite{ticks=200} @PlayersInRadius{r=30}
+BreezeMinionSwarm:
+  Cooldown: 30
+  Skills:
+    - summon{mob=BleezeMinion;amount=1;noise=5} @Self
+    - delay 20
+    - summon{mob=BleezeMinion;amount=1;noise=5} @Self
+    - delay 20
+    - summon{mob=BleezeMinion;amount=1;noise=5} @Self
+BreezeMinionAttack:
+  Cooldown: 12
+  Conditions:
+    - targetwithin{d=25}
+  Skills:
+    - damage{amount=20;ignorearmor=true} @target
+    - throw{velocity=10;velocityY=15} @target
+    - effect:explosion @Self
+    - ignite{ticks=100} @target
+
+Fireball-Tick:
+  Skills:
+    - effect:particles{p=lava;amount=6;speed=0;hS=0.2;vS=0.2} @origin
+Fireball-Hit:
+  Skills:
+    - damage{amount=42}
+    - potion{type=SLOW;duration=100;lvl=2}
+    - ignite{ticks=100} @target

@@ -21,6 +21,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven(url = "https://mvn.lumine.io/repository/maven-public/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://oss.sonatype.org/content/repositories/snapshots")
