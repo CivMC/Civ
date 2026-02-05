@@ -9,7 +9,6 @@ Bleeze:
     - geyser{type=LAVA;height=3;speed=40} @target 0.05
     - skill{s=WitherFire} @PlayersInRadius{r=25} ~onTimer:300 0.4
     - skill{s=BreezeMinionSwarm} @self 0.1
-    - teleport @target 0.05
     - skill{s=BreezeAttack} @target 0.2
     - recoil{r=30;pitch=-1to1} @target 0.05
     - damage{amount=30} @trigger ~onBowHit
