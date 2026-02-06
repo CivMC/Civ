@@ -51,6 +51,7 @@ Below are explanations on the plugins CivMC uses, and detailed information about
 * [Heliodor](./plugins/unique/heliodor) - Unique high value resource and its various uses.
 * [Transport Changes](./plugins/unique/Transport) - Faster rails, copper rails, faster horses and disabled elytras.
 * [Chunk Limits](./plugins/unique/chunklimits) - Limits how many things you can place in a chunk, e.g. redstone.
+* [Bleeze](./plugins/unique/bleeze) - Mini boss to obtain maces
 
 #### __Recreational__
 
