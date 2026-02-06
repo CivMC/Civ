@@ -16846,8 +16846,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MACE
-        amount: 4
-      mace_cursed:
+        amount:       mace_cursed:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MACE
@@ -16856,7 +16855,7 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           enchants:
-            vanishing_curse: 1
+5
   repair_kinetics_factory:
     production_time: 4s
     name: Repair Factory

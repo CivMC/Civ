@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.util.Vector;
@@ -17,6 +19,7 @@ public class BleezeAI {
 
     class BleezeData {
         private int aiStopTicks;
+        private int headHitTicks;
     }
 
     public void start() {
@@ -33,11 +36,18 @@ public class BleezeAI {
                     continue;
                 }
 
-                if (entity.getTarget() == null) {
-                    continue;
+                BleezeData bleezeData = dataMap.computeIfAbsent(entity, k -> new BleezeData());
+
+                if (!entity.getEyeLocation().getBlock().getRelative(BlockFace.UP).isPassable()) {
+                    bleezeData.headHitTicks += 1;
                 }
 
-                BleezeData bleezeData = dataMap.computeIfAbsent(entity, k -> new BleezeData());
+                if (bleezeData.headHitTicks >= 40) {
+                    Block highest = entity.getWorld().getHighestBlockAt(entity.getLocation());
+                    entity.teleport(highest.getLocation());
+                    bleezeData.headHitTicks = 0;
+                }
+
                 if (bleezeData.aiStopTicks > 0) {
                     bleezeData.aiStopTicks--;
                     continue;
@@ -45,6 +55,10 @@ public class BleezeAI {
 
                 if (ThreadLocalRandom.current().nextInt(750) == 0) {
                     bleezeData.aiStopTicks = 350;
+                    continue;
+                }
+
+                if (entity.getTarget() == null) {
                     continue;
                 }
 
