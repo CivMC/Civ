@@ -29,12 +29,17 @@ factories:
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
-          display-name: Wind Essence
+          display-name: §fWind Essence
       breeze_rod:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BREEZE_ROD
         amount: 4
+      heavy_core:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HEAVY_CORE
+        amount: 1
     recipes:
       - charge_wind_essence
       - make_maces
@@ -16809,7 +16814,7 @@ recipes:
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
-          display-name: Wind Essence
+          display-name: §fWind Essence
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -16846,16 +16851,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MACE
-        amount:       mace_cursed:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: MACE
-        amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          enchants:
-5
+        amount: 5
   repair_kinetics_factory:
     production_time: 4s
     name: Repair Factory
@@ -16869,7 +16865,7 @@ recipes:
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
-          display-name: Wind Essence
+          display-name: §fWind Essence
       breeze_rod:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
