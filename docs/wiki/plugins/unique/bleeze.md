@@ -12,7 +12,7 @@ The bleeze will summon breezes which drop wind essence and breeze rods. The wind
 
 Wind charges have a cooldown of 3 seconds compared to half a second in vanilla
 
-Each bleeze also has a guaranteed heavy core drop.
+Each bleeze also has a guaranteed heavy core drop. Bleezes will never spawn in the rain and will leave this world if it ever starts raining!
 
 # Mace
 
