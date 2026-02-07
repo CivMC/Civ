@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -37,8 +38,11 @@ public class BleezeAI {
                 entity.leaveVehicle();
 
                 if (entity.getWorld().getWeatherDuration() > 1) {
-//                    entity.remove();
-//                    continue;
+                    Biome biome = entity.getWorld().getBiome(entity.getLocation());
+                    if (biome != Biome.DESERT && biome != Biome.ERODED_BADLANDS && biome != Biome.SAVANNA && biome != Biome.SAVANNA_PLATEAU && biome != Biome.BADLANDS) {
+                        entity.remove();
+                        continue;
+                    }
                 }
 
                 BleezeData bleezeData = dataMap.computeIfAbsent(entity, k -> new BleezeData());
