@@ -39,7 +39,7 @@ BleezeMinion:
   Type: BREEZE
   Health: 120
   Drops:
-    - paper{name="Wind Essence"} 0-5
+    - paper{name="Wind Essence"} 0-6
     - breeze_rod 1 0.2
   Skills:
     - geyser{type=LAVA;height=2;speed=20} @target 0.01
