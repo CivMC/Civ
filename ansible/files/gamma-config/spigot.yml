@@ -102,7 +102,7 @@ world-settings:
     entity-tracking-range:
       players: 160
       animals: 64
-      monsters: 32
+      monsters: 48
       misc: 96
       other: 96
     ticks-per:
