@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Blaze;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.util.Vector;
@@ -43,6 +44,10 @@ public class BleezeAI {
                         entity.remove();
                         continue;
                     }
+                }
+
+                if (entity.getTarget() instanceof Blaze) {
+                    entity.setTarget(null);
                 }
 
                 BleezeData bleezeData = dataMap.computeIfAbsent(entity, k -> new BleezeData());
