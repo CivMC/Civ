@@ -3,8 +3,8 @@ package com.github.maxopoly.finale.mob;
 import com.github.maxopoly.finale.Finale;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Biome;
@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 
 public class BleezeAI {
 
-    private final Map<Mob, BleezeData> dataMap = new HashMap<>();
+    private final Map<Mob, BleezeData> dataMap = new WeakHashMap<>();
 
     static class BleezeData {
         private int aiStopTicks;
