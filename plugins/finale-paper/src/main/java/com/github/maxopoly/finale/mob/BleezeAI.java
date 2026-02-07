@@ -59,7 +59,7 @@ public class BleezeAI {
                 }
 
                 if (ThreadLocalRandom.current().nextInt(750) == 0) {
-                    bleezeData.aiStopTicks = 350;
+                    bleezeData.aiStopTicks = 320;
                     continue;
                 }
 
