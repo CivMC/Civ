@@ -7,3 +7,5 @@ RandomBleeze:
   Biomes: DESERT,ERODED_BADLANDS,SAVANNA,SAVANNA_PLATEAU,BADLANDS
   Conditions:
     - outside true
+    - heightabove{h=30} true
+    - blockTypeInRadius{type=OBSIDIAN;amount=>0;radius=5} false
