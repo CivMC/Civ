@@ -1,7 +1,7 @@
 RandomBleeze:
   Type: Bleeze
   Worlds: world
-  Chance: 0.003
+  Chance: 0.0035
   Priority: 1
   Action: REPLACE
   Biomes: DESERT,ERODED_BADLANDS,SAVANNA,SAVANNA_PLATEAU,BADLANDS
