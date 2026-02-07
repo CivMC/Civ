@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +21,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.WindCharge;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,6 +32,7 @@ import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -147,6 +152,52 @@ public final class BastionDamageListener implements Listener {
             event.setCancelled(true);
         }
     }
+
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void handleWind(ProjectileLaunchEvent event) {
+        if (!(event.getEntity() instanceof WindCharge charge)) {
+            return;
+        }
+        if (!(charge.getShooter() instanceof Player player) || player.hasPermission("Bastion.bypass")) {
+            return;
+        }
+
+        Location location = event.getEntity().getLocation();
+        Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(location, player.getUniqueId(),
+            PermissionType.getPermission(Permissions.BASTION_PEARL));
+
+        blocking.removeIf(bastion -> bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls()
+            || (bastion.getType().isRequireMaturity() && !bastion.isMature()));
+
+        if (!blocking.isEmpty()) {
+            player.sendMessage(Component.text("Wind charge blocked by Bastion Block", NamedTextColor.RED));
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void handleWind(ExplosionPrimeEvent event) {
+        if (!(event.getEntity() instanceof WindCharge charge)) {
+            return;
+        }
+        if (!(charge.getShooter() instanceof Player player) || player.hasPermission("Bastion.bypass")) {
+            return;
+        }
+
+        Location location = event.getEntity().getLocation();
+        Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(location, player.getUniqueId(),
+            PermissionType.getPermission(Permissions.BASTION_PEARL));
+
+        blocking.removeIf(bastion -> bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls()
+            || (bastion.getType().isRequireMaturity() && !bastion.isMature()));
+
+        if (!blocking.isEmpty()) {
+            player.sendMessage(Component.text("Wind charge blocked by Bastion Block", NamedTextColor.RED));
+            event.setCancelled(true);
+        }
+    }
+
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void handleEnderPearlLanded(PlayerTeleportEvent event) {
