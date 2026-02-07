@@ -32,8 +32,8 @@ public class BleezeAI {
                 Mob entity = (Mob) mob.getEntity().getBukkitEntity();
 
                 if (entity.getWorld().getWeatherDuration() > 1) {
-                    entity.remove();
-                    continue;
+//                    entity.remove();
+//                    continue;
                 }
 
                 BleezeData bleezeData = dataMap.computeIfAbsent(entity, k -> new BleezeData());
