@@ -58,7 +58,7 @@ public class BleezeAI {
 
                 if (bleezeData.headHitTicks >= 40) {
                     Block highest = entity.getWorld().getHighestBlockAt(entity.getLocation());
-                    entity.teleport(highest.getLocation().add(0.5, 0, 0.5));
+                    entity.teleport(highest.getLocation().add(0.5, 1, 0.5));
                     bleezeData.headHitTicks = 0;
                 }
 
