@@ -56,7 +56,7 @@ public class Migrator {
             }
 
             if (maxId != minId) {
-                PreparedStatement setMigrationId = connection.prepareStatement("REPLACE INTO migations (namespace, id) VALUES (?, ?)");
+                PreparedStatement setMigrationId = connection.prepareStatement("REPLACE INTO migrations (namespace, id) VALUES (?, ?)");
                 setMigrationId.setString(1, entry.getKey());
                 setMigrationId.setInt(2, maxId);
                 setMigrationId.executeUpdate();
