@@ -18,7 +18,7 @@ public class BleezeAI {
 
     private final Map<Mob, BleezeData> dataMap = new HashMap<>();
 
-    class BleezeData {
+    static class BleezeData {
         private int aiStopTicks;
         private int headHitTicks;
     }
