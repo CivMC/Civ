@@ -26,10 +26,15 @@ public class BleezeAI {
         Bukkit.getScheduler().runTaskTimer(Finale.getPlugin(), () -> {
             for (ActiveMob mob : MythicBukkit.inst().getMobManager().getActiveMobs()) {
                 if (!mob.getType().getInternalName().equals("Bleeze")) {
+                    if (mob.getType().getInternalName().equals("BleezeMinion")) {
+                        mob.getEntity().getBukkitEntity().leaveVehicle();
+                    }
                     continue;
                 }
 
                 Mob entity = (Mob) mob.getEntity().getBukkitEntity();
+
+                entity.leaveVehicle();
 
                 if (entity.getWorld().getWeatherDuration() > 1) {
 //                    entity.remove();
