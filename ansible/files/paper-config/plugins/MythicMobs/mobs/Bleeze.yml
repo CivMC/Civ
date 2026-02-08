@@ -4,7 +4,7 @@ Bleeze:
   Health: 600
   Damage: 16
   Drops:
-    - heavy_core 0.5
+    - heavy_core 1 0.5
   Skills:
     - setvariable{var=caster.minions;type=INTEGER;val=0} @self ~onSpawn
     - geyser{type=LAVA;height=3;speed=40} @target 0.05
