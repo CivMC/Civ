@@ -43,6 +43,7 @@ factories:
     recipes:
       - charge_wind_essence
       - make_maces
+      - make_mob_repellators
       - repair_kinetics_factory
   meteoric_iron_sword:
     type: FCC
@@ -1694,6 +1695,7 @@ factories:
       - grow_sculk
       - grow_sculk_vein
       - kill_bush
+      - grow_dry_grass
       - root_dirt
       - melt_ice
       - form_tube_coral_block
@@ -14478,6 +14480,28 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DEAD_BUSH
         amount: 16
+  grow_dry_grass:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow dry grass
+    type: PRODUCTION
+    input:
+      sand:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SAND
+        amount: 64
+      cobweb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COBWEB
+        amount: 64
+    output:
+      short_dry_grass:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SHORT_DRY_GRASS
+        amount: 32
   root_dirt:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -16832,3 +16856,42 @@ recipes:
         type: BREEZE_ROD
         amount: 1
     health_gained: 10000
+  make_mob_repellators:
+    forceInclude: true
+    production_time: 4s
+    name: Make Mob Repellators
+    type: PRODUCTION
+    input:
+      heavy_core:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HEAVY_CORE
+        amount: 3
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 64
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 24
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output:
+      mob_repellator:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: FLETCHING_TABLE
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Mob Repellator
+          lore:
+            - Blocks mob spawns in a 96 block radius cylinder
+        amount: 3

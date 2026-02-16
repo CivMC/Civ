@@ -12,4 +12,5 @@ dependencies {
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:namelayer-paper"))
     compileOnly(project(":plugins:citadel-paper"))
+    compileOnly("io.lumine:Mythic-Dist:5.6.1")
 }

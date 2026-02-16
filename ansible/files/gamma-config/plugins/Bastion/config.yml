@@ -101,3 +101,45 @@ bastions:
       damageFirstBastion: true
       explodeOnBlock: true
       explodeOnBlockStrength: 0
+  mob:
+    block:
+      material: FLETCHING_TABLE
+      durability: 0
+      name: Mob Repellator
+      lore:
+        - Blocks mob spawns in a 96 block radius cylinder
+    squarefield: false
+    effectRadius: 80
+    includeY: true
+    startScaleFactor: 250
+    finalScaleFactor: 1
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 5
+    blocksToErode: -1
+    placementCooldown: 2000
+    destroyOnRemove: false
+    onlyDirectDestroy: true
+    blockReinforcements: false
+    blockMobs: true
+    destroyOnRemoveWhileImmature: true
+    proximityDamageRange: 25
+    proximityDamageFactor: 0.5
+    overlay_name: Mo
+    pearls:
+      block: false
+      blockMidair: false
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: true
+      damageFirstBastion: true
+      allowPearlingOut: true
+    elytra:
+      block: false
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      damageFirstBastion: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0

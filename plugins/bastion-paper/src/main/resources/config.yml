@@ -41,7 +41,7 @@ bastions:
     destroyOnRemoveWhileImmature: true
     pearls:
       block: false
-      blockMidair: fakse
+      blockMidair: false
       scaleFactor: 1
       requireMaturity: true
       consumeOnBlock: false

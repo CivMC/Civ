@@ -1,4 +1,4 @@
-package net.civmc.heliodor;
+package vg.civcraft.mc.civmodcore.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
