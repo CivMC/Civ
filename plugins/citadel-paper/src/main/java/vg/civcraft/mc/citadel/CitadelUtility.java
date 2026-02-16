@@ -128,12 +128,6 @@ public class CitadelUtility {
         return component;
     }
 
-    public static void debugLog(String msg) {
-        if (Citadel.getInstance().getConfigManager().isDebugEnabled()) {
-            Citadel.getInstance().getLogger().info(msg);
-        }
-    }
-
     public static boolean consumeReinforcementItems(Player player, ReinforcementType type, boolean consumeExtra) {
         ItemMap toRemove = new ItemMap(type.getItem());
         if (consumeExtra) {
