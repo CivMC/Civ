@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.util.CraftInventoryCreator;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -256,7 +256,7 @@ public final class ClonedInventory implements Inventory {
             return (ClonedInventory) inventory;
         }
         final ItemStack[] contents = inventory.getStorageContents().clone();
-        Inventory clone = Bukkit.createInventory(inventory.getHolder(), contents.length);
+        Inventory clone = CraftInventoryCreator.INSTANCE.createInventory(inventory.getHolder(), contents.length);
         for (int i = 0; i < contents.length; i++) {
             final ItemStack item = contents[i];
             if (item != null) {

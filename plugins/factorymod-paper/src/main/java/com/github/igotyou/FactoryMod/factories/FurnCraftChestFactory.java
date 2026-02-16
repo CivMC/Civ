@@ -347,16 +347,6 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             return;
         }
 
-        // Ensure the recipe effect can be applied
-        var effectFeasibility = currentRecipe.evaluateEffectFeasibility(getInputInventory(), getOutputInventory());
-        if (!(effectFeasibility.isFeasible())) {
-            LoggingUtils.log(String.format("Skipping activation of recipe [%s], since the effect wasn't feasible.", currentRecipe.getName()));
-            if (p != null) {
-                p.sendMessage(String.format("%sUnable to activate recipe because %s.", ChatColor.RED, effectFeasibility.reasonSnippet()));
-            }
-            return;
-        }
-
         // Check that there is an output selected at all
         if (furnaceIoSelector.getOutputCount() == 0 && tableIoSelector.getOutputCount() == 0) {
             p.sendMessage(String.format("%sFailed to activate factory, it has no IO Outputs configured", ChatColor.RED));

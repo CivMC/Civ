@@ -761,27 +761,17 @@ public class BlockListener implements Listener {
         if (type != Material.CHISELED_BOOKSHELF) {
             return;
         }
-        EquipmentSlot hand = pie.getHand();
-        if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
-            return;
-        }
-        ItemStack relevant;
         Player p = pie.getPlayer();
-        if (hand == EquipmentSlot.HAND) {
-            relevant = p.getInventory().getItemInMainHand();
-        } else {
-            relevant = p.getInventory().getItemInOffHand();
-        }
-        if (relevant.getType() != Material.AIR && !Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType())) {
+        boolean flag = p.getInventory().getItemInMainHand().getType() != Material.AIR || p.getInventory().getItemInOffHand().getType() != Material.AIR;
+        if (p.isSneaking() && flag) {
             return;
         }
         Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
-        if (rein == null) {
+        if (rein == null || rein.isInsecure()) {
             return;
         }
         if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
-            p.sendMessage(ChatColor.RED + "You do not have permission to " +
-                (Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType()) ? "place books in this shelf" : "take books from this shelf"));
+            p.sendMessage(ChatColor.RED + "You do not have permission to interact with this bookshelf");
             pie.setCancelled(true);
         }
     }

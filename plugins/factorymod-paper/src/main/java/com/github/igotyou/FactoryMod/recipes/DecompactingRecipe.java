@@ -1,16 +1,16 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-
-import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -21,7 +21,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
  */
 public class DecompactingRecipe extends InputRecipe {
 
-    private String compactedLore;
+    private final String compactedLore;
 
     public DecompactingRecipe(String identifier, ItemMap input, String name, int productionTime,
                               String compactedLore) {
@@ -45,26 +45,6 @@ public class DecompactingRecipe extends InputRecipe {
     }
 
     @Override
-    public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
-        boolean isFeasible = Arrays.stream(inputInv.getContents())
-            .filter(Objects::nonNull)
-            .filter(this::isDecompactable)
-            .map(it -> {
-                ItemStack removeClone = it.clone();
-                removeClone.setAmount(1);
-                removeCompactLore(removeClone);
-                ItemMap toAdd = new ItemMap(removeClone);
-                toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
-                return toAdd;
-            })
-            .allMatch(it -> it.fitsIn(outputInv));
-        return new EffectFeasibility(
-            isFeasible,
-            isFeasible ? null : "it ran out of storage space"
-        );
-    }
-
-    @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
@@ -78,16 +58,17 @@ public class DecompactingRecipe extends InputRecipe {
                         ItemMap toAdd = new ItemMap();
                         removeCompactLore(removeClone);
                         toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
-                        if (toAdd.fitsIn(outputInv)) { //fits in chest
-                            if (input.removeSafelyFrom(inputInv)) { //remove extra input
-                                if (toRemove.removeSafelyFrom(inputInv)) { //remove one compacted item
-                                    for (ItemStack add : toAdd.getItemStackRepresentation()) {
-                                        outputInv.addItem(add);
-                                    }
+                        ItemStack[] itemsToAdd = toAdd.getItemStackRepresentation().toArray(new ItemStack[0]);
+                        if (!InventoryUtils.safelyAddItemsToInventory(
+                            ClonedInventory.cloneInventory(outputInv), itemsToAdd)) {
+                            return false; // does not fit in chest
+                        }
+                        if (input.removeSafelyFrom(inputInv)) { //remove extra input
+                            if (toRemove.removeSafelyFrom(inputInv)) { //remove one compacted item
+                                for (ItemStack add : toAdd.getItemStackRepresentation()) {
+                                    outputInv.addItem(add);
                                 }
                             }
-                        } else { // does not fit in chest
-                            return false;
                         }
                         break;
                     }
