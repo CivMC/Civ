@@ -38,7 +38,7 @@ public class VeinBreakListener implements Listener {
         this.dao = dao;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (!Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())
