@@ -47,7 +47,7 @@ bastions:
     pearls:
       block: true
       blockMidair: false
-      scaleFactor: 1
+      scaleFactor: 0
       requireMaturity: true
       consumeOnBlock: false
       damageFirstBastion: true
