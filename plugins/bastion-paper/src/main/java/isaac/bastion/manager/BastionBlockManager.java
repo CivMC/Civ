@@ -63,11 +63,7 @@ public class BastionBlockManager {
             if (cause == Cause.PEARL && !block.getType().isBlockPearls()) {
                 continue;
             }
-            Set<BastionBlock> set = typeMap.get(block.getType());
-            if (set == null) {
-                set = new HashSet<>();
-                typeMap.put(block.getType(), set);
-            }
+            Set<BastionBlock> set = typeMap.computeIfAbsent(block.getType(), k -> new HashSet<>());
             set.add(block);
         }
 
@@ -168,22 +164,14 @@ public class BastionBlockManager {
     public Set<Group> getEnteredGroupFields(Location source, Collection<Location> target) {
         Set<Group> result = new HashSet<>();
         for (Location loc : target) {
-            for (BastionBlock b : getBlockingBastions(loc)) {
+            for (BastionBlock b : getBlockingBastions(loc, b -> b.getType().isBlockLiquids())) {
                 result.add(b.getGroup());
             }
         }
-        for (BastionBlock b : getBlockingBastions(source)) {
+        for (BastionBlock b : getBlockingBastions(source, b -> b.getType().isBlockLiquids())) {
             result.remove(b.getGroup());
         }
 
-        return result;
-    }
-
-    public Set<BastionBlock> getBlockingBastions(Set<Location> locs) {
-        Set<BastionBlock> result = new HashSet<>();
-        for (Location loc : locs) {
-            result.addAll(getBlockingBastions(loc));
-        }
         return result;
     }
 

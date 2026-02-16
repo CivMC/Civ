@@ -126,6 +126,7 @@ bastions:
     proximityDamageRange: 25
     proximityDamageFactor: 0.5
     overlay_name: Mo
+    blockLiquids: false
     pearls:
       block: false
       blockMidair: false

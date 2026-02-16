@@ -8,20 +8,15 @@ import com.aleksey.castlegates.plugins.citadel.ICitadel;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -63,7 +58,7 @@ public class BastionManager implements IBastionManager {
     private boolean hasBastionAccess(List<Player> players, Block block, ICitadel citadel) {
         PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
         Location loc = block.getLocation();
-        Set<BastionBlock> bastions = _blockManager.getBlockingBastions(loc);
+        Set<BastionBlock> bastions = _blockManager.getBlockingBastions(loc, b -> b.getType().isBlockLiquids());
 
         if (bastions == null)
             return true;

@@ -84,7 +84,7 @@ public class BlockingSpawnSelector implements SpawnSelector {
             ret = ret.thenCompose(location -> {
                 BastionBlockManager bm = Bastion.getBastionManager();
                 if (bm != null) {
-                    if (!bm.getBlockingBastions(location).isEmpty()) {
+                    if (!bm.getBlockingBastions(location, b -> b.getType().isBlockLiquids()).isEmpty()) {
                         return getRandomSpawnLocationAsync(world, block);
                     }
                 }

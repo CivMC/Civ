@@ -57,6 +57,7 @@ public class BastionType implements Comparable<BastionType> {
     private final boolean destroyOnRemoveWhileImmature;
     private final int proximityDamageRange;
     private final double proximityDamageFactor;
+    private final boolean blockLiquids;
 
     private final String overlayName;
 
@@ -97,7 +98,7 @@ public class BastionType implements Comparable<BastionType> {
         int proximityDamageRange,
         double proximityDamageFactor,
         String overlayName,
-        boolean blockMobs
+        boolean blockMobs, boolean blockLiquids
     ) {
         this.name = name;
         this.material = material;
@@ -139,6 +140,7 @@ public class BastionType implements Comparable<BastionType> {
         this.blockMobs = blockMobs;
 
         maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
+        this.blockLiquids = blockLiquids;
     }
 
     /**
@@ -497,6 +499,10 @@ public class BastionType implements Comparable<BastionType> {
         return destroyOnRemoveWhileImmature;
     }
 
+    public boolean isBlockLiquids() {
+        return blockLiquids;
+    }
+
     /**
      * @return The names of all registered bastion types
      */
@@ -571,12 +577,13 @@ public class BastionType implements Comparable<BastionType> {
         String overlayName = config.getString("overlay_name");
 
         boolean blockMobs = config.getBoolean("blockMobs", false);
+        boolean blockLiquids = config.getBoolean("blockLiquids", true);
 
         return new BastionType(name, itemName, material, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
             erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock,
             blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock,
             explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements, destroyOnRemoveWhileImmature,
-            proximityDamageRange, proximityDamageFactor, overlayName, blockMobs);
+            proximityDamageRange, proximityDamageFactor, overlayName, blockMobs, blockLiquids);
     }
 
     @Override

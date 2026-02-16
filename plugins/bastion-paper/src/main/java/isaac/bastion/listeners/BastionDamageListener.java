@@ -123,11 +123,15 @@ public final class BastionDamageListener implements Listener {
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
         Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getBlock().getLocation(),
             event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-        if (!blocking.isEmpty()) {
+        for (BastionBlock bastion : blocking) {
+            if (!bastion.getType().isBlockLiquids()) {
+                continue;
+            }
             event.setCancelled(true);
             if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
                 event.getPlayer().sendMessage(ChatColor.RED + "Emptying bucket prevented by Bastion");
             }
+            break;
         }
     }
 
