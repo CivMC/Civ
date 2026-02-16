@@ -1,8 +1,5 @@
 package com.untamedears.jukealert.commands;
 
-import static com.untamedears.jukealert.util.JAUtility.findLookingAtOrClosestSnitch;
-
-
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
@@ -15,6 +12,7 @@ import com.untamedears.jukealert.model.actions.abstr.PlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 import com.untamedears.jukealert.util.JAUtility;
+import static com.untamedears.jukealert.util.JAUtility.findLookingAtOrClosestSnitch;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,10 +21,10 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -183,7 +181,30 @@ public class InfoCommand extends BaseCommand {
         String playerName,
         boolean censor) {
         SnitchLogAppender logAppender = snitch.getAppender(SnitchLogAppender.class);
-        List<LoggableAction> logs = new ArrayList<>(logAppender.getFullLogs());
+        if (snitch.getId() == -1) {
+            displaySnitchLog(player, snitch, logAppender.getFullLogs(), offset, pageLength, actionType, playerName, censor);
+        }
+        Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), () -> {
+            final List<LoggableAction> actions = logAppender.loadLogs();
+            Bukkit.getScheduler().runTask(JukeAlert.getInstance(), () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
+                displaySnitchLog(player, snitch, actions, offset, pageLength, actionType, playerName, censor);
+            });
+        });
+    }
+
+    private void displaySnitchLog(
+        Player player,
+        Snitch snitch,
+        List<LoggableAction> logs,
+        int offset,
+        int pageLength,
+        String actionType,
+        String playerName,
+        boolean censor) {
+        logs = new ArrayList<>(logs);
         if (playerName != null) {
             String playerNameLowered = playerName.toLowerCase();
             List<LoggableAction> logCopy = new LinkedList<>();
