@@ -188,7 +188,7 @@ public class LoggableActionListener implements Listener {
             return;
         }
         Entity entity = event.getEntity();
-        if (!(entity instanceof Vehicle)) {
+        if (!(entity instanceof Vehicle vehicle) || vehicle.getSpawnCategory() != SpawnCategory.MISC) {
             return;
         }
         handlePlayerAction(player, s -> new PlaceVehicleAction(System.currentTimeMillis(), s,
