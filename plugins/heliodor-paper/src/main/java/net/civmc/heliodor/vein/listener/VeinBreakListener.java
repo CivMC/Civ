@@ -89,7 +89,7 @@ public class VeinBreakListener implements Listener {
             oreBlock.setType(Material.RAW_IRON_BLOCK);
             event.getPlayer().sendMessage(Component.text("You found a chunk of meteoric iron", NamedTextColor.GRAY, TextDecoration.ITALIC));
 
-            BlockPosPdc.addBlock(block.getChunk(), oreLocationsKey, block.getX(), block.getY(), block.getZ());
+            BlockPosPdc.addBlock(block.getChunk(), oreLocationsKey, oreBlock.getX(), oreBlock.getY(), oreBlock.getZ());
 
             this.minedBlocksCache.computeIfAbsent(ChunkPos.from(oreBlock.getChunk()), k -> new ArrayList<>()).add(oreBlock.getLocation());
             JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger()
