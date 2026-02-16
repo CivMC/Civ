@@ -1,24 +1,25 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedDataValue;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketListenerCommon;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityEffect;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate.Action;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate.PlayerInfo;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
+import io.github.retrooper.packetevents.util.SpigotConversionUtil;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -30,8 +31,7 @@ public final class AttrHider extends BasicHack {
 
     public static final String BYPASS_PERMISSION = "attrhider.bypass";
 
-    private final PacketManager packets = new PacketManager();
-    private Set<Object> customPackets = new HashSet<>();
+    private final List<PacketListenerCommon> listeners = new ArrayList<>();
 
     @AutoLoad
     private boolean hideEffects;
@@ -50,130 +50,140 @@ public final class AttrHider extends BasicHack {
     public void onEnable() {
         super.onEnable();
         if (this.hideEffects) {
-            this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Server.ENTITY_EFFECT) {
-                @Override
-                public void onPacketSending(final PacketEvent event) {
-                    final PacketContainer packet = event.getPacket();
-                    final Player player = event.getPlayer();
-                    if (player.hasPermission(BYPASS_PERMISSION)) {
-                        return;
-                    }
-                    final PacketContainer cloned = packet.deepClone();
-                    final StructureModifier<Integer> ints = cloned.getIntegers();
-                    if (player.getEntityId() == ints.read(0)) {
-                        return;
-                    }
-                    // set amplifier to 0
-                    cloned.getBytes().write(1, (byte) 0);
-                    // set duration to 0
-                    ints.write(1, 0);
-                    // The packet data is shared between events, but the event
-                    // instance is exclusive to THIS sending of the packet
-                    event.setPacket(cloned);
-                }
-            });
+            registerListener(new EffectHiderListener());
         }
         if (this.hideHealth) {
-            this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Server.ENTITY_METADATA) {
-                @Override
-                public void onPacketSending(final PacketEvent event) {
-                    final PacketContainer packet = event.getPacket();
-                    final Player player = event.getPlayer();
-                    if (player.hasPermission(BYPASS_PERMISSION)) {
-                        return;
-                    }
-                    final Entity entity = packet.getEntityModifier(event).read(0);
-                    if (!(entity instanceof LivingEntity)
-                        || player.getEntityId() == entity.getEntityId()
-                        || entity.getPassengers().contains(player)
-                        || customPackets.remove(packet.getHandle())) {
-                        return;
-                    }
-                    final PacketContainer cloned = packet.deepClone();
-                    for (final WrappedDataValue object : cloned.getDataValueCollectionModifier().read(0)) {
-                        // Read the 8th field as a float as that's the living entity's health
-                        // https://wiki.vg/Entity_metadata#Living_Entity
-                        if (object.getIndex() == 9) {
-                            if ((float) object.getValue() > 0) {
-                                object.setValue(1f); // Half a heart
-                            }
-                        }
-                    }
-                    // The packet data is shared between events, but the event
-                    // instance is exclusive to THIS sending of the packet
-                    event.setPacket(cloned);
-                }
-            });
+            registerListener(new HealthHiderListener());
         }
         if (this.roundPlayerListPing) {
-            this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Server.PLAYER_INFO) {
-                @Override
-                public void onPacketSending(final PacketEvent event) {
-                    final PacketContainer packet = event.getPacket();
-                    final Player player = event.getPlayer();
-                    if (player.hasPermission(BYPASS_PERMISSION)) {
-                        return;
-                    }
-                    final PacketContainer cloned = packet.deepClone();
-                    List<PlayerInfoData> newInfos = new ArrayList<>();
-                    List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(1);
-                    for (PlayerInfoData oldInfo : oldInfos) {
-                        if (oldInfo == null) continue;
-                        int latency = oldInfo.getLatency();
-                        // Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
-                        // this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
-                        if (latency < 0) latency = -1;
-                        else if (latency < 150) latency = 75; // average of 0 and 150, arbitrary
-                        else if (latency < 300) latency = 225;
-                        else if (latency < 600) latency = 450;
-                        else if (latency < 1000) latency = 800;
-                        else latency = 1000;
-                        newInfos.add(new PlayerInfoData(
-                            oldInfo.getProfileId(),
-                            latency,
-                            oldInfo.isListed(),
-                            oldInfo.getGameMode(),
-                            oldInfo.getProfile(),
-                            oldInfo.getDisplayName(),
-                            oldInfo.getRemoteChatSessionData()
-                        ));
-					}
-					cloned.getPlayerInfoDataLists().write(1, newInfos);
-                    // The packet data is shared between events, but the event
-                    // instance is exclusive to THIS sending of the packet
-                    event.setPacket(cloned);
-                }
-            });
+            registerListener(new PingRounderListener());
         }
     }
 
     @Override
     public void onDisable() {
-        this.packets.removeAllAdapters();
+        for (final PacketListenerCommon listener : this.listeners) {
+            PacketEvents.getAPI().getEventManager().unregisterListener(listener);
+        }
+        this.listeners.clear();
         super.onDisable();
     }
 
+    private void registerListener(final PacketListener listener) {
+        final PacketListenerCommon registered = PacketEvents.getAPI().getEventManager()
+            .registerListener(listener, PacketListenerPriority.NORMAL);
+        this.listeners.add(registered);
+    }
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onMountEntity(EntityMountEvent event) {
-        if (this.hideHealth && event.getEntity() instanceof Player player && event.getMount() instanceof LivingEntity mountedEntity) {
-            WrappedDataWatcher watcher = new WrappedDataWatcher();
-            List<WrappedDataValue> wrappedDataValueList = new ArrayList<>();
+    public void onMountEntity(final EntityMountEvent event) {
+        if (this.hideHealth
+            && event.getEntity() instanceof Player player
+            && event.getMount() instanceof LivingEntity mountedEntity) {
+            final List<EntityData<?>> metadata = new ArrayList<>();
+            metadata.add(new EntityData<>(9, EntityDataTypes.FLOAT, (float) mountedEntity.getHealth()));
+            final WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(
+                mountedEntity.getEntityId(), metadata);
+            // Send silently so our own health-hiding listener does not intercept this packet.
+            // EntityMountEvent fires *before* the player is actually a passenger,
+            // so the listener would otherwise hide the real health.
+            PacketEvents.getAPI().getPlayerManager().sendPacketSilently(player, packet);
+        }
+    }
 
-            watcher.setEntity(mountedEntity);
-            watcher.setObject(9, WrappedDataWatcher.Registry.get(Float.class), (float) mountedEntity.getHealth());
-            for (WrappedWatchableObject entry : watcher.getWatchableObjects()) {
-                if (entry == null) continue;
+    private static final class EffectHiderListener implements PacketListener {
 
-                WrappedDataWatcher.WrappedDataWatcherObject watcherObject = entry.getWatcherObject();
-
-                wrappedDataValueList.add(new WrappedDataValue(watcherObject.getIndex(), watcherObject.getSerializer(), entry.getRawValue()));
+        @Override
+        public void onPacketSend(final PacketSendEvent event) {
+            if (event.getPacketType() != PacketType.Play.Server.ENTITY_EFFECT) {
+                return;
             }
+            final Player player = event.getPlayer();
+            if (player == null || player.hasPermission(BYPASS_PERMISSION)) {
+                return;
+            }
+            final WrapperPlayServerEntityEffect packet = new WrapperPlayServerEntityEffect(event);
+            if (player.getEntityId() == packet.getEntityId()) {
+                return;
+            }
+            // Set amplifier to 0
+            packet.setEffectAmplifier(0);
+            // Set duration to 0
+            packet.setEffectDurationTicks(0);
+            event.markForReEncode(true);
+        }
+    }
 
-            PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
-            packet.getIntegers().write(0, mountedEntity.getEntityId());
-            packet.getDataValueCollectionModifier().write(0, wrappedDataValueList);
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
-            customPackets.add(packet.getHandle()); // Allow ignoring this packet when hiding health because EntityMountEvent fires *before* the player is actually a passenger
+    private static final class HealthHiderListener implements PacketListener {
+
+        @Override
+        public void onPacketSend(final PacketSendEvent event) {
+            if (event.getPacketType() != PacketType.Play.Server.ENTITY_METADATA) {
+                return;
+            }
+            final Player player = event.getPlayer();
+            if (player == null || player.hasPermission(BYPASS_PERMISSION)) {
+                return;
+            }
+            final WrapperPlayServerEntityMetadata packet = new WrapperPlayServerEntityMetadata(event);
+            final int entityId = packet.getEntityId();
+            if (player.getEntityId() == entityId) {
+                return;
+            }
+            final Entity entity = SpigotConversionUtil.getEntityById(player.getWorld(), entityId);
+            if (!(entity instanceof LivingEntity) || entity.getPassengers().contains(player)) {
+                return;
+            }
+            for (final EntityData<?> data : packet.getEntityMetadata()) {
+                // Index 9 is the LivingEntity health field
+                // https://wiki.vg/Entity_metadata#Living_Entity
+                if (data.getIndex() == 9 && data.getType() == EntityDataTypes.FLOAT) {
+                    if ((float) data.getValue() > 0) {
+                        @SuppressWarnings("unchecked")
+                        final EntityData<Float> healthData = (EntityData<Float>) data;
+                        healthData.setValue(1f); // Half a heart
+                    }
+                }
+            }
+            event.markForReEncode(true);
+        }
+    }
+
+    private static final class PingRounderListener implements PacketListener {
+
+        @Override
+        public void onPacketSend(final PacketSendEvent event) {
+            if (event.getPacketType() != PacketType.Play.Server.PLAYER_INFO_UPDATE) {
+                return;
+            }
+            final Player player = event.getPlayer();
+            if (player == null || player.hasPermission(BYPASS_PERMISSION)) {
+                return;
+            }
+            final WrapperPlayServerPlayerInfoUpdate packet = new WrapperPlayServerPlayerInfoUpdate(event);
+            if (!packet.getActions().contains(Action.UPDATE_LATENCY)) {
+                return;
+            }
+            for (final PlayerInfo entry : packet.getEntries()) {
+                int latency = entry.getLatency();
+                // Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
+                // this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
+                if (latency < 0) {
+                    latency = -1;
+                } else if (latency < 150) {
+                    latency = 75; // average of 0 and 150, arbitrary
+                } else if (latency < 300) {
+                    latency = 225;
+                } else if (latency < 600) {
+                    latency = 450;
+                } else if (latency < 1000) {
+                    latency = 800;
+                } else {
+                    latency = 1000;
+                }
+                entry.setLatency(latency);
+            }
+            event.markForReEncode(true);
         }
     }
 }
