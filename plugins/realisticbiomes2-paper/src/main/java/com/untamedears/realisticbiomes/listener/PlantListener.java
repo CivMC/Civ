@@ -46,7 +46,9 @@ public class PlantListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockPistonRetractEvent event) {
-        plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
+        for (Block block : event.getBlocks()) {
+            plugin.getPlantLogicManager().handleBlockDestruction(block);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
