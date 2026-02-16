@@ -25,7 +25,7 @@ public class MobListener implements Listener {
         if (!event.getMobType().getInternalName().equals("Bleeze")) {
             return;
         }
-        Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getLocation(), b -> b.getType().isBlockMobs());
+        Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getLocation(), b -> b.getType().isBlockMobs() && b.isMature());
         if (preblocking.isEmpty()) {
             return;
         }
@@ -41,7 +41,7 @@ public class MobListener implements Listener {
         if (clazz == null || !Monster.class.isAssignableFrom(clazz)) {
             return;
         }
-        Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getLocation(), b -> b.getType().isBlockMobs());
+        Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getLocation(), b -> b.getType().isBlockMobs() && b.isMature());
         if (preblocking.isEmpty()) {
             return;
         }
