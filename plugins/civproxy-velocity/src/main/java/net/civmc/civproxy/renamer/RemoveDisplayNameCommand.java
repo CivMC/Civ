@@ -8,12 +8,12 @@ import net.kyori.adventure.text.Component;
 import java.util.List;
 import java.util.UUID;
 
-public class ChangePlayerNameCommand implements SimpleCommand {
+public class RemoveDisplayNameCommand implements SimpleCommand {
     private final ProxyServer server;
     private final NameAPI nameAPI;
     private final PlayerRenamer playerRenamer;
 
-    public ChangePlayerNameCommand(ProxyServer server, NameAPI nameAPI, PlayerRenamer playerRenamer) {
+    public RemoveDisplayNameCommand(ProxyServer server, NameAPI nameAPI, PlayerRenamer playerRenamer) {
         this.server = server;
         this.nameAPI = nameAPI;
         this.playerRenamer = playerRenamer;
@@ -25,7 +25,7 @@ public class ChangePlayerNameCommand implements SimpleCommand {
         String[] args = invocation.arguments();
 
         if (args.length < 2) {
-            source.sendPlainMessage("Usage: /" + invocation.alias() + " <old player name> <new player name>");
+            source.sendPlainMessage("Usage: /" + invocation.alias() + " <current player name> <name to remove>");
             return;
         }
 
@@ -35,17 +35,19 @@ public class ChangePlayerNameCommand implements SimpleCommand {
             return;
         }
 
-        String newName = args[1].length() >= 16 ? args[1].substring(0, 16) : args[1];
-        nameAPI.changePlayer(newName, uuid);
-        playerRenamer.addDisplayName(uuid, args[0]);
-        source.sendPlainMessage("Changed name of " + args[0] + " to " + newName);
-        server.getPlayer(uuid).ifPresent(player ->
-            player.disconnect(Component.text("Your name has been changed! Please rejoin.")));
+        String nameToRemove = args[1];
+        boolean removed = playerRenamer.removeDisplayName(uuid, nameToRemove);
+        
+        if (removed) {
+            source.sendPlainMessage("Removed '" + nameToRemove + "' from " + args[0] + "'s name history");
+        } else {
+            source.sendPlainMessage("Could not find '" + nameToRemove + "' in " + args[0] + "'s name history");
+        }
     }
 
     @Override
     public boolean hasPermission(Invocation invocation) {
-        return invocation.source().hasPermission("civproxy.changeplayername");
+        return invocation.source().hasPermission("civproxy.removeplayername");
     }
 
     @Override
