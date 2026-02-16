@@ -16866,7 +16866,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: HEAVY_CORE
-        amount: 3
+        amount: 1
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
