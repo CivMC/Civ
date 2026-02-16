@@ -4,13 +4,12 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionType;
-import java.io.InputStream;
-import java.util.Scanner;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 public class BastionCommandManager extends BaseCommand {
     @Subcommand("about")
     @Description("Shows Bastion version information.")
+    @Default
     public void about(final CommandSender sender) {
         sender.sendMessage(Component.text("Bastion version " + Bastion.getPlugin().getPluginMeta().getVersion(), NamedTextColor.GREEN));
     }
@@ -39,23 +39,5 @@ public class BastionCommandManager extends BaseCommand {
         ItemStack item = type.getItemRepresentation();
         player.getInventory().addItem(item);
         player.sendMessage(Component.text("Gave 1 " + type.getName() + " bastion.", NamedTextColor.GREEN));
-    }
-
-    @SuppressWarnings("resource")
-    public static String convertStreamToString(final InputStream is) {
-        if (is == null) {
-            return "";
-        }
-        Scanner s = new Scanner(is).useDelimiter("\\A");
-        String ret = "";
-        try {
-            ret = s.hasNext() ? s.next() : "";
-        } catch (final IllegalStateException ignored) {
-            ret = "";
-        } finally {
-            s.close();
-            ret = "";
-        }
-        return ret;
     }
 }
