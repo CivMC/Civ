@@ -240,6 +240,12 @@ public class SnitchLogGUI {
             INTERNAL_showScreenWithContent();
             return;
         }
+        SnitchLogAppender logAppender = snitch.getAppender(SnitchLogAppender.class);
+        if (snitch.getId() == -1) {
+            this.buttonCache = INTERNAL_constructContent(logAppender.getFullLogs());
+            INTERNAL_showScreenWithContent();
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), () -> {
             final List<LoggableAction> actions = logAppender.loadLogs();
             Bukkit.getScheduler().runTask(JukeAlert.getInstance(), () -> {
