@@ -16894,4 +16894,4 @@ recipes:
           display-name: Mob Repellator
           lore:
             - Blocks mob spawns in a 96 block radius cylinder
-        amount: 3
+        amount: 4
