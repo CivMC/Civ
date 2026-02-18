@@ -30,7 +30,7 @@ public class StandardKnockback implements KnockbackStrategy {
             double z = (-Mth.cos(attacker.getYRot() * 0.017453292F));
             strength *= 1.0D - victim.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
             if (strength > 0.0) {
-                victim.hasImpulse = true;
+                victim.needsSync = true;
                 Vec3 vec3d = victim.getDeltaMovement();
                 Vec3 vec3d1 = (new Vec3(x, 0.0D, z)).normalize().scale(strength);
 

@@ -4,7 +4,10 @@ import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -17,10 +20,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Prevents minecarts from derailing by forcibly slowing them down to 8m/s when they would otherwise derail
