@@ -1,6 +1,8 @@
 package vg.civcraft.mc.citadel.listener;
 
 import io.papermc.paper.event.player.PlayerOpenSignEvent;
+import io.papermc.paper.event.entity.ItemTransportingEntityValidateTargetEvent;
+import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -169,20 +171,26 @@ public class EntityListener implements Listener {
     }
 
     private List<Block> getGolemBlocks(EntityType type, Block base) {
-        ArrayList<Block> blocks = new ArrayList<>();
-        blocks.add(base);
-        base = base.getRelative(BlockFace.UP);
-        blocks.add(base);
-        if (type == EntityType.IRON_GOLEM) {
-            for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST,
-                BlockFace.WEST}) {
-                Block arm = base.getRelative(face);
-                if (arm.getType() == Material.IRON_BLOCK)
-                    blocks.add(arm);
+        List<Block> blocks = new ArrayList<>();
+        if (type == EntityType.COPPER_GOLEM) {
+            blocks.add(base);
+            base = base.getRelative(BlockFace.UP);
+            blocks.add(base);
+        } else {
+            blocks.add(base);
+            base = base.getRelative(BlockFace.UP);
+            blocks.add(base);
+            if (type == EntityType.IRON_GOLEM) {
+                for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST,
+                    BlockFace.WEST}) {
+                    Block arm = base.getRelative(face);
+                    if (arm.getType() == Material.IRON_BLOCK)
+                        blocks.add(arm);
+                }
             }
+            base = base.getRelative(BlockFace.UP);
+            blocks.add(base);
         }
-        base = base.getRelative(BlockFace.UP);
-        blocks.add(base);
         return blocks;
     }
 
@@ -237,7 +245,7 @@ public class EntityListener implements Listener {
     public void spawn(CreatureSpawnEvent cse) {
         EntityType type = cse.getEntityType();
         if (type != EntityType.IRON_GOLEM && type != EntityType.SNOW_GOLEM && type != EntityType.WITHER
-            && type != EntityType.SILVERFISH) {
+            && type != EntityType.SILVERFISH && type != EntityType.COPPER_GOLEM) {
             return;
         }
         for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
@@ -245,6 +253,14 @@ public class EntityListener implements Listener {
             if (reinforcement != null) {
                 cse.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void blockCopperGolem(ItemTransportingEntityValidateTargetEvent itevte) {
+        Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(itevte.getBlock());
+        if (rein != null && !rein.isInsecure()) {
+            itevte.setAllowed(false);
         }
     }
 

@@ -35,6 +35,11 @@ public class GenericArmourSelectionGui extends ItemSelectionGui {
         inventory.setSlot(toClickable(KitItem.LEATHER_LEGGINGS), 18);
         inventory.setSlot(toClickable(KitItem.LEATHER_BOOTS), 27);
 
+        inventory.setSlot(toClickable(KitItem.COPPER_HELMET), 8);
+        inventory.setSlot(toClickable(KitItem.COPPER_CHESTPLATE), 17);
+        inventory.setSlot(toClickable(KitItem.COPPER_LEGGINGS), 26);
+        inventory.setSlot(toClickable(KitItem.COPPER_BOOTS), 35);
+
         inventory.setSlot(toClickable(KitItem.GOLDEN_HELMET), 1);
         inventory.setSlot(toClickable(KitItem.GOLDEN_CHESTPLATE), 10);
         inventory.setSlot(toClickable(KitItem.GOLDEN_LEGGINGS), 19);

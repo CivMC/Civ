@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -26,6 +27,9 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
             LinkedList<Block> chestBlocks = new LinkedList<>();
             chestBlocks.addAll(searchForBlockOnAllSides(center, Material.CHEST));
             chestBlocks.addAll(searchForBlockOnAllSides(center, Material.TRAPPED_CHEST));
+            for (Material chest : Tag.COPPER_CHESTS.getValues()) {
+                chestBlocks.addAll(searchForBlockOnAllSides(center, chest));
+            }
             chestBlocks.addAll(searchForBlockOnAllSides(center, Material.BARREL));
             for (Block b : chestBlocks) {
                 BlockFace chestFace = center.getFace(b);
@@ -56,7 +60,8 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
             && chest != null
             && (chest.getBlock().getType() == Material.CHEST
             || chest.getBlock().getType() == Material.TRAPPED_CHEST
-            || chest.getBlock().getType() == Material.BARREL);
+            || chest.getBlock().getType() == Material.BARREL
+            || Tag.COPPER_CHESTS.isTagged(chest.getBlock().getType()));
     }
 
     public boolean isComplete() {
@@ -79,6 +84,10 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
             Material.CHEST);
         MultiBlockStructure.searchForBlockOnAllSides(chest.getBlock(),
             Material.TRAPPED_CHEST);
+        for (Material type : Tag.COPPER_CHESTS.getValues()) {
+            MultiBlockStructure.searchForBlockOnAllSides(chest.getBlock(),
+                type);
+        }
 
         // not necessary to check for more blocks if the "chest" is a barrel because it cannot be double
 
@@ -90,7 +99,8 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
             && furnace.getBlock().getType() != Material.FURNACE
             && chest.getBlock().getType() != Material.CHEST
             && chest.getBlock().getType() != Material.TRAPPED_CHEST
-            && chest.getBlock().getType() != Material.BARREL;
+            && chest.getBlock().getType() != Material.BARREL
+            && !Tag.COPPER_CHESTS.isTagged(chest.getBlock().getType());
     }
 
     public List<Block> getRelevantBlocks() {

@@ -5,8 +5,6 @@ import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
-import com.github.igotyou.FactoryMod.utility.Direction;
-import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
@@ -17,8 +15,11 @@ import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.utility.Direction;
+import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
 import com.github.igotyou.FactoryMod.utility.IOSelector;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,15 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
-
-import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
-import org.bukkit.block.Barrel;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceInventory;
@@ -108,7 +108,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
      */
     public Inventory getInventory() {
         // do not need to check for barrels because they are not included in the getChest() function, which is used for double chest detection/force loading
-        if (getChest().getType() != Material.CHEST && getChest().getType() != Material.TRAPPED_CHEST) {
+        if (getChest().getType() != Material.CHEST && getChest().getType() != Material.TRAPPED_CHEST && !Tag.COPPER_CHESTS.isTagged(getChest().getType())) {
             return null;
         }
         Chest chestBlock = (Chest) (getChest().getState());
@@ -144,7 +144,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         BlockFace facing = getFacing();
         for (BlockFace relativeFace : ioTypeFunc.apply(getFurnaceIOSelector()).apply(facing)) {
             Block relBlock = fblock.getRelative(relativeFace);
-            if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+            if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(relBlock.getType())) {
                 combinedInvList.add(((Chest) relBlock.getState()).getInventory());
             }
             if (relBlock.getType() == Material.BARREL) {
@@ -154,7 +154,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         Block tblock = fccs.getCraftingTable();
         for (BlockFace relativeFace : ioTypeFunc.apply(getTableIOSelector()).apply(facing)) {
             Block relBlock = tblock.getRelative(relativeFace);
-            if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+            if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(relBlock.getType())) {
                 combinedInvList.add(((Chest) relBlock.getState()).getInventory());
             }
             if (relBlock.getType() == Material.BARREL) {

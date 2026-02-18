@@ -198,7 +198,7 @@ public final class BeeKeeping extends BasicHack {
     private static List<BeeData> getBeesFromHive(@NotNull final BeehiveBlockEntity hive) {
         List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES).bees();
 
-		return bees == null ? null : bees.stream().map(bee -> bee.entityData().copyTag()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
+		return bees.stream().map(bee -> bee.entityData().copyTagWithoutId()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
 	}
 
     private static final class BeeData {

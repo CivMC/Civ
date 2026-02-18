@@ -421,6 +421,7 @@ reinforcementBreakMultipliers:
         - WOODEN_STAIRS
         - ALL_SIGNS
         - WOODEN_BUTTONS
+        - WOODEN_SHELVES
     - multiplier: 2
       types:
         - FURNACE
@@ -446,6 +447,24 @@ reinforcementBreakMultipliers:
         - WAXED_EXPOSED_COPPER_DOOR
         - WAXED_OXIDIZED_COPPER_DOOR
         - WAXED_WEATHERED_COPPER_DOOR
+        - COPPER_BARS
+        - EXPOSED_COPPER_BARS
+        - OXIDIZED_COPPER_BARS
+        - WEATHERED_COPPER_BARS
+        - WAXED_COPPER_BARS
+        - WAXED_EXPOSED_COPPER_BARS
+        - WAXED_OXIDIZED_COPPER_BARS
+        - WAXED_WEATHERED_COPPER_BARS
+        - COPPER_CHAIN
+        - EXPOSED_COPPER_CHAIN
+        - OXIDIZED_COPPER_CHAIN
+        - WEATHERED_COPPER_CHAIN
+        - WAXED_COPPER_CHAIN
+        - WAXED_EXPOSED_COPPER_CHAIN
+        - WAXED_OXIDIZED_COPPER_CHAIN
+        - WAXED_WEATHERED_COPPER_CHAIN
+      tags:
+        - COPPER_CHESTS
   - custom-key: meteoric_iron_axe_silk
     multipliers:
       - multiplier: 2.5
@@ -468,6 +487,7 @@ reinforcementBreakMultipliers:
           - WOODEN_STAIRS
           - ALL_SIGNS
           - WOODEN_BUTTONS
+          - WOODEN_SHELVES
       - multiplier: 2
         types:
           - FURNACE
@@ -493,6 +513,24 @@ reinforcementBreakMultipliers:
           - WAXED_EXPOSED_COPPER_DOOR
           - WAXED_OXIDIZED_COPPER_DOOR
           - WAXED_WEATHERED_COPPER_DOOR
+          - COPPER_BARS
+          - EXPOSED_COPPER_BARS
+          - OXIDIZED_COPPER_BARS
+          - WEATHERED_COPPER_BARS
+          - WAXED_COPPER_BARS
+          - WAXED_EXPOSED_COPPER_BARS
+          - WAXED_OXIDIZED_COPPER_BARS
+          - WAXED_WEATHERED_COPPER_BARS
+          - COPPER_CHAIN
+          - EXPOSED_COPPER_CHAIN
+          - OXIDIZED_COPPER_CHAIN
+          - WEATHERED_COPPER_CHAIN
+          - WAXED_COPPER_CHAIN
+          - WAXED_EXPOSED_COPPER_CHAIN
+          - WAXED_OXIDIZED_COPPER_CHAIN
+          - WAXED_WEATHERED_COPPER_CHAIN
+        tags:
+          - COPPER_CHESTS
 
 # number of times a tool can break a reinforcement before it gets damaged by one durability
 # set to 0 to disable

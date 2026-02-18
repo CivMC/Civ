@@ -1,6 +1,10 @@
 chunk: -1
 global: -1
 reasons:
+  build_coppergolem:
+    copper_golem:
+      count: 6
+      radius: 32
   breeding:
     pig:
       dumb: true

@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.EnumMap;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -18,6 +17,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.entity.EntityEquipment;
@@ -27,9 +27,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.PlayerDataStorage;
-import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import org.bukkit.Bukkit;
@@ -47,7 +45,8 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         Location l = player.getLocation();
 
         npcPlayer.spawnIn(worldServer);
-        npcPlayer.forceSetPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+        npcPlayer.snapTo(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+        npcPlayer.connection.resetPosition();
         npcPlayer.gameMode.setLevel(worldServer);
         npcPlayer.invulnerableTime = 0;
 
@@ -124,7 +123,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
             List<Pair<EquipmentSlot, ItemStack>> list = Lists.newArrayList();
             list.add(Pair.of(slot, item));
             Packet<ClientGamePacketListener> packet = new ClientboundSetEquipmentPacket(entity.getId(), list);
-            entity.level().chunkSource.broadcast(entity, packet);
+            entity.level().chunkSource.sendToTrackingPlayers(entity, packet);
         }
     }
 
@@ -141,7 +140,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         if (p != null && p.isOnline()) return;
 
         PlayerDataStorage worldStorage = ((CraftWorld) Bukkit.getWorlds().getFirst()).getHandle().getServer().playerDataStorage;
-        CompoundTag playerNbt = worldStorage.load(identity.getName(), identity.getId().toString(), ProblemReporter.DISCARDING).orElse(null);
+        CompoundTag playerNbt = worldStorage.load(new NameAndId(identity.getId(), identity.getName())).orElse(null);
 
         playerNbt.putShort("Air", (short) entity.getAirSupply());
         // Health is now just a float; fractional is not stored separately. (1.12)

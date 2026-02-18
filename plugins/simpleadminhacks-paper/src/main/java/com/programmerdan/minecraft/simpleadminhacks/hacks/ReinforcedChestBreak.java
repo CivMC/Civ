@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -99,6 +100,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
             || Material.BLAST_FURNACE.equals(bbe) || Material.DISPENSER.equals(bbe)
             || Material.DROPPER.equals(bbe) || Material.HOPPER.equals(bbe)
             || Material.BARREL.equals(bbe) || Material.SMOKER.equals(bbe)
+            || Tag.COPPER_CHESTS.isTagged(bbe)
             || Material.BLACK_SHULKER_BOX.equals(bbe)
             || Material.BLUE_SHULKER_BOX.equals(bbe)
             || Material.BROWN_SHULKER_BOX.equals(bbe)
