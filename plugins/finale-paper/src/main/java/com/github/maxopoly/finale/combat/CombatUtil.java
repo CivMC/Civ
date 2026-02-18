@@ -3,10 +3,8 @@ package com.github.maxopoly.finale.combat;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import com.github.maxopoly.finale.combat.knockback.KnockbackStrategy;
-
 import java.util.Iterator;
 import java.util.List;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -25,7 +23,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.boss.EnderDragonPart;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -158,7 +156,9 @@ public class CombatUtil {
                             }
 
                             world.playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
-                            attacker.sweepAttack();
+                            double d = -Mth.sin(attacker.getYRot() * (float) (Math.PI / 180.0));
+                            double d11 = Mth.cos(attacker.getYRot() * (float) (Math.PI / 180.0));
+                            attacker.level().sendParticles(ParticleTypes.SWEEP_ATTACK, attacker.getX() + d, attacker.getY(0.5), attacker.getZ() + d11, 0, d, 0.0, d11, 0.0);
                         }
 
                         if (victim instanceof ServerPlayer && victim.hurtMarked) {

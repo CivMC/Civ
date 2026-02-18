@@ -101,7 +101,11 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
                         return;
                     }
 
-                    CombatUtil.attack(attacker, ((CraftEntity) target).getHandle());
+                    if (attacker.getGameMode() == GameMode.SPECTATOR) {
+                        attacker.setSpectatorTarget(target);
+                    } else {
+                        CombatUtil.attack(attacker, ((CraftEntity) target).getHandle());
+                    }
                 }
             }.runTask(Finale.getPlugin());
         } else if (packetType == PacketType.Play.Client.ENTITY_ACTION) {

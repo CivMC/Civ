@@ -1,6 +1,5 @@
 package vg.civcraft.mc.citadel.listener;
 
-import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import io.papermc.paper.event.entity.ItemTransportingEntityValidateTargetEvent;
 import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import java.util.ArrayList;
