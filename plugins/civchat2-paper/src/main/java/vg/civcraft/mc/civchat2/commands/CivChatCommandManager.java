@@ -28,6 +28,7 @@ public class CivChatCommandManager extends CommandManager {
         registerCommand(new Reply());
         registerCommand(new Tell());
         registerCommand(new WhoAmI());
+        registerCommand(new WhoIs());
     }
 
     @Override
