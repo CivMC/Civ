@@ -60,7 +60,12 @@ public class StarManager {
             rank = "None";
         }
 
-        return HoverEvent.showText(Component.text("Rank: " + rank + "\nJoined: " + joined));
+        String text = "Rank: " + rank + "\nJoined: " + joined;
+        if (player.hasPermission("rankedpvpstar")) {
+            text += "\nTop 10 in ranked PvP";
+        }
+
+        return HoverEvent.showText(Component.text(text));
     }
 
     public String getPrefix(Player player) {
@@ -76,6 +81,8 @@ public class StarManager {
             return ChatColor.RED + STAR;
         }
 
+        int purpleStars = player.hasPermission("rankedpvpstar") ? 1 : 0;
+
         int greenStars = 0;
         if (player.hasPermission("civchat.powerplayer")) {
             greenStars = 4;
@@ -88,19 +95,22 @@ public class StarManager {
         }
 
         StringBuilder stars = new StringBuilder();
+
         if (playtimeStars) {
             long firstPlayed = getJoined(player);
             int yellowStars = firstPlayed == 0 ? 0 : (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()).until(LocalDateTime.now(), ChronoUnit.YEARS);
-            yellowStars = Math.max(0, yellowStars - greenStars);
+            yellowStars = Math.max(0, yellowStars - greenStars - purpleStars);
             if (yellowStars > 0) {
                 stars.append(ChatColor.YELLOW);
+                stars.append(STAR.repeat(yellowStars));
             }
-            stars.append(STAR.repeat(yellowStars));
         }
         if (greenStars > 0) {
-            stars.append(ChatColor.GREEN);
+            stars.append(ChatColor.GREEN).append(STAR.repeat(greenStars));
         }
-        stars.append(STAR.repeat(greenStars));
+        if (purpleStars > 0) {
+            stars.append(ChatColor.LIGHT_PURPLE).append(STAR.repeat(purpleStars));
+        }
 
         return stars.toString();
     }
