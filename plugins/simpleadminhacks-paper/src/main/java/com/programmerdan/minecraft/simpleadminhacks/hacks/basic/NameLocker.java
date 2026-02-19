@@ -6,6 +6,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.util.List;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.world.inventory.AnvilMenu;
 import org.bukkit.Material;
@@ -22,7 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class NameLocker extends BasicHack {
 
-    final NamespacedKey lockedKey = new NamespacedKey(plugin, "name-locked");
+    private final NamespacedKey lockedKey = new NamespacedKey(plugin, "name-locked");
 
     public NameLocker(SimpleAdminHacks plugin, BasicHackConfig config) {
         super(plugin, config);
@@ -65,7 +66,14 @@ public class NameLocker extends BasicHack {
             result.editMeta(meta -> {
                 meta.setDisplayName(event.getView().getRenameText());
                 meta.getPersistentDataContainer().set(lockedKey, PersistentDataType.BOOLEAN, true);
-                meta.lore(List.of(Component.text().content("Name-locked").build())); // Just to make it clear. If we can change the message in the anvil this should be removed.
+                TextComponent loreToAdd = Component.text().content("Name-locked").build();
+                if (meta.hasLore()) {
+                    List<Component> lore = meta.lore();
+                    lore.add(loreToAdd); // Just to make it clear. If we can change the message in the anvil this should be removed.
+                    meta.lore(lore);
+                } else {
+                    meta.lore(List.of(loreToAdd));
+                }
             });
             event.getView().setRepairCost(1); // We need to do this so the client will let the user withdraw the item
             event.setResult(result);

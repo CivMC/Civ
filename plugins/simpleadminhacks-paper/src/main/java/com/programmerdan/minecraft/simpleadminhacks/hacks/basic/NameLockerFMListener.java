@@ -14,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class NameLockerFMListener implements Listener {
 
-    NamespacedKey lockedKey;
+    private final NamespacedKey lockedKey;
 
     public NameLockerFMListener(NamespacedKey lockedKey) {
         this.lockedKey = lockedKey;
