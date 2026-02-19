@@ -99,7 +99,19 @@ proxy:
     ban:
       length: 163800000
       message: 'VPS / VPN Proxy use is generally prohibited. Issue a ticket at support in the CivMC Discord to discuss: https://discord.gg/nDnsU6vJqg'
-    url: https://raw.githubusercontent.com/client9/ipcat/master/datacenters.csv
+    url: https://raw.githubusercontent.com/growlfm/ipcat/refs/heads/main/datacenters.csv
+    period: 576000
+    delay: 4200
+  proxylist:
+    enable: true
+    defaultScore: 3.0
+    ban:
+      length: 86400000
+      message: VPS / VPN Proxy use is generally prohibited. Modmail to www.reddit.com/r/CivMC to discuss
+    urls:
+      - https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt
+      - https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks4.txt
+      - https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt
     period: 576000
     delay: 4200
 # Configure the tor check source; set autoban to true to not only track tor usage but also pre-set bans for tor users
