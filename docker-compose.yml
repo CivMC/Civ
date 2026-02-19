@@ -69,7 +69,7 @@ services:
       TYPE: 'paper'
       VERSION: '1.21.11'
       EULA: 'TRUE'
-      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/44/downloads/leaf-1.21.11-44.jar'
+      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/48/downloads/leaf-1.21.11-48.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
@@ -127,7 +127,7 @@ services:
       TYPE: 'paper'
       VERSION: '1.21.11'
       EULA: 'TRUE'
-      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/44/downloads/leaf-1.21.11-44.jar'
+      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/48/downloads/leaf-1.21.11-48.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
