@@ -1,11 +1,11 @@
 package net.minelink.ctplus.nms;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-
 import java.util.Map;
 import java.util.UUID;
-
+import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -31,12 +31,13 @@ public class NpcPlayer extends ServerPlayer {
     public static NpcPlayer valueOf(Player player) {
         MinecraftServer minecraftServer = MinecraftServer.getServer();
         ServerLevel worldServer = ((CraftWorld) player.getWorld()).getHandle();
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), NpcNameGeneratorFactory.getNameGenerator().generate(player));
         ClientInformation clientInformation = ((CraftPlayer) player).getHandle().clientInformation();
 
+        ImmutableMultimap.Builder<String, Property> builder = ImmutableMultimap.builder();
         for (Map.Entry<String, Property> entry : ((CraftPlayer) player).getProfile().properties().entries()) {
-            gameProfile.properties().put(entry.getKey(), entry.getValue());
+            builder.put(entry.getKey(), entry.getValue());
         }
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), NpcNameGeneratorFactory.getNameGenerator().generate(player), new PropertyMap(builder.build()));
 
         NpcPlayer npcPlayer = new NpcPlayer(minecraftServer, worldServer, gameProfile, clientInformation);
         npcPlayer.identity = new NpcIdentity(player);
