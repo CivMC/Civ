@@ -1,46 +1,43 @@
 package isaac.bastion.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import isaac.bastion.Bastion;
-import java.io.InputStream;
-import java.util.Scanner;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import isaac.bastion.BastionType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class BastionCommandManager implements CommandExecutor {
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command,
-                             String label, String[] args) {
-        if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("License")) {
-                InputStream input = getClass().getResourceAsStream("/License.txt");
-                sender.sendMessage(convertStreamToString(input));
-                return true;
-            } else if (args[0].equalsIgnoreCase("about")) {
-                sender.sendMessage(ChatColor.GREEN + "Bastion version " + Bastion.getPlugin().getDescription().getVersion());
-                return true;
-            }
-        }
-        return false;
+@CommandAlias("bastion")
+public class BastionCommandManager extends BaseCommand {
+    @Subcommand("about")
+    @Description("Shows Bastion version information.")
+    @Default
+    public void about(final CommandSender sender) {
+        sender.sendMessage(Component.text("Bastion version " + Bastion.getPlugin().getPluginMeta().getVersion(), NamedTextColor.GREEN));
     }
 
-    @SuppressWarnings("resource")
-    public static String convertStreamToString(InputStream is) {
-        if (is == null) {
-            return "";
+    @Subcommand("give")
+    @Description("Gives a bastion of the specified type.")
+    @Syntax("<type>")
+    @CommandCompletion("@bastionTypes")
+    @CommandPermission("Bastion.admin")
+    public void give(final Player player, final String typeName) {
+        BastionType type = BastionType.getBastionType(typeName);
+        if (type == null) {
+            player.sendMessage(Component.text("Unknown bastion type: " + typeName, NamedTextColor.RED));
+            return;
         }
-        Scanner s = new Scanner(is).useDelimiter("\\A");
-        String ret = "";
-        try {
-            ret = s.hasNext() ? s.next() : "";
-        } catch (IllegalStateException ise) {
-            ret = "";
-        } finally {
-            s.close();
-            ret = "";
-        }
-        return ret;
+        ItemStack item = type.getItemRepresentation();
+        player.getInventory().addItem(item);
+        player.sendMessage(Component.text("Gave 1 " + type.getName() + " bastion.", NamedTextColor.GREEN));
     }
 }

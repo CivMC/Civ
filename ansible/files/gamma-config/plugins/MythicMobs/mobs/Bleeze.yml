@@ -1,0 +1,62 @@
+Bleeze:
+  Type: BLAZE
+  Display: '&4&lBleeze'
+  Health: 600
+  Damage: 16
+  Drops:
+    - heavy_core 1 0.5
+  Skills:
+    - setvariable{var=caster.minions;type=INTEGER;val=0} @self ~onSpawn
+    - geyser{type=LAVA;height=3;speed=40} @target 0.05
+    - skill{s=WitherFire} @PlayersInRadius{r=25} ~onTimer:300 0.4
+    - skill{s=BreezeMinionSwarm} @self 0.1
+    - skill{s=BreezeAttack} @target 0.2
+    - recoil{r=30;pitch=-1to1} @target 0.05
+    - damage{amount=25} @trigger ~onBowHit
+    - projectile{onTick=Fireball-Tick;onHit=Fireball-Hit;v=8;i=1;hR=1;vR=1;hnp=true} @target 0.1
+    - projectile{onTick=Fireball-Tick;onHit=Fireball-Hit;v=8;i=1;hR=1;vR=1;hnp=true} @target ~onTimer:60 0.3
+    - skill{s=BreezePull} @self 0.1
+  BossBar:
+    Enabled: true
+    Title: '&4&lBleeze'
+    Range: 25
+    Color: RED
+    Style: SOLID
+  Options:
+    AlwaysShowName: true
+    MaxCombatDistance: 25
+    PreventOtherDrops: true
+    KnockbackResistance: 0.1
+    Despawn: NEVER
+    DigOutOfGround: true
+  DamageModifiers:
+    - PROJECTILE 0.25
+  AITargetSelectors:
+    - clear
+    - players
+
+BleezeMinion:
+  Type: BREEZE
+  Health: 120
+  Drops:
+    - paper{name="Wind Essence"} 0-5
+    - breeze_rod 1 0.2
+  Skills:
+    - geyser{type=LAVA;height=2;speed=20} @target 0.01
+    - skill{s=BreezeMinionAttack} @target 0.2
+    - damage{amount=16} @trigger ~onBowHit
+    - ignite{ticks=40} @trigger ~onBowHit
+    - projectile{onTick=Fireball-Tick-Weak;onHit=Fireball-Hit-Weak;v=8;i=1;hR=1;vR=1;hnp=true} @target ~onTimer:120 0.3
+  Options:
+    MaxCombatDistance: 25
+    PreventOtherDrops: true
+    Despawn: NEVER
+    DigOutOfGround: true
+  DamageModifiers:
+    - FIRE 0
+    - LAVA 0
+    - FIRE_TICK 0
+    - PROJECTILE 0.5
+  AITargetSelectors:
+    - clear
+    - players

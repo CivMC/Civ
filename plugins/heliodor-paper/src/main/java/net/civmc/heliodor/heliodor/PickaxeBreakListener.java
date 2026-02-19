@@ -52,7 +52,7 @@ public class PickaxeBreakListener implements Listener {
             .formatted(meteoricIronLow, meteoricIronHigh, meteoricIronHigh - spawnRadius)));
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
         ChunkPos chunkPos = new ChunkPos(block.getChunk().getX(), block.getChunk().getZ());

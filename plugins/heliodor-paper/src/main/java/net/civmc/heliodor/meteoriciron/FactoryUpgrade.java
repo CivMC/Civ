@@ -1,7 +1,7 @@
 package net.civmc.heliodor.meteoriciron;
 
+import java.util.List;
 import net.civmc.heliodor.AnvilRepairListener;
-import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -12,11 +12,8 @@ import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
-import java.util.List;
 
 public interface FactoryUpgrade {
 
@@ -42,7 +39,7 @@ public interface FactoryUpgrade {
 
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
         ItemStack upgrade = FactoryUpgrade.createUpgrade();
-        upgrade.setAmount(6);
+        upgrade.setAmount(12);
         return List.of(
             new ShapedRecipe(new NamespacedKey(plugin, "factory_upgrade"), upgrade)
                 .shape("#c#", "#r#", "#f#")

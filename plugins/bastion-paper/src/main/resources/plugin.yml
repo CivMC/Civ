@@ -4,12 +4,9 @@ main: isaac.bastion.Bastion
 author: spaceFountain
 authors: [ Rourke750, ProgrammerDan, Maxopoly, TealNerd, Aleksey-Terzi ]
 depend: [ CivModCore, Citadel, NameLayer ]
+softdepend: [ MythicMobs ]
 api-version: 1.21.3
 commands:
-  Bastion:
-    description: Base command for Bastion
-    usage: /Bastion <About or License>
-    permission: Bastion.normal
   bsi:
     description: Gives info on blocks that are clicked
     usage: /bsi and right click a block

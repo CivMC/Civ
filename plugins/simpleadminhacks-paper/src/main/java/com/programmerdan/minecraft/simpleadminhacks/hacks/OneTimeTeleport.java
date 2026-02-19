@@ -256,7 +256,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
             }
 
             if (Bukkit.getPluginManager().isPluginEnabled("Bastion")) {
-                for (final BastionBlock bastion : Bastion.getBastionManager().getBlockingBastions(sender.getLocation())) {
+                for (final BastionBlock bastion : Bastion.getBastionManager().getBlockingBastions(sender.getLocation(), b -> b.getType().isBlockLiquids())) {
                     if (!bastion.canPlace(sender) || !bastion.canPlace(requestingPlayer)) {
                         sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport to a hostile bastion!", NamedTextColor.RED));
                         requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but they're in a hostile bastion!", NamedTextColor.RED));

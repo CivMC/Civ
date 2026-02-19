@@ -2,6 +2,8 @@ package isaac.bastion;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.SequencedMap;
+import java.util.Set;
 import java.util.logging.Level;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -10,51 +12,54 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
-public class BastionType {
+public class BastionType implements Comparable<BastionType> {
 
-    private static LinkedHashMap<String, BastionType> types = new LinkedHashMap<>();
+    private static final SequencedMap<String, BastionType> types = new LinkedHashMap<>();
     private static String defaultType;
     private static int maxRadius = 0;
 
-    private String name;
-    private String itemName;
-    private List<String> lore;
-    private String shortName;
-    private boolean square;
-    private int effectRadius;
-    private int radiusSquared;
-    private boolean includeY;
-    private int startScaleFactor;
-    private double finalScaleFactor;
-    private long warmupTime;
-    private int erosionTime;
-    private long placementCooldown;
-    private boolean destroyOnRemove;
-    private boolean onlyDirectDestruction;
-    private boolean blockPearls;
-    private boolean blockMidair;
-    private int pearlScale;
-    private boolean pearlRequireMature;
-    private boolean consumeOnBlock;
-    private int blocksToErode;
-    private boolean blockElytra;
-    private boolean destroyElytra;
-    private boolean damageElytra;
-    private int elytraScale;
-    private boolean elytraRequireMature;
-    private boolean explodeOnBlock;
-    private double explodeOnBlockStrength;
-    private boolean damageFirstBastion;
-    private int regenTime;
-    private boolean allowPearlingOut;
-    private boolean blockReinforcements;
-    private Material material;
-    private boolean destroyOnRemoveWhileImmature;
-    private int proximityDamageRange;
-    private double proximityDamageFactor;
+    private final String name;
+    private final String itemName;
+    private final List<String> lore;
+    private final String shortName;
+    private final boolean square;
+    private final int effectRadius;
+    private final int radiusSquared;
+    private final boolean includeY;
+    private final int startScaleFactor;
+    private final double finalScaleFactor;
+    private final long warmupTime;
+    private final int erosionTime;
+    private final long placementCooldown;
+    private final boolean destroyOnRemove;
+    private final boolean onlyDirectDestruction;
+    private final boolean blockPearls;
+    private final boolean blockMidair;
+    private final int pearlScale;
+    private final boolean pearlRequireMature;
+    private final boolean consumeOnBlock;
+    private final int blocksToErode;
+    private final boolean blockElytra;
+    private final boolean destroyElytra;
+    private final boolean damageElytra;
+    private final int elytraScale;
+    private final boolean elytraRequireMature;
+    private final boolean explodeOnBlock;
+    private final double explodeOnBlockStrength;
+    private final boolean damageFirstBastion;
+    private final int regenTime;
+    private final boolean allowPearlingOut;
+    private final boolean blockReinforcements;
+    private final boolean blockMobs;
+    private final Material material;
+    private final boolean destroyOnRemoveWhileImmature;
+    private final int proximityDamageRange;
+    private final double proximityDamageFactor;
+    private final boolean blockLiquids;
 
-    private String overLayName;
+    private final String overlayName;
 
     public BastionType(
         String name,
@@ -92,7 +97,8 @@ public class BastionType {
         boolean destroyOnRemoveWhileImmature,
         int proximityDamageRange,
         double proximityDamageFactor,
-        String overLayName
+        String overlayName,
+        boolean blockMobs, boolean blockLiquids
     ) {
         this.name = name;
         this.material = material;
@@ -130,9 +136,11 @@ public class BastionType {
         this.destroyOnRemoveWhileImmature = destroyOnRemoveWhileImmature;
         this.proximityDamageFactor = proximityDamageFactor;
         this.proximityDamageRange = proximityDamageRange;
-        this.overLayName = overLayName;
+        this.overlayName = overlayName;
+        this.blockMobs = blockMobs;
 
         maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
+        this.blockLiquids = blockLiquids;
     }
 
     /**
@@ -196,7 +204,7 @@ public class BastionType {
      * @return Name to use in HUD to describe type
      */
     public String getOverlayName() {
-        return overLayName;
+        return overlayName;
     }
 
     /**
@@ -374,6 +382,10 @@ public class BastionType {
         return blockReinforcements;
     }
 
+    public boolean isBlockMobs() {
+        return blockMobs;
+    }
+
     @Override
     public int hashCode() {
         return name.hashCode();
@@ -381,8 +393,7 @@ public class BastionType {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof BastionType)) return false;
-        BastionType other = (BastionType) obj;
+        if (!(obj instanceof BastionType other)) return false;
         return other.getName().equals(name);
     }
 
@@ -488,6 +499,17 @@ public class BastionType {
         return destroyOnRemoveWhileImmature;
     }
 
+    public boolean isBlockLiquids() {
+        return blockLiquids;
+    }
+
+    /**
+     * @return The names of all registered bastion types
+     */
+    public static Set<String> getTypeNames() {
+        return types.keySet();
+    }
+
     /**
      * @return The default bastion type
      */
@@ -553,11 +575,15 @@ public class BastionType {
         double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
         boolean destroyOnRemoveWhileImmature = config.getBoolean("destroyOnRemoveWhileImmature", true);
         String overlayName = config.getString("overlay_name");
+
+        boolean blockMobs = config.getBoolean("blockMobs", false);
+        boolean blockLiquids = config.getBoolean("blockLiquids", true);
+
         return new BastionType(name, itemName, material, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
             erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock,
             blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock,
             explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements, destroyOnRemoveWhileImmature,
-            proximityDamageRange, proximityDamageFactor, overlayName);
+            proximityDamageRange, proximityDamageFactor, overlayName, blockMobs, blockLiquids);
     }
 
     @Override
@@ -586,5 +612,10 @@ public class BastionType {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(@NotNull BastionType o) {
+        return name.compareTo(o.name);
     }
 }

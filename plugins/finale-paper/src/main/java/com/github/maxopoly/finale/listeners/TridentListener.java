@@ -1,9 +1,7 @@
 package com.github.maxopoly.finale.listeners;
 
-import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.TridentHandler;
-import net.minecraft.world.entity.projectile.ThrownTrident;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

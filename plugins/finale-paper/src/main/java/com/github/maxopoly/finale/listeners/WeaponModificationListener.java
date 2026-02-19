@@ -6,6 +6,7 @@ import com.github.maxopoly.finale.misc.ItemUtil;
 import com.github.maxopoly.finale.misc.TippedArrowModifier;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 import java.util.List;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -43,6 +44,9 @@ public class WeaponModificationListener implements Listener {
     }
 
     public void update(ItemStack is) {
+        // no spears
+        is.unsetData(DataComponentTypes.KINETIC_WEAPON);
+
         ItemMeta im = is.getItemMeta();
 
         ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();

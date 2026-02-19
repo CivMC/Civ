@@ -7,6 +7,7 @@ import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.model.PlantLoadState;
 import com.untamedears.realisticbiomes.utils.RBUtils;
+import org.bukkit.ExplosionResult;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
@@ -45,7 +46,9 @@ public class PlantListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockPistonRetractEvent event) {
-        plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
+        for (Block block : event.getBlocks()) {
+            plugin.getPlantLogicManager().handleBlockDestruction(block);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -55,6 +58,9 @@ public class PlantListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event) {
+        if (event.getExplosionResult() == ExplosionResult.KEEP || event.getExplosionResult() == ExplosionResult.TRIGGER_BLOCK) {
+            return;
+        }
         for (Block block : event.blockList()) {
             plugin.getPlantLogicManager().handleBlockDestruction(block);
         }

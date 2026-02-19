@@ -340,6 +340,14 @@ hacks:
     minDepthToMatch: 2
     watchedMaterials:
       - CHEST
+      - TRAPPED_CHEST
+      - COPPER_CHEST
+      - EXPOSED_COPPER_CHEST
+      - OXIDIZED_COPPER_CHEST
+      - WEATHERED_COPPER_CHEST
+      - WAXED_COPPER_CHEST
+      - WAXED_EXPOSED_COPPER_CHEST
+      - WAXED_OXIDIZED_COPPER_CHEST
       - FURNACE
       - JUKEBOX
       - NOTE_BLOCK
@@ -618,4 +626,12 @@ hacks:
   PlayerCount:
     enabled: true
   Trowel:
+    enabled: true
+  MobCulling:
+    enabled: false
+    turtleAllowance: 100
+    turtleMaxAge: 360000
+    striderAllowance: 100
+    striderMaxAge: 360000
+  NetheriteCrafting:
     enabled: true

@@ -1,10 +1,13 @@
 package net.civmc.heliodor.vein.listener;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import net.civmc.heliodor.HeliodorPlugin;
-import net.civmc.heliodor.vein.data.Vein;
 import net.civmc.heliodor.vein.VeinCache;
+import net.civmc.heliodor.vein.data.Vein;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -20,14 +23,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import vg.civcraft.mc.civmodcore.utilities.BlockPosPdc;
 
 public class VeinBreakListener implements Listener {
 
@@ -41,7 +38,7 @@ public class VeinBreakListener implements Listener {
         this.dao = dao;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (!Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())
@@ -92,14 +89,7 @@ public class VeinBreakListener implements Listener {
             oreBlock.setType(Material.RAW_IRON_BLOCK);
             event.getPlayer().sendMessage(Component.text("You found a chunk of meteoric iron", NamedTextColor.GRAY, TextDecoration.ITALIC));
 
-            PersistentDataContainer chunkPdc = oreBlock.getChunk().getPersistentDataContainer();
-            int[] ints = chunkPdc.get(oreLocationsKey, PersistentDataType.INTEGER_ARRAY);
-            IntList list = ints == null ? new IntArrayList() : new IntArrayList(ints);
-            list.add(oreBlock.getX());
-            list.add(oreBlock.getY());
-            list.add(oreBlock.getZ());
-
-            chunkPdc.set(oreLocationsKey, PersistentDataType.INTEGER_ARRAY, list.toIntArray());
+            BlockPosPdc.addBlock(block.getChunk(), oreLocationsKey, oreBlock.getX(), oreBlock.getY(), oreBlock.getZ());
 
             this.minedBlocksCache.computeIfAbsent(ChunkPos.from(oreBlock.getChunk()), k -> new ArrayList<>()).add(oreBlock.getLocation());
             JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger()

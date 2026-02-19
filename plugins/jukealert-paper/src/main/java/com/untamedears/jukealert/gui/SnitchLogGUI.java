@@ -16,6 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,17 +54,8 @@ public class SnitchLogGUI {
         return this.snitch.hasPermission(this.player.getUniqueId(), permission);
     }
 
-    private List<IClickable> INTERNAL_constructContent() {
-        if (this.logAppender == null) {
-            final var item = new ItemStack(Material.BARRIER);
-            ItemUtils.setComponentDisplayName(item, Component.text()
-                .decoration(TextDecoration.ITALIC, false)
-                .color(NamedTextColor.RED)
-                .content("This snitch can not create logs")
-                .build());
-            return MoreCollectionUtils.asLazyList(Collections.singletonList(() -> new DecorationStack(item)));
-        }
-        final var actions = this.logAppender.getFullLogs();
+    private @NotNull List<IClickable> INTERNAL_constructContent(
+            final @NotNull List<LoggableAction> actions) {
         if (actions.isEmpty()) {
             final var item = new ItemStack(Material.BARRIER);
             ItemUtils.setComponentDisplayName(item, Component.text()
@@ -232,9 +224,41 @@ public class SnitchLogGUI {
     }
 
     public void showScreen() {
-        if (this.buttonCache == null) {
-            this.buttonCache = INTERNAL_constructContent();
+        if (this.buttonCache != null) {
+            INTERNAL_showScreenWithContent();
+            return;
         }
+        if (this.logAppender == null) {
+            final var item = new ItemStack(Material.BARRIER);
+            ItemUtils.setComponentDisplayName(item, Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.RED)
+                .content("This snitch can not create logs")
+                .build());
+            this.buttonCache = MoreCollectionUtils.asLazyList(
+                Collections.singletonList(() -> new DecorationStack(item)));
+            INTERNAL_showScreenWithContent();
+            return;
+        }
+        SnitchLogAppender logAppender = snitch.getAppender(SnitchLogAppender.class);
+        if (snitch.getId() == -1) {
+            this.buttonCache = INTERNAL_constructContent(logAppender.getFullLogs());
+            INTERNAL_showScreenWithContent();
+            return;
+        }
+        Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), () -> {
+            final List<LoggableAction> actions = logAppender.loadLogs();
+            Bukkit.getScheduler().runTask(JukeAlert.getInstance(), () -> {
+                if (!this.player.isOnline()) {
+                    return;
+                }
+                this.buttonCache = INTERNAL_constructContent(actions);
+                INTERNAL_showScreenWithContent();
+            });
+        });
+    }
+
+    private void INTERNAL_showScreenWithContent() {
         final var view = new MultiPageView(this.player, this.buttonCache,
             StringUtils.substring(this.snitch.getName(), 0, 32), true);
         if (this.logAppender != null) {

@@ -17,6 +17,8 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       VELOCITY_VERSION: '3.4.0-SNAPSHOT'
       TYPE: 'VELOCITY'
@@ -29,6 +31,10 @@ services:
       CIV_POSTGRES_HOST: postgres
       CIV_POSTGRES_USERNAME: postgres
       CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
 
       CIV_TIMEOUT_TIME: 3000000
       CIV_PVP_HOSTNAME: 'pvp.localhost'
@@ -57,11 +63,13 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.8'
+      VERSION: '1.21.11'
       EULA: 'TRUE'
-      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/156/downloads/leaf-1.21.8-156.jar'
+      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/48/downloads/leaf-1.21.11-48.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
@@ -87,6 +95,10 @@ services:
 
       CIV_DATABASE_PREFIX: ''
 
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
+
       CIV_SECUREBOOT_ENABLE: 'false'
 
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
@@ -109,11 +121,13 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.8'
+      VERSION: '1.21.11'
       EULA: 'TRUE'
-      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/156/downloads/leaf-1.21.8-156.jar'
+      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/48/downloads/leaf-1.21.11-48.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
@@ -139,6 +153,10 @@ services:
 
       CIV_DATABASE_PREFIX: 'gamma_'
 
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
+
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
@@ -159,9 +177,11 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.8'
+      VERSION: '1.21.11'
       EULA: 'TRUE'
       PAPER_CUSTOM_JAR: 'asp-server.jar'
 
@@ -187,6 +207,10 @@ services:
       CIV_POSTGRES_PASSWORD: postgres
 
       CIV_DATABASE_PREFIX: 'pvp_'
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
 
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
@@ -243,6 +267,23 @@ services:
     volumes:
       - ./containers/provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - ./containers/data/postgres:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.9.16-management
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+      start_interval: 5s
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
 
   ##################
   ### Monitoring ###

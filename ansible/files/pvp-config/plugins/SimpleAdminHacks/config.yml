@@ -312,18 +312,11 @@ hacks:
   ############################################################
   BadBoyWatch:
   # tracks players breaking these blocks and logs information
-    enabled: true
+    enabled: false
     trackingDepth: 16
     clearOnMatch: true
     minDepthToMatch: 2
-    watchedMaterials:
-      - CHEST
-      - FURNACE
-      - JUKEBOX
-      - NOTE_BLOCK
-      - BEACON
-      - SPONGE
-      - HOPPER
+    watchedMaterials: []
   CTAnnounce:
     enabled: true
     delay: 10000
@@ -586,4 +579,8 @@ hacks:
   FairPlay:
     enabled: true
   PlayerCount:
+    enabled: true
+  MobCulling:
+    enabled: false
+  NetheriteCrafting:
     enabled: true

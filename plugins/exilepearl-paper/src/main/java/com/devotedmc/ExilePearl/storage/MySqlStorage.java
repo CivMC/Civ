@@ -6,16 +6,13 @@ import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.MySqlConfig;
 import com.google.common.base.Preconditions;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 import java.sql.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.UUID;
 import java.util.logging.Level;
 
 class MySqlStorage implements PluginStorage {
@@ -140,10 +137,6 @@ class MySqlStorage implements PluginStorage {
 
             applyMigration0001();
             applyMigration0002();
-
-            if (config.getMigratePrisonPearl()) {
-                migratePrisonPearl();
-            }
 
             // add new migrations here.
 
@@ -440,100 +433,6 @@ class MySqlStorage implements PluginStorage {
         } catch (SQLException ex) {
             logFailedPearlOperation(ex, pearl, "update 'pearled_on'");
         }
-    }
-
-    /**
-     * Migrate prison pearl data
-     */
-    private void migratePrisonPearl() {
-        logger.log(Level.WARNING, "Attempting to perform PrisonPearl data migration.");
-
-        ConnectionPool migrateDb = new ConnectionPool(
-            config.getMySqlUsername(),
-            config.getMySqlPassword(),
-            config.getMySqlHost(),
-            config.getMySqlPort(),
-            "mysql",
-            config.getMySqlMigrateDatabaseName(),
-            config.getMySqlPoolSize(),
-            config.getMySqlConnectionTimeout(),
-            config.getMySqlIdleTimeout(),
-            config.getMySqlMaxLifetime());
-
-        int migrated = 0;
-        int failed = 0;
-
-        try {
-            // Check if the table exists
-            try (Connection connection = migrateDb.getConnection();) {
-                DatabaseMetaData dbm = migrateDb.getConnection().getMetaData();
-
-                ResultSet tables = dbm.getTables(null, null, "PrisonPearls", null);
-                if (!tables.next()) {
-                    logger.log(Level.WARNING, "No PrisonPearl data was found.");
-                    return;
-                }
-            } catch (Exception ex) {
-                logger.log(Level.WARNING, "Failed to retrieve PrisonPearl table.");
-                return;
-            }
-
-            try (Connection connection = migrateDb.getConnection();
-                 PreparedStatement getAllPearls = connection.prepareStatement("SELECT * FROM PrisonPearls;");) {
-                ResultSet set = getAllPearls.executeQuery();
-                while (set.next()) {
-                    try {
-                        UUID playerId = UUID.fromString(set.getString("uuid"));
-
-                        String w = set.getString("world");
-                        World world = Bukkit.getWorld(w);
-                        int x = set.getInt("x");
-                        int y = set.getInt("y");
-                        int z = set.getInt("z");
-                        int pearlId = set.getInt("uq");
-                        UUID killerId = null;
-                        String killerUUIDAsString = set.getString("killer");
-                        if (killerUUIDAsString == null) {
-                            killerId = UUID.randomUUID();
-                        } else {
-                            killerId = UUID.fromString(killerUUIDAsString);
-                        }
-                        long imprisonTime = set.getLong("pearlTime");
-                        if (imprisonTime == 0) {
-                            imprisonTime = new Date().getTime();
-                        }
-                        Date pearledOn = new Date(imprisonTime);
-                        Location loc = new Location(world, x, y, z);
-
-                        Document doc = new Document("killer_id", killerId)
-                            .append("pearl_id", pearlId)
-                            .append("location", loc)
-                            .append("pearled_on", pearledOn)
-                            .append("last_seen", pearledOn); // TODO: overloading for now.
-
-                        ExilePearl pearl = pearlFactory.createdMigratedPearl(playerId, doc);
-                        if (pearl != null) {
-                            pearlInsert(pearl);
-                            migrated++;
-                        } else {
-                            failed++;
-                        }
-
-                    } catch (SQLException ex) {
-                        failed++;
-                        logger.log(Level.SEVERE, "Failed to migrate PisonPearl pearl.");
-                    }
-                }
-            } catch (SQLException ex) {
-                logger.log(Level.SEVERE, "An error occurred when migrating PrisonPearl data.");
-                return;
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "An error occurred when migrating PrisonPearl data.");
-            return;
-        }
-
-        logger.log(Level.INFO, "PrisonPearl data migration complete. Migrated %d and %d failed.", migrated, failed);
     }
 
     /**

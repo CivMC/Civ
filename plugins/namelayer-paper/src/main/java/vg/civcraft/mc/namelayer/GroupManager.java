@@ -458,6 +458,9 @@ public class GroupManager {
      */
     private boolean hasPlayerInheritsPerms(Group group, UUID player, PermissionType perm) {
         while (group != null) {
+            if (group.isOwner(player) && perm.isOwnerPermission()) {
+                return true;
+            }
             PlayerType type = group.getPlayerType(player);
             if (type != null && getPermissionforGroup(group).hasPermission(type, perm)) {
                 return true;

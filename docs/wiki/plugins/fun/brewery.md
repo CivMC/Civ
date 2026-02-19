@@ -494,14 +494,19 @@ or by way of donating a high amount to the server via patreon.
 |            Leo's Orange Creamsicle            |         6         |       8        |   800023   |
 |             Colton's Love Martini             |         3         |       8        |   800024   |
 |               Golden Pick Stout               |         4         |       7        |   800025   |
-| Katz Catnip Kaffee                          6 |         8         |       8        |   800026   |
+|              Katz Catnip Kaffe                |         8         |       8        |   800026   |
 |                 Astro's Pill                  |         6         |       7        |   800027   |
 |      Jeremy's Slippy-Sloppy Screwdriver       |         3         |       8        |   800028   |
 |        Trizzzx's Worcestershire sauce         |         4         |       8        |   800029   |
 |               StrawBeary Dreams               |         6         |       8        |   800030   |
 |                  Pisco Sour                   |         3         |       6        |   800031   |
-
-    
+|              OmaKnight's Melomel              |         4         |       7        |   800032   |
+|                 Turtle Tea                    |         4         |       8        |   800033   |
+|            Doktah's Lucky Brew                |         2         |       8        |   800034   |
+|        Lalibo's Volcanic Margarita            |         4         |       7        |   800035   |
+|               Hallucinnefo                    |         5         |       7        |   800036   |
+|             OreSprayer Stubby                 |         4         |       7        |   800037   |
+ 
 ## List of Custom Ingredients
 
 |  #  |        Name        |      Texture ID      |

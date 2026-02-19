@@ -1,6 +1,10 @@
 package com.devotedmc.ExilePearl.core;
 
-import com.devotedmc.ExilePearl.*;
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.LoreProvider;
+import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -8,10 +12,8 @@ import com.google.common.base.Preconditions;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Location;
@@ -135,7 +137,7 @@ final class CoreLoreGenerator implements LoreProvider {
 
     @Override
     public int getPearlIdFromItemStack(ItemStack is) {
-        if (is == null || !is.hasItemMeta()) {
+        if (is == null || is.getType() != Material.ENDER_PEARL) {
             return 0;
         }
         ItemMeta meta = is.getItemMeta();
@@ -179,31 +181,6 @@ final class CoreLoreGenerator implements LoreProvider {
         return this.exilePearlid;
     }
 
-
-    /**
-     * Parses a player ID from a legacy Prison Pearl
-     * The UUID should be on the 2nd line without any formatting
-     */
-    @Override
-    public UUID getPlayerIdFromLegacyPearl(ItemStack is) {
-        List<String> lore = getValidLore(is);
-        if (lore == null) {
-            return null;
-        }
-
-        return UUID.fromString(lore.get(1));
-    }
-
-    private List<String> getValidLore(ItemStack is) {
-        if (is == null) {
-            return null;
-        }
-        ItemMeta im = is.getItemMeta();
-        if (im == null) {
-            return null;
-        }
-        return getValidLore(is, im);
-    }
 
     /**
      * Gets whether the pearl lore is valid

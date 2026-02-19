@@ -21,6 +21,7 @@ import com.untamedears.jukealert.model.actions.impl.LoginAction;
 import com.untamedears.jukealert.model.actions.impl.LogoutAction;
 import com.untamedears.jukealert.model.actions.impl.MountEntityAction;
 import com.untamedears.jukealert.model.actions.impl.OpenContainerAction;
+import com.untamedears.jukealert.model.actions.impl.PlaceVehicleAction;
 import it.unimi.dsi.fastutil.objects.Object2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
@@ -129,6 +130,10 @@ public class LoggedActionFactory {
 
         registerProvider(MountEntityAction.ID,
             (snitch, player, loc, time, victim) -> new MountEntityAction(
+                time, snitch, player, loc, victim));
+
+        registerProvider(PlaceVehicleAction.ID,
+            (snitch, player, loc, time, victim) -> new PlaceVehicleAction(
                 time, snitch, player, loc, victim));
 
         registerProvider(OpenContainerAction.ID,

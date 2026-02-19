@@ -8,6 +8,7 @@ import isaac.bastion.listeners.BastionDamageListener;
 import isaac.bastion.listeners.BastionInteractListener;
 import isaac.bastion.listeners.CitadelListener;
 import isaac.bastion.listeners.ElytraListener;
+import isaac.bastion.listeners.MobListener;
 import isaac.bastion.listeners.ModeListener;
 import isaac.bastion.listeners.NameLayerListener;
 import isaac.bastion.manager.BastionBlockManager;
@@ -15,10 +16,12 @@ import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.storage.BastionGroupStorage;
 import isaac.bastion.storage.Database;
 import isaac.bastion.utils.BastionSettingManager;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -32,6 +35,7 @@ public final class Bastion extends ACivMod {
     private static BastionGroupStorage groupStorage;
     private static BastionSettingManager settingManager;
     private static CommonSettings commonSettings;
+    private CommandManager commandManager;
 
     @Override
     public void onEnable() {
@@ -69,6 +73,8 @@ public final class Bastion extends ACivMod {
         getServer().getPluginManager().registerEvents(new BastionDamageListener(), this);
         getServer().getPluginManager().registerEvents(new BastionInteractListener(), this);
         getServer().getPluginManager().registerEvents(new ElytraListener(), this);
+        MobListener mobListener = new MobListener(blockManager);
+        getServer().getPluginManager().registerEvents(mobListener, this);
         getServer().getPluginManager().registerEvents(new BastionBreakListener(blockStorage, blockManager), this);
         getServer().getPluginManager().registerEvents(new NameLayerListener(blockStorage), this);
         getServer().getPluginManager().registerEvents(new CitadelListener(), this);
@@ -113,7 +119,10 @@ public final class Bastion extends ACivMod {
 
     //Sets up the command managers
     private void setupCommands() {
-        getCommand("Bastion").setExecutor(new BastionCommandManager());
+        commandManager = new CommandManager(this);
+        commandManager.getCommandCompletions().registerCompletion("bastionTypes",
+            context -> new ArrayList<>(BastionType.getTypeNames()));
+        commandManager.registerCommand(new BastionCommandManager());
         getCommand("bsi").setExecutor(new ModeChangeCommand(Mode.INFO));
         getCommand("bsd").setExecutor(new ModeChangeCommand(Mode.DELETE));
         getCommand("bso").setExecutor(new ModeChangeCommand(Mode.NORMAL));

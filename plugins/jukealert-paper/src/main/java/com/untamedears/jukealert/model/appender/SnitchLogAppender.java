@@ -42,11 +42,14 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
     @NotNull
     public List<LoggableAction> getFullLogs() {
         final List<LoggableAction> actions = getSnitch().getId() == -1 ?
-            new ArrayList<>(this.pendingActions.keySet()) :
-            JukeAlert.getInstance().getDAO().loadLogs(
-                getSnitch(), getMaximumActionAge(), this.config.getHardCap());
+            new ArrayList<>(this.pendingActions.keySet()) : loadLogs();
         actions.sort(ACTION_COMPARATOR);
         return actions;
+    }
+
+    public List<LoggableAction> loadLogs() {
+        return JukeAlert.getInstance().getDAO().loadLogs(
+            getSnitch(), getMaximumActionAge(), this.config.getHardCap());
     }
 
     /**

@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -171,7 +172,7 @@ public class Sorter extends Factory {
         for (BlockFace bf : WorldUtils.ALL_SIDES) {
             if (center.getRelative(bf).getState() instanceof InventoryHolder) {
                 Block b = center.getRelative(bf);
-                if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
+                if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(b.getType())) {
                     // load adjacent chunk for double chest
                     MultiBlockStructure.getAdjacentBlocks(b);
                 }

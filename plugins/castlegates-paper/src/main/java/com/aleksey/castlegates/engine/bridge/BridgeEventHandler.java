@@ -13,6 +13,7 @@ import com.aleksey.castlegates.utils.Helper;
 import com.aleksey.castlegates.utils.ParticleHelper;
 import com.aleksey.castlegates.utils.PowerResultHelper;
 import org.bukkit.ChatColor;
+import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -117,6 +118,9 @@ public class BridgeEventHandler {
     }
 
     public void handleEntityExplode(EntityExplodeEvent event) {
+        if (event.getExplosionResult() == ExplosionResult.KEEP || event.getExplosionResult() == ExplosionResult.TRIGGER_BLOCK) {
+            return;
+        }
         for (Block block : event.blockList()) {
             _bridgeManager.removeGear(new BlockCoord(block));
         }

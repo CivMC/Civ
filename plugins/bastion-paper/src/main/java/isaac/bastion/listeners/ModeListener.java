@@ -7,9 +7,9 @@ import isaac.bastion.Permissions;
 import isaac.bastion.utils.BastionSettingManager;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -107,8 +107,8 @@ public class ModeListener implements Listener {
             }
             return;
         }
-        Set<BastionType> alliedBastions = new HashSet<>();
-        Set<BastionType> enemyBastions = new HashSet<>();
+        Set<BastionType> alliedBastions = new TreeSet<>();
+        Set<BastionType> enemyBastions = new TreeSet<>();
         for (BastionBlock bastion : bastionBlocks) {
             if (NameLayerAPI.getGroupManager().hasAccess(bastion.getGroup(), player.getUniqueId(), placePerm)) {
                 alliedBastions.add(bastion.getType());
@@ -128,7 +128,7 @@ public class ModeListener implements Listener {
                 String.format("%sAlly Bastion [%s]", ChatColor.GREEN, buildBastionTypeList(alliedBastions)));
             return;
         }
-        updateDisplaySetting(player, String.format("%s%sEnemy Bastion [%s]", ChatColor.RED, ChatColor.BOLD,
+        updateDisplaySetting(player, String.format("%s%sHostile Bastion [%s]", ChatColor.RED, ChatColor.BOLD,
             buildBastionTypeList(enemyBastions)));
     }
 

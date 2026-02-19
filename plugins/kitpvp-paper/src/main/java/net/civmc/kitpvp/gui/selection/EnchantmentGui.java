@@ -54,7 +54,8 @@ public class EnchantmentGui extends ItemSelectionGui {
                     && !enchantment.isCursed()
                     && enchantment != Enchantment.BANE_OF_ARTHROPODS
                     && enchantment != Enchantment.SMITE
-                    && enchantment != Enchantment.MENDING) {
+                    && enchantment != Enchantment.MENDING
+                    && enchantment != Enchantment.WIND_BURST) {
                     for (Enchantment currentEnchantment : kitItem.getEnchantments().keySet()) {
                         if (currentEnchantment.conflictsWith(enchantment) && currentEnchantment != enchantment) {
                             slot++;

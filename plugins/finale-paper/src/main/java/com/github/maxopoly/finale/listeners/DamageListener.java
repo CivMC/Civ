@@ -105,7 +105,6 @@ public class DamageListener implements Listener {
             if (sharpnessLevel != 0 && sharpnessModifier != null) {
                 double damage = sharpnessModifier.modify(e.getDamage(), sharpnessLevel);
                 e.setDamage(damage);
-//                Bukkit.broadcast(Component.text(damage + " -> " + e.getFinalDamage()));
             }
         }
     }

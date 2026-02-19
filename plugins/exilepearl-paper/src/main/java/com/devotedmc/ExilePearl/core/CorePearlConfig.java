@@ -118,11 +118,6 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
     }
 
     @Override
-    public boolean getMigratePrisonPearl() {
-        return doc.getBoolean("storage.mysql.migrate_pp", false);
-    }
-
-    @Override
     public String getMySqlMigrateDatabaseName() {
         return doc.getString("storage.mysql.migrate_dbname", "prisonpearl");
     }
@@ -530,6 +525,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
     @Override
     public int pearlCostMultiplicationTimerDays() {
         return doc.getInteger("pearls.cost_multiplier_days", 0);
+    }
+
+    @Override
+    public double pearlCostMultiplierCapDays() {
+        return doc.getDouble("pearls.cost_multiplier_cap_days", 0);
     }
 
     @Override

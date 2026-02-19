@@ -8,10 +8,18 @@ import java.util.Map;
 import org.bukkit.Material;
 
 public enum KitItem {
+    MACE(Material.MACE, KitCategory.TOOL, 5),
+    WIND_CHARGE(Material.WIND_CHARGE, KitCategory.TOOL, 0),
+
     LEATHER_HELMET(Material.LEATHER_HELMET, KitCategory.ARMOUR, 0),
     LEATHER_CHESTPLATE(Material.LEATHER_CHESTPLATE, KitCategory.ARMOUR, 0),
     LEATHER_LEGGINGS(Material.LEATHER_LEGGINGS, KitCategory.ARMOUR, 0),
     LEATHER_BOOTS(Material.LEATHER_BOOTS, KitCategory.ARMOUR, 0),
+
+    COPPER_HELMET(Material.COPPER_HELMET, KitCategory.ARMOUR, 0),
+    COPPER_CHESTPLATE(Material.COPPER_CHESTPLATE, KitCategory.ARMOUR, 0),
+    COPPER_LEGGINGS(Material.COPPER_LEGGINGS, KitCategory.ARMOUR, 0),
+    COPPER_BOOTS(Material.COPPER_BOOTS, KitCategory.ARMOUR, 0),
 
     GOLDEN_HELMET(Material.GOLDEN_HELMET, KitCategory.ARMOUR, 0),
     GOLDEN_CHESTPLATE(Material.GOLDEN_CHESTPLATE, KitCategory.ARMOUR, 0),

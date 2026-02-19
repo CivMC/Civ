@@ -1,27 +1,34 @@
 package com.github.maxopoly.finale;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import com.github.maxopoly.finale.combat.AsyncPacketHandler;
 import com.github.maxopoly.finale.combat.CPSHandler;
 import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.combat.SprintHandler;
-import com.github.maxopoly.finale.misc.*;
+import com.github.maxopoly.finale.misc.ArmourModifier;
+import com.github.maxopoly.finale.misc.BlockRestrictionHandler;
+import com.github.maxopoly.finale.misc.GappleHandler;
+import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
+import com.github.maxopoly.finale.misc.ShieldHandler;
+import com.github.maxopoly.finale.misc.TippedArrowModifier;
+import com.github.maxopoly.finale.misc.TridentHandler;
+import com.github.maxopoly.finale.misc.WeaponModifier;
 import com.github.maxopoly.finale.misc.ally.AllyHandler;
 import com.github.maxopoly.finale.misc.arrow.ArrowHandler;
 import com.github.maxopoly.finale.misc.crossbow.CrossbowHandler;
 import com.github.maxopoly.finale.misc.warpfruit.WarpFruitTracker;
 import com.github.maxopoly.finale.potion.PotionHandler;
-
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerCommon;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.bukkit.Bukkit;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class FinaleManager {
 
+    private final PacketListenerCommon listenerCommon;
     private boolean debug;
     private boolean attackSpeedEnabled;
     private double attackSpeed;
@@ -82,7 +89,7 @@ public class FinaleManager {
         this.sprintHandler = new SprintHandler();
 
         this.combatHandler = new AsyncPacketHandler(combatConfig);
-        ProtocolLibrary.getProtocolManager().addPacketListener(this.combatHandler);
+        this.listenerCommon = PacketEvents.getAPI().getEventManager().registerListener(this.combatHandler, PacketListenerPriority.HIGH);
     }
 
     public AsyncPacketHandler getCombatHandler() {
@@ -183,5 +190,12 @@ public class FinaleManager {
 
     public Set<UUID> getChemtrails() {
         return chemtrails;
+    }
+
+    public void unregister() {
+        allyHandler.save();
+        allyHandler.shutdown();
+
+        PacketEvents.getAPI().getEventManager().unregisterListener(listenerCommon);
     }
 }

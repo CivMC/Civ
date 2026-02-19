@@ -1,27 +1,25 @@
 package com.github.maxopoly.finale.combat;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.wrappers.BlockPosition;
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
-import com.comphenix.protocol.wrappers.EnumWrappers.Hand;
-import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
-import com.comphenix.protocol.wrappers.WrappedEnumEntityUseAction;
 import com.github.maxopoly.finale.Finale;
+import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
+import com.github.retrooper.packetevents.protocol.player.DiggingAction;
+import com.github.retrooper.packetevents.protocol.player.InteractionHand;
+import com.github.retrooper.packetevents.util.Vector3i;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientAnimation;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
 import com.google.common.collect.Sets;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.Bukkit;
@@ -33,7 +31,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,36 +38,34 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class AsyncPacketHandler extends PacketAdapter implements Listener {
+public class AsyncPacketHandler implements Listener, PacketListener {
 
-    private CombatConfig cc;
+    private final CombatConfig cc;
 
     public AsyncPacketHandler(CombatConfig cc) {
-        super(Finale.getPlugin(), ListenerPriority.HIGH, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.BLOCK_DIG, PacketType.Play.Client.ENTITY_ACTION);
-
         this.cc = cc;
 
         Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
     }
 
-    private Set<UUID> isDigging = Sets.newConcurrentHashSet();
-    private Map<UUID, Long> lastRemovals = new ConcurrentHashMap<>();
-    private Map<UUID, Long> lastStartBreaks = new ConcurrentHashMap<>();
+    private final Set<UUID> isDigging = Sets.newConcurrentHashSet();
+    private final Map<UUID, Long> lastRemovals = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> lastStartBreaks = new ConcurrentHashMap<>();
 
     @Override
-    public void onPacketReceiving(PacketEvent event) {
-        PacketType packetType = event.getPacketType();
+    public void onPacketReceive(PacketReceiveEvent event) {
+        PacketTypeCommon packetType = event.getPacketType();
 
         CPSHandler cpsHandler = Finale.getPlugin().getManager().getCPSHandler();
-        if (packetType == PacketType.Play.Client.USE_ENTITY) {
+        if (packetType == PacketType.Play.Client.INTERACT_ENTITY) {
             Player attacker = event.getPlayer();
             World world = attacker.getWorld();
 
-            PacketContainer packet = event.getPacket();
-            StructureModifier<WrappedEnumEntityUseAction> actions = packet.getEnumEntityUseActions();
-            EntityUseAction action = actions.read(0).getAction();
+            ServerLevel level = ((CraftWorld) world).getHandle();
 
-            if (action != EntityUseAction.ATTACK) {
+            WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(event);
+
+            if (packet.getAction() != WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
                 return;
             }
             event.setCancelled(true);
@@ -78,15 +73,13 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
                 @Override
                 public void run() {
-                    Entity entity = packet.getEntityModifier(event).read(0);
+                    CraftEntity entity = level.getEntity(packet.getEntityId()).getBukkitEntity();
                     Damageable target = entity instanceof Damageable ? (Damageable) entity : null;
 
                     if (target == null || target.isDead() || target.isInvulnerable() ||
                         !world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
-                        if (entity instanceof CraftEntity craftEntity) {
-                            DamageSources damageSources = ((CraftWorld) world).getHandle().damageSources();
-                            craftEntity.getHandle().hurt(damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
-                        }
+                        DamageSources damageSources = ((CraftWorld) world).getHandle().damageSources();
+                        entity.getHandle().hurt(damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
                         return;
                     }
 
@@ -101,41 +94,51 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
                         return;
                     }
 
-                    CombatUtil.attack(attacker, ((CraftEntity) target).getHandle());
+                    if (attacker.getGameMode() == GameMode.SPECTATOR) {
+                        attacker.setSpectatorTarget(target);
+                    } else {
+                        CombatUtil.attack(attacker, ((CraftEntity) target).getHandle());
+                    }
                 }
             }.runTask(Finale.getPlugin());
         } else if (packetType == PacketType.Play.Client.ENTITY_ACTION) {
+            WrapperPlayClientEntityAction packet = new WrapperPlayClientEntityAction(event);
             Player player = event.getPlayer();
-            PacketContainer packet = event.getPacket();
-            EnumWrappers.PlayerAction playerAction = packet.getPlayerActions().read(0);
+            WrapperPlayClientEntityAction.Action playerAction = packet.getAction();
             SprintHandler sprintHandler = Finale.getPlugin().getManager().getSprintHandler();
-            if (playerAction == EnumWrappers.PlayerAction.START_SPRINTING) {
+            if (playerAction == WrapperPlayClientEntityAction.Action.START_SPRINTING) {
                 sprintHandler.startSprinting(player);
-            } else if (playerAction == EnumWrappers.PlayerAction.STOP_SPRINTING) {
+            } else if (playerAction == WrapperPlayClientEntityAction.Action.STOP_SPRINTING) {
                 sprintHandler.stopSprinting(player);
             }
-        } else if (packetType == PacketType.Play.Client.ARM_ANIMATION) {
+        } else if (packetType == PacketType.Play.Client.ANIMATION) {
             Player attacker = event.getPlayer();
-            PacketContainer packet = event.getPacket();
-            Hand hand = packet.getHands().getValues().get(0);
-            if (hand == Hand.MAIN_HAND && !isDigging.contains(attacker.getUniqueId())) {
+            WrapperPlayClientAnimation packet = new WrapperPlayClientAnimation(event);
+            InteractionHand hand = packet.getHand();
+            if (hand == InteractionHand.MAIN_HAND && !isDigging.contains(attacker.getUniqueId())) {
                 Block targetBlock = attacker.getTargetBlockExact(4);
                 if (targetBlock != null && targetBlock.getType() != Material.AIR) {
                     return;
                 }
                 cpsHandler.updateClicks(attacker);
             }
-        } else if (packetType == PacketType.Play.Client.BLOCK_DIG) {
+        } else if (packetType == PacketType.Play.Client.PLAYER_DIGGING) {
             Player attacker = event.getPlayer();
+
+            WrapperPlayClientPlayerDigging packet = new WrapperPlayClientPlayerDigging(event);
+            DiggingAction digType = packet.getAction();
+            if (digType == DiggingAction.STAB) {
+                // no spears
+                event.setCancelled(true);
+                return;
+            }
 
             if (attacker.getGameMode() != GameMode.SURVIVAL) {
                 return;
             }
 
-            PacketContainer packet = event.getPacket();
-            BlockPosition position = packet.getBlockPositionModifier().getValues().get(0);
-            PlayerDigType digType = packet.getPlayerDigTypes().getValues().get(0);
-            if (digType == PlayerDigType.START_DESTROY_BLOCK) {
+            Vector3i position = packet.getBlockPosition();
+            if (digType == DiggingAction.START_DIGGING) {
                 Block block = attacker.getWorld().getBlockAt(position.getX(), position.getY(), position.getZ());
                 if (block.getType() == Material.BEDROCK || block.getType() == Material.BARRIER && !isDigging.contains(attacker.getUniqueId())) {
                     isDigging.add(attacker.getUniqueId());
@@ -160,7 +163,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
                         cpsHandler.updateClicks(attacker);
                     }
                 }
-            } else if (digType == PlayerDigType.ABORT_DESTROY_BLOCK || digType == PlayerDigType.STOP_DESTROY_BLOCK) {
+            } else if (digType == DiggingAction.CANCELLED_DIGGING || digType == DiggingAction.FINISHED_DIGGING) {
                 isDigging.remove(attacker.getUniqueId());
                 lastRemovals.put(attacker.getUniqueId(), System.currentTimeMillis());
             }

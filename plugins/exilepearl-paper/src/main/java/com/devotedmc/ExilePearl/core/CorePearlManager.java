@@ -31,7 +31,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -249,29 +248,16 @@ final class CorePearlManager implements PearlManager {
 
     @Override
     public ExilePearl getPearlFromItemStack(ItemStack is) {
-        ExilePearl pearl = null;
+        ExilePearl pearl;
         int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
-        if (pearlId != 0) {
-            pearl = getPearlById(pearlId);
-            if (pearl == null || pearl.getFreedOffline()) {
-                return null;
-            }
-            return pearl;
-        }
-
-        // Check if this is a legacy pearl
-        UUID legacyId = pearlApi.getLoreProvider().getPlayerIdFromLegacyPearl(is);
-        if (legacyId == null) {
+        if (pearlId == 0) {
             return null;
         }
 
-        // If an existing pearl is found, just use that
-        pearl = pearls.get(legacyId);
-        if (pearl == null) {
-            pearlApi.log(Level.SEVERE, "Found legacy PrisonPearl item for player %s but no pearl was found.", legacyId.toString());
+        pearl = getPearlById(pearlId);
+        if (pearl == null || pearl.getFreedOffline()) {
             return null;
         }
-
         return pearl;
     }
 

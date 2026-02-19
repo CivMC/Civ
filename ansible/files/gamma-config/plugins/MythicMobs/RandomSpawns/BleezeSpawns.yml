@@ -1,0 +1,11 @@
+RandomBleeze:
+  Type: Bleeze
+  Worlds: world
+  Chance: 0.0002
+  Priority: 1
+  Action: REPLACE
+  Biomes: DESERT,ERODED_BADLANDS,SAVANNA,SAVANNA_PLATEAU,BADLANDS
+  Conditions:
+    - outside true
+    - heightabove{h=30} true
+    - blockTypeInRadius{type=OBSIDIAN;amount=>0;radius=5} false

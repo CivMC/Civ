@@ -2,7 +2,6 @@ package vg.civcraft.mc.citadel.listener;
 
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
-import org.bukkit.block.Container;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

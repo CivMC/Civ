@@ -12,7 +12,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.bee.Bee;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.apache.commons.collections4.IterableUtils;
@@ -107,14 +107,14 @@ public final class BeeKeeping extends BasicHack {
         final var lastDamageCause = bee.getLastHurtByMob();
         final var angerTarget = bee.getPersistentAngerTarget();
         final var goalTarget = bee.getTarget();
-        final var angerLevel = bee.getRemainingPersistentAngerTime();
+        final var angerLevel = bee.getPersistentAngerEndTime();
         Bukkit.getScheduler().runTask(this.plugin, () -> {
             bee.setHasStung(false);
             // Reset the above values
             bee.setLastHurtByMob(lastDamageCause);
             bee.setPersistentAngerTarget(angerTarget);
             bee.setTarget(goalTarget, EntityTargetEvent.TargetReason.FORGOT_TARGET); // Params: target, cause, emit event
-            bee.setRemainingPersistentAngerTime(angerLevel);
+            bee.setPersistentAngerEndTime(angerLevel);
         });
     }
 
@@ -198,7 +198,7 @@ public final class BeeKeeping extends BasicHack {
     private static List<BeeData> getBeesFromHive(@NotNull final BeehiveBlockEntity hive) {
         List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES).bees();
 
-		return bees == null ? null : bees.stream().map(bee -> bee.entityData().copyTag()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
+		return bees.stream().map(bee -> bee.entityData().copyTagWithoutId()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
 	}
 
     private static final class BeeData {

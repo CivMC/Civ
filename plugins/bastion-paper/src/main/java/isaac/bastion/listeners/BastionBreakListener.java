@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -79,8 +80,11 @@ public class BastionBreakListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
+        if (event.getExplosionResult() == ExplosionResult.TRIGGER_BLOCK || event.getExplosionResult() == ExplosionResult.KEEP) {
+            return;
+        }
         Iterator<Block> iterator = event.blockList().iterator();
         HashSet<Block> blocks = new HashSet<>();
         while (iterator.hasNext()) {

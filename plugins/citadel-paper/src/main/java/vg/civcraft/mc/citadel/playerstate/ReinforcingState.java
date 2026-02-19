@@ -52,20 +52,55 @@ public class ReinforcingState extends AbstractPlayerState {
             return;
         }
         Player player = e.getPlayer();
-        // does the player have an item?
-        if (e.getItem() == null) {
-            CitadelUtility.sendAndLog(player, ChatColor.RED, "You have nothing in your hand to reinforce with",
+        // does the player have permission to reinforce on that group
+        if (!NameLayerAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
+            CitadelPermissionHandler.getReinforce())) {
+            CitadelUtility.sendAndLog(player, ChatColor.RED,
+                "You seem to have lost permission to reinforce on " + group.getName(),
                 e.getClickedBlock().getLocation());
+            Citadel.getInstance().getStateManager().setState(player, null);
             return;
         }
-        ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem(), player.getWorld().getName());
-        // is it a valid item to reinforce with
-        if (type == null) {
-            CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item",
-                e.getClickedBlock().getLocation());
-            return;
+        // resolve reinforcement type from held item (may be null if not holding material)
+        ReinforcementType type = null;
+        if (e.getItem() != null) {
+            type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem(), player.getWorld().getName());
         }
         Block block = ReinforcementLogic.getResponsibleBlock(e.getClickedBlock());
+        Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+        // if there is no existing reinforcement and no material to create one, nothing to do
+        // if reinforcement exists, check if player has permission to edit it
+        if (rein != null && !rein.hasPermission(player, CitadelPermissionHandler.getBypass())) {
+            CitadelUtility.sendAndLog(player, ChatColor.RED,
+                "You do not have permission to bypass this reinforcement",
+                e.getClickedBlock().getLocation());
+            return;
+        }
+        // not holding reinforcement material: only allow group transfer on existing reinforcement
+        if (type == null) {
+            if (rein == null) {
+                CitadelUtility.sendAndLog(player, ChatColor.RED,
+                    "You need to hold a valid reinforcement material to reinforce a new block",
+                    e.getClickedBlock().getLocation());
+                return;
+            }
+            if (group.getGroupId() != rein.getGroup().getGroupId()) {
+                ReinforcementGroupChangeEvent rgce = new ReinforcementGroupChangeEvent(player, rein, group);
+                Bukkit.getPluginManager().callEvent(rgce);
+                if (!rgce.isCancelled()) {
+                    rein.setGroup(group);
+                    CitadelUtility.sendAndLog(player, ChatColor.GREEN,
+                        "Updated group to " + ChatColor.LIGHT_PURPLE + group.getName(),
+                        e.getClickedBlock().getLocation());
+                }
+            } else {
+                CitadelUtility.sendAndLog(player, ChatColor.YELLOW,
+                    "This reinforcement is already on " + group.getName(),
+                    e.getClickedBlock().getLocation());
+            }
+            return;
+        }
+        // holding reinforcement material: full reinforce/upgrade/transfer logic
         // can the item reinforce the clicked block
         if (!type.canBeReinforced(block.getType())) {
             CitadelUtility.sendAndLog(player, ChatColor.RED,
@@ -79,31 +114,12 @@ public class ReinforcingState extends AbstractPlayerState {
                 type.getName() + " cannot reinforce in this dimension", block.getLocation());
             return;
         }
-        // does the player have permission to reinforce on that group
-        if (!NameLayerAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
-            CitadelPermissionHandler.getReinforce())) {
-            CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-                "You seem to have lost permission to reinforce on " + group.getName(),
-                e.getClickedBlock().getLocation());
-            Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
-            return;
-        }
-        Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
-        // if reinforcement exists, check if player has permission to edit it
-        if (rein != null) {
-            if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getBypass())) {
-                CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-                    "You do not have permission to bypass this reinforcement",
-                    e.getClickedBlock().getLocation());
-                return;
-            }
-        }
         Reinforcement newRein = null;
         if (rein == null || rein.getType() != type) {
             // check inventory for reinforcement item
             ItemMap toConsume = new ItemMap(type.getItem());
             if (!toConsume.isContainedIn(player.getInventory())) {
-                CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?",
+                CitadelUtility.sendAndLog(player, ChatColor.RED, "No reinforcing item found in your inventory?",
                     e.getClickedBlock().getLocation());
                 return;
             }
@@ -116,7 +132,7 @@ public class ReinforcingState extends AbstractPlayerState {
             }
             // consume item from inventory
             if (!toConsume.removeSafelyFrom(player.getInventory())) {
-                CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
+                CitadelUtility.sendAndLog(player, ChatColor.RED,
                     "Failed to remove reinforcement item from your inventory",
                     e.getClickedBlock().getLocation());
                 return;
@@ -151,7 +167,7 @@ public class ReinforcingState extends AbstractPlayerState {
                 Bukkit.getPluginManager().callEvent(rcte);
                 if (!rcte.isCancelled()) {
                     if (rein.rollForItemReturn()) {
-                        giveReinforcement(rein.getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
+                        giveReinforcement(rein.getLocation().clone().add(0.5, 0.5, 0.5), player, rein.getType());
                     }
                     rein.setType(type);
                     rein.setHealth(type.getHealth());

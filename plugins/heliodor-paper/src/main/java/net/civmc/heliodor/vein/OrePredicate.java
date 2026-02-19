@@ -4,8 +4,7 @@ import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
+import vg.civcraft.mc.civmodcore.utilities.BlockPosPdc;
 
 public class OrePredicate implements Predicate<Location> {
 
@@ -17,21 +16,9 @@ public class OrePredicate implements Predicate<Location> {
 
     @Override
     public boolean test(Location location) {
-        PersistentDataContainer chunkPdc = location.getChunk().getPersistentDataContainer();
-        int[] ints = chunkPdc.get(oreLocationsKey, PersistentDataType.INTEGER_ARRAY);
-        if (ints == null) {
-            return false;
-        }
-
         if (location.getBlock().getType() != Material.RAW_IRON_BLOCK) {
             return false;
         }
-
-        for (int i = 0; i < ints.length; i += 3) {
-            if (ints[i] == location.getBlockX() && ints[i + 1] == location.getBlockY() && ints[i + 2] == location.getBlockZ()) {
-                return true;
-            }
-        }
-        return false;
+        return BlockPosPdc.testBlock(location.getChunk(), oreLocationsKey, location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 }

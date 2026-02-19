@@ -5,8 +5,10 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import java.util.List;
+import org.bukkit.ExplosionResult;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Furnace;
@@ -94,6 +96,9 @@ public class FactoryModListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void explosionListener(EntityExplodeEvent e) {
+        if (e.getExplosionResult() == ExplosionResult.KEEP || e.getExplosionResult() == ExplosionResult.TRIGGER_BLOCK) {
+            return;
+        }
         List<Block> blocks = e.blockList();
         for (Block block : blocks) {
             if (manager.isPossibleInteractionBlock(block.getType())) {
@@ -131,7 +136,7 @@ public class FactoryModListener implements Listener {
                     factory.getInteractionManager().rightClick(player, block, blockFace);
                 } else {
                     // check if chest is other half of double chest
-                    if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+                    if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(block.getType())) {
                         for (Block b : MultiBlockStructure.searchForBlockOnSides(block, block.getType())) {
                             Factory f = manager.getFactoryAt(b);
                             if (f != null) {
@@ -150,7 +155,7 @@ public class FactoryModListener implements Listener {
                         }
                     } else {
                         // check if chest is other half of double chest
-                        if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+                        if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(block.getType())) {
                             for (Block b : MultiBlockStructure.searchForBlockOnAllSides(block, block.getType())) {
                                 Factory f = manager.getFactoryAt(b);
                                 if (f != null) {

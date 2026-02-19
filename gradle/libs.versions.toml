@@ -1,5 +1,5 @@
 [versions]
-paper = "1.21.8-R0.1-SNAPSHOT"
+paper = "1.21.11-R0.1-SNAPSHOT"
 junit = "5.8.2"
 nuotifier = "2.7.2"
 velocity = "3.4.0-SNAPSHOT"
@@ -38,7 +38,7 @@ aswm-api = { group = "com.infernalsuite.asp", name = "api", version = "4.0.0-SNA
 worldedit = { group = "com.sk89q.worldedit", name = "worldedit-bukkit", version = "7.2.8" }
 hikaricp = { group = "com.zaxxer", name = "HikariCP", version = "5.0.1" }
 fastutil = { group = "it.unimi.dsi", name = "fastutil", version = "8.5.8" }
-protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version = "5.3.0" }
+protocollib = { group = "net.dmulloy2", name = "ProtocolLib", version = "5.4.0" }
 barapi = { group = "me.confuser", name = "BarAPI", version = "3.5" }
 ipaddress = { group = "com.github.seancfoley", name = "ipaddress", version = "2.0.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.18.3" }

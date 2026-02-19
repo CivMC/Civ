@@ -77,4 +77,8 @@ public final class ShopPurchaseAction extends LoggablePlayerAction {
         );
     }
 
+    @Override
+    protected Location getLocationForStringRepresentation() {
+        return this.location;
+    }
 }

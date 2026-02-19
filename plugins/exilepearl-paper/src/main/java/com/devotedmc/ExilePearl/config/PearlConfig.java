@@ -212,6 +212,8 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 
     int pearlCostMultiplicationTimerDays();
 
+    double pearlCostMultiplierCapDays();
+
     /**
      * Gets whether people should be allowed to deploy an elytra with a pearl in their inventory
      * Also determines if they should be able to pick up pearl items while gliding

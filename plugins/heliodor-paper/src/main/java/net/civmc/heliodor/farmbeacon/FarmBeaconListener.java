@@ -1,8 +1,7 @@
 package net.civmc.heliodor.farmbeacon;
 
-import net.civmc.heliodor.BlockProtector;
+import vg.civcraft.mc.civmodcore.utilities.BlockProtector;
 import net.civmc.heliodor.HeliodorPlugin;
-import net.civmc.heliodor.backpack.Backpack;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Beacon;
