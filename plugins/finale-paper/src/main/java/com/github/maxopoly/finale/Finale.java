@@ -1,6 +1,5 @@
 package com.github.maxopoly.finale;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import com.github.maxopoly.finale.command.AllyCommand;
 import com.github.maxopoly.finale.command.CardinalCommand;
 import com.github.maxopoly.finale.command.CombatConfigCommand;
@@ -83,13 +82,10 @@ public class Finale extends ACivMod {
     @Override
     public void onDisable() {
         if (manager != null) {
-            manager.getAllyHandler().save();
-            manager.getAllyHandler().shutdown();
+            manager.unregister();
         }
 
         HandlerList.unregisterAll(this);
-        ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-        ProtocolLibrary.getProtocolManager().getAsynchronousManager().unregisterAsyncHandlers(this);
         Bukkit.getScheduler().cancelTasks(this);
     }
 
