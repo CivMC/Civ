@@ -1,0 +1,742 @@
+package com.programmerdan.minecraft.banstick.data;
+
+import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import xyz.huskydog.banstickCore.BanstickCore;
+import xyz.huskydog.banstickCore.cmc.utils.PluginPlayer;
+import xyz.huskydog.banstickCore.cmc.utils.DateUtils;
+
+/**
+ * Represents player DAO logic.
+ *
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ */
+public final class BSPlayer {
+
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
+    private static final Map<Long, BSPlayer> allPlayersID = new HashMap<>();
+    private static final Map<UUID, BSPlayer> allPlayersUUID = new HashMap<>();
+    private static final ConcurrentLinkedQueue<WeakReference<BSPlayer>> dirtyPlayers = new ConcurrentLinkedQueue<>();
+
+    private long pid;
+    private @Nullable String name;
+    private UUID uuid;
+    private Timestamp firstAdd;
+    private Long deferBid;
+    private @Nullable BSBan bid;
+    private Timestamp ipPardonTime;
+    private Timestamp proxyPardonTime;
+    private Timestamp sharedPardonTime;
+    private boolean dirty;
+
+    private transient BSSessions allSessions;
+    private transient BSIPs allIPs;
+    private transient BSShares allShares;
+    private transient BSExclusions allExclusions;
+
+    // TODO: set in constructor to avoid dumb issues with @NotNull
+    private BSPlayer() {
+    }
+
+    public long getId() {
+        return pid;
+    }
+
+    public @Nullable String getName() {
+        return name;
+    }
+
+    /**
+     * Set the player name. Player names can change, so... sets this as dirty for an update task.
+     *
+     * @param name the new player name.
+     */
+    public void setName(String name) {
+        this.name = name;
+        this.dirty = true;
+        dirtyPlayers.offer(new WeakReference<>(this));
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public Date getFirstAdd() {
+        return firstAdd;
+    }
+
+    public Date getIPPardonTime() {
+        return ipPardonTime;
+    }
+
+    /**
+     * Updates the time where, after that time, all IP bans will expire.
+     *
+     * @param pardon Date for IP bans to expire, or null to remove the pardon.
+     */
+    public void setIPPardonTime(Date pardon) {
+        this.ipPardonTime = pardon != null ? new Timestamp(pardon.getTime()) : null;
+        this.dirty = true;
+        dirtyPlayers.offer(new WeakReference<>(this));
+    }
+
+    public Date getProxyPardonTime() {
+        return proxyPardonTime;
+    }
+
+    /**
+     * Updates the time where, after that time, all proxy bans will expire.
+     *
+     * @param pardon Date for Proxy bans to expire, or null to remove the pardon.
+     */
+    public void setProxyPardonTime(Date pardon) {
+        this.proxyPardonTime = pardon != null ? new Timestamp(pardon.getTime()) : null;
+        this.dirty = true;
+        dirtyPlayers.offer(new WeakReference<>(this));
+    }
+
+    public Date getSharedPardonTime() {
+        return sharedPardonTime;
+    }
+
+    /**
+     * Updates the time where, after that time, all share bans will expire.
+     *
+     * @param pardon Date for Share bans to expire, or null to remove the pardon.
+     */
+    public void setSharedPardonTime(Date pardon) {
+        this.sharedPardonTime = pardon != null ? new Timestamp(pardon.getTime()) : null;
+        this.dirty = true;
+        dirtyPlayers.offer(new WeakReference<>(this));
+    }
+
+    /**
+     * Gets the principle active ban for this player.
+     *
+     * @return Current active BSBan, if any.
+     */
+    public @Nullable BSBan getBan() {
+        if (this.bid == null && this.deferBid != null) {
+            this.bid = BSBan.byId(this.deferBid);
+        }
+        return this.bid;
+    }
+
+    /**
+     * Sets the principle active ban for this player.
+     *
+     * @param banId The new ban to apply, or null to clear.
+     */
+    public void setBan(BSBan banId) {
+        if (banId == null && this.bid != null) {
+            BSLog.register(BSLog.Action.UNBAN, this, this.bid);
+        } else if (banId != null && this.bid == null) {
+            BSLog.register(BSLog.Action.BAN, this, banId);
+        } else if (banId != null && this.bid != null && banId.getId() != this.bid.getId()) {
+            BSLog.register(BSLog.Action.CHANGE, this, this.bid, banId);
+        } else if (banId != null && this.bid != null && banId.getId() == this.bid.getId()) {
+            return; // no change.
+        }
+        this.bid = banId;
+        this.deferBid = (banId == null ? null : banId.getId());
+        this.dirty = true;
+        dirtyPlayers.offer(new WeakReference<>(this));
+
+    }
+
+    /**
+     * This is the heart of the tracking. If a session is already active, ends it;
+     * Starts a session for this player, associates that session with the current IP data,
+     * checks for new shares and any other stuff like that.
+     *
+     * @param player       The player whose session to start
+     * @param sessionStart The Date that the session began
+     */
+    public void startSession(@NotNull final PluginPlayer player, @NotNull Date sessionStart) {
+        BSSession latest = this.allSessions.getLatest();
+        if (latest != null && !latest.isEnded()) {
+            latest.setLeaveTime(sessionStart);
+        }
+        InetSocketAddress isa = player.getAddress();
+        InetAddress ina = isa != null ? isa.getAddress() : null;
+        if (ina != null) {
+            BSIP ip = CORE.getDatabaseHandler().getOrCreateIP(ina);
+            this.allIPs.setLatest(ip);
+            latest = this.allSessions.startNew(ip, sessionStart);
+            this.allShares.check(latest);
+        } else {
+            CORE.getLogger().error("Start session of BSPlayer failed, no IP retrievable! Player: {}", player);
+        }
+    }
+
+    /**
+     * If session is active, end it. Starts a new session, when IP is known.
+     * Checks for new shares.
+     *
+     * @param ip           The exact IP to use
+     * @param sessionStart the session start time
+     */
+    public void startSession(BSIP ip, Date sessionStart) {
+        BSSession latest = this.allSessions.getLatest();
+        if (latest != null && !latest.isEnded()) {
+            latest.setLeaveTime(sessionStart);
+        }
+        this.allIPs.setLatest(ip);
+        latest = this.allSessions.startNew(ip, sessionStart);
+        this.allShares.check(latest);
+    }
+
+    /**
+     * Ends the latest session for this player. Player-centric exposed focus for BSSessions's endLatest
+     *
+     * @param sessionEnd Date to end this player's current session.
+     */
+    public void endSession(Date sessionEnd) {
+        this.allSessions.endLatest(sessionEnd);
+    }
+
+    /**
+     * Gets the latest session for this player.
+     *
+     * @return The latest BSSession object
+     */
+    public BSSession getLatestSession() {
+        return this.allSessions.getLatest();
+    }
+
+    /**
+     * Gets all sessions for this player
+     *
+     * @return A list of all BSSessions for this player
+     */
+    public List<BSSession> getAllSessions() {
+        return this.allSessions.getAll();
+    }
+
+    /**
+     * This leverages a fun queue of WeakReferences, where if a player is forcibly flush()'d we don't care,
+     * or if a player is in the queue more then once we don't care, b/c we only save a dirty player once;
+     * and since we all store references and no copies, everything is nice and synchronized.
+     */
+    public static void saveDirty() {
+        int batchSize = 0;
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
+             PreparedStatement savePlayer = connection.prepareStatement(
+                 "UPDATE bs_player SET ip_pardon_time = ?, proxy_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
+            while (!dirtyPlayers.isEmpty()) {
+                WeakReference<BSPlayer> rplayer = dirtyPlayers.poll();
+                BSPlayer player = rplayer.get();
+                if (player != null && player.dirty) {
+                    player.dirty = false;
+                    player.saveToStatement(savePlayer);
+                    savePlayer.addBatch();
+                    batchSize++;
+                }
+                if (batchSize > 0 && batchSize % 100 == 0) {
+                    int[] batchRun = savePlayer.executeBatch();
+                    if (batchRun.length != batchSize) {
+                        CORE.getLogger().error("Some elements of the dirt batch didn't save? {} vs {}", batchSize, batchRun.length);
+                    } else {
+                        CORE.getLogger().debug("Player batch: {} saves", batchRun.length);
+                    }
+                    batchSize = 0;
+                }
+            }
+            if (batchSize > 0 && batchSize % 100 > 0) {
+                int[] batchRun = savePlayer.executeBatch();
+                if (batchRun.length != batchSize) {
+                    CORE.getLogger().error("Some elements of the dirt batch didn't save? "
+                        + batchSize + " vs " + batchRun.length);
+                } else {
+                    CORE.getLogger().debug("Player batch: {} saves", batchRun.length);
+                }
+            }
+        } catch (SQLException se) {
+            CORE.getLogger().error("Save of BSPlayer dirty batch failed!: ", se);
+        }
+    }
+
+    /**
+     * Saves the BSPlayer; only for internal use. Outside code must use Flush();
+     */
+    private void save() {
+        if (!dirty) {
+            return;
+        }
+        this.dirty = false; // don't let anyone else in!
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
+             PreparedStatement savePlayer = connection.prepareStatement(
+                 "UPDATE bs_player SET ip_pardon_time = ?, proxy_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
+            saveToStatement(savePlayer);
+            int effects = savePlayer.executeUpdate();
+            if (effects == 0) {
+                CORE.getLogger().error("Failed to save BSPlayer or no update? {}", this.pid);
+            }
+        } catch (SQLException se) {
+            CORE.getLogger().error("Save of BSPlayer failed!: ", se);
+        }
+    }
+
+    private void saveToStatement(PreparedStatement savePlayer) throws SQLException {
+        if (this.ipPardonTime == null) {
+            savePlayer.setNull(1, Types.TIMESTAMP);
+        } else {
+            savePlayer.setTimestamp(1, this.ipPardonTime);
+        }
+        if (this.proxyPardonTime == null) {
+            savePlayer.setNull(2, Types.TIMESTAMP);
+        } else {
+            savePlayer.setTimestamp(2, this.proxyPardonTime);
+        }
+        if (this.sharedPardonTime == null) {
+            savePlayer.setNull(3, Types.TIMESTAMP);
+        } else {
+            savePlayer.setTimestamp(3, this.sharedPardonTime);
+        }
+        if (this.getBan() == null) {
+            savePlayer.setNull(4, Types.BIGINT);
+        } else {
+            savePlayer.setLong(4, this.bid.getId());
+        }
+        if (this.name == null) {
+            savePlayer.setNull(5, Types.VARCHAR);
+        } else {
+            savePlayer.setString(5, this.name);
+        }
+        savePlayer.setLong(6, this.pid);
+    }
+
+    /**
+     * Cleanly saves this player if necessary, and removes it from the references lists.
+     */
+    public void flush() {
+        if (dirty) {
+            save();
+        }
+        BSSessions.release(this.allSessions);
+        BSIPs.release(this.allIPs);
+        BSShares.release(this.allShares);
+        allPlayersUUID.remove(this.uuid);
+        allPlayersID.remove(this.pid);
+        this.bid = null;
+        this.deferBid = null;
+    }
+
+    /**
+     * Get player by UUID, pull from DB if not cached already.
+     *
+     * @param uuid Gets a BSPlayer record by uuid.
+     * @return BSPlayer matching the uuid or null if not found
+     */
+    public static @NotNull BSPlayer byUUID(final UUID uuid) {
+        if (allPlayersUUID.containsKey(uuid)) {
+            return allPlayersUUID.get(uuid);
+        }
+
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
+             PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE uuid = ?");) {
+            getPlayer.setString(1, uuid.toString());
+            try (ResultSet rs = getPlayer.executeQuery();) {
+                if (rs.next()) {
+                    // found
+                    long pid = rs.getLong(1);
+                    BSPlayer player = null;
+                    if (allPlayersID.containsKey(pid)) {
+                        player = allPlayersID.get(pid);
+                        return player;
+                    } else {
+                        player = new BSPlayer();
+                        player.pid = pid;
+                        player.allSessions = BSSessions.onlyFor(player);
+                        player.allExclusions = BSExclusions.onlyFor(player);
+                        player.allIPs = BSIPs.onlyFor(player);
+                        player.allShares = BSShares.onlyFor(player);
+                    }
+                    player.dirty = false;
+                    player.name = rs.getString(2);
+                    player.uuid = UUID.fromString(rs.getString(3));
+                    player.firstAdd = rs.getTimestamp(4);
+                    long bid = rs.getLong(5);
+                    if (!rs.wasNull()) {
+                        player.deferBid = bid;
+                        player.bid = null;
+                    }
+                    // player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+                    try {
+                        player.ipPardonTime = rs.getTimestamp(6);
+                    } catch (SQLException te) {
+                        player.ipPardonTime = null;
+                    }
+                    try {
+                        player.proxyPardonTime = rs.getTimestamp(7);
+                    } catch (SQLException te) {
+                        player.proxyPardonTime = null;
+                    }
+                    try {
+                        player.sharedPardonTime = rs.getTimestamp(8);
+                    } catch (SQLException te) {
+                        player.sharedPardonTime = null;
+                    }
+                    allPlayersID.put(pid, player);
+                    allPlayersUUID.put(player.uuid, player);
+                    return player;
+                } else {
+                    // not found
+                    throw new IllegalArgumentException("No player found with uuid " + uuid);
+                }
+            }
+        } catch (SQLException se) {
+            CORE.getLogger().error("Failed to execute query to get player " + uuid, se);
+        }
+        throw new IllegalArgumentException("No player found with uuid " + uuid);
+    }
+
+    /**
+     * Direct lookup for a BSPlayer by database ID
+     *
+     * @param pid The Player ID to use in the lookup
+     * @return The Player found, or null if not found
+     */
+    public static @NotNull BSPlayer getById(final long pid) {
+        if (allPlayersID.containsKey(pid)) {
+            return allPlayersID.get(pid);
+        }
+
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
+             PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE pid = ?");) {
+            getPlayer.setLong(1, pid);
+            try (ResultSet rs = getPlayer.executeQuery();) {
+                if (rs.next()) {
+                    // found
+                    BSPlayer player = null;
+                    player = new BSPlayer();
+                    player.dirty = false;
+                    player.pid = pid;
+                    player.allSessions = BSSessions.onlyFor(player);
+                    player.allExclusions = BSExclusions.onlyFor(player);
+                    player.allIPs = BSIPs.onlyFor(player);
+                    player.allShares = BSShares.onlyFor(player);
+                    player.name = rs.getString(2);
+                    player.uuid = UUID.fromString(rs.getString(3));
+                    player.firstAdd = rs.getTimestamp(4);
+                    long bid = rs.getLong(5);
+                    if (!rs.wasNull()) {
+                        player.deferBid = bid;
+                        player.bid = null;
+                    }
+                    // player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+                    try {
+                        player.ipPardonTime = rs.getTimestamp(6);
+                    } catch (SQLException te) {
+                        player.ipPardonTime = null;
+                    }
+                    try {
+                        player.proxyPardonTime = rs.getTimestamp(7);
+                    } catch (SQLException te) {
+                        player.proxyPardonTime = null;
+                    }
+                    try {
+                        player.sharedPardonTime = rs.getTimestamp(8);
+                    } catch (SQLException te) {
+                        player.sharedPardonTime = null;
+                    }
+                    allPlayersID.put(pid, player);
+                    allPlayersUUID.put(player.uuid, player);
+                    return player;
+                } else {
+                    // not found
+                    throw new IllegalArgumentException("No player found with id " + pid);
+                }
+            }
+        } catch (SQLException se) {
+            CORE.getLogger().error("Failed to execute query to get player: " + pid, se);
+        }
+        throw new IllegalArgumentException("No player found with id " + pid);
+    }
+
+    /**
+     * Create a new player from the Bukkit object
+     *
+     * @param player The player object to use
+     * @return the BSPlayer created from the player, or null
+     */
+    public static @Nullable BSPlayer create(final PluginPlayer player) {
+        return create(player.getUniqueId(), player.getDisplayName());
+    }
+
+    /**
+     * Creates, if needed, a new BSPlayer and inserts it into the database. Sets up related DAOs.
+     *
+     * @param playerId the Player's UUID to create
+     * @param name     the Player's Name to create
+     * @return the new BSPlayer, or an existing player if they already exist, or null if failure.
+     */
+    public static @Nullable BSPlayer create(@NotNull UUID playerId, @Nullable String name) {
+        if (allPlayersUUID.containsKey(playerId)) {
+            return allPlayersUUID.get(playerId);
+        }
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection()) {
+            BSPlayer newPlayer = new BSPlayer();
+            newPlayer.dirty = false;
+            newPlayer.name = name;
+            newPlayer.uuid = playerId;
+            newPlayer.firstAdd = new Timestamp(Calendar.getInstance().getTimeInMillis());
+
+            try (PreparedStatement insertPlayer = connection.prepareStatement(
+                "INSERT INTO bs_player(name, uuid, first_add) VALUES (?, ?, ?);",
+                Statement.RETURN_GENERATED_KEYS)) {
+                if (newPlayer.name == null) {
+                    insertPlayer.setNull(1, Types.VARCHAR);
+                } else {
+                    insertPlayer.setString(1, newPlayer.name);
+                }
+                insertPlayer.setString(2, newPlayer.uuid.toString());
+                insertPlayer.setTimestamp(3, newPlayer.firstAdd);
+                insertPlayer.execute();
+                try (ResultSet rs = insertPlayer.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        newPlayer.pid = rs.getLong(1);
+                    } else {
+                        CORE.getLogger().error("No PID returned on player insert?!");
+                        return null; // no pid? error.
+                    }
+                }
+            }
+
+            newPlayer.allSessions = BSSessions.onlyFor(newPlayer);
+            newPlayer.allIPs = BSIPs.onlyFor(newPlayer);
+            newPlayer.allShares = BSShares.onlyFor(newPlayer);
+            newPlayer.allExclusions = BSExclusions.onlyFor(newPlayer);
+
+            allPlayersID.put(newPlayer.pid, newPlayer);
+            allPlayersUUID.put(newPlayer.uuid, newPlayer);
+            return newPlayer;
+        } catch (SQLException se) {
+            CORE.getLogger().error("Failed to create a new player record: ", se);
+            return null;
+        }
+    }
+
+    /**
+     * Preloads a segment of player data. Offset indicates lowbound exclusive to begin,
+     * with limit constraining size of batch.
+     *
+     * @param offset (not included) low bound on ID of record to load.
+     * @param limit  how many to load
+     * @return last ID encountered, or -1 is none/no more
+     */
+    public static long preload(long offset, int limit) {
+        long maxId = -1;
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
+             PreparedStatement loadPlayers = connection.prepareStatement(
+                 "SELECT * FROM bs_player WHERE pid > ? ORDER BY pid LIMIT ?");) {
+            loadPlayers.setLong(1, offset);
+            loadPlayers.setInt(2, limit);
+            try (ResultSet rs = loadPlayers.executeQuery()) {
+                while (rs.next()) {
+                    long numPid = rs.getLong(1);
+                    if (numPid > maxId) {
+                        maxId = numPid;
+                    }
+                    if (allPlayersID.containsKey(numPid)) {
+                        continue; // skip those we know.
+                    }
+                    BSPlayer player = new BSPlayer();
+                    player.dirty = false;
+                    player.pid = rs.getLong(1);
+                    player.allSessions = BSSessions.onlyFor(player);
+                    player.allIPs = BSIPs.onlyFor(player);
+                    player.allShares = BSShares.onlyFor(player);
+                    player.name = rs.getString(2);
+                    player.uuid = UUID.fromString(rs.getString(3));
+                    player.firstAdd = rs.getTimestamp(4);
+                    long bid = rs.getLong(5);
+                    if (!rs.wasNull()) {
+                        player.deferBid = bid;
+                        player.bid = null;
+                    }
+                    // player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+                    try {
+                        player.ipPardonTime = rs.getTimestamp(6);
+                    } catch (SQLException te) {
+                        player.ipPardonTime = null;
+                    }
+                    try {
+                        player.proxyPardonTime = rs.getTimestamp(7);
+                    } catch (SQLException te) {
+                        player.proxyPardonTime = null;
+                    }
+                    try {
+                        player.sharedPardonTime = rs.getTimestamp(8);
+                    } catch (SQLException te) {
+                        player.sharedPardonTime = null;
+                    }
+
+                    player.allSessions = BSSessions.onlyFor(player);
+                    player.allIPs = BSIPs.onlyFor(player);
+                    player.allShares = BSShares.onlyFor(player);
+                    player.allExclusions = BSExclusions.onlyFor(player);
+
+                    if (!allPlayersID.containsKey(player.pid)) {
+                        allPlayersID.put(player.pid, player);
+                    }
+                    if (!allPlayersUUID.containsKey(player.uuid)) {
+                        allPlayersUUID.put(player.uuid, player);
+                    }
+                }
+            }
+        } catch (SQLException se) {
+            CORE.getLogger().error("Failed during Player preload, offset " + offset + " limit " + limit, se);
+        }
+        return maxId;
+    }
+
+    @Override
+    public String toString() {
+        return PlainTextComponentSerializer.plainText().serialize(getComponentMessage());
+    }
+
+    public Component getComponentMessage() {
+        TextComponent.Builder builder = Component.text();
+
+        builder.append(Component.text(this.name, NamedTextColor.WHITE));
+
+        BSBan ban = this.getBan();
+        if (ban != null) {
+            builder.append(Component.text(" [Banned]", NamedTextColor.RED));
+        }
+        if (this.ipPardonTime != null) {
+            builder.append(Component.text(" [IP Pardoned] ", NamedTextColor.GREEN))
+                .append(Component.text(DateUtils.getDateTimeFormat().format(this.ipPardonTime), NamedTextColor.WHITE));
+        }
+        if (this.proxyPardonTime != null) {
+            builder.append(Component.text(" [Proxy Pardoned] ", NamedTextColor.AQUA))
+                .append(Component.text(DateUtils.getDateTimeFormat().format(this.proxyPardonTime), NamedTextColor.WHITE));
+        }
+        if (this.sharedPardonTime != null) {
+            builder.append(Component.text(" [Share Pardoned] ", NamedTextColor.YELLOW))
+                .append(Component.text(DateUtils.getDateTimeFormat().format(this.sharedPardonTime), NamedTextColor.WHITE));
+        }
+
+        return builder.build();
+    }
+
+    public void pardonShare(BSShare share) {
+        this.allShares.markPardoned(share);
+    }
+
+    public void unpardonShare(BSShare share) {
+        this.allShares.markUnpardoned(share);
+    }
+
+    public int getUnpardonedShareCardinality() {
+        return this.allShares.unpardonedOrdinality();
+    }
+
+    public int getTotalShareCardinality() {
+        return this.allShares.shareOrdinality();
+    }
+
+    public BSShare getLatestShare() {
+        return this.allShares.getLatest();
+    }
+
+    public List<BSShare> getUnpardonedShares() {
+        return this.allShares.getUnpardoned();
+    }
+
+    /**
+     * Gets all shares between this player and another player.
+     *
+     * @param player the BSPlayer to compare against.
+     * @return a list of BSShares between the two players, if any.
+     */
+    public List<BSShare> sharesWith(BSPlayer player) {
+        if (this.allShares.doesShareWith(player.getId())) {
+            return this.allShares.getSharesWith(player);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Recursively retrieves all other BSPlayers this one has a transitive IP connection to.
+     * For example if Player A uses IP X, Player B uses IP X &amp; Y and Player C uses IP Y,
+     * the players A and C would not have a share. This function digs recursively through shares
+     * though to find connections like that one
+     *
+     * @param respectExclusions Whether player specific exclusions should be taken into account
+     *                          to ignore specific connections
+     * @return Set containing all BSPlayer this one has transitive ip association with
+     */
+    public Set<BSPlayer> getTransitiveSharedPlayers(boolean respectExclusions) {
+        return getTransitiveSharedPlayersRecursive(new HashSet<BSPlayer>(), respectExclusions);
+    }
+
+    private Set<BSPlayer> getTransitiveSharedPlayersRecursive(Set<BSPlayer> alts, boolean respectExclusions) {
+        alts.add(this);
+        for (BSShare share : getAllShares()) {
+            if (share.isPardoned()) {
+                continue;
+            }
+            if (!alts.contains(share.getFirstPlayer())
+                && !(respectExclusions && allExclusions.hasExclusionWith(share.getFirstPlayer()))) {
+                share.getFirstPlayer().getTransitiveSharedPlayersRecursive(alts, respectExclusions);
+            }
+            if (!alts.contains(share.getSecondPlayer())
+                && !(respectExclusions && allExclusions.hasExclusionWith(share.getSecondPlayer()))) {
+                share.getSecondPlayer().getTransitiveSharedPlayersRecursive(alts, respectExclusions);
+            }
+        }
+        return alts;
+    }
+
+    public List<BSShare> getAllShares() {
+        return this.allShares.getAll();
+    }
+
+    public void addShare(BSShare share, BSPlayer player) {
+        this.allShares.addNew(share, player);
+    }
+
+    public void addExclusion(BSExclusion excl) {
+        this.allExclusions.addNew(excl);
+    }
+
+    public void removeExclusion(BSExclusion excl) {
+        this.allExclusions.remove(excl);
+    }
+
+    public BSExclusion getExclusionWith(BSPlayer player) {
+        return allExclusions.getExclusionWith(player);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+}

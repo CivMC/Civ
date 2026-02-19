@@ -11,6 +11,12 @@ subprojects {
         withJavadocJar()
     }
 
+    tasks.withType<Javadoc> {
+        options {
+            (this as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
+        }
+    }
+
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
         options.release = javaVersion
@@ -18,6 +24,10 @@ subprojects {
 
     tasks.withType<ProcessResources> {
         filteringCharset = "UTF-8"
+    }
+
+    tasks.withType<Javadoc> {
+        enabled = false
     }
 
     pluginManager.withPlugin("com.gradleup.shadow") {
