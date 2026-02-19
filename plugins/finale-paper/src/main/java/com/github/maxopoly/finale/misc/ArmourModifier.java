@@ -2,11 +2,8 @@ package com.github.maxopoly.finale.misc;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public class ArmourModifier {
