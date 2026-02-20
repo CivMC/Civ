@@ -4068,7 +4068,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_orange:
     production_time: 4s
     name: Dye Clay Orange
@@ -4089,7 +4089,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ORANGE_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_magenta:
     production_time: 4s
     name: Dye Clay Magenta
@@ -4110,7 +4110,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MAGENTA_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_light_blue:
     production_time: 4s
     name: Dye Clay Light Blue
@@ -4131,7 +4131,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_BLUE_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_yellow:
     production_time: 4s
     name: Dye Clay Yellow
@@ -4152,7 +4152,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: YELLOW_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_lime:
     production_time: 4s
     name: Dye Clay Lime
@@ -4173,7 +4173,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIME_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_pink:
     production_time: 4s
     name: Dye Clay Pink
@@ -4194,7 +4194,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PINK_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_gray:
     production_time: 4s
     name: Dye Clay Gray
@@ -4215,7 +4215,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GRAY_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_light_gray:
     production_time: 4s
     name: Dye Clay Light Gray
@@ -4236,7 +4236,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_GRAY_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_cyan:
     production_time: 4s
     name: Dye Clay Cyan
@@ -4257,7 +4257,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CYAN_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_purple:
     production_time: 4s
     name: Dye Clay Purple
@@ -4278,7 +4278,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PURPLE_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_blue:
     production_time: 4s
     name: Dye Clay Blue
@@ -4299,7 +4299,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLUE_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_brown:
     production_time: 4s
     name: Dye Clay Brown
@@ -4320,7 +4320,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BROWN_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_green:
     production_time: 4s
     name: Dye Clay Green
@@ -4341,7 +4341,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GREEN_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_red:
     production_time: 4s
     name: Dye Clay Red
@@ -4362,7 +4362,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RED_TERRACOTTA
-        amount: 64
+        amount: 128
   dye_clay_black:
     production_time: 4s
     name: Dye Clay Black
@@ -4383,7 +4383,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLACK_TERRACOTTA
-        amount: 64
+        amount: 128
   glaze_terracotta_white:
     production_time: 4s
     name: Glaze White Terracotta
@@ -16643,7 +16643,7 @@ recipes:
   crush_disc_13:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''13'' disc'
+    name: "Crush '13' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16666,7 +16666,7 @@ recipes:
   crush_disc_cat:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Cat'' disc'
+    name: "Crush 'Cat' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16689,7 +16689,7 @@ recipes:
   crush_disc_blocks:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Blocks'' disc'
+    name: "Crush 'Blocks' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16712,7 +16712,7 @@ recipes:
   crush_disc_chirp:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Chirp'' disc'
+    name: "Crush 'Chirp' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16735,7 +16735,7 @@ recipes:
   crush_disc_far:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Far'' disc'
+    name: "Crush 'Far' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16758,7 +16758,7 @@ recipes:
   crush_disc_relic:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Relic'' disc'
+    name: "Crush 'Relic' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16781,7 +16781,7 @@ recipes:
   crush_disc_stal:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Stal'' disc'
+    name: "Crush 'Stal' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16804,7 +16804,7 @@ recipes:
   crush_disc_strad:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Strad'' disc'
+    name: "Crush 'Strad' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16827,7 +16827,7 @@ recipes:
   crush_disc_pigstep:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Pigstep'' disc'
+    name: "Crush 'Pigstep' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16850,7 +16850,7 @@ recipes:
   crush_disc_ward:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Ward'' disc'
+    name: "Crush 'Ward' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16873,7 +16873,7 @@ recipes:
   crush_disc_wait:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Wait'' disc'
+    name: "Crush 'Wait' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16896,7 +16896,7 @@ recipes:
   crush_disc_otherside:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Otherside'' disc'
+    name: "Crush 'Otherside' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16919,7 +16919,7 @@ recipes:
   crush_disc_mall:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Mall'' disc'
+    name: "Crush 'Mall' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16942,7 +16942,7 @@ recipes:
   crush_disc_5:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''5'' disc'
+    name: "Crush '5' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16965,7 +16965,7 @@ recipes:
   crush_disc_11:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''11'' disc'
+    name: "Crush '11' disc"
     type: PRODUCTION
     input:
       disc:
@@ -16988,7 +16988,7 @@ recipes:
   crush_disc_mellohi:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Mellohi'' disc'
+    name: "Crush 'Mellohi' disc"
     type: PRODUCTION
     input:
       disc:
@@ -17011,7 +17011,7 @@ recipes:
   crush_disc_precipice:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Precipice'' disc'
+    name: "Crush 'Precipice' disc"
     type: PRODUCTION
     input:
       disc:
@@ -17034,7 +17034,7 @@ recipes:
   crush_disc_creator:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Creator'' disc'
+    name: "Crush 'Creator' disc"
     type: PRODUCTION
     input:
       disc:
@@ -17057,7 +17057,7 @@ recipes:
   crush_disc_creator_music_box:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: 'Crush ''Creator (Music Box)'' disc'
+    name: "Crush 'Creator (Music Box)' disc"
     type: PRODUCTION
     input:
       disc:
