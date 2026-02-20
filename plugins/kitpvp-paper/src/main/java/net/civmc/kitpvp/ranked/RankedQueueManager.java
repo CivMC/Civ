@@ -130,7 +130,7 @@ public class RankedQueueManager {
                         user.data().add(
                             PermissionNode.builder()
                                 .permission("rankedpvpstar")
-                                .expiry(5, TimeUnit.MINUTES)
+                                .expiry(15, TimeUnit.MINUTES)
                                 .build(),
                             TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
                         userManager.saveUser(user);
