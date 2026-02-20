@@ -4,7 +4,7 @@ author: ProgrammerDan
 authors: [ ProgrammerDan, Maxopoly ]
 version: ${version}
 depend: [ CivModCore ]
-softdepend: [ CombatTagPlus, NameLayer, Citadel, ProtocolLib, packetevents, BanStick, ExilePearl, PlaceholderAPI ]
+softdepend: [ CombatTagPlus, NameLayer, Citadel, ProtocolLib, packetevents, BanStick, ExilePearl, PlaceholderAPI, FactoryMod ]
 api-version: 1.21.3
 commands:
   hacks:
