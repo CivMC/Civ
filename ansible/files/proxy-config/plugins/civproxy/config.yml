@@ -3,7 +3,7 @@ database:
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
   port: 3306
-  database: civproxy
+  database: nameapi
   poolsize: 5
   connection_timeout: 10000
   idle_timeout: 600000
