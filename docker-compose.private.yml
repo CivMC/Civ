@@ -9,10 +9,7 @@ services:
 
   proxy:
     environment:
-      REMOVE_OLD_MODS_EXCLUDE: "ajQueue-2.9.0-all.jar"
       SYNC_SKIP_NEWER_IN_DESTINATION: "true"
-    volumes:
-      - ./PrivateConfig/proxy/plugins/ajQueue-2.9.0-all.jar:/config/plugins/ajQueue-2.9.0-all.jar
 
   paper:
     environment:
