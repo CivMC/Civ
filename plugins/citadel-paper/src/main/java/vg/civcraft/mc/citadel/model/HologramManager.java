@@ -1,29 +1,29 @@
 package vg.civcraft.mc.citadel.model;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedDataValue;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import io.papermc.paper.adventure.AdventureComponent;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityData;
+import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes;
+import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
+import com.github.retrooper.packetevents.protocol.teleport.RelativeFlag;
+import com.github.retrooper.packetevents.util.Vector3d;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityMetadata;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerEntityTeleport;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.world.entity.PositionMoveRotation;
-import net.minecraft.world.entity.Relative;
-import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -37,9 +37,9 @@ public class HologramManager {
     // good measure
     private static final double HOLOOFFSET = 0.55 * Math.sqrt(2);
 
-    private Map<Location, Map<UUID, PlayerHolo>> holograms;
-    private Set<PlayerHolo> activeHolos;
-    private CitadelSettingManager settingMan;
+    private final Map<Location, Map<UUID, PlayerHolo>> holograms;
+    private final Set<PlayerHolo> activeHolos;
+    private final CitadelSettingManager settingMan;
 
     public HologramManager(CitadelSettingManager settingMan) {
         this.holograms = new HashMap<>();
@@ -107,13 +107,13 @@ public class HologramManager {
 
     private class PlayerHolo {
 
-        private Player player;
+        private final Player player;
         private int hologramId;
-        private Reinforcement reinforcement;
+        private final Reinforcement reinforcement;
         private long timeStamp;
-        private boolean hasPermission;
+        private final boolean hasPermission;
         private Location cachedPlayerLocation;
-        private long cullDelay;
+        private final long cullDelay;
 
         public PlayerHolo(Player player, Reinforcement reinforcement) {
             this.player = player;
@@ -134,53 +134,39 @@ public class HologramManager {
 
             this.hologramId = Bukkit.getUnsafe().nextEntityId();
 
-            ProtocolManager protocolLib = ProtocolLibrary.getProtocolManager();
-            PacketContainer fakeEntity = protocolLib.createPacket(PacketType.Play.Server.SPAWN_ENTITY);
             Location location = getHoloLocation(reinforcement, player);
-            fakeEntity.getIntegers()
-                .write(0, hologramId)
-                .write(1, 0)
-                .write(2, 0)
-                .write(3, 0)
-                .write(4, 0);
+            Vector3d position = new Vector3d(location.getX(), location.getY(), location.getZ());
 
-            fakeEntity.getUUIDs().write(0, UUID.randomUUID());
+            WrapperPlayServerSpawnEntity spawnPacket = new WrapperPlayServerSpawnEntity(
+                hologramId,
+                Optional.of(UUID.randomUUID()),
+                EntityTypes.TEXT_DISPLAY,
+                position,
+                0f, // pitch
+                0f, // yaw
+                0f, // headYaw
+                0,  // data
+                Optional.of(Vector3d.zero())
+            );
 
-            fakeEntity.getEntityTypeModifier()
-                .write(0, EntityType.TEXT_DISPLAY);
-
-            fakeEntity.getDoubles()
-                .write(0, location.getX())
-                .write(1, location.getY())
-                .write(2, location.getZ());
-
-            fakeEntity.getBytes()
-                .write(0, (byte) 0)
-                .write(1, (byte) 0)
-                .write(2, (byte) 0);
-
-            protocolLib.sendServerPacket(player, fakeEntity);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, spawnPacket);
             sendUpdatePacket();
             cachedPlayerLocation = player.getLocation();
         }
 
         private void sendUpdatePacket() {
-            ProtocolManager protocolLib = ProtocolLibrary.getProtocolManager();
+            List<EntityData<?>> metadata = new ArrayList<>();
+            // Index 10: Interpolation duration (INT) - for display entities
+            metadata.add(new EntityData<>(10, EntityDataTypes.INT, 2));
+            // Index 15: Billboard constraint (BYTE) - 3 = CENTER (always faces player)
+            metadata.add(new EntityData<>(15, EntityDataTypes.BYTE, (byte) 3));
+            // Index 23: Text content (ADV_COMPONENT) - the hologram text
+            metadata.add(new EntityData<>(23, EntityDataTypes.ADV_COMPONENT, createHoloContent()));
+            // Index 27: Display entity flags (BYTE) - 0x02 = see through
+            metadata.add(new EntityData<>(27, EntityDataTypes.BYTE, (byte) 0x02));
 
-            PacketContainer fakeMetadata = protocolLib.createPacket(PacketType.Play.Server.ENTITY_METADATA);
-            fakeMetadata.getIntegers().write(0, hologramId);
-
-            List<WrappedDataValue> values = new ArrayList<>();
-            values.add(new WrappedDataValue(10, WrappedDataWatcher.Registry.get(Integer.class), 2));
-            values.add(new WrappedDataValue(15, WrappedDataWatcher.Registry.get(Byte.class), (byte) 3));
-            values.add(new WrappedDataValue(23, WrappedDataWatcher.Registry.getChatComponentSerializer(),
-                new AdventureComponent(createHoloContent())));
-//            values.add(new WrappedDataValue(25, WrappedDataWatcher.Registry.get(Integer.class), 0));
-            // Add shadow when MC-260529 is fixed
-            values.add(new WrappedDataValue(27, WrappedDataWatcher.Registry.get(Byte.class), (byte) (0x02)));
-            fakeMetadata.getDataValueCollectionModifier().write(0, values);
-
-            protocolLib.sendServerPacket(player, fakeMetadata);
+            WrapperPlayServerEntityMetadata metadataPacket = new WrapperPlayServerEntityMetadata(hologramId, metadata);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, metadataPacket);
         }
 
         private Component createHoloContent() {
@@ -221,27 +207,21 @@ public class HologramManager {
                 && current.getBlockZ() == cachedPlayerLocation.getBlockZ()) {
                 return;
             }
+            cachedPlayerLocation = current;
             Location updated = getHoloLocation(reinforcement, player);
-            ProtocolManager protocolLib = ProtocolLibrary.getProtocolManager();
+            Vector3d position = new Vector3d(updated.getX(), updated.getY(), updated.getZ());
 
-            PacketContainer fakeTeleport = protocolLib.createPacket(PacketType.Play.Server.ENTITY_TELEPORT);
-            fakeTeleport.getIntegers().write(0, hologramId);
+            WrapperPlayServerEntityTeleport teleportPacket = new WrapperPlayServerEntityTeleport(
+                hologramId,
+                position,
+                Vector3d.zero(),
+                0f, // yaw
+                0f, // pitch
+                RelativeFlag.NONE,
+                false
+            );
 
-            fakeTeleport.getModifier().withType(PositionMoveRotation.class)
-                .write(0,
-                    new PositionMoveRotation(
-                        new Vec3(updated.getX(), updated.getY(), updated.getZ()),
-                        new Vec3(0, 0, 0),
-                        0,
-                        0));
-
-            fakeTeleport.getModifier().withType(Set.class)
-                    .write(0, Relative.DELTA);
-
-            fakeTeleport.getBooleans()
-                .write(0, false);
-
-            protocolLib.sendServerPacket(player, fakeTeleport);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, teleportPacket);
         }
 
         void refreshTimestamp() {
@@ -252,12 +232,9 @@ public class HologramManager {
             if (hologramId == 0) {
                 return;
             }
-            ProtocolManager protocolLib = ProtocolLibrary.getProtocolManager();
 
-            PacketContainer fakeDestroy = protocolLib.createPacket(PacketType.Play.Server.ENTITY_DESTROY);
-            fakeDestroy.getIntLists().write(0, List.of(hologramId));
-
-            protocolLib.sendServerPacket(player, fakeDestroy);
+            WrapperPlayServerDestroyEntities destroyPacket = new WrapperPlayServerDestroyEntities(hologramId);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, destroyPacket);
             hologramId = 0;
         }
 
