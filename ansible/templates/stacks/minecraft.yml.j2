@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
     waterfall:
-        image: itzg/mc-proxy:java24
+        image: itzg/mc-proxy:java25
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -61,7 +61,7 @@ services:
             - /opt/PrivateConfig/proxy/config/nuvotifier/rsa/private.key:/config/plugins/nuvotifier/rsa/private.key
 
     paper:
-        image: itzg/minecraft-server:stable-java24-graalvm
+        image: itzg/minecraft-server:stable-java25
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -88,7 +88,6 @@ services:
             INIT_MEMORY: '{{setting.minecraft.resources.memory}}'
             MAX_MEMORY: '{{setting.minecraft.resources.memory}}'
             USE_MEOWICE_FLAGS: 'TRUE'
-            USE_MEOWICE_GRAALVM_FLAGS: 'TRUE'
             STOP_DURATION: 3600
 
             CIV_SECUREBOOT_ENABLE: 'true'
@@ -157,7 +156,7 @@ services:
                     memory: '{{setting.minecraft.resources.memory_limit}}'
 
     gamma:
-        image: itzg/minecraft-server:stable-java24-graalvm
+        image: itzg/minecraft-server:stable-java25
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -188,7 +187,6 @@ services:
             INIT_MEMORY: '{{setting.minecraft.resources.gamma_memory}}'
             MAX_MEMORY: '{{setting.minecraft.resources.gamma_memory}}'
             USE_MEOWICE_FLAGS: 'TRUE'
-            USE_MEOWICE_GRAALVM_FLAGS: 'TRUE'
             STOP_DURATION: 3600
 
             CIV_SECUREBOOT_ENABLE: 'true'
@@ -254,7 +252,7 @@ services:
                     memory: '{{setting.minecraft.resources.gamma_memory_limit}}'
 
     pvp:
-        image: itzg/minecraft-server:stable-java24-graalvm
+        image: itzg/minecraft-server:stable-java25
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -281,7 +279,6 @@ services:
             INIT_MEMORY: '{{setting.minecraft.resources.pvp_memory}}'
             MAX_MEMORY: '{{setting.minecraft.resources.pvp_memory}}'
             USE_MEOWICE_FLAGS: 'TRUE'
-            USE_MEOWICE_GRAALVM_FLAGS: 'TRUE'
             STOP_DURATION: 3600
 
             CIV_SERVER_NAME: prod-server

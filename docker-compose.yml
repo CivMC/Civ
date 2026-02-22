@@ -8,7 +8,7 @@ services:
   #################
 
   proxy:
-    image: itzg/mc-proxy:java24
+    image: itzg/mc-proxy:java25
     restart: on-failure
     tty: true
     stdin_open: true
@@ -54,7 +54,7 @@ services:
       - ./ansible/build/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server:stable-java24-graalvm
+    image: itzg/minecraft-server:stable-java25
     restart: on-failure
     tty: true
     stdin_open: true
@@ -112,7 +112,7 @@ services:
       - ./ansible/build/paper-plugins:/plugins
 
   gamma:
-    image: itzg/minecraft-server:stable-java24-graalvm
+    image: itzg/minecraft-server:stable-java25
     restart: on-failure
     tty: true
     stdin_open: true
@@ -168,7 +168,7 @@ services:
       - ./ansible/build/gamma-plugins:/plugins
 
   pvp:
-    image: itzg/minecraft-server:stable-java24-graalvm
+    image: itzg/minecraft-server:stable-java25
     restart: on-failure
     tty: true
     stdin_open: true
