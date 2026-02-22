@@ -4,6 +4,8 @@ import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import io.papermc.paper.event.player.PlayerLoomPatternSelectEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -163,6 +165,25 @@ public class CompactItemListener implements Listener {
                 if (isCompacted(e.getInventory().getItem(0)) || isCompacted(e.getInventory().getItem(1))) {
                     e.setCancelled(true);
                     e.getWhoClicked().sendMessage(ChatColor.RED + "You can not copy compacted maps");
+                }
+            }
+        }
+    }
+
+    /**
+     * Prevents players from using compacted items in stonecutters
+     */
+    @EventHandler
+    public void stonecutterEvent(InventoryClickEvent e) {
+        if (e.getCurrentItem() == null) return;
+
+        if (e.getCurrentItem().getType() == Material.AIR) return;
+
+        if (e.getInventory().getType() == InventoryType.STONECUTTER) {
+            if (e.getSlotType() == InventoryType.SlotType.RESULT) {
+                if (isCompacted(e.getInventory().getItem(0))) {
+                    e.setCancelled(true);
+                    e.getWhoClicked().sendMessage(Component.text("You can not use compacted items in a stonecutter", NamedTextColor.RED));
                 }
             }
         }
