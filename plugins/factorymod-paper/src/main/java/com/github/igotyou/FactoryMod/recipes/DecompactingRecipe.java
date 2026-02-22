@@ -45,6 +45,31 @@ public class DecompactingRecipe extends InputRecipe {
     }
 
     @Override
+    public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+        boolean isFeasible = true;
+        for (ItemStack itemStack : inputInv.getContents()) {
+            if (itemStack != null) {
+                if (isDecompactable(itemStack)) {
+                    ItemStack removeClone = itemStack.clone();
+                    removeClone.setAmount(1);
+                    removeCompactLore(removeClone);
+                    ItemMap toAdd = new ItemMap();
+                    toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
+                    if (!InventoryUtils.safelyAddItemsToInventory(
+                        ClonedInventory.cloneInventory(outputInv), toAdd.getItemStackRepresentation().toArray(new ItemStack[0]))) {
+                        isFeasible = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return new EffectFeasibility(
+            isFeasible,
+            isFeasible ? null : "it ran out of storage space"
+        );
+    }
+
+    @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
