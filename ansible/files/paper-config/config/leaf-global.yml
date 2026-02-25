@@ -118,7 +118,7 @@ performance:
     disable-light-check: false
   # Whether to only tick / update items in main hand and offhand instead of the entire inventory.
   only-tick-items-in-hand: false
-  optimize-mob-despawn: true
+  optimize-mob-despawn: falsec
   optimize-block-entities: true
   cache-biome:
     enabled: false
