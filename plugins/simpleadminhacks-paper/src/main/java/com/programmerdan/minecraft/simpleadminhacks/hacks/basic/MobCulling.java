@@ -49,7 +49,7 @@ public class MobCulling extends BasicHack {
                 turtleCount.put(world, turtles.size());
                 if (turtleMaxAge >= 0) {
                     for (Turtle turtle : turtles) {
-                        if (turtle.getTicksLived() > turtleMaxAge && turtle.customName() != null) {
+                        if (turtle.getTicksLived() > turtleMaxAge && turtle.customName() == null) {
                             Location location = turtle.getLocation();
                             plugin.getLogger().info("Despawning turtle with " + turtle.getTicksLived() + " ticks lived at " + location.getX() + " " + location.getY() + " " + location.getZ());
                             turtle.remove();
@@ -61,7 +61,7 @@ public class MobCulling extends BasicHack {
                 striderCount.put(world, striders.size());
                 if (striderMaxAge >= 0) {
                     for (Strider strider : striders) {
-                        if (strider.getTicksLived() > striderMaxAge && strider.customName() != null && !strider.hasSaddle()) {
+                        if (strider.getTicksLived() > striderMaxAge && strider.customName() == null && !strider.hasSaddle()) {
                             Location location = strider.getLocation();
                             plugin.getLogger().info("Despawning strider with " + strider.getTicksLived() + " ticks lived at " + location.getX() + " " + location.getY() + " " + location.getZ());
                             strider.remove();
@@ -75,7 +75,9 @@ public class MobCulling extends BasicHack {
     @Override
     public void onDisable() {
         super.onDisable();
-        this.task.cancel();
+        if (this.task != null) {
+            this.task.cancel();
+        }
     }
 
     @EventHandler
