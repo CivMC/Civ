@@ -4,6 +4,7 @@ junit = "5.8.2"
 nuotifier = "2.7.2"
 velocity = "3.4.0-SNAPSHOT"
 configurate = "4.2.0"
+adventure = "4.25.0"
 
 [plugins]
 paper-userdev = { id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.17" }
@@ -17,7 +18,7 @@ velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.r
 aikar-acf = { group = "co.aikar", name = "acf-paper", version = "0.5.1-SNAPSHOT" }
 aikar-taskchain = { group = "co.aikar", name = "taskchain-bukkit", version = "3.7.2" }
 
-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.12.0" }
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.19.0" }
 commons-collections4 = { group = "org.apache.commons", name = "commons-collections4", version = "4.4" }
 commons-math3 = { group = "org.apache.commons", name = "commons-math3", version = "3.6.1" }
 
@@ -46,7 +47,13 @@ jsoup = { group = "org.jsoup", name = "jsoup", version = "1.18.3" }
 junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
 junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
 
+mariadb-java-client = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version = "3.3.3" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
+google-guava = { group = "com.google.guava", name = "guava", version = "33.5.0-jre" }
+
+adventure-api = { group = "net.kyori", name = "adventure-api", version.ref = "adventure" }
+adventure-text-serializer-plain = { group = "net.kyori", name = "adventure-text-serializer-plain", version.ref = "adventure" }
+adventure-text-minimessage = { group = "net.kyori", name = "adventure-text-minimessage", version.ref = "adventure" }
 
 [bundles]
 junit = ["junit-api", "junit-engine"]
