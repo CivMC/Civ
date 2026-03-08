@@ -101,13 +101,7 @@ public class FactoryModGUI {
             lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemUtils.getItemName(fccEgg.getFuel().getType()));
             lore.add("");
             lore.add(ChatColor.GOLD + String.valueOf(fccEgg.getRecipes().size() + " recipes:"));
-            for (IRecipe rec : fccEgg.getRecipes()) {
-                if (rec instanceof Upgraderecipe) {
-                    lore.add(ChatColor.GRAY + " - " + ChatColor.GREEN + rec.getName());
-                } else {
-                    lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + rec.getName());
-                }
-            }
+            lore.addAll(buildTruncatedList(fccEgg.getRecipes(), 15));
             ItemUtils.addLore(is, lore);
             clicks.add(new LClickable(is, p -> {
                 showForFactory(fccEgg);
@@ -368,6 +362,35 @@ public class FactoryModGUI {
 
     private FurnCraftChestEgg getParent(FurnCraftChestEgg factory) {
         return upgradeMapping.get(factory);
+    }
+
+    private List<String> buildTruncatedList(List<IRecipe> input, int maxSize) {
+        int totalElements = input.size();
+        List<String> loreList = new ArrayList<>();
+
+        if (totalElements <= maxSize) {
+            for (IRecipe item : input) {
+                if (item instanceof Upgraderecipe) {
+                    loreList.add(ChatColor.GRAY + " - " + ChatColor.GREEN + item.getName());
+                } else {
+                    loreList.add(ChatColor.GRAY + " - " + ChatColor.AQUA + item.getName());
+                }
+            }
+        } else {
+            List<IRecipe> subListForDisplay = input.subList(0, maxSize);
+
+            for (IRecipe item : subListForDisplay) {
+                if (item instanceof Upgraderecipe) {
+                    loreList.add(ChatColor.GRAY + " - " + ChatColor.GREEN + item.getName());
+                } else {
+                    loreList.add(ChatColor.GRAY + " - " + ChatColor.AQUA + item.getName());
+                }
+            }
+
+            int remainingCount = totalElements - maxSize;
+            loreList.add(ChatColor.GRAY + "... click for " + remainingCount + " other recipes");
+        }
+        return loreList;
     }
 
     private abstract class FMCHistoryItem implements HistoryItem {
