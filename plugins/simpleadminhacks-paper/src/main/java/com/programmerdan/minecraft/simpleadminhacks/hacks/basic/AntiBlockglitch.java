@@ -3,13 +3,13 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import io.papermc.paper.entity.TeleportFlag;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import io.papermc.paper.entity.TeleportFlag;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
@@ -57,51 +58,60 @@ public final class AntiBlockglitch extends BasicHack {
             .computeIfAbsent(player.getUniqueId(), uuid -> new ArrayDeque<>());
         records.addLast(new PlaceRecord(block.getX(), block.getY(), block.getZ(), now));
         purgeOldRecords(records, now);
-
-        checkAndTeleport(player, block);
     }
 
-    @EventHandler
-    public void onPlayerQuit(final PlayerQuitEvent event) {
-        this.cancelledPlacements.remove(event.getPlayer().getUniqueId());
-    }
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerMove(final PlayerMoveEvent event) {
+        if (!event.hasChangedPosition()) {
+            return;
+        }
+        final Player player = event.getPlayer();
+        final Deque<PlaceRecord> records = this.cancelledPlacements.get(player.getUniqueId());
+        if (records == null || records.isEmpty()) {
+            return;
+        }
 
-    private void checkAndTeleport(final Player player, final Block placed) {
+        purgeOldRecords(records, System.currentTimeMillis());
+
         final Location playerLoc = player.getLocation();
-
-        // Player bounding box edges (feet position +/- hitbox expansion)
         final double playerMinX = playerLoc.getX() - HITBOX_EXPANSION;
         final double playerMaxX = playerLoc.getX() + HITBOX_EXPANSION;
         final double playerMinZ = playerLoc.getZ() - HITBOX_EXPANSION;
         final double playerMaxZ = playerLoc.getZ() + HITBOX_EXPANSION;
         final double playerFeetY = playerLoc.getY();
 
-        // The cancelled block's expanded area
-        final double blockMinX = placed.getX() - HITBOX_EXPANSION;
-        final double blockMaxX = placed.getX() + 1 + HITBOX_EXPANSION;
-        final double blockMinZ = placed.getZ() - HITBOX_EXPANSION;
-        final double blockMaxZ = placed.getZ() + 1 + HITBOX_EXPANSION;
-        final double blockMinY = placed.getY() - MAX_DOWN_EXPANSION;
-        final double blockMaxY = placed.getY() + 1 + MAX_UP_EXPANSION;
+        for (final PlaceRecord record : records) {
+            final double blockMinX = record.x() - HITBOX_EXPANSION;
+            final double blockMaxX = record.x() + 1 + HITBOX_EXPANSION;
+            final double blockMinZ = record.z() - HITBOX_EXPANSION;
+            final double blockMaxZ = record.z() + 1 + HITBOX_EXPANSION;
+            final double blockMinY = record.y() - MAX_DOWN_EXPANSION;
+            final double blockMaxY = record.y() + 1 + MAX_UP_EXPANSION;
 
-        // Check if player overlaps with the expanded block area
-        final boolean overlapsX = playerMaxX > blockMinX && playerMinX < blockMaxX;
-        final boolean overlapsZ = playerMaxZ > blockMinZ && playerMinZ < blockMaxZ;
-        final boolean overlapsY = playerFeetY >= blockMinY && playerFeetY < blockMaxY;
+            final boolean overlapsX = playerMaxX > blockMinX && playerMinX < blockMaxX;
+            final boolean overlapsZ = playerMaxZ > blockMinZ && playerMinZ < blockMaxZ;
+            final boolean overlapsY = playerFeetY >= blockMinY && playerFeetY < blockMaxY;
 
-        if (!overlapsX || !overlapsZ || !overlapsY) {
+            if (!overlapsX || !overlapsZ || !overlapsY) {
+                continue;
+            }
+
+            final Location blockLoc = new Location(playerLoc.getWorld(), record.x(), record.y(), record.z());
+            final Location groundLoc = findGround(blockLoc, player);
+            if (groundLoc == null) {
+                continue;
+            }
+
+            player.teleport(groundLoc, TeleportFlag.Relative.VELOCITY_X, TeleportFlag.Relative.VELOCITY_Z, TeleportFlag.Relative.VELOCITY_ROTATION);
+            plugin().info(player.getName() + " was teleported down due to cancelled block placement at "
+                + record.x() + ", " + record.y() + ", " + record.z());
             return;
         }
+    }
 
-        // Find ground below the player (up to MAX_TELEPORT_DOWN blocks down)
-        final Location groundLoc = findGround(placed.getLocation(), player);
-        if (groundLoc == null) {
-            return;
-        }
-
-        player.teleport(groundLoc, TeleportFlag.Relative.VELOCITY_X, TeleportFlag.Relative.VELOCITY_Z, TeleportFlag.Relative.VELOCITY_ROTATION);
-        plugin().info(player.getName() + " was teleported down due to cancelled block placement at "
-            + placed.getX() + ", " + placed.getY() + ", " + placed.getZ());
+    @EventHandler
+    public void onPlayerQuit(final PlayerQuitEvent event) {
+        this.cancelledPlacements.remove(event.getPlayer().getUniqueId());
     }
 
     /**
