@@ -630,3 +630,5 @@ hacks:
     enabled: true
   NameLocker:
     enabled: true
+  AntiBlockglitch:
+    enabled: true

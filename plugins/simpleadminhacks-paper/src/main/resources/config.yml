@@ -551,6 +551,8 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
+  AntiBlockglitch:
+    enabled: true
   NoOozing:
     enabled: true
   PortalConnect:
