@@ -31,8 +31,8 @@ public final class AntiBlockglitch extends BasicHack {
     private static final double HITBOX_EXPANSION = 0.3;
     private static final int MAX_UP_EXPANSION = 3;
     private static final int MAX_DOWN_EXPANSION = 2;
-    private static final int MAX_TELEPORT_DOWN = 3;
-    private static final int TRACKING_DURATION = 30_000;
+    private static final int MAX_TELEPORT_DOWN = 2;
+    private static final int TRACKING_DURATION = 800;
 
     private final Map<UUID, Deque<PlaceRecord>> cancelledPlacements = new HashMap<>();
 
