@@ -102,7 +102,7 @@ public final class AntiBlockglitch extends BasicHack {
                 continue;
             }
 
-            player.teleport(groundLoc, TeleportFlag.Relative.VELOCITY_X, TeleportFlag.Relative.VELOCITY_Z, TeleportFlag.Relative.VELOCITY_ROTATION);
+            player.teleport(groundLoc, TeleportFlag.Relative.VELOCITY_ROTATION);
             plugin().info(player.getName() + " was teleported down due to cancelled block placement at "
                 + record.x() + ", " + record.y() + ", " + record.z());
             records.clear();
