@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -80,7 +81,7 @@ public final class AntiBlockglitch extends BasicHack {
         final double playerMaxZ = playerLoc.getZ() + HITBOX_EXPANSION;
         final double playerFeetY = playerLoc.getY();
 
-        for (final PlaceRecord record : records) {
+        for (PlaceRecord record : records) {
             final double blockMinX = record.x() - HITBOX_EXPANSION;
             final double blockMaxX = record.x() + 1 + HITBOX_EXPANSION;
             final double blockMinZ = record.z() - HITBOX_EXPANSION;
@@ -96,8 +97,7 @@ public final class AntiBlockglitch extends BasicHack {
                 continue;
             }
 
-            final Location blockLoc = new Location(playerLoc.getWorld(), record.x(), record.y(), record.z());
-            final Location groundLoc = findGround(blockLoc, player);
+            final Location groundLoc = findGround(player);
             if (groundLoc == null) {
                 continue;
             }
@@ -105,6 +105,7 @@ public final class AntiBlockglitch extends BasicHack {
             player.teleport(groundLoc, TeleportFlag.Relative.VELOCITY_X, TeleportFlag.Relative.VELOCITY_Z, TeleportFlag.Relative.VELOCITY_ROTATION);
             plugin().info(player.getName() + " was teleported down due to cancelled block placement at "
                 + record.x() + ", " + record.y() + ", " + record.z());
+            records.clear();
             return;
         }
     }
@@ -115,30 +116,59 @@ public final class AntiBlockglitch extends BasicHack {
     }
 
     /**
+     * Checks whether any solid block at the given Y level overlaps with the player's
+     * hitbox footprint (feet position +/- {@link #HITBOX_EXPANSION} on X and Z).
+     */
+    private boolean isSupportedAt(final Player player, final int y) {
+        final Location playerLoc = player.getLocation();
+        final World world = playerLoc.getWorld();
+        final int minBlockX = (int) Math.floor(playerLoc.getX() - HITBOX_EXPANSION);
+        final int maxBlockX = (int) Math.floor(playerLoc.getX() + HITBOX_EXPANSION);
+        final int minBlockZ = (int) Math.floor(playerLoc.getZ() - HITBOX_EXPANSION);
+        final int maxBlockZ = (int) Math.floor(playerLoc.getZ() + HITBOX_EXPANSION);
+
+        for (int bx = minBlockX; bx <= maxBlockX; bx++) {
+            for (int bz = minBlockZ; bz <= maxBlockZ; bz++) {
+                if (world.getBlockAt(bx, y, bz).getType().isSolid()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Finds a safe ground location below the player within {@link #MAX_TELEPORT_DOWN} blocks.
-     * Returns null if no ground is found within range.
+     * Checks the full hitbox footprint at each Y level so that a player standing on the
+     * edge of a block (within the 0.3 hitbox expansion) is correctly detected as supported.
+     * Returns null if the player is already on solid ground or no safe ground is found.
      */
     @org.jetbrains.annotations.Nullable
-    private Location findGround(Location placed, final Player player) {
+    private Location findGround(final Player player) {
         final Location playerLoc = player.getLocation();
-        final Block feetBlock = placed.getBlock();
+        final int feetBlockY = playerLoc.getBlockY();
 
-        // Check blocks below the player's feet for solid ground
-        for (int downOffset = 0; downOffset <= MAX_TELEPORT_DOWN; downOffset++) {
-            final Block checkBlock = feetBlock.getRelative(BlockFace.DOWN, downOffset + 1);
-            if (checkBlock.getType().isSolid()) {
-                // Found solid ground; teleport location is on top of this block
+        // If any block within the player's hitbox footprint at Y-1 is solid, the player
+        // is already supported and does not need teleporting.
+        if (isSupportedAt(player, feetBlockY - 1)) {
+            return null;
+        }
+
+        // Search downward from the player's feet for solid ground
+        for (int downOffset = 2; downOffset <= MAX_TELEPORT_DOWN + 1; downOffset++) {
+            final int checkY = feetBlockY - downOffset;
+            if (isSupportedAt(player, checkY)) {
                 final Location target = new Location(
                     playerLoc.getWorld(),
                     playerLoc.getX(),
-                    checkBlock.getY() + 1,
+                    checkY + 1,
                     playerLoc.getZ(),
                     playerLoc.getYaw(),
                     playerLoc.getPitch()
                 );
 
                 // Verify the two blocks above ground are passable (room for player)
-                final Block above1 = target.getBlock().getRelative(BlockFace.UP);
+                final Block above1 = target.getBlock();
                 final Block above2 = above1.getRelative(BlockFace.UP);
                 if (!above1.getType().isSolid() && !above2.getType().isSolid()) {
                     return target;
