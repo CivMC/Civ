@@ -175,6 +175,7 @@ public final class AntiBlockglitch extends BasicHack {
         }
 
         // falback to teleport them one block anyways
+        player.setFallDistance(player.getFallDistance() + 1);
         return playerLoc.clone().add(0, -1, 0);
     }
 
