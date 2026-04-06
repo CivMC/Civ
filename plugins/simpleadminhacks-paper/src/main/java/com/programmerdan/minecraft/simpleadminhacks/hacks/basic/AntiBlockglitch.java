@@ -75,10 +75,8 @@ public final class AntiBlockglitch extends BasicHack {
         purgeOldRecords(records, System.currentTimeMillis());
 
         final Location playerLoc = player.getLocation();
-        final double playerMinX = playerLoc.getX() - HITBOX_EXPANSION;
-        final double playerMaxX = playerLoc.getX() + HITBOX_EXPANSION;
-        final double playerMinZ = playerLoc.getZ() - HITBOX_EXPANSION;
-        final double playerMaxZ = playerLoc.getZ() + HITBOX_EXPANSION;
+        final double playerX = playerLoc.getX();
+        final double playerZ = playerLoc.getZ();
         final double playerFeetY = playerLoc.getY();
 
         for (PlaceRecord record : records) {
@@ -89,8 +87,8 @@ public final class AntiBlockglitch extends BasicHack {
             final double blockMinY = record.y() - MAX_DOWN_EXPANSION;
             final double blockMaxY = record.y() + 1 + MAX_UP_EXPANSION;
 
-            final boolean overlapsX = playerMaxX > blockMinX && playerMinX < blockMaxX;
-            final boolean overlapsZ = playerMaxZ > blockMinZ && playerMinZ < blockMaxZ;
+            final boolean overlapsX = playerX > blockMinX && playerX < blockMaxX;
+            final boolean overlapsZ = playerZ > blockMinZ && playerZ < blockMaxZ;
             final boolean overlapsY = playerFeetY >= blockMinY && playerFeetY < blockMaxY;
 
             if (!overlapsX || !overlapsZ || !overlapsY) {
@@ -175,7 +173,9 @@ public final class AntiBlockglitch extends BasicHack {
                 }
             }
         }
-        return null;
+
+        // falback to teleport them one block anyways
+        return playerLoc.clone().add(0, -1, 0);
     }
 
     private void purgeOldRecords(final Deque<PlaceRecord> records, final long now) {
