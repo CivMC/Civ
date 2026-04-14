@@ -1661,7 +1661,6 @@ factories:
       - crush_disc_ward
       - crush_disc_wait
       - crush_disc_otherside
-      - make_mixer_kit
       - repair_mixer
       - repair_mixer_kit
   bio_factory:
