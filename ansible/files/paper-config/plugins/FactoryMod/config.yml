@@ -1927,7 +1927,7 @@ recipes:
         type: STONE
         amount: 64
     output:
-      stone:
+      smooth_stone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SMOOTH_STONE
@@ -1991,7 +1991,7 @@ recipes:
         type: COD
         amount: 32
     output:
-      cooked_fish:
+      cooked_cod:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COOKED_COD
@@ -2023,7 +2023,7 @@ recipes:
         type: PORKCHOP
         amount: 32
     output:
-      cooked_pork:
+      cooked_porkchop:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COOKED_PORKCHOP
@@ -2071,7 +2071,7 @@ recipes:
         type: CACTUS
         amount: 32
     output:
-      green dye:
+      green_dye:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GREEN_DYE
@@ -2087,7 +2087,7 @@ recipes:
         type: KELP
         amount: 32
     output:
-      dried kelp:
+      dried_kelp:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DRIED_KELP
@@ -2153,7 +2153,7 @@ recipes:
         type: RAW_COPPER
         amount: 128
     output:
-      copper:
+      copper_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
@@ -2169,7 +2169,7 @@ recipes:
         type: RAW_COPPER
         amount: 128
     output:
-      copper:
+      copper_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
@@ -2185,7 +2185,7 @@ recipes:
         type: RAW_COPPER
         amount: 128
     output:
-      copper:
+      copper_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
@@ -2201,7 +2201,7 @@ recipes:
         type: RAW_IRON
         amount: 48
     output:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -2217,7 +2217,7 @@ recipes:
         type: RAW_IRON
         amount: 48
     output:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -2233,7 +2233,7 @@ recipes:
         type: RAW_IRON
         amount: 48
     output:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -2345,7 +2345,7 @@ recipes:
         type: RAW_GOLD
         amount: 48
     output:
-      gold:
+      gold_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
@@ -2361,7 +2361,7 @@ recipes:
         type: NETHER_GOLD_ORE
         amount: 16
     output:
-      gold:
+      gold_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
@@ -2377,7 +2377,7 @@ recipes:
         type: RAW_GOLD
         amount: 48
     output:
-      gold:
+      gold_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
@@ -2393,7 +2393,7 @@ recipes:
         type: RAW_GOLD
         amount: 48
     output:
-      gold:
+      gold_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
@@ -2409,7 +2409,7 @@ recipes:
         type: NETHER_GOLD_ORE
         amount: 16
     output:
-      gold:
+      gold_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
@@ -2425,7 +2425,7 @@ recipes:
         type: NETHER_GOLD_ORE
         amount: 16
     output:
-      gold:
+      gold_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
@@ -2441,7 +2441,7 @@ recipes:
         type: REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
@@ -2457,7 +2457,7 @@ recipes:
         type: DEEPSLATE_REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
@@ -2473,7 +2473,7 @@ recipes:
         type: REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
@@ -2489,7 +2489,7 @@ recipes:
         type: REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
@@ -2505,7 +2505,7 @@ recipes:
         type: DEEPSLATE_REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
@@ -2521,7 +2521,7 @@ recipes:
         type: DEEPSLATE_REDSTONE_ORE
         amount: 64
     output:
-      redstone:
+      redstone_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
@@ -2537,7 +2537,7 @@ recipes:
         type: LAPIS_ORE
         amount: 32
     output:
-      lapis:
+      lapis_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
@@ -2553,7 +2553,7 @@ recipes:
         type: DEEPSLATE_LAPIS_ORE
         amount: 32
     output:
-      lapis:
+      lapis_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
@@ -2569,7 +2569,7 @@ recipes:
         type: LAPIS_ORE
         amount: 32
     output:
-      lapis:
+      lapis_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
@@ -2585,7 +2585,7 @@ recipes:
         type: LAPIS_ORE
         amount: 32
     output:
-      lapis:
+      lapis_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
@@ -2601,7 +2601,7 @@ recipes:
         type: DEEPSLATE_LAPIS_ORE
         amount: 32
     output:
-      lapis:
+      lapis_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
@@ -2617,7 +2617,7 @@ recipes:
         type: DEEPSLATE_LAPIS_ORE
         amount: 32
     output:
-      lapis:
+      lapis_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
@@ -2829,7 +2829,7 @@ recipes:
         type: NETHERRACK
         amount: 64
     output:
-      netherbricks:
+      nether_bricks:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHER_BRICKS
@@ -2845,7 +2845,7 @@ recipes:
         type: NETHERRACK
         amount: 16
     output:
-      fence:
+      nether_brick_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHER_BRICK_FENCE
@@ -2867,7 +2867,7 @@ recipes:
         type: NETHER_WART
         amount: 32
     output:
-      red_netherbrick:
+      red_nether_bricks:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RED_NETHER_BRICKS
@@ -3236,7 +3236,7 @@ recipes:
         type: PURPLE_DYE
         amount: 8
     output:
-      purpur:
+      purpur_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PURPUR_BLOCK
@@ -3357,7 +3357,7 @@ recipes:
         type: ORANGE_DYE
         amount: 4
     output:
-      Ochre_froglight:
+      ochre_froglight:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OCHRE_FROGLIGHT
@@ -3450,7 +3450,7 @@ recipes:
         type: DIAMOND
         amount: 25
     output:
-      diamond_helm:
+      diamond_helmet:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND_HELMET
@@ -3466,7 +3466,7 @@ recipes:
         type: DIAMOND
         amount: 40
     output:
-      diamond_chest:
+      diamond_chestplate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND_CHESTPLATE
@@ -3482,7 +3482,7 @@ recipes:
         type: DIAMOND
         amount: 35
     output:
-      diamond_legs:
+      diamond_leggings:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND_LEGGINGS
@@ -3519,7 +3519,7 @@ recipes:
         type: DIAMOND
         amount: 10
     output:
-      netherite_helm:
+      netherite_helmet:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_HELMET
@@ -3540,7 +3540,7 @@ recipes:
         type: DIAMOND
         amount: 14
     output:
-      netherite_chest:
+      netherite_chestplate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_CHESTPLATE
@@ -3561,7 +3561,7 @@ recipes:
         type: DIAMOND
         amount: 12
     output:
-      netherite_legs:
+      netherite_leggings:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_LEGGINGS
@@ -3630,7 +3630,7 @@ recipes:
         type: DIAMOND
         amount: 15
     output:
-      diamond_pick:
+      diamond_pickaxe:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND_PICKAXE
@@ -3704,7 +3704,7 @@ recipes:
         type: DIAMOND
         amount: 6
     output:
-      netherite_pick:
+      netherite_pickaxe:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_PICKAXE
@@ -3725,7 +3725,7 @@ recipes:
         type: DIAMOND
         amount: 6
     output:
-      netherite_pick:
+      netherite_axe:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_AXE
@@ -3746,7 +3746,7 @@ recipes:
         type: DIAMOND
         amount: 4
     output:
-      netherite_pick:
+      netherite_shovel:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_SHOVEL
@@ -3767,7 +3767,7 @@ recipes:
         type: DIAMOND
         amount: 4
     output:
-      netherite_pick:
+      netherite_hoe:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_HOE
@@ -4210,7 +4210,7 @@ recipes:
         type: GRAY_DYE
         amount: 4
     output:
-      gray_clay:
+      gray_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GRAY_TERRACOTTA
@@ -4357,7 +4357,7 @@ recipes:
         type: RED_DYE
         amount: 4
     output:
-      red_clay:
+      red_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RED_TERRACOTTA
@@ -4394,7 +4394,7 @@ recipes:
         type: WHITE_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      white_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_GLAZED_TERRACOTTA
@@ -4410,7 +4410,7 @@ recipes:
         type: ORANGE_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      orange_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ORANGE_GLAZED_TERRACOTTA
@@ -4426,7 +4426,7 @@ recipes:
         type: MAGENTA_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      magenta_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MAGENTA_GLAZED_TERRACOTTA
@@ -4442,7 +4442,7 @@ recipes:
         type: LIGHT_BLUE_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      light_blue_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_BLUE_GLAZED_TERRACOTTA
@@ -4458,7 +4458,7 @@ recipes:
         type: YELLOW_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      yellow_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: YELLOW_GLAZED_TERRACOTTA
@@ -4474,7 +4474,7 @@ recipes:
         type: LIME_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      lime_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIME_GLAZED_TERRACOTTA
@@ -4490,7 +4490,7 @@ recipes:
         type: PINK_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      pink_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PINK_GLAZED_TERRACOTTA
@@ -4506,7 +4506,7 @@ recipes:
         type: GRAY_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      gray_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GRAY_GLAZED_TERRACOTTA
@@ -4522,7 +4522,7 @@ recipes:
         type: LIGHT_GRAY_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      light_gray_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_GRAY_GLAZED_TERRACOTTA
@@ -4538,7 +4538,7 @@ recipes:
         type: CYAN_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      cyan_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CYAN_GLAZED_TERRACOTTA
@@ -4554,7 +4554,7 @@ recipes:
         type: PURPLE_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      purple_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PURPLE_GLAZED_TERRACOTTA
@@ -4570,7 +4570,7 @@ recipes:
         type: BLUE_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      blue_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLUE_GLAZED_TERRACOTTA
@@ -4586,7 +4586,7 @@ recipes:
         type: BROWN_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      brown_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BROWN_GLAZED_TERRACOTTA
@@ -4602,7 +4602,7 @@ recipes:
         type: GREEN_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      green_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GREEN_GLAZED_TERRACOTTA
@@ -4618,7 +4618,7 @@ recipes:
         type: RED_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      red_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RED_GLAZED_TERRACOTTA
@@ -4634,7 +4634,7 @@ recipes:
         type: BLACK_TERRACOTTA
         amount: 64
     output:
-      Glazed Terracotta:
+      black_glazed_terracotta:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLACK_GLAZED_TERRACOTTA
@@ -4970,7 +4970,7 @@ recipes:
         type: WHITE_DYE
         amount: 4
     output:
-      white_glass:
+      white_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_STAINED_GLASS
@@ -4991,7 +4991,7 @@ recipes:
         type: ORANGE_DYE
         amount: 4
     output:
-      orange_glass:
+      orange_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ORANGE_STAINED_GLASS
@@ -5012,7 +5012,7 @@ recipes:
         type: MAGENTA_DYE
         amount: 4
     output:
-      magenta_glass:
+      magenta_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MAGENTA_STAINED_GLASS
@@ -5033,7 +5033,7 @@ recipes:
         type: LIGHT_BLUE_DYE
         amount: 4
     output:
-      light_blue_glass:
+      light_blue_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_BLUE_STAINED_GLASS
@@ -5054,7 +5054,7 @@ recipes:
         type: YELLOW_DYE
         amount: 4
     output:
-      yellow_glass:
+      yellow_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: YELLOW_STAINED_GLASS
@@ -5075,7 +5075,7 @@ recipes:
         type: LIME_DYE
         amount: 4
     output:
-      lime_glass:
+      lime_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIME_STAINED_GLASS
@@ -5096,7 +5096,7 @@ recipes:
         type: PINK_DYE
         amount: 4
     output:
-      pink_glass:
+      pink_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PINK_STAINED_GLASS
@@ -5117,7 +5117,7 @@ recipes:
         type: GRAY_DYE
         amount: 4
     output:
-      gray_glass:
+      gray_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GRAY_STAINED_GLASS
@@ -5138,7 +5138,7 @@ recipes:
         type: LIGHT_GRAY_DYE
         amount: 4
     output:
-      light_gray_glass:
+      light_gray_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_GRAY_STAINED_GLASS
@@ -5159,7 +5159,7 @@ recipes:
         type: CYAN_DYE
         amount: 4
     output:
-      cyan_glass:
+      cyan_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CYAN_STAINED_GLASS
@@ -5180,7 +5180,7 @@ recipes:
         type: PURPLE_DYE
         amount: 4
     output:
-      purple_glass:
+      purple_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PURPLE_STAINED_GLASS
@@ -5201,7 +5201,7 @@ recipes:
         type: BLUE_DYE
         amount: 4
     output:
-      blue_glass:
+      blue_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLUE_STAINED_GLASS
@@ -5222,7 +5222,7 @@ recipes:
         type: BROWN_DYE
         amount: 4
     output:
-      brown_glass:
+      brown_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BROWN_STAINED_GLASS
@@ -5243,7 +5243,7 @@ recipes:
         type: GREEN_DYE
         amount: 4
     output:
-      green_glass:
+      green_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GREEN_STAINED_GLASS
@@ -5264,7 +5264,7 @@ recipes:
         type: RED_DYE
         amount: 4
     output:
-      red_glass:
+      red_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RED_STAINED_GLASS
@@ -5285,7 +5285,7 @@ recipes:
         type: BLACK_DYE
         amount: 4
     output:
-      black_glass:
+      black_stained_glass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLACK_STAINED_GLASS
@@ -5332,7 +5332,7 @@ recipes:
         type: WHITE_DYE
         amount: 4
     output:
-      white_concrete:
+      white_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_CONCRETE_POWDER
@@ -5358,7 +5358,7 @@ recipes:
         type: ORANGE_DYE
         amount: 4
     output:
-      orange_concrete:
+      orange_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ORANGE_CONCRETE_POWDER
@@ -5384,7 +5384,7 @@ recipes:
         type: MAGENTA_DYE
         amount: 4
     output:
-      magenta_concrete:
+      magenta_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MAGENTA_CONCRETE_POWDER
@@ -5410,7 +5410,7 @@ recipes:
         type: LIGHT_BLUE_DYE
         amount: 4
     output:
-      light_blue_concrete:
+      light_blue_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_BLUE_CONCRETE_POWDER
@@ -5436,7 +5436,7 @@ recipes:
         type: YELLOW_DYE
         amount: 4
     output:
-      yellow_concrete:
+      yellow_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: YELLOW_CONCRETE_POWDER
@@ -5462,7 +5462,7 @@ recipes:
         type: LIME_DYE
         amount: 4
     output:
-      lime_concrete:
+      lime_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIME_CONCRETE_POWDER
@@ -5488,7 +5488,7 @@ recipes:
         type: PINK_DYE
         amount: 4
     output:
-      pink_concrete:
+      pink_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PINK_CONCRETE_POWDER
@@ -5514,7 +5514,7 @@ recipes:
         type: GRAY_DYE
         amount: 4
     output:
-      gray_concrete:
+      gray_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GRAY_CONCRETE_POWDER
@@ -5540,7 +5540,7 @@ recipes:
         type: LIGHT_GRAY_DYE
         amount: 4
     output:
-      light_gray_concrete:
+      light_gray_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_GRAY_CONCRETE_POWDER
@@ -5566,7 +5566,7 @@ recipes:
         type: CYAN_DYE
         amount: 4
     output:
-      cyan_concrete:
+      cyan_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CYAN_CONCRETE_POWDER
@@ -5592,7 +5592,7 @@ recipes:
         type: PURPLE_DYE
         amount: 4
     output:
-      purple_concrete:
+      purple_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PURPLE_CONCRETE_POWDER
@@ -5618,7 +5618,7 @@ recipes:
         type: BLUE_DYE
         amount: 4
     output:
-      blue_concrete:
+      blue_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLUE_CONCRETE_POWDER
@@ -5644,7 +5644,7 @@ recipes:
         type: BROWN_DYE
         amount: 4
     output:
-      brown_concrete:
+      brown_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BROWN_CONCRETE_POWDER
@@ -5670,7 +5670,7 @@ recipes:
         type: GREEN_DYE
         amount: 4
     output:
-      green_concrete:
+      green_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GREEN_CONCRETE_POWDER
@@ -5696,7 +5696,7 @@ recipes:
         type: RED_DYE
         amount: 4
     output:
-      red_concrete:
+      red_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RED_CONCRETE_POWDER
@@ -5722,7 +5722,7 @@ recipes:
         type: BLACK_DYE
         amount: 4
     output:
-      black_concrete:
+      black_concrete_powder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLACK_CONCRETE_POWDER
@@ -5744,7 +5744,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      white_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_CONCRETE
@@ -5771,7 +5771,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      orange_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ORANGE_CONCRETE
@@ -5798,7 +5798,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      magenta_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MAGENTA_CONCRETE
@@ -5825,7 +5825,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      light_blue_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_BLUE_CONCRETE
@@ -5852,7 +5852,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      yellow_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: YELLOW_CONCRETE
@@ -5879,7 +5879,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      lime_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIME_CONCRETE
@@ -5906,7 +5906,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      pink_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PINK_CONCRETE
@@ -5933,7 +5933,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      gray_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GRAY_CONCRETE
@@ -5960,7 +5960,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      light_gray_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LIGHT_GRAY_CONCRETE
@@ -5987,7 +5987,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      cyan_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CYAN_CONCRETE
@@ -6014,7 +6014,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      purple_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PURPLE_CONCRETE
@@ -6041,7 +6041,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      blue_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLUE_CONCRETE
@@ -6068,7 +6068,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      brown_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BROWN_CONCRETE
@@ -6095,7 +6095,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      green_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GREEN_CONCRETE
@@ -6122,7 +6122,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      red_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RED_CONCRETE
@@ -6149,7 +6149,7 @@ recipes:
         type: WATER_BUCKET
         amount: 1
     output:
-      concrete:
+      black_concrete:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BLACK_CONCRETE
@@ -6393,7 +6393,7 @@ recipes:
     name: Make Grill Factory Repair Kit
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -6420,7 +6420,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -6469,7 +6469,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COAL
         amount: 48
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -6512,7 +6512,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COAL
         amount: 48
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -6742,7 +6742,7 @@ recipes:
         type: CHEST
         amount: 8
     output:
-      fence:
+      oak_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_FENCE
@@ -6758,7 +6758,7 @@ recipes:
         type: CHEST
         amount: 12
     output:
-      sign:
+      oak_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_SIGN
@@ -6779,7 +6779,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      oak_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_HANGING_SIGN
@@ -6811,7 +6811,7 @@ recipes:
         type: CHEST
         amount: 6
     output:
-      ladder:
+      scaffolding:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SCAFFOLDING
@@ -6832,7 +6832,7 @@ recipes:
         type: CHEST
         amount: 8
     output:
-      bookshelves:
+      bookshelf:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BOOKSHELF
@@ -6848,7 +6848,7 @@ recipes:
         type: CHEST
         amount: 12
     output:
-      bookshelves:
+      chiseled_bookshelf:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHISELED_BOOKSHELF
@@ -6864,7 +6864,7 @@ recipes:
         type: CHEST
         amount: 16
     output:
-      trapdoor:
+      oak_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_TRAPDOOR
@@ -6880,7 +6880,7 @@ recipes:
         type: CHEST
         amount: 12
     output:
-      door:
+      oak_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_DOOR
@@ -6896,7 +6896,7 @@ recipes:
         type: CHEST
         amount: 8
     output:
-      door:
+      oak_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_FENCE_GATE
@@ -6976,7 +6976,7 @@ recipes:
         type: SPRUCE_LOG
         amount: 16
     output:
-      fence:
+      spruce_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_FENCE
@@ -6992,7 +6992,7 @@ recipes:
         type: SPRUCE_LOG
         amount: 24
     output:
-      sign:
+      spruce_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_SIGN
@@ -7013,7 +7013,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      spruce_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_HANGING_SIGN
@@ -7029,7 +7029,7 @@ recipes:
         type: SPRUCE_LOG
         amount: 32
     output:
-      trapdoor:
+      spruce_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_TRAPDOOR
@@ -7045,7 +7045,7 @@ recipes:
         type: SPRUCE_LOG
         amount: 24
     output:
-      door:
+      spruce_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_DOOR
@@ -7061,7 +7061,7 @@ recipes:
         type: SPRUCE_LOG
         amount: 16
     output:
-      door:
+      spruce_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_FENCE_GATE
@@ -7077,7 +7077,7 @@ recipes:
         type: BIRCH_LOG
         amount: 16
     output:
-      fence:
+      birch_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_FENCE
@@ -7093,7 +7093,7 @@ recipes:
         type: BIRCH_LOG
         amount: 24
     output:
-      sign:
+      birch_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_SIGN
@@ -7114,7 +7114,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      birch_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_HANGING_SIGN
@@ -7130,7 +7130,7 @@ recipes:
         type: BIRCH_LOG
         amount: 32
     output:
-      trapdoor:
+      birch_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_TRAPDOOR
@@ -7146,7 +7146,7 @@ recipes:
         type: BIRCH_LOG
         amount: 24
     output:
-      door:
+      birch_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_DOOR
@@ -7162,7 +7162,7 @@ recipes:
         type: BIRCH_LOG
         amount: 16
     output:
-      door:
+      birch_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_FENCE_GATE
@@ -7178,7 +7178,7 @@ recipes:
         type: JUNGLE_LOG
         amount: 16
     output:
-      fence:
+      jungle_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_FENCE
@@ -7194,7 +7194,7 @@ recipes:
         type: JUNGLE_LOG
         amount: 24
     output:
-      sign:
+      jungle_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_SIGN
@@ -7215,7 +7215,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      jungle_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_HANGING_SIGN
@@ -7231,7 +7231,7 @@ recipes:
         type: JUNGLE_LOG
         amount: 32
     output:
-      trapdoor:
+      jungle_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_TRAPDOOR
@@ -7247,7 +7247,7 @@ recipes:
         type: JUNGLE_LOG
         amount: 24
     output:
-      door:
+      jungle_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_DOOR
@@ -7263,7 +7263,7 @@ recipes:
         type: JUNGLE_LOG
         amount: 16
     output:
-      door:
+      jungle_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_FENCE_GATE
@@ -7279,7 +7279,7 @@ recipes:
         type: ACACIA_LOG
         amount: 16
     output:
-      fence:
+      acacia_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ACACIA_FENCE
@@ -7295,7 +7295,7 @@ recipes:
         type: ACACIA_LOG
         amount: 24
     output:
-      sign:
+      acacia_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ACACIA_SIGN
@@ -7316,7 +7316,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      acacia_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ACACIA_HANGING_SIGN
@@ -7332,7 +7332,7 @@ recipes:
         type: ACACIA_LOG
         amount: 32
     output:
-      trapdoor:
+      acacia_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ACACIA_TRAPDOOR
@@ -7348,7 +7348,7 @@ recipes:
         type: ACACIA_LOG
         amount: 24
     output:
-      door:
+      acacia_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ACACIA_DOOR
@@ -7364,7 +7364,7 @@ recipes:
         type: ACACIA_LOG
         amount: 16
     output:
-      door:
+      acacia_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ACACIA_FENCE_GATE
@@ -7380,7 +7380,7 @@ recipes:
         type: DARK_OAK_LOG
         amount: 16
     output:
-      fence:
+      dark_oak_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_FENCE
@@ -7396,7 +7396,7 @@ recipes:
         type: DARK_OAK_LOG
         amount: 24
     output:
-      sign:
+      dark_oak_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_SIGN
@@ -7417,7 +7417,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      dark_oak_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_HANGING_SIGN
@@ -7433,7 +7433,7 @@ recipes:
         type: DARK_OAK_LOG
         amount: 32
     output:
-      trapdoor:
+      dark_oak_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_TRAPDOOR
@@ -7449,7 +7449,7 @@ recipes:
         type: DARK_OAK_LOG
         amount: 24
     output:
-      door:
+      dark_oak_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_DOOR
@@ -7465,7 +7465,7 @@ recipes:
         type: DARK_OAK_LOG
         amount: 16
     output:
-      door:
+      dark_oak_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_FENCE_GATE
@@ -7481,7 +7481,7 @@ recipes:
         type: CHERRY_LOG
         amount: 16
     output:
-      fence:
+      cherry_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHERRY_FENCE
@@ -7497,7 +7497,7 @@ recipes:
         type: CHERRY_LOG
         amount: 24
     output:
-      sign:
+      cherry_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHERRY_SIGN
@@ -7518,7 +7518,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      cherry_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHERRY_HANGING_SIGN
@@ -7534,7 +7534,7 @@ recipes:
         type: CHERRY_LOG
         amount: 32
     output:
-      trapdoor:
+      cherry_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHERRY_TRAPDOOR
@@ -7550,7 +7550,7 @@ recipes:
         type: CHERRY_LOG
         amount: 24
     output:
-      door:
+      cherry_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHERRY_DOOR
@@ -7566,7 +7566,7 @@ recipes:
         type: CHERRY_LOG
         amount: 16
     output:
-      door:
+      cherry_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHERRY_FENCE_GATE
@@ -7582,7 +7582,7 @@ recipes:
         type: MANGROVE_LOG
         amount: 16
     output:
-      fence:
+      mangrove_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_FENCE
@@ -7598,7 +7598,7 @@ recipes:
         type: MANGROVE_LOG
         amount: 24
     output:
-      sign:
+      mangrove_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_SIGN
@@ -7619,7 +7619,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      mangrove_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_HANGING_SIGN
@@ -7635,7 +7635,7 @@ recipes:
         type: MANGROVE_LOG
         amount: 32
     output:
-      trapdoor:
+      mangrove_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_TRAPDOOR
@@ -7651,7 +7651,7 @@ recipes:
         type: MANGROVE_LOG
         amount: 24
     output:
-      door:
+      mangrove_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_DOOR
@@ -7667,7 +7667,7 @@ recipes:
         type: MANGROVE_LOG
         amount: 16
     output:
-      door:
+      mangrove_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_FENCE_GATE
@@ -7683,7 +7683,7 @@ recipes:
         type: PALE_OAK_LOG
         amount: 16
     output:
-      fence:
+      pale_oak_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_FENCE
@@ -7699,7 +7699,7 @@ recipes:
         type: PALE_OAK_LOG
         amount: 24
     output:
-      sign:
+      pale_oak_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_SIGN
@@ -7720,7 +7720,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      pale_oak_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_HANGING_SIGN
@@ -7736,7 +7736,7 @@ recipes:
         type: PALE_OAK_LOG
         amount: 32
     output:
-      trapdoor:
+      pale_oak_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_TRAPDOOR
@@ -7752,7 +7752,7 @@ recipes:
         type: PALE_OAK_LOG
         amount: 24
     output:
-      door:
+      pale_oak_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_DOOR
@@ -7768,7 +7768,7 @@ recipes:
         type: PALE_OAK_LOG
         amount: 16
     output:
-      door:
+      pale_oak_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_FENCE_GATE
@@ -7784,7 +7784,7 @@ recipes:
         type: CRIMSON_STEM
         amount: 16
     output:
-      fence:
+      crimson_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CRIMSON_FENCE
@@ -7800,7 +7800,7 @@ recipes:
         type: CRIMSON_STEM
         amount: 24
     output:
-      sign:
+      crimson_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CRIMSON_SIGN
@@ -7821,7 +7821,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      crimson_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CRIMSON_HANGING_SIGN
@@ -7837,7 +7837,7 @@ recipes:
         type: CRIMSON_STEM
         amount: 32
     output:
-      trapdoor:
+      crimson_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CRIMSON_TRAPDOOR
@@ -7853,7 +7853,7 @@ recipes:
         type: CRIMSON_STEM
         amount: 24
     output:
-      door:
+      crimson_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CRIMSON_DOOR
@@ -7869,7 +7869,7 @@ recipes:
         type: CRIMSON_STEM
         amount: 16
     output:
-      door:
+      crimson_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CRIMSON_FENCE_GATE
@@ -7885,7 +7885,7 @@ recipes:
         type: WARPED_STEM
         amount: 16
     output:
-      fence:
+      warped_fence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARPED_FENCE
@@ -7901,7 +7901,7 @@ recipes:
         type: WARPED_STEM
         amount: 24
     output:
-      sign:
+      warped_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARPED_SIGN
@@ -7922,7 +7922,7 @@ recipes:
         type: IRON_INGOT
         amount: 4
     output:
-      sign:
+      warped_hanging_sign:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARPED_HANGING_SIGN
@@ -7938,7 +7938,7 @@ recipes:
         type: WARPED_STEM
         amount: 32
     output:
-      trapdoor:
+      warped_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARPED_TRAPDOOR
@@ -7954,7 +7954,7 @@ recipes:
         type: WARPED_STEM
         amount: 24
     output:
-      door:
+      warped_door:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARPED_DOOR
@@ -7970,7 +7970,7 @@ recipes:
         type: WARPED_STEM
         amount: 16
     output:
-      door:
+      warped_fence_gate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARPED_FENCE_GATE
@@ -7980,7 +7980,7 @@ recipes:
     name: Make Rails
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -7991,7 +7991,7 @@ recipes:
         type: STICK
         amount: 16
     output:
-      rails:
+      rail:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RAIL
@@ -8022,7 +8022,7 @@ recipes:
     name: Make Detector Rails
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8043,7 +8043,7 @@ recipes:
     name: Make Activator Rails
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8064,7 +8064,7 @@ recipes:
     name: Make Minecarts
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8080,7 +8080,7 @@ recipes:
     name: Make Rail Factory Repair Kit
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8107,7 +8107,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8145,7 +8145,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: LEATHER
         amount: 16
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8177,7 +8177,7 @@ recipes:
         type: WHITE_WOOL
         amount: 3
     output:
-      saddle:
+      white_harness:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_HARNESS
@@ -8213,7 +8213,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: CHEST
         amount: 32
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8302,7 +8302,7 @@ recipes:
     name: Make Redstone Factory Repair Kit
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8334,7 +8334,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8372,13 +8372,13 @@ recipes:
     name: Make Iron Helmets
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 25
     output:
-      iron_helm:
+      iron_helmet:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_HELMET
@@ -8388,13 +8388,13 @@ recipes:
     name: Make Iron Chestplates
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 40
     output:
-      iron_chest:
+      iron_chestplate:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_CHESTPLATE
@@ -8404,13 +8404,13 @@ recipes:
     name: Make Iron Leggings
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 35
     output:
-      iron_legs:
+      iron_leggings:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_LEGGINGS
@@ -8420,7 +8420,7 @@ recipes:
     name: Make Iron Boots
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8436,7 +8436,7 @@ recipes:
     name: Make Iron Axe
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8452,7 +8452,7 @@ recipes:
     name: Make Iron Sword
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8468,13 +8468,13 @@ recipes:
     name: Make Iron Pick
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 15
     output:
-      iron_pick:
+      iron_pickaxe:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_PICKAXE
@@ -8484,7 +8484,7 @@ recipes:
     name: Make Iron Hoe
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -8500,7 +8500,7 @@ recipes:
     name: Make Iron Shovel
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9126,7 +9126,7 @@ recipes:
     name: Make Iron Bars
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9178,13 +9178,13 @@ recipes:
     name: Make Chains
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 20
     output:
-      chain:
+      iron_chain:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_CHAIN
@@ -9194,7 +9194,7 @@ recipes:
     name: Make Lanterns
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9215,7 +9215,7 @@ recipes:
     name: Make Soul Lanterns
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9236,7 +9236,7 @@ recipes:
     name: Make Lodestone
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9257,7 +9257,7 @@ recipes:
     name: Make Anvils
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9273,7 +9273,7 @@ recipes:
     name: Make Buckets
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9289,7 +9289,7 @@ recipes:
     name: Make Iron Trapdoors
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9305,7 +9305,7 @@ recipes:
     name: Make Iron Doors
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9322,7 +9322,7 @@ recipes:
     type: PRODUCTION
     forceInclude: true
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9338,7 +9338,7 @@ recipes:
     name: Make Tripwire Hooks
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9354,7 +9354,7 @@ recipes:
     name: Make Shears
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9370,7 +9370,7 @@ recipes:
     name: Make Iron Forge Repair Kit
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9397,7 +9397,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9441,7 +9441,7 @@ recipes:
         type: SLIME_BALL
         amount: 4
     output:
-      leads:
+      lead:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LEAD
@@ -9451,7 +9451,7 @@ recipes:
     name: Make Animal Husbandry Repair Kit
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_BLOCK
@@ -9483,7 +9483,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_BLOCK
@@ -9638,7 +9638,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -9649,7 +9649,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -10126,7 +10126,7 @@ recipes:
     name: Make Basic Cauldron Repair Kit
     type: PRODUCTION
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -10164,7 +10164,7 @@ recipes:
     name: Repair Factory
     type: REPAIR
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
@@ -11077,7 +11077,7 @@ recipes:
         type: PUMPKIN
         amount: 192
     output:
-      pie:
+      pumpkin_pie:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PUMPKIN_PIE
@@ -11132,7 +11132,7 @@ recipes:
         type: LEATHER
         amount: 6
     output:
-      books:
+      book:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BOOK
@@ -11158,7 +11158,7 @@ recipes:
         type: INK_SAC
         amount: 6
     output:
-      books:
+      writable_book:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WRITABLE_BOOK
@@ -11168,13 +11168,13 @@ recipes:
     name: Craft Printing Plate
     production_time: 4s
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 1
     output:
-      plate:
+      oak_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_TRAPDOOR
@@ -11184,13 +11184,13 @@ recipes:
     name: Craft JSON Printing Plate
     production_time: 4s
     input:
-      iron:
+      iron_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 1
     output:
-      plate:
+      oak_trapdoor:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OAK_TRAPDOOR
@@ -11253,7 +11253,7 @@ recipes:
         type: DARK_OAK_LOG
         amount: 64
     output:
-      trim:
+      sentry_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11290,7 +11290,7 @@ recipes:
         type: DARK_OAK_SAPLING
         amount: 64
     output:
-      trim:
+      vex_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: VEX_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11327,7 +11327,7 @@ recipes:
         type: BAMBOO
         amount: 64
     output:
-      trim:
+      wild_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WILD_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11364,7 +11364,7 @@ recipes:
         type: LEATHER
         amount: 64
     output:
-      trim:
+      coast_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COAST_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11401,7 +11401,7 @@ recipes:
         type: CHISELED_RED_SANDSTONE
         amount: 64
     output:
-      trim:
+      dune_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DUNE_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11438,7 +11438,7 @@ recipes:
         type: TERRACOTTA
         amount: 64
     output:
-      trim:
+      wayfinder_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11475,7 +11475,7 @@ recipes:
         type: PACKED_MUD
         amount: 64
     output:
-      trim:
+      raiser_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RAISER_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11512,7 +11512,7 @@ recipes:
         type: COARSE_DIRT
         amount: 64
     output:
-      trim:
+      shaper_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11549,7 +11549,7 @@ recipes:
         type: FLOWER_POT
         amount: 64
     output:
-      trim:
+      host_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: HOST_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11586,7 +11586,7 @@ recipes:
         type: COMPASS
         amount: 64
     output:
-      trim:
+      ward_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARD_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11623,7 +11623,7 @@ recipes:
         type: GLOW_BERRIES
         amount: 64
     output:
-      trim:
+      silence_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11660,7 +11660,7 @@ recipes:
         type: INK_SAC
         amount: 64
     output:
-      trim:
+      tide_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: TIDE_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11697,7 +11697,7 @@ recipes:
         type: MAGMA_BLOCK
         amount: 64
     output:
-      trim:
+      snout_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11734,7 +11734,7 @@ recipes:
         type: SOUL_SAND
         amount: 64
     output:
-      trim:
+      rib_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RIB_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11771,7 +11771,7 @@ recipes:
         type: APPLE
         amount: 64
     output:
-      trim:
+      eye_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EYE_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11808,7 +11808,7 @@ recipes:
         type: ENDER_CHEST
         amount: 64
     output:
-      trim:
+      spire_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11845,7 +11845,7 @@ recipes:
         type: COPPER_BULB
         amount: 64
     output:
-      trim:
+      bolt_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BOLT_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -11882,7 +11882,7 @@ recipes:
         type: ARMADILLO_SCUTE
         amount: 64
     output:
-      trim:
+      flow_armor_trim_smithing_template:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: FLOW_ARMOR_TRIM_SMITHING_TEMPLATE
@@ -13748,7 +13748,7 @@ recipes:
           type: VINDICATOR_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:vindication_illager"
+            id: 'minecraft:vindication_illager'
       vex:
         chance: 0.00045454545
         vex:
@@ -13757,7 +13757,7 @@ recipes:
           type: VEX_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:vex"
+            id: 'minecraft:vex'
       silverfish:
         chance: 0.00045454545
         silverfish:
@@ -13766,7 +13766,7 @@ recipes:
           type: SILVERFISH_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:silverfish"
+            id: 'minecraft:silverfish'
       endermite:
         chance: 0.00045454545
         endermite:
@@ -13775,7 +13775,7 @@ recipes:
           type: ENDERMITE_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:endermite"
+            id: 'minecraft:endermite'
       zombiehorse:
         chance: 0.00045454545
         zombiehorse:
@@ -13784,7 +13784,7 @@ recipes:
           type: ZOMBIE_HORSE_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:zombie_horse"
+            id: 'minecraft:zombie_horse'
       skeletonhorse:
         chance: 0.00045454545
         skeletonhorse:
@@ -13793,7 +13793,7 @@ recipes:
           type: SKELETON_HORSE_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:skeleton_horse"
+            id: 'minecraft:skeleton_horse'
       donkey:
         chance: 0.00045454545
         donkey:
@@ -13802,7 +13802,7 @@ recipes:
           type: DONKEY_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:donkey"
+            id: 'minecraft:donkey'
       polarbear:
         chance: 0.00045454545
         polarbear:
@@ -13811,7 +13811,7 @@ recipes:
           type: POLAR_BEAR_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:polar_bear"
+            id: 'minecraft:polar_bear'
       parrot:
         chance: 0.00045454545
         parrot:
@@ -13820,7 +13820,7 @@ recipes:
           type: PARROT_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:parrot"
+            id: 'minecraft:parrot'
       llama:
         chance: 0.00045454545
         llama:
@@ -13829,7 +13829,7 @@ recipes:
           type: LLAMA_SPAWN_EGG
           amount: 1
           entity_data:
-            id: "minecraft:llama"
+            id: 'minecraft:llama'
       fox:
         chance: 0.00045454545
         fox:
@@ -14949,7 +14949,7 @@ recipes:
         type: KELP
         amount: 32
     output:
-      big_dripleaf:
+      small_dripleaf:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SMALL_DRIPLEAF
@@ -15159,7 +15159,7 @@ recipes:
         type: BUCKET
         amount: 1
     output:
-      rooted_dirt:
+      water_bucket:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WATER_BUCKET
@@ -15193,7 +15193,7 @@ recipes:
         type: FIRE_CORAL
         amount: 64
     output:
-      tube_coral_block:
+      fire_coral_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: FIRE_CORAL_BLOCK
@@ -16642,7 +16642,7 @@ recipes:
   crush_disc_13:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush '13' disc"
+    name: Crush '13' disc
     type: PRODUCTION
     input:
       disc:
@@ -16665,7 +16665,7 @@ recipes:
   crush_disc_cat:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Cat' disc"
+    name: Crush 'Cat' disc
     type: PRODUCTION
     input:
       disc:
@@ -16688,7 +16688,7 @@ recipes:
   crush_disc_blocks:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Blocks' disc"
+    name: Crush 'Blocks' disc
     type: PRODUCTION
     input:
       disc:
@@ -16711,7 +16711,7 @@ recipes:
   crush_disc_chirp:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Chirp' disc"
+    name: Crush 'Chirp' disc
     type: PRODUCTION
     input:
       disc:
@@ -16734,7 +16734,7 @@ recipes:
   crush_disc_far:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Far' disc"
+    name: Crush 'Far' disc
     type: PRODUCTION
     input:
       disc:
@@ -16757,7 +16757,7 @@ recipes:
   crush_disc_relic:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Relic' disc"
+    name: Crush 'Relic' disc
     type: PRODUCTION
     input:
       disc:
@@ -16780,7 +16780,7 @@ recipes:
   crush_disc_stal:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Stal' disc"
+    name: Crush 'Stal' disc
     type: PRODUCTION
     input:
       disc:
@@ -16803,7 +16803,7 @@ recipes:
   crush_disc_strad:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Strad' disc"
+    name: Crush 'Strad' disc
     type: PRODUCTION
     input:
       disc:
@@ -16826,7 +16826,7 @@ recipes:
   crush_disc_pigstep:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Pigstep' disc"
+    name: Crush 'Pigstep' disc
     type: PRODUCTION
     input:
       disc:
@@ -16849,7 +16849,7 @@ recipes:
   crush_disc_ward:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Ward' disc"
+    name: Crush 'Ward' disc
     type: PRODUCTION
     input:
       disc:
@@ -16872,7 +16872,7 @@ recipes:
   crush_disc_wait:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Wait' disc"
+    name: Crush 'Wait' disc
     type: PRODUCTION
     input:
       disc:
@@ -16895,7 +16895,7 @@ recipes:
   crush_disc_otherside:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Otherside' disc"
+    name: Crush 'Otherside' disc
     type: PRODUCTION
     input:
       disc:
@@ -16918,7 +16918,7 @@ recipes:
   crush_disc_mall:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Mall' disc"
+    name: Crush 'Mall' disc
     type: PRODUCTION
     input:
       disc:
@@ -16941,7 +16941,7 @@ recipes:
   crush_disc_5:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush '5' disc"
+    name: Crush '5' disc
     type: PRODUCTION
     input:
       disc:
@@ -16964,7 +16964,7 @@ recipes:
   crush_disc_11:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush '11' disc"
+    name: Crush '11' disc
     type: PRODUCTION
     input:
       disc:
@@ -16987,7 +16987,7 @@ recipes:
   crush_disc_mellohi:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Mellohi' disc"
+    name: Crush 'Mellohi' disc
     type: PRODUCTION
     input:
       disc:
@@ -17010,7 +17010,7 @@ recipes:
   crush_disc_precipice:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Precipice' disc"
+    name: Crush 'Precipice' disc
     type: PRODUCTION
     input:
       disc:
@@ -17033,7 +17033,7 @@ recipes:
   crush_disc_creator:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Creator' disc"
+    name: Crush 'Creator' disc
     type: PRODUCTION
     input:
       disc:
@@ -17056,7 +17056,7 @@ recipes:
   crush_disc_creator_music_box:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: "Crush 'Creator (Music Box)' disc"
+    name: Crush 'Creator (Music Box)' disc
     type: PRODUCTION
     input:
       disc:
