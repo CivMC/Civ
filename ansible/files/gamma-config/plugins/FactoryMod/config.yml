@@ -1664,7 +1664,7 @@ factories:
   bio_factory:
     type: FCC
     name: Bio Factory
-    citadelBreakingReduction: 1.0
+    citadelBreakReduction: 1.0
     fuel:
       fuelidentifier:
         v: 3839
