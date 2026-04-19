@@ -378,9 +378,8 @@ public final class OldEnchanting extends BasicHack {
         }
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             final Block clicked = Objects.requireNonNull(event.getClickedBlock());
-            if (clicked.getType().isInteractable()) {
-                event.setCancelled(true); // Don't give levels if trying to open a chest for example
-                return;
+            if (clicked.getType().isInteractable() && !player.isSneaking()) {
+                return; // Let the block interaction (e.g. chest open) proceed normally
             }
         }
         final int amount = held.getAmount();
