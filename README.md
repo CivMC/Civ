@@ -11,7 +11,22 @@ This monorepo will eventually contain all civ projects and development
 
 ## Developing Locally
 
-### Plugins
+### Tests
+JUnit 5 tests live under `src/test/` in any plugin. They run via `useJUnitPlatform()`
+(configured in [`plugins/build.gradle.kts`](plugins/build.gradle.kts)) and execute on
+every PR through the [Gradle Check All](.github/workflows/check_gradle_all.yaml) workflow.
+
+To run the suite locally:
+
+```sh
+./gradlew check        # runs tests for every plugin
+./gradlew :plugins:civmodcore-paper:test --rerun-tasks   # one plugin
+```
+
+civmodcore-paper uses MockBukkit per https://docs.mockbukkit.org/docs/en/user_guide/advanced/paperweight,
+which keeps paperweight on `compileOnly` so MockBukkit owns the test
+classpath. Trade-off: NMS (`net.minecraft.*`) is not available at test
+time, so anything that needs NMS has to live in production code only.
 
 ### Containers
 A docker compose stack is provided to help test containers built from

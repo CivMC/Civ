@@ -5,6 +5,10 @@ on:
   pull_request:
     types: [ opened, synchronize, reopened ]
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   check_gradle:
     name: 🐘 Check Gradle
@@ -23,5 +27,29 @@ jobs:
       - name: 🐘 Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: 💾 Cache paperweight
+        uses: actions/cache@v4
+        with:
+          path: '**/.gradle/caches/paperweight'
+          key: paperweight-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: |
+            paperweight-
+
       - name: 🐘 Gradle Check
         run: CI=true ./gradlew check --scan
+
+      - name: 📊 Publish Test Report
+        if: always()
+        uses: mikepenz/action-junit-report@v4
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+          require_tests: false
+          check_name: 'JUnit Test Report'
+
+      - name: 🗃️ Upload Test Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/test/'
+          retention-days: 7

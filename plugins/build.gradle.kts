@@ -32,6 +32,10 @@ subprojects {
         enabled = false
     }
 
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+
     configure<PublishingExtension> {
         val githubActor = System.getenv("GITHUB_ACTOR")
         val githubToken = System.getenv("GITHUB_TOKEN")
