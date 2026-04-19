@@ -84,6 +84,15 @@ final class CoreLoreGenerator implements LoreProvider {
         lore.add(parse(""));
 
         lore.add(parse("<a>Health: <n>%s/%s", health, config.getPearlHealthMaxValue()));
+        String unit = config.getPearlHealthDecayHumanInterval();
+        int decayPerHumanInterval = PearlDecayMath.decayPerHumanInterval(
+            config.getPearlHealthDecayHumanIntervalMin(),
+            config.getPearlHealthDecayIntervalMin(),
+            config.getPearlHealthDecayAmount());
+        int intervalsRemaining = PearlDecayMath.intervalsRemaining(health, decayPerHumanInterval);
+        if (intervalsRemaining > 0 && pearl.isActive()) {
+            lore.add(parse("<a>Time remaining: <n>%d %s", intervalsRemaining, unit));
+        }
         Set<RepairMaterial> repair = config.getRepairMaterials(pearl.getPearlType());
         if (repair != null) {
             for (RepairMaterial rep : repair) {
@@ -92,9 +101,8 @@ final class CoreLoreGenerator implements LoreProvider {
                 if (rep.getStack().hasItemMeta() && rep.getStack().getItemMeta().hasDisplayName()) {
                     item = rep.getStack().getItemMeta().getDisplayName();
                 }
-                int damagesPerHumanInterval = (config.getPearlHealthDecayHumanIntervalMin() / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a human interval * damage per
-                int repairsPerHumanInterval = (int) Math.ceil(damagesPerHumanInterval / amountPerItem);
-                lore.add(parse("<a>Cost per %s using %s:<n> %s", config.getPearlHealthDecayHumanInterval(), item, Integer.toString(repairsPerHumanInterval)));
+                int repairsPerHumanInterval = (int) Math.ceil(decayPerHumanInterval / amountPerItem);
+                lore.add(parse("<a>Cost per %s using %s:<n> %s", unit, item, Integer.toString(repairsPerHumanInterval)));
             }
         }
 
