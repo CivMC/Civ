@@ -17,7 +17,7 @@ public final class ResetSetting extends StringSetting {
     private final DestinationSetting destinationSetting;
 
     public ResetSetting(JavaPlugin plugin, DestinationSetting destinationSetting) {
-        super(plugin, "", "Clear Destination", "dest", new ItemStack(Material.BARRIER), "Clears your destination.");
+        super(plugin, "", "Clear Destination", "dest-reset-action", new ItemStack(Material.BARRIER), "Clears your destination.");
         this.destinationSetting = destinationSetting;
     }
 
