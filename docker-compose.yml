@@ -53,8 +53,8 @@ services:
       - "5008:5008"
     volumes:
       - ./containers/data/proxy:/server
-      - ./ansible/files/proxy-config:/config
-      - ./ansible/build/proxy-plugins:/plugins
+      - ./deployment/files/proxy-config:/config
+      - ./deployment/build/proxy-plugins:/plugins
 
   paper:
     image: itzg/minecraft-server:stable-java25
@@ -111,8 +111,8 @@ services:
       - "5005:5005"
     volumes:
       - ./containers/data/paper:/data
-      - ./ansible/files/paper-config:/config
-      - ./ansible/build/paper-plugins:/plugins
+      - ./deployment/files/paper-config:/config
+      - ./deployment/build/paper-plugins:/plugins
 
   gamma:
     image: itzg/minecraft-server:stable-java25
@@ -167,8 +167,8 @@ services:
       - "5007:5007"
     volumes:
       - ./containers/data/gamma:/data
-      - ./ansible/files/gamma-config:/config
-      - ./ansible/build/gamma-plugins:/plugins
+      - ./deployment/files/gamma-config:/config
+      - ./deployment/build/gamma-plugins:/plugins
 
   pvp:
     image: itzg/minecraft-server:stable-java25
@@ -222,9 +222,9 @@ services:
       - "5006:5006"
     volumes:
       - ./containers/data/pvp:/data
-      - ./ansible/files/paper-config:/paper-config
-      - ./ansible/files/pvp-config:/config
-      - ./ansible/build/pvp-plugins:/plugins
+      - ./deployment/files/paper-config:/paper-config
+      - ./deployment/files/pvp-config:/config
+      - ./deployment/build/pvp-plugins:/plugins
 
   #################
   ### Databases ###

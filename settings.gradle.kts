@@ -11,7 +11,7 @@ plugins {
     id("com.gradle.enterprise") version "3.16.2"
 }
 
-include(":ansible")
+include(":deployment")
 
 include(":libraries:name-api")
 

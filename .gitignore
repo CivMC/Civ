@@ -35,6 +35,11 @@ run
 
 temp
 
+### Python ###
+__pycache__/
+*.py[cod]
+venv/
+
 ### Docker ###
 containers/data
 

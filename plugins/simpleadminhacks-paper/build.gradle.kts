@@ -22,5 +22,5 @@ dependencies {
 
     compileOnly(libs.protocollib)
 
-    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.6.3.jar"))
+    compileOnly(files("../../deployment/src/paper-plugins/BreweryX-3.6.3.jar"))
 }

@@ -1,0 +1,56 @@
+name: Deployment | Restart Kira
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to Restart'
+        type: environment
+        required: true
+        default: Test
+
+jobs:
+  kira-restart:
+    runs-on: ubuntu-22.04
+    environment: ${{inputs.environment}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Gradle Build
+        run: CI=true ./gradlew :deployment:build --parallel --no-daemon
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deploy tooling
+        run: python -m pip install pyinfra PyYAML
+      - name: Configure SSH
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          eval "$(ssh-agent -s)"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> "$GITHUB_ENV"
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> "$GITHUB_ENV"
+          ssh-add - <<< "$SSH_PRIVATE_KEY"
+      - name: Inject secrets
+        shell: bash
+        working-directory: ./deployment
+        env:
+          SECRETS_YML: ${{secrets.SECRETS_YML}}
+        run: printf '%s\n' "$SECRETS_YML" > variables/secrets.yml
+      - name: Restart Kira
+        env:
+          SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
+        run: printf '%s\n' "$SUDO_PASSWORD" | pyinfra "deployment/inventories/civmc-${{inputs.environment}}.py" deployment/deploys/restart_kira.py --sudo --use-sudo-password --same-sudo-password -y

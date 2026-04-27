@@ -7,7 +7,7 @@ This monorepo will eventually contain all civ projects and development
 - [Gradle](https://gradle.org/) Is used as an entrypoint to build all projects in this repository.
 - [Docker](https://www.docker.com/) Is used to containerize any deployed services,
   and provide a somewhat consistent development environment.
-- [Ansible](https://www.ansible.com/) Is used to configure the target machines and for final deployment
+- [pyinfra](https://pyinfra.com/) is used by the deployment project to configure target machines and deploy services.
 
 ## Developing Locally
 
@@ -17,8 +17,8 @@ This monorepo will eventually contain all civ projects and development
 A docker compose stack is provided to help test containers built from
 this repo. To start the stack, run the following commands:
 
-1. Linux/MacOS: `./gradlew :ansible:build`  
-   Windows: `.\gradlew.bat :ansible:build`
+1. Linux/MacOS: `./gradlew :deployment:build`  
+   Windows: `.\gradlew.bat :deployment:build`
 2. `docker compose up`
 
 Please note that this stack is NOT suitable for production use.
@@ -42,7 +42,7 @@ Current services and exposed ports are:
 | grafana  | 3000  | HTTP, Grafana UI    | monitoring |
 
 ### Private Config
-Sensitive information is stored in a private repository, and required for Ansible deployment.
+Sensitive information is stored in a private repository, and required for production deployment.
 If you have access to this, you can get the submodule with `git submodule init` and `git submodule update`
 
 To use this with the local docker-compose stack,

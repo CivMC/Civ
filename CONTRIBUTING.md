@@ -8,10 +8,10 @@ We would greatly appreicate if you tested your changes, ideally using the Docker
 
 Keep in mind that if you are making any config changes, you should change the default plugin config in the resources
 folder, but also update the configs for the relevant server(s) if necessary. `gamma` is the code name for CivMC mini,
-and most changes applied to main should also apply to mini. You can find these configs in `ansible/files`.
+and most changes applied to main should also apply to mini. You can find these configs in `deployment/files`.
 
-Default config changes will not affect the docker server, but ansible changes will. If you make any config changes in
-the `ansible` directory, simply restart the server `docker compose restart paper` to apply them.
+Default config changes will not affect the docker server, but deployment config changes will. If you make any config changes in
+the `deployment` directory, simply restart the server `docker compose restart paper` to apply them.
 
 If you make any code changes, run `./gradlew build` and then restart the server.
 
