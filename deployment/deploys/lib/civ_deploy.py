@@ -225,11 +225,11 @@ def deploy_minecraft_stack(setting: DotDict, secret: DotDict, servers: list[str]
 
 
 def _sync_minecraft_dir(remote_name: str, local_path: Path) -> None:
-    files.sync(
+    files.rsync(
         name=f"Sync {remote_name}",
         src=str(local_path),
         dest="~/stacks/minecraft",
-        delete=True,
+        flags=["-a", "--delete"]
     )
     server.shell(
         name=f"Install {remote_name}",
@@ -247,12 +247,16 @@ def stop_servers(setting: DotDict, servers: list[str]) -> None:
         "gamma": "minecraft_gamma",
         "pvp": "minecraft_pvp",
     }
+
+    scaled = []
     for server_name in servers:
-        server.shell(
-            name=f"Stop {server_name}",
-            commands=f"docker service scale {service_names[server_name]}=0 || true",
-            _sudo=True,
-        )
+        scaled.push(f"{service_names[server_name]}=0")
+
+    server.shell(
+        name=f"Stop {", ".join(servers)}",
+        commands=f"docker service scale {" ".join(scaled)} || true",
+        _sudo=True,
+    )
 
 
 def start_servers(setting: DotDict) -> None:
