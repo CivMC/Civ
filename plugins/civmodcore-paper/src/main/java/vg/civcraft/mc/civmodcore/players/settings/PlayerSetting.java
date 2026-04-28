@@ -3,6 +3,7 @@ package vg.civcraft.mc.civmodcore.players.settings;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,10 @@ public abstract class PlayerSetting<T> {
             result.put(entry.getKey().toString(), serialize(entry.getValue()));
         }
         return result;
+    }
+
+    public Map<UUID, T> getValues() {
+        return Collections.unmodifiableMap(values);
     }
 
     /**
