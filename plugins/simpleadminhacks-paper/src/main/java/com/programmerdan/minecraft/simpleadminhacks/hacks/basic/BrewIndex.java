@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.dre.brewery.Brew;
 import com.dre.brewery.api.events.brew.BrewDrinkEvent;
 import com.dre.brewery.recipe.BRecipe;
@@ -53,6 +54,9 @@ public final class BrewIndex extends BasicHack {
     private final CommandManager commands;
     private boolean breweryEnabled;
 
+    private PlayerProfile profile;
+    private volatile boolean profileLoaded = false;
+
     public BrewIndex(final SimpleAdminHacks plugin, final BasicHackConfig config) {
         super(plugin, config);
         this.drunkBrewsKey = new NamespacedKey(plugin, "drunk_brews");
@@ -75,6 +79,12 @@ public final class BrewIndex extends BasicHack {
         if (PlayerSettingAPI.getSetting(UNIQUE_BREWS_DRUNK_SETTING) == null) {
             PlayerSettingAPI.registerSetting(this.uniqueBrewsDrunk, null);
         }
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            this.profile = Bukkit.getServer().createProfile(UUID.fromString("82569b12-c44c-4864-8a73-85a9192ee8f9"), "RedDevel");
+            this.profile.complete();
+            this.profileLoaded = true;
+        });
         this.commands.init();
     }
 
@@ -224,7 +234,9 @@ public final class BrewIndex extends BasicHack {
         final MultiPageView view = new MultiPageView(player, clickables, title, true);
         final ItemStack topBrewers = new ItemStack(Material.PLAYER_HEAD);
         final SkullMeta topBrewersMeta = (SkullMeta) topBrewers.getItemMeta();
-        topBrewersMeta.setPlayerProfile(Bukkit.getServer().createProfile(UUID.fromString("82569b12-c44c-4864-8a73-85a9192ee8f9"), "RedDevel"));
+        if (profileLoaded) {
+            topBrewersMeta.setPlayerProfile(profile);
+        }
         topBrewersMeta.displayName(Component.text("Top Brewers")
             .color(NamedTextColor.GOLD)
             .decoration(TextDecoration.ITALIC, false));
