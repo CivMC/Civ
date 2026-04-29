@@ -265,7 +265,7 @@ public final class BrewIndex extends BasicHack {
             return;
         }
 
-        final ClickableInventory inventory = new ClickableInventory(36, "Top Brewer");
+        final ClickableInventory inventory = new ClickableInventory(36, "Top Brewers");
         for (int index = 0; index < topPlayers.size(); index++) {
             final BrewLeaderboardEntry entry = topPlayers.get(index);
             inventory.setSlot(new DecorationStack(createLeaderboardHead(entry, index + 1)), TOP_BREW_SLOTS[index]);
