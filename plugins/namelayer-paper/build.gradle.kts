@@ -12,4 +12,5 @@ dependencies {
 
     compileOnly(project(":plugins:civmodcore-paper"))
     api(project(":libraries:name-api"))
+    api(project(":libraries:namelayer-sync"))
 }

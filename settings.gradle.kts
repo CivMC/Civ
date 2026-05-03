@@ -14,6 +14,7 @@ plugins {
 include(":ansible")
 
 include(":libraries:name-api")
+include(":libraries:namelayer-sync")
 
 include(":plugins:announcements-velocity")
 include(":plugins:banstick-paper")
