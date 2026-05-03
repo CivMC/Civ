@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -175,12 +176,23 @@ public class GroupManagerDao {
     private static final String getBlackListMembers = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;";
 
     private static final String setGroupColor = "update faction set faction.group_color =? where faction.group_name =?;";
-    private static final String getAllGroupIds = "select group_id from faction_id";
+    private static final String loadAllGroupHeaders = "select f.group_name, f.founder, f.password, f.discipline_flags, "
+        + "fi.group_id, f.last_timestamp, f.group_color from faction f "
+        + "inner join faction_id fi on fi.group_name = f.group_name";
+    private static final String loadAllGroupIds = "SELECT f.group_name, f.group_id, count(DISTINCT fm.member_name) AS sz "
+        + "FROM faction_id f LEFT JOIN faction_member fm ON f.group_id = fm.group_id "
+        + "GROUP BY f.group_name, f.group_id ORDER BY f.group_name, sz DESC";
+    private static final String loadAllMembers = "select fi.group_name, fm.member_name, fm.role from faction_member fm "
+        + "inner join faction_id fi on fi.group_id = fm.group_id";
 
 
     public GroupManagerDao(Logger logger, ManagedDatasource db) {
         this.logger = logger;
         this.db = db;
+    }
+
+    private record GroupHeader(String name, UUID owner, boolean disciplined, String password, int groupId,
+                               long activityTimestamp, String groupColor) {
     }
 
     /**
@@ -1581,6 +1593,77 @@ public class GroupManagerDao {
             logger.log(Level.WARNING, "Unable to prepare query to fully load group ID set", se);
         }
         return null;
+    }
+
+    public List<Group> loadAllGroups() {
+        final Map<String, GroupHeader> headers = new LinkedHashMap<>();
+        final Map<String, List<Integer>> groupIds = new HashMap<>();
+        final Map<String, Map<UUID, PlayerType>> members = new HashMap<>();
+
+        try (Connection connection = db.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(loadAllGroupHeaders);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    final String name = resultSet.getString(1);
+                    if (headers.containsKey(name)) {
+                        continue;
+                    }
+                    final String ownerString = resultSet.getString(2);
+                    final UUID owner = ownerString == null ? null : UUID.fromString(ownerString);
+                    final Timestamp timestamp = resultSet.getTimestamp(6);
+                    headers.put(name, new GroupHeader(
+                        name,
+                        owner,
+                        resultSet.getInt(4) != 0,
+                        resultSet.getString(3),
+                        resultSet.getInt(5),
+                        timestamp == null ? System.currentTimeMillis() : timestamp.getTime(),
+                        resultSet.getString(7)));
+                }
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(loadAllGroupIds);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    groupIds.computeIfAbsent(resultSet.getString(1), key -> new ArrayList<>()).add(resultSet.getInt(2));
+                }
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(loadAllMembers);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    final String uuidString = resultSet.getString(2);
+                    final PlayerType role = PlayerType.getPlayerType(resultSet.getString(3));
+                    if (uuidString == null || role == null) {
+                        continue;
+                    }
+                    members.computeIfAbsent(resultSet.getString(1), key -> new HashMap<>())
+                        .put(UUID.fromString(uuidString), role);
+                }
+            }
+            connection.commit();
+        } catch (final SQLException exception) {
+            logger.log(Level.WARNING, "Unable to bulk load NameLayer groups", exception);
+            return new ArrayList<>();
+        }
+
+        final List<Group> groups = new ArrayList<>(headers.size());
+        for (final GroupHeader header : headers.values()) {
+            final List<Integer> ids = groupIds.get(header.name());
+            final int primaryId = ids == null || ids.isEmpty() ? header.groupId() : ids.get(0);
+            groups.add(new Group(
+                header.name(),
+                header.owner(),
+                header.disciplined(),
+                header.password(),
+                primaryId,
+                header.activityTimestamp(),
+                header.groupColor(),
+                ids,
+                members.get(header.name())));
+        }
+        return groups;
     }
 
     public void setGroupColor(String groupName, String groupColor) {

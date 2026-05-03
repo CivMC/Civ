@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.namelayer.cache.NameLayerGroupCache;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
@@ -30,6 +31,7 @@ public class NameLayerPlugin extends ACivMod {
     private static DefaultGroupHandler defaultGroupHandler;
     private static NameLayerPlugin instance;
     private static AutoAcceptHandler autoAcceptHandler;
+    private static NameLayerGroupCache groupCache;
     private CommandHandler handle;
     private static ManagedDatasource db;
     private static boolean loadGroups = true;
@@ -58,6 +60,7 @@ public class NameLayerPlugin extends ACivMod {
         if (loadGroups) {
             PermissionType.initialize();
             blackList = new BlackList();
+            groupCache = NameLayerGroupCache.loadAll(groupManagerDao, getLogger());
             if (config.getBoolean("groups.interact", true)) {
                 groupManagerDao.loadGroupsInvitations();
                 defaultGroupHandler = new DefaultGroupHandler();
@@ -190,6 +193,10 @@ public class NameLayerPlugin extends ACivMod {
      */
     public static GroupManagerDao getGroupManagerDao() {
         return groupManagerDao;
+    }
+
+    public static NameLayerGroupCache getGroupCache() {
+        return groupCache;
     }
 
     public static void log(Level level, String message) {

@@ -39,7 +39,7 @@ public class Group {
     private TextColor groupColor;
 
     public Group(String name, UUID owner, boolean disciplined,
-                 String password, int id, long activityTimestamp, String groupColor) {
+                  String password, int id, long activityTimestamp, String groupColor) {
         if (db == null) {
             db = NameLayerPlugin.getGroupManagerDao();
         }
@@ -71,6 +71,33 @@ public class Group {
         } else {
             this.ids.add(id);
             this.id = id; // otherwise just use what we're given
+        }
+
+        TextColor color = NamedTextColor.NAMES.value(groupColor);
+        if (color == null) {
+            color = TextColor.fromHexString(groupColor);
+        }
+        this.groupColor = color;
+    }
+
+    public Group(String name, UUID owner, boolean disciplined, String password, int id, long activityTimestamp,
+                 String groupColor, List<Integer> groupIds, Map<UUID, PlayerType> members) {
+        if (db == null) {
+            db = NameLayerPlugin.getGroupManagerDao();
+        }
+
+        this.name = name;
+        this.password = password;
+        this.owner = owner;
+        this.isDisciplined = disciplined;
+        this.activityTimestamp = activityTimestamp;
+        this.id = id;
+        if (groupIds != null) {
+            this.ids.addAll(groupIds);
+        }
+        this.ids.add(id);
+        if (members != null) {
+            this.players.putAll(members);
         }
 
         TextColor color = NamedTextColor.NAMES.value(groupColor);

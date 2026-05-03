@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vg.civcraft.mc.namelayer.cache.NameLayerGroupCache;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.events.GroupCreateEvent;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
@@ -34,6 +35,10 @@ public class GroupManager {
     public GroupManager() {
         groupManagerDao = NameLayerPlugin.getGroupManagerDao();
         permhandle = new PermissionHandler();
+    }
+
+    private static NameLayerGroupCache getCache() {
+        return NameLayerPlugin.getGroupCache();
     }
 
     /**
@@ -177,9 +182,13 @@ public class GroupManager {
         }
         group.prepareForDeletion();
         deleteGroupPerms(group);
-        groupsByName.remove(group.getName());
-        for (int id : group.getGroupIds()) {
-            groupsById.remove(id);
+        if (getCache() != null) {
+            getCache().removeGroup(group);
+        } else {
+            groupsByName.remove(group.getName());
+            for (int id : group.getGroupIds()) {
+                groupsById.remove(id);
+            }
         }
 
         // Call after actual delete to alert listeners that we're done.
@@ -260,37 +269,55 @@ public class GroupManager {
         }
 
         String lower = name.toLowerCase();
-        if (groupsByName.containsKey(lower)) {
-            return groupsByName.get(lower);
-        } else {
-            Group group = groupManagerDao.getGroup(name);
+        if (getCache() != null) {
+            Group group = getCache().getByName(lower);
             if (group != null) {
+                return group;
+            }
+        } else if (groupsByName.containsKey(lower)) {
+            return groupsByName.get(lower);
+        }
+
+        Group group = groupManagerDao.getGroup(name);
+        if (group != null) {
+            if (getCache() != null) {
+                getCache().putGroup(group);
+            } else {
                 groupsByName.put(lower, group);
                 for (int j : group.getGroupIds()) {
                     groupsById.put(j, group);
                 }
-            } else {
-                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name);
             }
-            return group;
+        } else {
+            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name);
         }
+        return group;
     }
 
     public static Group getGroup(int groupId) {
-        if (groupsById.containsKey(groupId)) {
-            return groupsById.get(groupId);
-        } else {
-            Group group = groupManagerDao.getGroup(groupId);
+        if (getCache() != null) {
+            Group group = getCache().getById(groupId);
             if (group != null) {
+                return group;
+            }
+        } else if (groupsById.containsKey(groupId)) {
+            return groupsById.get(groupId);
+        }
+
+        Group group = groupManagerDao.getGroup(groupId);
+        if (group != null) {
+            if (getCache() != null) {
+                getCache().putGroup(group);
+            } else {
                 groupsByName.put(group.getName().toLowerCase(), group);
                 for (int j : group.getGroupIds()) {
                     groupsById.put(j, group);
                 }
-            } else {
-                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId);
             }
-            return group;
+        } else {
+            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId);
         }
+        return group;
     }
 
     public static boolean hasGroup(String groupName) {
@@ -299,7 +326,9 @@ public class GroupManager {
             return false;
         }
 
-        if (!groupsByName.containsKey(groupName.toLowerCase())) {
+        if (getCache() != null) {
+            return getCache().containsName(groupName) || getGroup(groupName.toLowerCase()) != null;
+        } else if (!groupsByName.containsKey(groupName.toLowerCase())) {
             return (getGroup(groupName.toLowerCase()) != null);
         } else {
             return true;
@@ -319,20 +348,32 @@ public class GroupManager {
             return null;
         }
         String lower = name.toLowerCase();
-        if (groupsByName.containsKey(lower)) {
-            return groupsByName.get(lower);
-        } else {
-            Group group = groupManagerDao.getGroup(name);
+        if (getCache() != null) {
+            Group group = getCache().getByName(lower);
             if (group != null) {
+                return group;
+            }
+        } else if (groupsByName.containsKey(lower)) {
+            return groupsByName.get(lower);
+        }
+
+        Group group = groupManagerDao.getGroup(name);
+        if (group != null) {
+            if (getCache() != null) {
+                getCache().putGroup(group);
+            } else {
                 groupsByName.put(lower, group);
                 for (int j : group.getGroupIds()) {
                     groupsById.put(j, group);
                 }
-            } else {
-                group = groupManagerDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
             }
-            return group;
+        } else {
+            group = groupManagerDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
+            if (group != null && getCache() != null) {
+                getCache().putGroup(group);
+            }
         }
+        return group;
     }
 
     /**
@@ -396,6 +437,12 @@ public class GroupManager {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getAllGroupNames failed, caller passed in null", new Exception());
             return new ArrayList<>();
         }
+        if (getCache() != null) {
+            List<String> groups = getCache().getGroupNames(uuid);
+            if (!groups.isEmpty()) {
+                return groups;
+            }
+        }
         return groupManagerDao.getGroupNames(uuid);
     }
 
@@ -434,28 +481,33 @@ public class GroupManager {
         }
 
         Group g = groupsByName.get(group.toLowerCase());
+        if (getCache() != null) {
+            g = getCache().getByName(group);
+        }
         if (g != null) {
             g.setValid(false);
-            List<Integer> k = g.getGroupIds();
-            groupsByName.remove(group.toLowerCase());
-            NameLayerPlugin.getBlackList().removeFromCache(g.getName());
-
-            boolean fail = true;
-            // You have a freaking hashmap, use it.
-            for (int j : k) {
-                if (groupsById.remove(j) != null) {
-                    fail = false;
+            if (getCache() != null) {
+                getCache().removeGroup(g);
+            } else {
+                List<Integer> k = g.getGroupIds();
+                groupsByName.remove(group.toLowerCase());
+                boolean fail = true;
+                for (int j : k) {
+                    if (groupsById.remove(j) != null) {
+                        fail = false;
+                    }
                 }
-            }
 
-            // FALLBACK is hardloop
-            if (fail) { // can't find ID or cache is wrong.
-                for (Group x : groupsById.values()) {
-                    if (x.getName().equals(g.getName())) {
-                        groupsById.remove(x.getGroupId());
+                // FALLBACK is hardloop
+                if (fail) { // can't find ID or cache is wrong.
+                    for (Group x : groupsById.values()) {
+                        if (x.getName().equals(g.getName())) {
+                            groupsById.remove(x.getGroupId());
+                        }
                     }
                 }
             }
+            NameLayerPlugin.getBlackList().removeFromCache(g.getName());
         } else {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Invalidate cache by name failed, unable to find the group " + group);
         }
