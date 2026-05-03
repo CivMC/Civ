@@ -31,7 +31,7 @@ public class NameLayerPlugin extends ACivMod {
     private static DefaultGroupHandler defaultGroupHandler;
     private static NameLayerPlugin instance;
     private static AutoAcceptHandler autoAcceptHandler;
-    private static NameLayerGroupCache groupCache;
+    private static volatile NameLayerGroupCache groupCache;
     private CommandHandler handle;
     private static ManagedDatasource db;
     private static boolean loadGroups = true;
@@ -197,6 +197,10 @@ public class NameLayerPlugin extends ACivMod {
 
     public static NameLayerGroupCache getGroupCache() {
         return groupCache;
+    }
+
+    public static void fullResyncGroupCache() {
+        groupCache = NameLayerGroupCache.loadAll(groupManagerDao, getInstance().getLogger());
     }
 
     public static void log(Level level, String message) {

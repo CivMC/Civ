@@ -2,9 +2,11 @@ package vg.civcraft.mc.namelayer;
 
 import com.google.common.collect.Maps;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -39,6 +41,37 @@ public class GroupManager {
 
     private static NameLayerGroupCache getCache() {
         return NameLayerPlugin.getGroupCache();
+    }
+
+    public static void fullResyncCache() {
+        NameLayerPlugin.fullResyncGroupCache();
+    }
+
+    public static boolean reloadGroupById(final int groupId) {
+        final NameLayerGroupCache cache = getCache();
+        if (cache == null) {
+            return false;
+        }
+        final Group oldGroup = cache.getById(groupId);
+        final Group group = groupManagerDao.getGroup(groupId);
+        cache.replaceGroupById(groupId, group);
+        if (oldGroup != null) {
+            oldGroup.setValid(false);
+        }
+        return true;
+    }
+
+    public static boolean reloadGroupsById(final List<Integer> groupIds) {
+        if (groupIds == null) {
+            return false;
+        }
+        final Set<Integer> uniqueGroupIds = new LinkedHashSet<>(groupIds);
+        for (final int groupId : uniqueGroupIds) {
+            if (!reloadGroupById(groupId)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -507,9 +540,23 @@ public class GroupManager {
                     }
                 }
             }
-            NameLayerPlugin.getBlackList().removeFromCache(g.getName());
         } else {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Invalidate cache by name failed, unable to find the group " + group);
+        }
+    }
+
+    public static void invalidateCache(int groupId) {
+        if (getCache() != null) {
+            Group group = getCache().removeGroupById(groupId);
+            if (group != null) {
+                group.setValid(false);
+            }
+            return;
+        }
+        Group group = groupsById.remove(groupId);
+        if (group != null) {
+            group.setValid(false);
+            groupsByName.remove(group.getName().toLowerCase());
         }
     }
 

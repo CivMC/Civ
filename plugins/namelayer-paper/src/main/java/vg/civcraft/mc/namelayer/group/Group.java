@@ -14,6 +14,7 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,7 @@ public class Group {
     private Set<Group> subgroups = Sets.<Group>newConcurrentHashSet();
     private Map<UUID, PlayerType> players = Maps.<UUID, PlayerType>newHashMap();
     private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
+    private Set<UUID> blacklist = Sets.<UUID>newConcurrentHashSet();
     private long activityTimestamp;
     private TextColor groupColor;
 
@@ -72,6 +74,7 @@ public class Group {
             this.ids.add(id);
             this.id = id; // otherwise just use what we're given
         }
+        this.blacklist.addAll(db.getBlackListMembers(name));
 
         TextColor color = NamedTextColor.NAMES.value(groupColor);
         if (color == null) {
@@ -81,7 +84,7 @@ public class Group {
     }
 
     public Group(String name, UUID owner, boolean disciplined, String password, int id, long activityTimestamp,
-                 String groupColor, List<Integer> groupIds, Map<UUID, PlayerType> members) {
+                 String groupColor, List<Integer> groupIds, Map<UUID, PlayerType> members, Set<UUID> blacklist) {
         if (db == null) {
             db = NameLayerPlugin.getGroupManagerDao();
         }
@@ -98,6 +101,9 @@ public class Group {
         this.ids.add(id);
         if (members != null) {
             this.players.putAll(members);
+        }
+        if (blacklist != null) {
+            this.blacklist.addAll(blacklist);
         }
 
         TextColor color = NamedTextColor.NAMES.value(groupColor);
@@ -143,6 +149,22 @@ public class Group {
             }
         }
         return uuids;
+    }
+
+    public Set<UUID> getBlacklist() {
+        return new HashSet<>(blacklist);
+    }
+
+    public boolean isBlacklisted(UUID uuid) {
+        return blacklist.contains(uuid);
+    }
+
+    public void addBlacklisted(UUID uuid) {
+        blacklist.add(uuid);
+    }
+
+    public void removeBlacklisted(UUID uuid) {
+        blacklist.remove(uuid);
     }
 
     /**
@@ -378,7 +400,7 @@ public class Group {
         if (member != null) {
             return member;
         }
-        if (NameLayerPlugin.getBlackList().isBlacklisted(this, uuid)) {
+        if (isBlacklisted(uuid)) {
             return null;
         }
         return PlayerType.NOT_BLACKLISTED;
@@ -394,7 +416,7 @@ public class Group {
         if (invitee != null) {
             return invitee;
         }
-        if (NameLayerPlugin.getBlackList().isBlacklisted(this, uuid)) {
+        if (isBlacklisted(uuid)) {
             return null;
         }
         return PlayerType.NOT_BLACKLISTED;

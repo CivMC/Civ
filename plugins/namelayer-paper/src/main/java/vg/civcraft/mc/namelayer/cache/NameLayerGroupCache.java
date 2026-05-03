@@ -62,6 +62,18 @@ public final class NameLayerGroupCache {
         }
     }
 
+    public void replaceGroupById(final int groupId, final Group group) {
+        final Group oldGroup = groupsById.get(groupId);
+        if (oldGroup != null) {
+            removeGroup(oldGroup);
+        } else {
+            groupsById.remove(groupId);
+        }
+        if (group != null) {
+            putGroup(group);
+        }
+    }
+
     public void removeGroup(final Group group) {
         if (group == null || group.getName() == null) {
             return;
@@ -81,6 +93,16 @@ public final class NameLayerGroupCache {
                 groupIdsByPlayer.remove(uuid);
             }
         }
+    }
+
+    public Group removeGroupById(final int groupId) {
+        final Group group = groupsById.get(groupId);
+        if (group != null) {
+            removeGroup(group);
+        } else {
+            groupsById.remove(groupId);
+        }
+        return group;
     }
 
     public List<String> getGroupNames(final UUID uuid) {

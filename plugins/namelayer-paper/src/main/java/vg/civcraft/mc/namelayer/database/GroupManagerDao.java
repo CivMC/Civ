@@ -184,6 +184,8 @@ public class GroupManagerDao {
         + "GROUP BY f.group_name, f.group_id ORDER BY f.group_name, sz DESC";
     private static final String loadAllMembers = "select fi.group_name, fm.member_name, fm.role from faction_member fm "
         + "inner join faction_id fi on fi.group_id = fm.group_id";
+    private static final String loadAllBlacklists = "select fi.group_name, b.member_name from blacklist b "
+        + "inner join faction_id fi on fi.group_id = b.group_id";
 
 
     public GroupManagerDao(Logger logger, ManagedDatasource db) {
@@ -1599,6 +1601,7 @@ public class GroupManagerDao {
         final Map<String, GroupHeader> headers = new LinkedHashMap<>();
         final Map<String, List<Integer>> groupIds = new HashMap<>();
         final Map<String, Map<UUID, PlayerType>> members = new HashMap<>();
+        final Map<String, Set<UUID>> blacklists = new HashMap<>();
 
         try (Connection connection = db.getConnection()) {
             connection.setAutoCommit(false);
@@ -1642,6 +1645,18 @@ public class GroupManagerDao {
                         .put(UUID.fromString(uuidString), role);
                 }
             }
+
+            try (PreparedStatement statement = connection.prepareStatement(loadAllBlacklists);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    final String uuidString = resultSet.getString(2);
+                    if (uuidString == null) {
+                        continue;
+                    }
+                    blacklists.computeIfAbsent(resultSet.getString(1), key -> new HashSet<>())
+                        .add(UUID.fromString(uuidString));
+                }
+            }
             connection.commit();
         } catch (final SQLException exception) {
             logger.log(Level.WARNING, "Unable to bulk load NameLayer groups", exception);
@@ -1661,7 +1676,8 @@ public class GroupManagerDao {
                 header.activityTimestamp(),
                 header.groupColor(),
                 ids,
-                members.get(header.name())));
+                members.get(header.name()),
+                blacklists.get(header.name())));
         }
         return groups;
     }
