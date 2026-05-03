@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.events.GroupCreateEvent;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
-import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -176,7 +175,6 @@ public class GroupManager {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete was cancelled for " + groupName);
             return false;
         }
-        // Unlinks subgroups.
         group.prepareForDeletion();
         deleteGroupPerms(group);
         groupsByName.remove(group.getName());
@@ -231,24 +229,7 @@ public class GroupManager {
      * @param toMerge the group to merge in
      */
     public void doneMergeGroup(Group group, Group toMerge) {
-        if (group == null || toMerge == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
-            return;
-        }
-
-        // Merge brings subgroups with, but unlinks the toMerge group out from under any supergroup it had.
-        // This doesn't update the database but simply updates all _impacted_ groups in cache. The database is
-        // already updated for this.
-        for (Group subMerge : toMerge.getSubgroups()) {
-            Group.link(group, subMerge, false);
-        }
-
-        GroupMergeEvent event = new GroupMergeEvent(group, toMerge, true);
-        Bukkit.getPluginManager().callEvent(event);
-
-        // Then invalidate. Updating the cache was proving unreliable; we'll address it later.
-        GroupManager.invalidateCache(group.getName());
-        GroupManager.invalidateCache(toMerge.getName());
+        NameLayerPlugin.log(Level.INFO, "Group merge is disabled because NameLayer groups are flat");
     }
 
     public void mergeGroup(Group group, Group to) {
@@ -256,52 +237,7 @@ public class GroupManager {
     }
 
     public void mergeGroup(final Group group, final Group toMerge, boolean savetodb) {
-        if (group == null || toMerge == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
-            return;
-        } else if (group == toMerge || group.getName().equalsIgnoreCase(toMerge.getName())) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, can't merge the same group into itself", new Exception());
-            return;
-        }
-        GroupMergeEvent event = new GroupMergeEvent(group, toMerge, false);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            NameLayerPlugin.log(Level.INFO, "Group merge event was cancelled for groups: " +
-                group.getName() + " and " + toMerge.getName());
-            return;
-        }
-        group.isValid();
-        group.setDisciplined(true, false);
-        toMerge.setDisciplined(true, false);
-
-        if (savetodb) {
-            // This basically just fires starting events and disciplines groups on target server.
-            // They then wait for merge to complete. Botched merges will lock groups, basically. :shrug:
-
-            NameLayerPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(
-                NameLayerPlugin.getInstance(), new Runnable() {
-
-                    @Override
-                    public void run() {
-                        groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
-                        // At this point, at the DB level all non-overlap members are in target group, name is reset to target,
-                        // unique group header record is removed, and faction_id all point to new name.
-
-                        // We handle supergroup right here right now; does its own mercury message to update in cache.
-                        if (toMerge.getSuperGroup() != null) {
-                            Group sup = toMerge.getSuperGroup();
-                            Group.unlink(sup, toMerge);
-                            // The above handles the need to unlink any supergroup from merge in DB.
-                        }
-
-                        // Subgroup update is handled in doneMerge, as its a cache-only update.
-
-                        deleteGroupPerms(toMerge); // commit perm updates to DB.
-
-                        doneMergeGroup(group, toMerge);
-                    }
-                });
-        }
+        NameLayerPlugin.log(Level.INFO, "Group merge is disabled because NameLayer groups are flat");
     }
 
     public static List<Group> getSubGroups(String name) {
@@ -310,14 +246,7 @@ public class GroupManager {
             return new ArrayList<>();
         }
 
-        List<Group> groups = groupManagerDao.getSubGroups(name);
-        for (Group group : groups) {
-            groupsByName.put(group.getName().toLowerCase(), group);
-            for (int j : group.getGroupIds()) {
-                groupsById.put(j, group);
-            }
-        }
-        return groups;
+        return new ArrayList<>();
     }
 
     /*
@@ -445,29 +374,11 @@ public class GroupManager {
                 return false;
             }
         }
-        return hasPlayerInheritsPerms(group, player, perm);
-    }
-
-    /**
-     * Checks if a player has a permission in a group or one of its parent groups
-     *
-     * @param group  the group, and its parents etc to check
-     * @param player the player
-     * @param perm   the permission to check
-     * @return if the player has the specified permission in a group or one of its parents
-     */
-    private boolean hasPlayerInheritsPerms(Group group, UUID player, PermissionType perm) {
-        while (group != null) {
-            if (group.isOwner(player) && perm.isOwnerPermission()) {
-                return true;
-            }
-            PlayerType type = group.getPlayerType(player);
-            if (type != null && getPermissionforGroup(group).hasPermission(type, perm)) {
-                return true;
-            }
-            group = group.getSuperGroup();
+        if (group.isOwner(player) && perm.isOwnerPermission()) {
+            return true;
         }
-        return false;
+        PlayerType type = group.getPlayerType(player);
+        return type != null && getPermissionforGroup(group).hasPermission(type, perm);
     }
 
     // == PERMISSION HANDLING ============================================================= //

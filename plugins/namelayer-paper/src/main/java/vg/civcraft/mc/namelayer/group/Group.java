@@ -14,12 +14,10 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public class Group {
 
@@ -75,10 +73,6 @@ public class Group {
             this.id = id; // otherwise just use what we're given
         }
 
-        // only get subgroups, supergroups will set themselves
-        for (Group subgroup : GroupManager.getSubGroups(name)) {
-            link(this, subgroup, false);
-        }
         TextColor color = NamedTextColor.NAMES.value(groupColor);
         if (color == null) {
             color = TextColor.fromHexString(groupColor);
@@ -96,10 +90,7 @@ public class Group {
     }
 
     public void prepareForDeletion() {
-        unlink(supergroup, this);
-        for (Group subgroup : subgroups) {
-            unlink(this, subgroup);
-        }
+        // Groups are flat; subgroup links are ignored during deletion.
     }
 
     /**
@@ -219,7 +210,7 @@ public class Group {
      * @return Returns the SubGroups in this group.
      */
     public List<Group> getSubgroups() {
-        return Lists.newArrayList(subgroups);
+        return Lists.newArrayList();
     }
 
     /**
@@ -229,21 +220,21 @@ public class Group {
      * @return Returns true if it has that subgroup.
      */
     public boolean hasSubGroup(Group group) {
-        return subgroups.contains(group);
+        return false;
     }
 
     /**
      * @return Returns the SubGroup for this group if there is one, null otherwise.
      */
     public Group getSuperGroup() {
-        return supergroup;
+        return null;
     }
 
     /**
      * @return Returns if this group has a super group or not.
      */
     public boolean hasSuperGroup() {
-        return supergroup != null;
+        return false;
     }
 
     /**
@@ -254,12 +245,7 @@ public class Group {
      * @return true if it is a supergroup, false otherwise.
      */
     public boolean hasSuperGroup(Group group) {
-        if (supergroup == null) {
-            return false;
-        } else if (supergroup == group) {
-            return true;
-        }
-        return supergroup.hasSuperGroup(group);
+        return false;
     }
 
     /**
@@ -452,31 +438,7 @@ public class Group {
      * @return true if linking succeeded, false otherwise.
      */
     public static boolean link(Group supergroup, Group subgroup, boolean saveToDb) {
-        if (supergroup == null || subgroup == null) {
-            return false;
-        }
-
-        if (supergroup.equals(subgroup)) {
-            return false;
-        }
-
-        if (supergroup.hasSuperGroup(subgroup)) {
-            return false;
-        }
-
-        if (subgroup.hasSuperGroup()) {
-            unlink(subgroup.supergroup, subgroup);
-        }
-        subgroup.supergroup = supergroup;
-
-        if (!supergroup.hasSubGroup(subgroup)) {
-            supergroup.subgroups.add(subgroup);
-        }
-        if (saveToDb) {
-            db.addSubGroup(supergroup.getName(), subgroup.getName());
-        }
-
-        return true;
+        return false;
     }
 
     /**
@@ -489,44 +451,10 @@ public class Group {
     }
 
     public static boolean unlink(Group supergroup, Group subgroup, boolean savetodb) {
-        if (supergroup == null || subgroup == null) {
-            return false;
-        }
-
-        if (subgroup.hasSuperGroup() && subgroup.supergroup.equals(supergroup)) {
-            subgroup.supergroup = null;
-        }
-
-        if (supergroup.hasSubGroup(subgroup)) {
-            supergroup.subgroups.remove(subgroup);
-        }
-
-        if (savetodb) {
-            db.removeSubGroup(supergroup.getName(), subgroup.getName());
-        }
-
-        return true;
+        return false;
     }
 
     public static boolean areLinked(Group supergroup, Group subgroup) {
-        if (supergroup == null || subgroup == null) {
-            return false;
-        }
-        Set<String> names = new HashSet<String>();
-        Group superG = supergroup;
-        while (superG.hasSuperGroup()) {
-            String superGName = superG.getName();
-            if (superGName.equals(subgroup.getName())) {
-                return true;
-            }
-            if (names.contains(superGName)) {
-                NameLayerPlugin.log(Level.WARNING, superGName + " is part of a cycle");
-                //prevent further linking always if a cycle exists
-                return true;
-            }
-            names.add(superGName);
-            superG = superG.getSuperGroup();
-        }
         return false;
     }
 

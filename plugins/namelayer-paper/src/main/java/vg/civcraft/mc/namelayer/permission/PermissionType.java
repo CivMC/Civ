@@ -112,10 +112,6 @@ public class PermissionType {
         registerPermission("PERMS", new ArrayList<>(owner), "Allows modifying permissions for this group");
         //allows deleting the group
         registerPermission("DELETE", new ArrayList<>(owner), "Allows deleting this group");
-        //allows merging the group with another one
-        registerPermission("MERGE", new ArrayList<>(owner), "Allows merging this group into another or merging another group into this one");
-        //allows linking this group to another
-        registerPermission("LINKING", new ArrayList<>(owner), "Allows linking this group to another group as a supergroup or a subgroup");
         //allows opening the gui
         registerPermission("OPEN_GUI", new ArrayList<>(all), "Allows opening the GUI for this group");
 

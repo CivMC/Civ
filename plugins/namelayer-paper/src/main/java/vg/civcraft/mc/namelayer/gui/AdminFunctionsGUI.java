@@ -40,39 +40,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
     public void showScreen() {
         ClickableInventory ci = new ClickableInventory(27, g.getName());
-        // linking
-        ItemStack linkStack = new ItemStack(Material.GOLD_INGOT);
-        ItemUtils.setDisplayName(linkStack, ChatColor.GOLD + "Link group");
-        Clickable linkClick;
-
-        ItemUtils.addLore(linkStack, ChatColor.RED
-            + "Sorry, group linking is not a currently supported feature.");
-        linkClick = new DecorationStack(linkStack);
-
-//        ci.setSlot(linkClick, 10);
-        // merging
-        ItemStack mergeStack = new ItemStack(Material.SPONGE);
-        ItemUtils.setDisplayName(mergeStack, ChatColor.GOLD + "Merge group");
-        Clickable mergeClick;
-
-        ItemUtils.addLore(mergeStack, ChatColor.RED
-            + "Sorry, group merging is not a currently supported feature.");
-        mergeClick = new DecorationStack(mergeStack);
-
-//		if (gm.hasAccess(g, p.getUniqueId(),
-//				PermissionType.getPermission("MERGE"))) {
-//			mergeClick = new Clickable(mergeStack) {
-//				@Override
-//				public void clicked(Player p) {
-//					showMergingMenu();
-//				}
-//			};
-//		} else {
-//			ItemUtils.addLore(mergeStack, ChatColor.RED
-//					+ "You don't have permission to do this");
-//			mergeClick = new DecorationStack(mergeStack);
-//		}
-//        ci.setSlot(mergeClick, 12);
         ItemStack colorChangeStack = new ItemStack(Material.WHITE_DYE);
         ItemUtils.setComponentDisplayName(colorChangeStack,
             Component.text("Change group color of ", NamedTextColor.GOLD)
@@ -138,16 +105,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
             }
         }, 22);
         ci.showInventory(p);
-    }
-
-//	private void showLinkingMenu() {
-//		LinkingGUI lgui = new LinkingGUI(g, p, this);
-//		lgui.showScreen();
-//	}
-
-    private void showMergingMenu() {
-        MergeGUI mGui = new MergeGUI(g, p, this);
-        mGui.showScreen();
     }
 
     private void showTransferingMenu() {

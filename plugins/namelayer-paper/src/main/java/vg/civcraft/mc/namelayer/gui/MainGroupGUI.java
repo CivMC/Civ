@@ -129,7 +129,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
         // options
 
-        ci.setSlot(createInheritedMemberToggle(), 46);
         ci.setSlot(createInviteToggle(), 47);
         ci.setSlot(setupMemberTypeToggle(PlayerType.MEMBERS, showMembers), 48);
 
@@ -170,11 +169,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
      */
     private List<Clickable> constructClickables() {
         List<Clickable> clicks = new ArrayList<>();
-        if (showInheritedMembers) {
-            if (g.hasSuperGroup()) {
-                clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
-            }
-        }
         if (showBlacklist) {
             final BlackList black = NameLayerPlugin.getBlackList();
             for (final UUID uuid : black.getBlacklist(g)) {
@@ -692,28 +686,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
         return c;
     }
 
-    private Clickable createInheritedMemberToggle() {
-        boolean canToggle = gm.hasAccess(g, p.getUniqueId(),
-            PermissionType.getPermission("GROUPSTATS"));
-        ItemStack is = MenuUtils.toggleButton(showInheritedMembers,
-            ChatColor.GOLD + "Show inherited members", canToggle);
-        Clickable c;
-        if (canToggle) {
-            c = new Clickable(is) {
-
-                @Override
-                public void clicked(Player p) {
-                    showInheritedMembers = !showInheritedMembers;
-                    showScreen();
-
-                }
-            };
-        } else {
-            c = new DecorationStack(is);
-        }
-        return c;
-    }
-
     private Clickable createInviteToggle() {
         ItemStack is = MenuUtils.toggleButton(showInvites, ChatColor.GOLD
             + "Show invited players", true);
@@ -1181,37 +1153,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
             return res.substring(0, 1).toUpperCase() + res.substring(1);
         }
         return res;
-    }
-
-    private List<Clickable> getRecursiveInheritedMembers(Group g) {
-        List<Clickable> clicks = new ArrayList<>();
-        if (g.hasSuperGroup()) {
-            clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
-        }
-        for (UUID uuid : g.getAllMembers()) {
-            ItemStack is;
-            switch (g.getPlayerType(uuid)) {
-                case MEMBERS:
-                    is = new ItemStack(Material.LEATHER_CHESTPLATE);
-                    break;
-                case MODS:
-                    is = modStack();
-                    break;
-                case ADMINS:
-                    is = new ItemStack(Material.IRON_CHESTPLATE);
-                    break;
-                case OWNER:
-                    is = new ItemStack(Material.DIAMOND_CHESTPLATE);
-                    break;
-                default:
-                    continue;
-            }
-            ItemUtils.setDisplayName(is, NameLayerAPI.getCurrentName(uuid));
-            ItemUtils.addLore(is, ChatColor.AQUA + "Inherited "
-                + getRankName(uuid) + " from " + g.getName());
-            clicks.add(new DecorationStack(is));
-        }
-        return clicks;
     }
 
     private boolean hasPermissionToViewAnything() {

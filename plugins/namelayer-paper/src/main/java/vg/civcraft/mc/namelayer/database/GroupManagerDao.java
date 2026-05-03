@@ -804,105 +804,27 @@ public class GroupManagerDao {
     }
 
     public void addSubGroupAsync(final String group, final String subGroup) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-
-            @Override
-            public void run() {
-                addSubGroup(group, subGroup);
-            }
-
-        });
+        logger.log(Level.INFO, "Subgroups are disabled; ignoring subgroup add for " + group + " -> " + subGroup);
     }
 
     public void addSubGroup(String group, String subGroup) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement addSubGroup = connection.prepareStatement(GroupManagerDao.addSubGroup)) {
-            addSubGroup.setString(1, subGroup);
-            addSubGroup.setString(2, group);
-            addSubGroup.executeUpdate();
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Problem adding subgroup " + subGroup
-                + " to group " + group, e);
-        }
-        removeCycles();
+        logger.log(Level.INFO, "Subgroups are disabled; ignoring subgroup add for " + group + " -> " + subGroup);
     }
 
     public List<Group> getSubGroups(String group) {
-        List<Group> groups = new ArrayList<Group>();
-        List<String> subgroups = Lists.newArrayList();
-        try (Connection connection = db.getConnection();
-             PreparedStatement getSubGroups = connection.prepareStatement(GroupManagerDao.getSubGroups)) {
-            getSubGroups.setString(1, group);
-
-            try (ResultSet set = getSubGroups.executeQuery();) {
-                while (set.next()) {
-                    subgroups.add(set.getString(1));
-                }
-            }
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Problem getting subgroups for group " + group, e);
-        }
-        for (String groupname : subgroups) {
-            Group g = null;
-            if (GroupManager.hasGroup(groupname)) {
-                g = GroupManager.getGroup(groupname);
-            } else {
-                g = getGroup(groupname);
-            }
-
-            if (g != null) {
-                groups.add(g);
-            }
-        }
-        return groups;
+        return new ArrayList<>();
     }
 
     public Group getSuperGroup(String group) {
-        String supergroup = null;
-        try (Connection connection = db.getConnection();
-             PreparedStatement getSuperGroup = connection.prepareStatement(GroupManagerDao.getSuperGroup)) {
-            getSuperGroup.setString(1, group);
-            try (ResultSet set = getSuperGroup.executeQuery();) {
-                if (!set.next()) {
-                    return null;
-                }
-                supergroup = set.getString(1);
-            } catch (Exception e) {
-                logger.log(Level.WARNING, "Problem finding or getting superGroup for group " + group, e);
-                return null;
-            }
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Problem getting superGroup for group " + group, e);
-            return null;
-        }
-        if (GroupManager.hasGroup(supergroup)) {
-            return GroupManager.getGroup(supergroup);
-        } else {
-            return getGroup(supergroup);
-        }
+        return null;
     }
 
     public void removeSubGroupAsync(final String group, final String subgroup) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-
-            @Override
-            public void run() {
-                removeSubGroup(group, subgroup);
-            }
-
-        });
+        logger.log(Level.INFO, "Subgroups are disabled; ignoring subgroup removal for " + group + " -> " + subgroup);
     }
 
     public void removeSubGroup(String group, String subGroup) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement removeSubGroup = connection.prepareStatement(GroupManagerDao.removeSubGroup)) {
-            removeSubGroup.setString(1, group);
-            removeSubGroup.setString(2, subGroup);
-            removeSubGroup.executeUpdate();
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Removing subgroup " + subGroup
-                + " from group " + group, e);
-        }
+        logger.log(Level.INFO, "Subgroups are disabled; ignoring subgroup removal for " + group + " -> " + subGroup);
     }
 
     public void addAllPermissions(int groupId, Map<PlayerType, List<PermissionType>> perms) {
@@ -1114,26 +1036,11 @@ public class GroupManagerDao {
     }
 
     public void mergeGroupAsync(final String groupname, final String tomerge) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-
-            @Override
-            public void run() {
-                mergeGroup(groupname, tomerge);
-            }
-
-        });
+        logger.log(Level.INFO, "Group merging is disabled; ignoring merge for " + tomerge + " into " + groupname);
     }
 
     public void mergeGroup(String groupName, String toMerge) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement mergeGroup = connection.prepareStatement(GroupManagerDao.mergeGroup);) {
-            mergeGroup.setString(1, groupName);
-            mergeGroup.setString(2, toMerge);
-            mergeGroup.execute();
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Problem merging group " + toMerge + " into " + groupName, e);
-        }
-        removeCycles();
+        logger.log(Level.INFO, "Group merging is disabled; ignoring merge for " + toMerge + " into " + groupName);
     }
 
     public void removeCycles() {
