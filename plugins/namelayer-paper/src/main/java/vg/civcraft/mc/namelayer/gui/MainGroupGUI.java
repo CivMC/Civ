@@ -854,24 +854,35 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                     return;
                                 }
                                 if (newPassword.equals("delete")) {
-                                    g.setPassword(null);
-                                    p.sendMessage(ChatColor.GREEN
-                                        + "Removed the password from the group");
                                     NameLayerPlugin.log(Level.INFO, p.getName()
                                         + " removed password "
                                         + " for group " + g.getName()
                                         + " via the gui");
+                                    g.setPasswordAsync(p.getUniqueId(), null, result -> {
+                                        if (result.success()) {
+                                            p.sendMessage(ChatColor.GREEN
+                                                + "Removed the password from the group");
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + result.message());
+                                        }
+                                        showScreen();
+                                    });
                                 } else {
                                     NameLayerPlugin.log(Level.INFO, p.getName()
                                         + " set password to " + newPassword
                                         + " for group " + g.getName()
                                         + " via the gui");
-                                    g.setPassword(newPassword);
-                                    p.sendMessage(ChatColor.GREEN
-                                        + "Set new password: "
-                                        + ChatColor.YELLOW + newPassword);
+                                    g.setPasswordAsync(p.getUniqueId(), newPassword, result -> {
+                                        if (result.success()) {
+                                            p.sendMessage(ChatColor.GREEN
+                                                + "Set new password: "
+                                                + ChatColor.YELLOW + newPassword);
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + result.message());
+                                        }
+                                        showScreen();
+                                    });
                                 }
-                                showScreen();
                             }
                         };
                     } else {

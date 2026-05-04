@@ -28,6 +28,11 @@ public final class NameLayerWriteCoordinator {
     private static final String REMOVE_PERMISSION = "DELETE FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ?";
     private static final String SET_MEMBER_ROLE = "UPDATE faction_member SET role = ? WHERE group_id = ? AND member_name = ?";
     private static final String REMOVE_MEMBER = "DELETE FROM faction_member WHERE group_id = ? AND member_name = ?";
+    private static final String SET_GROUP_COLOR = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.group_color = ? WHERE fi.group_id = ?";
+    private static final String SET_GROUP_PASSWORD = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.password = ? WHERE fi.group_id = ?";
+    private static final String SET_GROUP_DISCIPLINE = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.discipline_flags = ? WHERE fi.group_id = ?";
+    private static final String SET_GROUP_OWNER = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.founder = ? WHERE fi.group_id = ?";
+    private static final String SET_OWNER_MEMBER_ROLE = "UPDATE faction_member SET role = 'OWNER' WHERE group_id = ? AND member_name = ?";
     private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
 
     private final DataSource dataSource;
@@ -50,12 +55,108 @@ public final class NameLayerWriteCoordinator {
             case REMOVE_PERMISSION -> handlePermissionWrite(request, REMOVE_PERMISSION);
             case SET_MEMBER_ROLE -> handleSetMemberRole(request);
             case REMOVE_MEMBER -> handleRemoveMember(request);
+            case SET_GROUP_COLOR -> handleMetadataWrite(request, SET_GROUP_COLOR, "EDIT_COLOR", MetadataWrite.ValueType.STRING);
+            case SET_GROUP_PASSWORD -> handleMetadataWrite(request, SET_GROUP_PASSWORD, "PASSWORD", MetadataWrite.ValueType.NULLABLE_STRING);
+            case SET_GROUP_DISCIPLINE -> handleMetadataWrite(request, SET_GROUP_DISCIPLINE, null, MetadataWrite.ValueType.BOOLEAN_INT);
+            case SET_GROUP_OWNER -> handleSetGroupOwner(request);
             default -> NameLayerWriteResponse.failure(
                 request.requestId(),
                 NameLayerWriteFailureCode.UNKNOWN_OPERATION,
                 "NameLayer proxy write operation is not implemented yet: " + request.operation()
             );
         };
+    }
+
+    private NameLayerWriteResponse handleMetadataWrite(
+        final NameLayerWriteRequest request,
+        final String sql,
+        final String permissionName,
+        final MetadataWrite.ValueType valueType
+    ) {
+        final MetadataWrite metadataWrite;
+        try {
+            metadataWrite = MetadataWrite.from(request.arguments(), valueType);
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, metadataWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                if (!metadataWrite.adminOverride() && permissionName != null && !hasRoleEditAccess(connection, metadataWrite.groupId(), request.actorUuid(), permissionName)) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have metadata edit access");
+                }
+                if (!metadataWrite.adminOverride() && permissionName == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Metadata write requires admin authorization");
+                }
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    metadataWrite.bindValue(statement, 1);
+                    statement.setInt(2, metadataWrite.groupId());
+                    statement.executeUpdate();
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(metadataWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(metadataWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer metadata write failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleSetGroupOwner(final NameLayerWriteRequest request) {
+        final OwnerWrite ownerWrite;
+        try {
+            ownerWrite = OwnerWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, ownerWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                if (!ownerWrite.adminOverride() && !isGroupOwner(connection, ownerWrite.groupId(), request.actorUuid())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Only the owner can transfer group ownership");
+                }
+                if (getMemberRole(connection, ownerWrite.groupId(), ownerWrite.ownerUuid()) == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.MEMBER_NOT_FOUND, "New owner must be a group member");
+                }
+                try (PreparedStatement statement = connection.prepareStatement(SET_GROUP_OWNER)) {
+                    statement.setString(1, ownerWrite.ownerUuid().toString());
+                    statement.setInt(2, ownerWrite.groupId());
+                    statement.executeUpdate();
+                }
+                try (PreparedStatement statement = connection.prepareStatement(SET_OWNER_MEMBER_ROLE)) {
+                    statement.setInt(1, ownerWrite.groupId());
+                    statement.setString(2, ownerWrite.ownerUuid().toString());
+                    statement.executeUpdate();
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(ownerWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(ownerWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer owner transfer failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
     }
 
     private NameLayerWriteResponse handleSetMemberRole(final NameLayerWriteRequest request) {
@@ -402,6 +503,51 @@ public final class NameLayerWriteCoordinator {
                 throw new IllegalArgumentException("role cannot be OWNER for member role writes");
             }
             return new MemberRoleWrite(memberWrite.groupId(), memberWrite.memberUuid(), role);
+        }
+    }
+
+    private record MetadataWrite(int groupId, String value, boolean adminOverride, ValueType valueType) {
+
+        private static MetadataWrite from(final Map<String, String> arguments, final ValueType valueType) {
+            final int groupId = PermissionWrite.parsePositiveInt(arguments, "groupId");
+            final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
+            final String value = switch (valueType) {
+                case STRING -> PermissionWrite.requireNonBlank(arguments, "value");
+                case NULLABLE_STRING -> Boolean.parseBoolean(arguments.getOrDefault("hasValue", "true"))
+                    ? arguments.getOrDefault("value", "")
+                    : null;
+                case BOOLEAN_INT -> {
+                    final String rawValue = PermissionWrite.requireNonBlank(arguments, "value");
+                    if (!"true".equalsIgnoreCase(rawValue) && !"false".equalsIgnoreCase(rawValue)) {
+                        throw new IllegalArgumentException("value must be true or false");
+                    }
+                    yield rawValue;
+                }
+            };
+            return new MetadataWrite(groupId, value, adminOverride, valueType);
+        }
+
+        private void bindValue(final PreparedStatement statement, final int index) throws SQLException {
+            switch (valueType) {
+                case STRING, NULLABLE_STRING -> statement.setString(index, value);
+                case BOOLEAN_INT -> statement.setInt(index, Boolean.parseBoolean(value) ? 1 : 0);
+            }
+        }
+
+        private enum ValueType {
+            STRING,
+            NULLABLE_STRING,
+            BOOLEAN_INT
+        }
+    }
+
+    private record OwnerWrite(int groupId, UUID ownerUuid, boolean adminOverride) {
+
+        private static OwnerWrite from(final Map<String, String> arguments) {
+            final int groupId = PermissionWrite.parsePositiveInt(arguments, "groupId");
+            final UUID ownerUuid = MemberWrite.parseUuid(arguments, "ownerUuid");
+            final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
+            return new OwnerWrite(groupId, ownerUuid, adminOverride);
         }
     }
 }

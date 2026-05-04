@@ -583,6 +583,143 @@ public class Group {
         }
     }
 
+    public void setPasswordAsync(
+        final UUID actorUuid,
+        final String password,
+        final Consumer<MetadataWriteResult> callback
+    ) {
+        final Map<String, String> arguments = new java.util.HashMap<>();
+        arguments.put("groupId", Integer.toString(getGroupId()));
+        arguments.put("hasValue", Boolean.toString(password != null));
+        if (password != null) {
+            arguments.put("value", password);
+        }
+        sendMetadataWrite(actorUuid, NameLayerWriteOperation.SET_GROUP_PASSWORD, arguments, callback);
+    }
+
+    public void setOwnerAsync(
+        final UUID actorUuid,
+        final UUID ownerUuid,
+        final boolean adminOverride,
+        final Consumer<MetadataWriteResult> callback
+    ) {
+        sendMetadataWrite(
+            actorUuid,
+            NameLayerWriteOperation.SET_GROUP_OWNER,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "ownerUuid", ownerUuid.toString(),
+                "adminOverride", Boolean.toString(adminOverride)
+            ),
+            callback
+        );
+    }
+
+    public void setDisciplinedAsync(
+        final UUID actorUuid,
+        final boolean disciplined,
+        final boolean adminOverride,
+        final Consumer<MetadataWriteResult> callback
+    ) {
+        sendMetadataWrite(
+            actorUuid,
+            NameLayerWriteOperation.SET_GROUP_DISCIPLINE,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "value", Boolean.toString(disciplined),
+                "adminOverride", Boolean.toString(adminOverride)
+            ),
+            callback
+        );
+    }
+
+    public void setGroupColorAsync(
+        final UUID actorUuid,
+        final TextColor groupColor,
+        final boolean adminOverride,
+        final Consumer<MetadataWriteResult> callback
+    ) {
+        sendMetadataWrite(
+            actorUuid,
+            NameLayerWriteOperation.SET_GROUP_COLOR,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "value", groupColor.toString(),
+                "adminOverride", Boolean.toString(adminOverride)
+            ),
+            callback
+        );
+    }
+
+    private void sendMetadataWrite(
+        final UUID actorUuid,
+        final NameLayerWriteOperation operation,
+        final Map<String, String> arguments,
+        final Consumer<MetadataWriteResult> callback
+    ) {
+        final NameLayerWriteClient writeClient = NameLayerPlugin.getWriteClient();
+        if (writeClient == null) {
+            completeMetadataWriteOnMain(callback, MetadataWriteResult.failure("NameLayer proxy write client is unavailable"));
+            return;
+        }
+        final NameLayerPlugin plugin = NameLayerPlugin.getInstance();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final NameLayerWriteRequest request = NameLayerWriteRequest.create(
+                plugin.getConfig().getString("rabbitmq.serverId", "paper"),
+                actorUuid,
+                operation,
+                arguments
+            );
+            writeClient.send(request).whenComplete((response, error) -> handleMetadataWriteResponse(response, error, callback));
+        });
+    }
+
+    private void handleMetadataWriteResponse(
+        final NameLayerWriteResponse response,
+        final Throwable error,
+        final Consumer<MetadataWriteResult> callback
+    ) {
+        if (error != null) {
+            NameLayerPlugin.getInstance().getLogger().log(Level.WARNING, "NameLayer metadata proxy write failed", error);
+            completeMetadataWriteOnMain(callback, MetadataWriteResult.failure("NameLayer proxy write failed"));
+            return;
+        }
+        if (!response.success()) {
+            completeMetadataWriteOnMain(callback, MetadataWriteResult.failure(response.message()));
+            return;
+        }
+        final boolean reloadSucceeded;
+        if (response.requiresFullResync()) {
+            NameLayerPlugin.fullResyncGroupCache();
+            reloadSucceeded = true;
+        } else {
+            final Set<Integer> affectedGroupIds = response.affectedGroupIds().isEmpty()
+                ? Set.of(getGroupId())
+                : response.affectedGroupIds();
+            reloadSucceeded = GroupManager.reloadGroupsById(List.copyOf(affectedGroupIds));
+        }
+        if (!reloadSucceeded) {
+            completeMetadataWriteOnMain(callback, MetadataWriteResult.failure("Metadata write succeeded, but local cache refresh failed"));
+            return;
+        }
+        completeMetadataWriteOnMain(callback, MetadataWriteResult.successResult());
+    }
+
+    private void completeMetadataWriteOnMain(final Consumer<MetadataWriteResult> callback, final MetadataWriteResult result) {
+        Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> callback.accept(result));
+    }
+
+    public record MetadataWriteResult(boolean success, String message) {
+
+        public static MetadataWriteResult successResult() {
+            return new MetadataWriteResult(true, "");
+        }
+
+        public static MetadataWriteResult failure(final String message) {
+            return new MetadataWriteResult(false, message == null || message.isBlank() ? "Metadata write failed" : message);
+        }
+    }
+
     public void removeAllMembers() {
         removeAllMembers(true);
     }

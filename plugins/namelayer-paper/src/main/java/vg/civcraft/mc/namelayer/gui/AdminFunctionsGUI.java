@@ -285,8 +285,16 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                         DialogManager.forceEndDialog(p.getUniqueId());
                         return;
                     }
-                    g.setGroupColor(color);
-                    p.sendMessage(Component.text("The color of " + g.getName() + " was changed to ", NamedTextColor.GREEN).append(g.getGroupNameColored()));
+                    final TextColor finalColor = color;
+                    g.setGroupColorAsync(p.getUniqueId(), finalColor, true, result -> {
+                        if (result.success()) {
+                            p.sendMessage(Component.text("The color of " + g.getName() + " was changed to ", NamedTextColor.GREEN)
+                                .append(Component.text(g.getName(), finalColor)));
+                            showScreen();
+                        } else {
+                            p.sendMessage(Component.text(result.message(), NamedTextColor.RED));
+                        }
+                    });
                     this.end();
                     DialogManager.forceEndDialog(p.getUniqueId());
                 }
