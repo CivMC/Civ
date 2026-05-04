@@ -299,6 +299,9 @@ public class NameLayerPlugin extends ACivMod {
         if (defaultGroupHandler != null) {
             defaultGroupHandler.reloadAll();
         }
+        if (autoAcceptHandler != null) {
+            autoAcceptHandler.reloadAll(groupManagerDao.loadAllAutoAccept());
+        }
     }
 
     public static void log(Level level, String message) {

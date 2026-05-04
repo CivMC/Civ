@@ -38,6 +38,8 @@ public final class NameLayerWriteCoordinator {
     private static final String REMOVE_BLACKLIST = "DELETE FROM blacklist WHERE group_id = ? AND member_name = ?";
     private static final String IS_BLACKLISTED = "SELECT 1 FROM blacklist WHERE group_id = ? AND member_name = ? LIMIT 1";
     private static final String IS_AUTO_ACCEPT = "SELECT 1 FROM toggleAutoAccept WHERE uuid = ? LIMIT 1";
+    private static final String ADD_AUTO_ACCEPT = "INSERT IGNORE INTO toggleAutoAccept(uuid) VALUES (?)";
+    private static final String REMOVE_AUTO_ACCEPT = "DELETE FROM toggleAutoAccept WHERE uuid = ?";
     private static final String ADD_MEMBER = "INSERT INTO faction_member(group_id, member_name, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE role = VALUES(role)";
     private static final String ADD_INVITATION = "INSERT INTO group_invitation(uuid, groupName, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE role = VALUES(role), date = NOW()";
     private static final String GET_INVITATION_ROLE = "SELECT role FROM group_invitation WHERE uuid = ? AND groupName = ? LIMIT 1";
@@ -79,6 +81,7 @@ public final class NameLayerWriteCoordinator {
             case REMOVE_INVITATION -> handleRemoveInvitation(request);
             case ACCEPT_INVITATION -> handleAcceptInvitation(request);
             case SET_DEFAULT_GROUP -> handleSetDefaultGroup(request);
+            case SET_AUTO_ACCEPT -> handleSetAutoAccept(request);
             default -> NameLayerWriteResponse.failure(
                 request.requestId(),
                 NameLayerWriteFailureCode.UNKNOWN_OPERATION,
@@ -382,6 +385,36 @@ public final class NameLayerWriteCoordinator {
             }
         } catch (final SQLException exception) {
             logger.error("NameLayer default group write failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleSetAutoAccept(final NameLayerWriteRequest request) {
+        final boolean autoAccept;
+        try {
+            final String value = PermissionWrite.requireNonBlank(request.arguments(), "value");
+            if (!"true".equalsIgnoreCase(value) && !"false".equalsIgnoreCase(value)) {
+                throw new IllegalArgumentException("value must be true or false");
+            }
+            autoAccept = Boolean.parseBoolean(value);
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(autoAccept ? ADD_AUTO_ACCEPT : REMOVE_AUTO_ACCEPT)) {
+                statement.setString(1, request.actorUuid().toString());
+                statement.executeUpdate();
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishFullInvalidation();
+                return NameLayerWriteResponse.success(request.requestId(), Set.of());
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer auto-accept write failed", exception);
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
         }
     }

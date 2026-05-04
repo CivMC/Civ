@@ -73,20 +73,26 @@ public class GUIGroupOverview {
 
             @Override
             public void clicked(Player p) {
-                if (autoAccept) {
-                    NameLayerPlugin.log(Level.INFO,
-                        p.getName() + " turned autoaccept for invites off "
-                            + " via the gui");
-                    p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
-                } else {
-                    NameLayerPlugin.log(Level.INFO,
-                        p.getName() + " turned autoaccept for invites on "
-                            + " via the gui");
-                    p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
-                }
-                autoAccept = !autoAccept;
-                NameLayerPlugin.getAutoAcceptHandler().toggleAutoAccept(p.getUniqueId(), true);
-                showScreen();
+                final boolean enable = !autoAccept;
+                NameLayerPlugin.getAutoAcceptHandler().setAutoAcceptAsync(p.getUniqueId(), enable, result -> {
+                    if (result.success()) {
+                        autoAccept = enable;
+                        if (enable) {
+                            p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
+                            NameLayerPlugin.log(Level.INFO,
+                                p.getName() + " turned autoaccept for invites on "
+                                    + " via the gui");
+                        } else {
+                            p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
+                            NameLayerPlugin.log(Level.INFO,
+                                p.getName() + " turned autoaccept for invites off "
+                                    + " via the gui");
+                        }
+                    } else {
+                        p.sendMessage(ChatColor.RED + result.message());
+                    }
+                    showScreen();
+                });
             }
         };
         ci.setSlot(toggleClick, 48);

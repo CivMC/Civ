@@ -24,11 +24,17 @@ public class ToggleAutoAcceptInvites extends BaseCommandMiddle {
         }
         Player p = (Player) sender;
         UUID uuid = NameLayerAPI.getUUID(p.getName());
-        if (handler.getAutoAccept(uuid)) {
-            p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
-        } else {
-            p.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
-        }
-        handler.toggleAutoAccept(uuid, true);
+        final boolean enable = !handler.getAutoAccept(uuid);
+        handler.setAutoAcceptAsync(uuid, enable, result -> {
+            if (!result.success()) {
+                p.sendMessage(ChatColor.RED + result.message());
+                return;
+            }
+            if (enable) {
+                p.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
+            } else {
+                p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
+            }
+        });
     }
 }
