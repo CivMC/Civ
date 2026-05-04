@@ -48,17 +48,7 @@ public class GroupManager {
     }
 
     public static boolean reloadGroupById(final int groupId) {
-        final NameLayerGroupCache cache = getCache();
-        if (cache == null) {
-            return false;
-        }
-        final Group oldGroup = cache.getById(groupId);
-        final Group group = groupManagerDao.getGroup(groupId);
-        cache.replaceGroupById(groupId, group);
-        if (oldGroup != null) {
-            oldGroup.setValid(false);
-        }
-        return true;
+        return reloadGroupsById(List.of(groupId));
     }
 
     public static boolean reloadGroupsById(final List<Integer> groupIds) {
@@ -66,9 +56,19 @@ public class GroupManager {
             return false;
         }
         final Set<Integer> uniqueGroupIds = new LinkedHashSet<>(groupIds);
+        final Map<Integer, Group> groups = groupManagerDao.loadGroupsByIds(uniqueGroupIds);
+        if (groups == null) {
+            return false;
+        }
+        final NameLayerGroupCache cache = getCache();
+        if (cache == null) {
+            return false;
+        }
         for (final int groupId : uniqueGroupIds) {
-            if (!reloadGroupById(groupId)) {
-                return false;
+            final Group oldGroup = cache.getById(groupId);
+            cache.replaceGroupById(groupId, groups.get(groupId));
+            if (oldGroup != null) {
+                oldGroup.setValid(false);
             }
         }
         return true;

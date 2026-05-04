@@ -23,6 +23,8 @@ import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+import vg.civcraft.mc.namelayer.rabbitmq.NameLayerInvalidationConsumer;
+import vg.civcraft.mc.namelayer.rabbitmq.NameLayerRabbitMqConfig;
 
 public class NameLayerPlugin extends ACivMod {
 
@@ -38,6 +40,7 @@ public class NameLayerPlugin extends ACivMod {
     private static int groupLimit = 10;
     private static boolean createGroupOnFirstJoin;
     private FileConfiguration config;
+    private NameLayerInvalidationConsumer invalidationConsumer;
 
     @Override
     public void onEnable() {
@@ -61,6 +64,7 @@ public class NameLayerPlugin extends ACivMod {
             PermissionType.initialize();
             blackList = new BlackList();
             groupCache = NameLayerGroupCache.loadAll(groupManagerDao, getLogger());
+            startInvalidationConsumer();
             if (config.getBoolean("groups.interact", true)) {
                 groupManagerDao.loadGroupsInvitations();
                 defaultGroupHandler = new DefaultGroupHandler();
@@ -72,7 +76,32 @@ public class NameLayerPlugin extends ACivMod {
 
     @Override
     public void onDisable() {
+        if (invalidationConsumer != null) {
+            invalidationConsumer.close();
+        }
         super.onDisable();
+    }
+
+    private void startInvalidationConsumer() {
+        final NameLayerRabbitMqConfig rabbitMqConfig;
+        try {
+            rabbitMqConfig = NameLayerRabbitMqConfig.from(config.getConfigurationSection("rabbitmq"));
+        } catch (final IllegalArgumentException exception) {
+            getLogger().log(Level.SEVERE, "Invalid NameLayer RabbitMQ configuration", exception);
+            return;
+        }
+        if (!rabbitMqConfig.enabled()) {
+            getLogger().log(Level.INFO, "NameLayer RabbitMQ invalidation consumer is disabled");
+            return;
+        }
+        invalidationConsumer = new NameLayerInvalidationConsumer(
+            rabbitMqConfig.connectionFactory(),
+            rabbitMqConfig.serverId(),
+            getLogger()
+        );
+        if (!invalidationConsumer.start()) {
+            getLogger().log(Level.SEVERE, "NameLayer RabbitMQ invalidation consumer failed to start");
+        }
     }
 
     public static NameLayerPlugin getInstance() {
