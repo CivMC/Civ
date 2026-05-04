@@ -9,6 +9,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.zaxxer.hikari.HikariDataSource;
 import java.nio.file.Path;
 import net.civmc.namelayer.velocity.config.NameLayerVelocityConfig;
+import net.civmc.namelayer.velocity.rabbitmq.NameLayerInvalidationPublisher;
 import net.civmc.namelayer.velocity.rabbitmq.NameLayerWriteRequestConsumer;
 import net.civmc.namelayer.velocity.write.NameLayerWriteCoordinator;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ public final class NameLayerVelocityPlugin {
     private final Logger logger;
     private final Path dataDirectory;
     private HikariDataSource dataSource;
+    private NameLayerInvalidationPublisher invalidationPublisher;
     private NameLayerWriteRequestConsumer writeRequestConsumer;
 
     @Inject
@@ -41,7 +43,12 @@ public final class NameLayerVelocityPlugin {
         }
 
         dataSource = config.database().createDataSource();
-        final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(dataSource, logger);
+        invalidationPublisher = new NameLayerInvalidationPublisher(config.rabbitMq().connectionFactory(), logger);
+        if (!invalidationPublisher.start()) {
+            logger.error("NameLayer Velocity failed to start RabbitMQ invalidation publisher");
+            return;
+        }
+        final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(dataSource, invalidationPublisher, logger);
         writeRequestConsumer = new NameLayerWriteRequestConsumer(config.rabbitMq().connectionFactory(), coordinator, logger);
         if (!writeRequestConsumer.start()) {
             logger.error("NameLayer Velocity failed to start RabbitMQ write request consumer");
@@ -52,6 +59,9 @@ public final class NameLayerVelocityPlugin {
     public void onProxyShutdown(final ProxyShutdownEvent event) {
         if (writeRequestConsumer != null) {
             writeRequestConsumer.close();
+        }
+        if (invalidationPublisher != null) {
+            invalidationPublisher.close();
         }
         if (dataSource != null) {
             dataSource.close();

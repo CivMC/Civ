@@ -8,9 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.sql.DataSource;
+import net.civmc.namelayer.sync.NameLayerInvalidationMessage;
 import net.civmc.namelayer.sync.NameLayerWriteFailureCode;
 import net.civmc.namelayer.sync.NameLayerWriteRequest;
 import net.civmc.namelayer.sync.NameLayerWriteResponse;
+import net.civmc.namelayer.velocity.rabbitmq.NameLayerInvalidationPublisher;
 import org.slf4j.Logger;
 
 public final class NameLayerWriteCoordinator {
@@ -23,10 +25,16 @@ public final class NameLayerWriteCoordinator {
     private static final String REMOVE_PERMISSION = "DELETE FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ?";
 
     private final DataSource dataSource;
+    private final NameLayerInvalidationPublisher invalidationPublisher;
     private final Logger logger;
 
-    public NameLayerWriteCoordinator(final DataSource dataSource, final Logger logger) {
+    public NameLayerWriteCoordinator(
+        final DataSource dataSource,
+        final NameLayerInvalidationPublisher invalidationPublisher,
+        final Logger logger
+    ) {
         this.dataSource = dataSource;
+        this.invalidationPublisher = invalidationPublisher;
         this.logger = logger;
     }
 
@@ -76,6 +84,7 @@ public final class NameLayerWriteCoordinator {
                     statement.executeUpdate();
                 }
                 connection.commit();
+                publishInvalidation(permissionWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(permissionWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -88,6 +97,13 @@ public final class NameLayerWriteCoordinator {
                 NameLayerWriteFailureCode.DATABASE_UNAVAILABLE,
                 "Database write failed"
             );
+        }
+    }
+
+    private void publishInvalidation(final int groupId) {
+        final boolean published = invalidationPublisher.publish(NameLayerInvalidationMessage.targeted(Set.of(groupId)));
+        if (!published) {
+            logger.error("NameLayer write committed, but failed to publish invalidation for group {}", groupId);
         }
     }
 
