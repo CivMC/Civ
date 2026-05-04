@@ -201,7 +201,7 @@ public class GroupManager {
                 if (!builder.isEmpty()) {
                     builder.append(';');
                 }
-                builder.append(playerType.name()).append(':').append(permission.getId());
+                builder.append(playerType.name()).append(':').append(permission.getName());
             }
         }
         return builder.toString();

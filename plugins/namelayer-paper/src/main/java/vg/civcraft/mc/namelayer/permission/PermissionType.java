@@ -6,11 +6,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 
 public class PermissionType {
@@ -23,13 +21,6 @@ public class PermissionType {
         permissionByName = new HashMap<>();
         permissionById = new TreeMap<>();
         maximumExistingId = 0;
-        Map<Integer, String> dbRegisteredPerms = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
-        for (Entry<Integer, String> perm : dbRegisteredPerms.entrySet()) {
-            int id = perm.getKey();
-            String name = perm.getValue();
-            maximumExistingId = Math.max(maximumExistingId, id);
-            internalRegisterPermission(id, name, new ArrayList<>(), null, true);
-        }
         registerNameLayerPermissions();
     }
 
@@ -63,10 +54,6 @@ public class PermissionType {
         int id = maximumExistingId + 1;
         maximumExistingId = id;
         PermissionType perm = internalRegisterPermission(id, name, defaultPermLevels, description, canBeBlacklisted);
-        NameLayerPlugin.getGroupManagerDao().registerPermission(perm);
-        if (!defaultPermLevels.isEmpty()) {
-            NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, perm);
-        }
         return perm;
     }
 

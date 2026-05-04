@@ -21,11 +21,9 @@ public final class NameLayerWriteCoordinator {
     private static final String GET_ACTOR_ROLE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
     private static final String GET_MEMBER_ROLE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
     private static final String GET_GROUP_OWNER = "SELECT founder FROM faction_id WHERE group_id = ? LIMIT 1";
-    private static final String GET_PERMS_PERMISSION_ID = "SELECT perm_id FROM permissionIdMapping WHERE name = 'PERMS' LIMIT 1";
-    private static final String GET_PERMISSION_ID = "SELECT perm_id FROM permissionIdMapping WHERE name = ? LIMIT 1";
-    private static final String HAS_ROLE_PERMISSION = "SELECT 1 FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ? LIMIT 1";
-    private static final String ADD_PERMISSION = "INSERT IGNORE INTO permissionByGroup(group_id, role, perm_id) VALUES (?, ?, ?)";
-    private static final String REMOVE_PERMISSION = "DELETE FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ?";
+    private static final String HAS_ROLE_PERMISSION = "SELECT 1 FROM permission_by_group_name WHERE group_id = ? AND role = ? AND permission_name = ? LIMIT 1";
+    private static final String ADD_PERMISSION = "INSERT IGNORE INTO permission_by_group_name(group_id, role, permission_name) VALUES (?, ?, ?)";
+    private static final String REMOVE_PERMISSION = "DELETE FROM permission_by_group_name WHERE group_id = ? AND role = ? AND permission_name = ?";
     private static final String SET_MEMBER_ROLE = "UPDATE faction_member SET role = ? WHERE group_id = ? AND member_name = ?";
     private static final String REMOVE_MEMBER = "DELETE FROM faction_member WHERE group_id = ? AND member_name = ?";
     private static final String SET_GROUP_COLOR = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.group_color = ? WHERE fi.group_id = ?";
@@ -34,7 +32,7 @@ public final class NameLayerWriteCoordinator {
     private static final String SET_GROUP_OWNER = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.founder = ? WHERE fi.group_id = ?";
     private static final String SET_OWNER_MEMBER_ROLE = "UPDATE faction_member SET role = 'OWNER' WHERE group_id = ? AND member_name = ?";
     private static final String CREATE_GROUP = "CALL createGroup(?, ?, ?, ?)";
-    private static final String ADD_PERMISSION_BY_ID = "INSERT IGNORE INTO permissionByGroup(group_id, role, perm_id) VALUES (?, ?, ?)";
+    private static final String ADD_PERMISSION_BY_NAME = "INSERT IGNORE INTO permission_by_group_name(group_id, role, permission_name) VALUES (?, ?, ?)";
     private static final String GET_GROUP_NAME = "SELECT group_name FROM faction_id WHERE group_id = ? LIMIT 1";
     private static final String DELETE_GROUP = "CALL deletegroupfromtable(?, ?)";
     private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
@@ -159,11 +157,11 @@ public final class NameLayerWriteCoordinator {
         final int groupId,
         final Set<DefaultPermission> defaultPermissions
     ) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(ADD_PERMISSION_BY_ID)) {
+        try (PreparedStatement statement = connection.prepareStatement(ADD_PERMISSION_BY_NAME)) {
             for (final DefaultPermission defaultPermission : defaultPermissions) {
                 statement.setInt(1, groupId);
                 statement.setString(2, defaultPermission.role());
-                statement.setInt(3, defaultPermission.permissionId());
+                statement.setString(3, defaultPermission.permissionName());
                 statement.addBatch();
             }
             statement.executeBatch();
@@ -400,7 +398,7 @@ public final class NameLayerWriteCoordinator {
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     statement.setInt(1, permissionWrite.groupId());
                     statement.setString(2, permissionWrite.role());
-                    statement.setInt(3, permissionWrite.permissionId());
+                    statement.setString(3, permissionWrite.permissionName());
                     statement.executeUpdate();
                 }
                 incrementCacheVersion(connection);
@@ -439,15 +437,10 @@ public final class NameLayerWriteCoordinator {
         if (actorRole == null) {
             return false;
         }
-        final Integer permsPermissionId = getPermsPermissionId(connection);
-        if (permsPermissionId == null) {
-            logger.warn("NameLayer PERMS permission is not registered; denying proxy permission write");
-            return false;
-        }
         try (PreparedStatement statement = connection.prepareStatement(HAS_ROLE_PERMISSION)) {
             statement.setInt(1, groupId);
             statement.setString(2, actorRole);
-            statement.setInt(3, permsPermissionId);
+            statement.setString(3, "PERMS");
             try (ResultSet resultSet = statement.executeQuery()) {
                 return resultSet.next();
             }
@@ -459,15 +452,10 @@ public final class NameLayerWriteCoordinator {
         if (actorRole == null) {
             return false;
         }
-        final Integer permissionId = getPermissionId(connection, permissionName);
-        if (permissionId == null) {
-            logger.warn("NameLayer {} permission is not registered; denying proxy member write", permissionName);
-            return false;
-        }
         try (PreparedStatement statement = connection.prepareStatement(HAS_ROLE_PERMISSION)) {
             statement.setInt(1, groupId);
             statement.setString(2, actorRole);
-            statement.setInt(3, permissionId);
+            statement.setString(3, permissionName);
             try (ResultSet resultSet = statement.executeQuery()) {
                 return resultSet.next();
             }
@@ -483,28 +471,6 @@ public final class NameLayerWriteCoordinator {
                     return null;
                 }
                 return resultSet.getString(1);
-            }
-        }
-    }
-
-    private Integer getPermsPermissionId(final Connection connection) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(GET_PERMS_PERMISSION_ID);
-             ResultSet resultSet = statement.executeQuery()) {
-            if (!resultSet.next()) {
-                return null;
-            }
-            return resultSet.getInt(1);
-        }
-    }
-
-    private Integer getPermissionId(final Connection connection, final String permissionName) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(GET_PERMISSION_ID)) {
-            statement.setString(1, permissionName);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (!resultSet.next()) {
-                    return null;
-                }
-                return resultSet.getInt(1);
             }
         }
     }
@@ -552,14 +518,14 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
-    private record PermissionWrite(int groupId, String role, int permissionId) {
+    private record PermissionWrite(int groupId, String role, String permissionName) {
 
         private static PermissionWrite from(final Map<String, String> arguments) {
             final int groupId = parsePositiveInt(arguments, "groupId");
             final String role = requireNonBlank(arguments, "role");
             validateRole(role);
-            final int permissionId = parsePositiveInt(arguments, "permissionId");
-            return new PermissionWrite(groupId, role, permissionId);
+            final String permissionName = requireNonBlank(arguments, "permissionName");
+            return new PermissionWrite(groupId, role, permissionName);
         }
 
         private static void validateRole(final String role) {
@@ -686,7 +652,7 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
-    private record DefaultPermission(String role, int permissionId) {
+    private record DefaultPermission(String role, String permissionName) {
 
         private static Set<DefaultPermission> parse(final String value) {
             final Set<DefaultPermission> defaultPermissions = new java.util.LinkedHashSet<>();
@@ -699,24 +665,12 @@ public final class NameLayerWriteCoordinator {
                 }
                 final String[] parts = entry.split(":", 2);
                 if (parts.length != 2) {
-                    throw new IllegalArgumentException("defaultPermissions entries must be role:permissionId");
+                    throw new IllegalArgumentException("defaultPermissions entries must be role:permissionName");
                 }
                 PermissionWrite.validateRole(parts[0]);
-                defaultPermissions.add(new DefaultPermission(parts[0], parsePermissionId(parts[1])));
+                defaultPermissions.add(new DefaultPermission(parts[0], PermissionWrite.requireNonBlank(Map.of("permissionName", parts[1]), "permissionName")));
             }
             return defaultPermissions;
-        }
-
-        private static int parsePermissionId(final String value) {
-            try {
-                final int permissionId = Integer.parseInt(value);
-                if (permissionId <= 0) {
-                    throw new IllegalArgumentException("permission ID must be positive");
-                }
-                return permissionId;
-            } catch (final NumberFormatException exception) {
-                throw new IllegalArgumentException("permission ID must be an integer", exception);
-            }
         }
     }
 }

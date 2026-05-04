@@ -160,14 +160,15 @@ public class GroupManagerDao {
     private static final String logNameChange = "insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?);";
     private static final String checkForNameChange = "select * from nameLayerNameChanges where uuid=?;";
 
-    private static final String addPermission = "insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
     private static final String addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
+    private static final String addPermissionByName = "insert ignore into permission_by_group_name(group_id,role,permission_name) values(?,?,?);";
+    private static final String addPermissionByGroupName = "insert ignore into permission_by_group_name(group_id,role,permission_name) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
 
-    private static final String addDefaultPermission = "insert into permissionByGroup(group_id,role,perm_id) select group_id,?,? from faction_id group by group_id";
+    private static final String addDefaultPermissionByName = "insert ignore into permission_by_group_name(group_id,role,permission_name) select group_id,?,? from faction_id group by group_id";
 
-    private static final String getPermission = "select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
+    private static final String getPermission = "select pg.role,pg.permission_name from permission_by_group_name pg inner join faction_id fi on fi.group_name=? "
         + "where pg.group_id = fi.group_id";
-    private static final String removePermission = "delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and perm_id=?;";
+    private static final String removePermissionByName = "delete from permission_by_group_name where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and permission_name=?;";
     private static final String registerPermission = "insert into permissionIdMapping(perm_id,name) values(?,?);";
     private static final String getPermissionMapping = "select * from permissionIdMapping;";
 
@@ -538,6 +539,17 @@ public class GroupManagerDao {
                 "cache_version bigint not null," +
                 "primary key(id))",
             "insert ignore into namelayer_cache_version(id, cache_version) values (1, 0)");
+
+        db.registerMigration(17, false,
+            "create table if not exists permission_by_group_name("
+                + "group_id int not null,"
+                + "role varchar(40) not null,"
+                + "permission_name varchar(128) not null,"
+                + "primary key(group_id,role,permission_name))",
+            "insert ignore into permission_by_group_name(group_id, role, permission_name) "
+                + "select pbg.group_id, pbg.role, pim.name from permissionByGroup pbg "
+                + "inner join permissionIdMapping pim on pim.perm_id = pbg.perm_id",
+            "drop table if exists permissionByGroup");
     }
 
     public int createGroup(String group, UUID owner, String password) {
@@ -990,18 +1002,18 @@ public class GroupManagerDao {
 
     public void addAllPermissions(int groupId, Map<PlayerType, List<PermissionType>> perms) {
         try (Connection connection = db.getConnection();
-             PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addPermissionById)) {
+             PreparedStatement addPermissionByName = connection.prepareStatement(GroupManagerDao.addPermissionByName)) {
             for (Entry<PlayerType, List<PermissionType>> entry : perms.entrySet()) {
                 String role = entry.getKey().name();
                 for (PermissionType perm : entry.getValue()) {
-                    addPermissionById.setInt(1, groupId);
-                    addPermissionById.setString(2, role);
-                    addPermissionById.setInt(3, perm.getId());
-                    addPermissionById.addBatch();
+                    addPermissionByName.setInt(1, groupId);
+                    addPermissionByName.setString(2, role);
+                    addPermissionByName.setString(3, perm.getName());
+                    addPermissionByName.addBatch();
                 }
             }
 
-            int[] res = addPermissionById.executeBatch();
+            int[] res = addPermissionByName.executeBatch();
             if (res == null) {
                 logger.log(Level.WARNING, "Failed to add all permissions to group {0}", groupId);
             } else {
@@ -1028,10 +1040,10 @@ public class GroupManagerDao {
 
     public void addPermission(String groupName, String role, List<PermissionType> perms) {
         try (Connection connection = db.getConnection();
-             PreparedStatement addPermission = connection.prepareStatement(GroupManagerDao.addPermission)) {
+             PreparedStatement addPermission = connection.prepareStatement(GroupManagerDao.addPermissionByGroupName)) {
             for (PermissionType perm : perms) {
                 addPermission.setString(1, role);
-                addPermission.setInt(2, perm.getId());
+                addPermission.setString(2, perm.getName());
                 addPermission.setString(3, groupName);
                 addPermission.addBatch();
             }
@@ -1064,8 +1076,8 @@ public class GroupManagerDao {
                         listPerm = new ArrayList<PermissionType>();
                         perms.put(type, listPerm);
                     }
-                    int id = set.getInt(2);
-                    PermissionType perm = PermissionType.getPermission(id);
+                    String name = set.getString(2);
+                    PermissionType perm = PermissionType.getPermission(name);
                     if (perm != null && !listPerm.contains(perm)) {
                         listPerm.add(perm);
                     }
@@ -1092,10 +1104,10 @@ public class GroupManagerDao {
 
     public void removePermission(String group, PlayerType pType, PermissionType perm) {
         try (Connection connection = db.getConnection();
-             PreparedStatement removePermission = connection.prepareStatement(GroupManagerDao.removePermission)) {
+             PreparedStatement removePermission = connection.prepareStatement(GroupManagerDao.removePermissionByName)) {
             removePermission.setString(1, group);
             removePermission.setString(2, pType.name());
-            removePermission.setInt(3, perm.getId());
+            removePermission.setString(3, perm.getName());
             removePermission.executeUpdate();
         } catch (SQLException e) {
             logger.log(Level.WARNING, "Problem removing permissions for group " + group
@@ -1155,12 +1167,12 @@ public class GroupManagerDao {
 
     public void addNewDefaultPermission(List<PlayerType> playerTypes, PermissionType perm) {
         try (Connection connection = db.getConnection();
-             PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addDefaultPermission);) {
+             PreparedStatement addPermissionByName = connection.prepareStatement(GroupManagerDao.addDefaultPermissionByName);) {
             ;
             for (PlayerType pType : playerTypes) {
-                addPermissionById.setString(1, pType.name());
-                addPermissionById.setInt(2, perm.getId());
-                addPermissionById.execute();
+                addPermissionByName.setString(1, pType.name());
+                addPermissionByName.setString(2, perm.getName());
+                addPermissionByName.execute();
             }
         } catch (SQLException e) {
             logger.log(Level.WARNING, "Error initiating connection to set default perms for permission " + perm + " for player types " + playerTypes, e);

@@ -137,7 +137,7 @@ public class GroupPermission {
                 Map.of(
                     "groupId", Integer.toString(group.getGroupId()),
                     "role", pType.name(),
-                    "permissionId", Integer.toString(permType.getId())
+                    "permissionName", permType.getName()
                 )
             );
             writeClient.send(request).whenComplete((response, error) -> handleWriteResponse(response, error, callback));
