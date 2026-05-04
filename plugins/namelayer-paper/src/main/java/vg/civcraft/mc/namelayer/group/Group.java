@@ -820,8 +820,16 @@ public class Group {
         NameLayerPlugin.getDefaultGroupHandler().setDefaultGroup(uuid, this);
     }
 
+    public void setDefaultGroupAsync(UUID uuid, Consumer<DefaultGroupHandler.DefaultGroupWriteResult> callback) {
+        NameLayerPlugin.getDefaultGroupHandler().setDefaultGroupAsync(uuid, this, callback);
+    }
+
     public void changeDefaultGroup(UUID uuid) {
         NameLayerPlugin.getDefaultGroupHandler().setDefaultGroup(uuid, this);
+    }
+
+    public void changeDefaultGroupAsync(UUID uuid, Consumer<DefaultGroupHandler.DefaultGroupWriteResult> callback) {
+        setDefaultGroupAsync(uuid, callback);
     }
 
     // == GETTERS ========================================================================= //

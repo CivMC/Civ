@@ -296,6 +296,9 @@ public class NameLayerPlugin extends ACivMod {
 
     public static void fullResyncGroupCache() {
         groupCache = NameLayerGroupCache.loadAll(groupManagerDao, getInstance().getLogger());
+        if (defaultGroupHandler != null) {
+            defaultGroupHandler.reloadAll();
+        }
     }
 
     public static void log(Level level, String message) {

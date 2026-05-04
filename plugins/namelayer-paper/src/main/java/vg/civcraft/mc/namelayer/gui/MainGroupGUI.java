@@ -976,17 +976,28 @@ public class MainGroupGUI extends AbstractGroupGUI {
                         + " set default group to " + g.getName()
                         + " via the gui");
                     if (defGroup == null) {
-                        g.setDefaultGroup(p.getUniqueId());
-                        p.sendMessage(ChatColor.GREEN
-                            + "You have set your default group to "
-                            + g.getName());
+                        g.setDefaultGroupAsync(p.getUniqueId(), result -> {
+                            if (result.success()) {
+                                p.sendMessage(ChatColor.GREEN
+                                    + "You have set your default group to "
+                                    + g.getName());
+                            } else {
+                                p.sendMessage(ChatColor.RED + result.message());
+                            }
+                            showScreen();
+                        });
                     } else {
-                        g.changeDefaultGroup(p.getUniqueId());
-                        p.sendMessage(ChatColor.GREEN
-                            + "You changed your default group from "
-                            + defGroup + " to " + g.getName());
+                        g.changeDefaultGroupAsync(p.getUniqueId(), result -> {
+                            if (result.success()) {
+                                p.sendMessage(ChatColor.GREEN
+                                    + "You changed your default group from "
+                                    + defGroup + " to " + g.getName());
+                            } else {
+                                p.sendMessage(ChatColor.RED + result.message());
+                            }
+                            showScreen();
+                        });
                     }
-                    showScreen();
                 }
             };
         }

@@ -132,7 +132,11 @@ public class PlayerListener implements Listener {
                 }
             } else {
                 NameLayerPlugin.log(Level.WARNING, "Newfriend automatic group creation succeeded for " + g.getName() + " " + uuid);
-                g.setDefaultGroup(uuid);
+                g.setDefaultGroupAsync(uuid, result -> {
+                    if (!result.success()) {
+                        NameLayerPlugin.log(Level.WARNING, "Failed to set default group for newfriend " + uuid + ": " + result.message());
+                    }
+                });
             }
         }
 

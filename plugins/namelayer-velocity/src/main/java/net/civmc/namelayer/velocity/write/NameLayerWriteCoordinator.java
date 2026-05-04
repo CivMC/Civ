@@ -42,6 +42,7 @@ public final class NameLayerWriteCoordinator {
     private static final String ADD_INVITATION = "INSERT INTO group_invitation(uuid, groupName, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE role = VALUES(role), date = NOW()";
     private static final String GET_INVITATION_ROLE = "SELECT role FROM group_invitation WHERE uuid = ? AND groupName = ? LIMIT 1";
     private static final String REMOVE_INVITATION = "DELETE FROM group_invitation WHERE uuid = ? AND groupName = ?";
+    private static final String SET_DEFAULT_GROUP = "INSERT INTO default_group(uuid, defaultgroup) VALUES (?, ?) ON DUPLICATE KEY UPDATE defaultgroup = VALUES(defaultgroup)";
     private static final String GET_GROUP_NAME = "SELECT group_name FROM faction_id WHERE group_id = ? LIMIT 1";
     private static final String DELETE_GROUP = "CALL deletegroupfromtable(?, ?)";
     private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
@@ -77,6 +78,7 @@ public final class NameLayerWriteCoordinator {
             case ADD_INVITATION -> handleAddInvitation(request);
             case REMOVE_INVITATION -> handleRemoveInvitation(request);
             case ACCEPT_INVITATION -> handleAcceptInvitation(request);
+            case SET_DEFAULT_GROUP -> handleSetDefaultGroup(request);
             default -> NameLayerWriteResponse.failure(
                 request.requestId(),
                 NameLayerWriteFailureCode.UNKNOWN_OPERATION,
@@ -338,6 +340,48 @@ public final class NameLayerWriteCoordinator {
             }
         } catch (final SQLException exception) {
             logger.error("NameLayer invitation accept failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleSetDefaultGroup(final NameLayerWriteRequest request) {
+        final GroupIdWrite groupWrite;
+        try {
+            groupWrite = GroupIdWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, groupWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                if (!isGroupMember(connection, groupWrite.groupId(), request.actorUuid())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor is not a group member");
+                }
+                final String groupName = getGroupName(connection, groupWrite.groupId());
+                if (groupName == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                try (PreparedStatement statement = connection.prepareStatement(SET_DEFAULT_GROUP)) {
+                    statement.setString(1, request.actorUuid().toString());
+                    statement.setString(2, groupName);
+                    statement.executeUpdate();
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishFullInvalidation();
+                return NameLayerWriteResponse.success(request.requestId(), Set.of());
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer default group write failed", exception);
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
         }
     }
@@ -628,6 +672,13 @@ public final class NameLayerWriteCoordinator {
         final boolean published = invalidationPublisher.publish(NameLayerInvalidationMessage.targeted(Set.of(groupId)));
         if (!published) {
             logger.error("NameLayer write committed, but failed to publish invalidation for group {}", groupId);
+        }
+    }
+
+    private void publishFullInvalidation() {
+        final boolean published = invalidationPublisher.publish(NameLayerInvalidationMessage.fullResync());
+        if (!published) {
+            logger.error("NameLayer write committed, but failed to publish full resync invalidation");
         }
     }
 
