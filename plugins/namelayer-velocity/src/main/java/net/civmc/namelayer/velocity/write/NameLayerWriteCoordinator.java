@@ -33,6 +33,10 @@ public final class NameLayerWriteCoordinator {
     private static final String SET_GROUP_DISCIPLINE = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.discipline_flags = ? WHERE fi.group_id = ?";
     private static final String SET_GROUP_OWNER = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.founder = ? WHERE fi.group_id = ?";
     private static final String SET_OWNER_MEMBER_ROLE = "UPDATE faction_member SET role = 'OWNER' WHERE group_id = ? AND member_name = ?";
+    private static final String CREATE_GROUP = "CALL createGroup(?, ?, ?, ?)";
+    private static final String ADD_PERMISSION_BY_ID = "INSERT IGNORE INTO permissionByGroup(group_id, role, perm_id) VALUES (?, ?, ?)";
+    private static final String GET_GROUP_NAME = "SELECT group_name FROM faction_id WHERE group_id = ? LIMIT 1";
+    private static final String DELETE_GROUP = "CALL deletegroupfromtable(?, ?)";
     private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
 
     private final DataSource dataSource;
@@ -59,12 +63,111 @@ public final class NameLayerWriteCoordinator {
             case SET_GROUP_PASSWORD -> handleMetadataWrite(request, SET_GROUP_PASSWORD, "PASSWORD", MetadataWrite.ValueType.NULLABLE_STRING);
             case SET_GROUP_DISCIPLINE -> handleMetadataWrite(request, SET_GROUP_DISCIPLINE, null, MetadataWrite.ValueType.BOOLEAN_INT);
             case SET_GROUP_OWNER -> handleSetGroupOwner(request);
+            case CREATE_GROUP -> handleCreateGroup(request);
+            case DELETE_GROUP -> handleDeleteGroup(request);
             default -> NameLayerWriteResponse.failure(
                 request.requestId(),
                 NameLayerWriteFailureCode.UNKNOWN_OPERATION,
                 "NameLayer proxy write operation is not implemented yet: " + request.operation()
             );
         };
+    }
+
+    private NameLayerWriteResponse handleCreateGroup(final NameLayerWriteRequest request) {
+        final CreateGroupWrite createWrite;
+        try {
+            createWrite = CreateGroupWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                final int groupId;
+                try (PreparedStatement statement = connection.prepareStatement(CREATE_GROUP)) {
+                    statement.setString(1, createWrite.groupName());
+                    statement.setString(2, request.actorUuid().toString());
+                    statement.setString(3, createWrite.password());
+                    statement.setInt(4, 0);
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        if (!resultSet.next()) {
+                            connection.rollback();
+                            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.NAME_CONFLICT, "Group name is already taken");
+                        }
+                        groupId = resultSet.getInt(1);
+                    }
+                }
+                insertDefaultPermissions(connection, groupId, createWrite.defaultPermissions());
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(groupId);
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(groupId));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer group create failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleDeleteGroup(final NameLayerWriteRequest request) {
+        final GroupIdWrite deleteWrite;
+        try {
+            deleteWrite = GroupIdWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, deleteWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                if (!deleteWrite.adminOverride() && !hasRoleEditAccess(connection, deleteWrite.groupId(), request.actorUuid(), "DELETE")) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have delete access");
+                }
+                final String groupName = getGroupName(connection, deleteWrite.groupId());
+                if (groupName == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                try (PreparedStatement statement = connection.prepareStatement(DELETE_GROUP)) {
+                    statement.setString(1, groupName);
+                    statement.setString(2, "Name_Layer_Special");
+                    statement.executeUpdate();
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(deleteWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(deleteWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer group delete failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private void insertDefaultPermissions(
+        final Connection connection,
+        final int groupId,
+        final Set<DefaultPermission> defaultPermissions
+    ) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(ADD_PERMISSION_BY_ID)) {
+            for (final DefaultPermission defaultPermission : defaultPermissions) {
+                statement.setInt(1, groupId);
+                statement.setString(2, defaultPermission.role());
+                statement.setInt(3, defaultPermission.permissionId());
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        }
     }
 
     private NameLayerWriteResponse handleMetadataWrite(
@@ -428,6 +531,18 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
+    private String getGroupName(final Connection connection, final int groupId) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_GROUP_NAME)) {
+            statement.setInt(1, groupId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return resultSet.getString(1);
+            }
+        }
+    }
+
     private boolean lockGroup(final Connection connection, final int groupId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(LOCK_GROUP)) {
             statement.setInt(1, groupId);
@@ -548,6 +663,60 @@ public final class NameLayerWriteCoordinator {
             final UUID ownerUuid = MemberWrite.parseUuid(arguments, "ownerUuid");
             final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
             return new OwnerWrite(groupId, ownerUuid, adminOverride);
+        }
+    }
+
+    private record GroupIdWrite(int groupId, boolean adminOverride) {
+
+        private static GroupIdWrite from(final Map<String, String> arguments) {
+            final int groupId = PermissionWrite.parsePositiveInt(arguments, "groupId");
+            final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
+            return new GroupIdWrite(groupId, adminOverride);
+        }
+    }
+
+    private record CreateGroupWrite(String groupName, String password, Set<DefaultPermission> defaultPermissions) {
+
+        private static CreateGroupWrite from(final Map<String, String> arguments) {
+            final String groupName = PermissionWrite.requireNonBlank(arguments, "groupName");
+            final String password = Boolean.parseBoolean(arguments.getOrDefault("hasPassword", "false"))
+                ? arguments.getOrDefault("password", "")
+                : null;
+            return new CreateGroupWrite(groupName, password, DefaultPermission.parse(arguments.getOrDefault("defaultPermissions", "")));
+        }
+    }
+
+    private record DefaultPermission(String role, int permissionId) {
+
+        private static Set<DefaultPermission> parse(final String value) {
+            final Set<DefaultPermission> defaultPermissions = new java.util.LinkedHashSet<>();
+            if (value == null || value.isBlank()) {
+                return defaultPermissions;
+            }
+            for (final String entry : value.split(";")) {
+                if (entry.isBlank()) {
+                    continue;
+                }
+                final String[] parts = entry.split(":", 2);
+                if (parts.length != 2) {
+                    throw new IllegalArgumentException("defaultPermissions entries must be role:permissionId");
+                }
+                PermissionWrite.validateRole(parts[0]);
+                defaultPermissions.add(new DefaultPermission(parts[0], parsePermissionId(parts[1])));
+            }
+            return defaultPermissions;
+        }
+
+        private static int parsePermissionId(final String value) {
+            try {
+                final int permissionId = Integer.parseInt(value);
+                if (permissionId <= 0) {
+                    throw new IllegalArgumentException("permission ID must be positive");
+                }
+                return permissionId;
+            } catch (final NumberFormatException exception) {
+                throw new IllegalArgumentException("permission ID must be an integer", exception);
+            }
         }
     }
 }
