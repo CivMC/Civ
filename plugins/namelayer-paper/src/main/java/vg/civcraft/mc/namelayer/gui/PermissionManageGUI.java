@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -177,17 +179,19 @@ public class PermissionManageGUI extends AbstractGroupGUI {
                                     + "the permission " + perm.getName()
                                     + "for player type " + pType.toString()
                                     + " for " + g.getName() + " via the gui");
+                                p.closeInventory();
+                                p.sendMessage(Component.text("Updating permission...", NamedTextColor.GRAY));
                                 if (hasPerm) {
-                                    gp.removePermission(pType, perm);
+                                    gp.removePermission(p.getUniqueId(), pType, perm, result -> refreshPermissionEditing(pType, result));
                                 } else {
-                                    gp.addPermission(pType, perm);
+                                    gp.addPermission(p.getUniqueId(), pType, perm, result -> refreshPermissionEditing(pType, result));
                                 }
                             }
                         } else {
                             p.sendMessage(ChatColor.RED
                                 + "Something changed while you were modifying permissions, so cancelled the process");
+                            showPermissionEditing(pType);
                         }
-                        showPermissionEditing(pType);
                     }
                 };
             } else {
@@ -242,6 +246,16 @@ public class PermissionManageGUI extends AbstractGroupGUI {
             }
         }, 49);
         ci.showInventory(p);
+    }
+
+    private void refreshPermissionEditing(final PlayerType pType, final GroupPermission.PermissionWriteResult result) {
+        if (!p.isOnline()) {
+            return;
+        }
+        if (!result.success()) {
+            p.sendMessage(Component.text(result.message(), NamedTextColor.RED));
+        }
+        showPermissionEditing(pType);
     }
 
 }

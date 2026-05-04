@@ -27,6 +27,7 @@ import vg.civcraft.mc.namelayer.misc.ClassHandler;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 import vg.civcraft.mc.namelayer.rabbitmq.NameLayerInvalidationConsumer;
 import vg.civcraft.mc.namelayer.rabbitmq.NameLayerRabbitMqConfig;
+import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public class NameLayerPlugin extends ACivMod {
 
@@ -43,6 +44,7 @@ public class NameLayerPlugin extends ACivMod {
     private static boolean createGroupOnFirstJoin;
     private FileConfiguration config;
     private NameLayerInvalidationConsumer invalidationConsumer;
+    private NameLayerWriteClient writeClient;
     private BukkitTask freshnessCheckTask;
     private long stateLocalVersion;
     private long staleVersionDetectedAtMillis;
@@ -84,6 +86,9 @@ public class NameLayerPlugin extends ACivMod {
         if (invalidationConsumer != null) {
             invalidationConsumer.close();
         }
+        if (writeClient != null) {
+            writeClient.close();
+        }
         if (freshnessCheckTask != null) {
             freshnessCheckTask.cancel();
         }
@@ -110,6 +115,14 @@ public class NameLayerPlugin extends ACivMod {
         );
         if (!invalidationConsumer.start()) {
             getLogger().log(Level.SEVERE, "NameLayer RabbitMQ invalidation consumer failed to start");
+        }
+        writeClient = new NameLayerWriteClient(
+            rabbitMqConfig.connectionFactory(),
+            rabbitMqConfig.serverId(),
+            getLogger()
+        );
+        if (!writeClient.start()) {
+            getLogger().log(Level.SEVERE, "NameLayer RabbitMQ write client failed to start");
         }
         startFreshnessCheck(rabbitMqConfig);
     }
@@ -275,6 +288,10 @@ public class NameLayerPlugin extends ACivMod {
 
     public static NameLayerGroupCache getGroupCache() {
         return groupCache;
+    }
+
+    public static NameLayerWriteClient getWriteClient() {
+        return instance == null ? null : instance.writeClient;
     }
 
     public static void fullResyncGroupCache() {
