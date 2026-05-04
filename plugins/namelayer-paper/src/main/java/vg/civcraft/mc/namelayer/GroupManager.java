@@ -327,7 +327,7 @@ public class GroupManager {
         event = new GroupDeleteEvent(group, true);
         Bukkit.getPluginManager().callEvent(event);
 
-        group.setDisciplined(true);
+        group.setDisciplined(true, false);
         group.setValid(false);
         return true;
     }
@@ -349,8 +349,7 @@ public class GroupManager {
             return;
         }
         if (savetodb) {
-            g.addMember(uuid, PlayerType.OWNER);
-            g.setOwner(uuid);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper group transfer for " + g.getName());
         } else {
             g.addMember(uuid, PlayerType.OWNER, false);
             g.setOwner(uuid, false);
@@ -573,21 +572,6 @@ public class GroupManager {
             }
         }
         return groupManagerDao.getGroupNames(uuid);
-    }
-
-    private void initiateDefaultPerms(Integer groupId) {
-        if (groupId == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "initiateDefaultPerms failed, caller passed in null", new Exception());
-            return;
-        }
-        Map<PlayerType, List<PermissionType>> defaultPermMapping = new HashMap<GroupManager.PlayerType, List<PermissionType>>();
-        for (PermissionType perm : PermissionType.getAllPermissions()) {
-            for (PlayerType type : perm.getDefaultPermLevels()) {
-                List<PermissionType> perms = defaultPermMapping.computeIfAbsent(type, k -> new ArrayList<>());
-                perms.add(perm);
-            }
-        }
-        groupManagerDao.addAllPermissions(groupId, defaultPermMapping);
     }
 
     public String getDefaultGroup(UUID uuid) {

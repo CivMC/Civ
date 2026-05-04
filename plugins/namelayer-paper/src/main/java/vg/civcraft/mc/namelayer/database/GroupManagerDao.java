@@ -549,7 +549,7 @@ public class GroupManagerDao {
             "drop table if exists permissionIdMapping");
     }
 
-    public int createGroup(String group, UUID owner, String password) {
+    private int createGroup(String group, UUID owner, String password) {
         int ret = -1;
         try (Connection connection = db.getConnection();
              PreparedStatement createGroup = connection.prepareStatement(GroupManagerDao.createGroup)) {
@@ -840,7 +840,7 @@ public class GroupManagerDao {
         return ptype;
     }
 
-    public void updateTimestampAsync(final String group) {
+    private void updateTimestampAsync(final String group) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -851,7 +851,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void updateTimestamp(String group) {
+    private void updateTimestamp(String group) {
         try (Connection connection = db.getConnection();
              PreparedStatement updateLastTimestamp = connection.prepareStatement(GroupManagerDao.updateLastTimestamp)) {
             updateLastTimestamp.setString(1, group);
@@ -861,7 +861,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void deleteGroupAsync(final String groupName) {
+    private void deleteGroupAsync(final String groupName) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -872,7 +872,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void deleteGroup(String groupName) {
+    private void deleteGroup(String groupName) {
         try (Connection connection = db.getConnection();
              PreparedStatement deleteGroup = connection.prepareStatement(GroupManagerDao.deleteGroup)) {
             deleteGroup.setString(1, groupName);
@@ -883,7 +883,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void addMemberAsync(final UUID member, final String faction, final PlayerType role) {
+    private void addMemberAsync(final UUID member, final String faction, final PlayerType role) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -894,7 +894,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void addMember(UUID member, String faction, PlayerType role) {
+    private void addMember(UUID member, String faction, PlayerType role) {
         try (Connection connection = db.getConnection();
              PreparedStatement addMember = connection.prepareStatement(GroupManagerDao.addMember)) {
             addMember.setString(1, member.toString());
@@ -930,7 +930,7 @@ public class GroupManagerDao {
         return members;
     }
 
-    public void removeMemberAsync(final UUID member, final String group) {
+    private void removeMemberAsync(final UUID member, final String group) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -941,7 +941,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void removeMember(UUID member, String group) {
+    private void removeMember(UUID member, String group) {
         try (Connection connection = db.getConnection();
              PreparedStatement removeMember = connection.prepareStatement(GroupManagerDao.removeMember)) {
             removeMember.setString(1, member.toString());
@@ -952,7 +952,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void removeAllMembersAsync(final String group) {
+    private void removeAllMembersAsync(final String group) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -963,7 +963,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void removeAllMembers(String group) {
+    private void removeAllMembers(String group) {
         try (Connection connection = db.getConnection();
              PreparedStatement removeAllMembers = connection.prepareStatement(GroupManagerDao.removeAllMembers)) {
             removeAllMembers.setString(1, group);
@@ -997,7 +997,7 @@ public class GroupManagerDao {
         logger.log(Level.INFO, "Subgroups are disabled; ignoring subgroup removal for " + group + " -> " + subGroup);
     }
 
-    public void addAllPermissions(int groupId, Map<PlayerType, List<PermissionType>> perms) {
+    private void addAllPermissions(int groupId, Map<PlayerType, List<PermissionType>> perms) {
         try (Connection connection = db.getConnection();
              PreparedStatement addPermissionByName = connection.prepareStatement(GroupManagerDao.addPermissionByName)) {
             for (Entry<PlayerType, List<PermissionType>> entry : perms.entrySet()) {
@@ -1024,7 +1024,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void addPermissionAsync(final String gname, final String role, final List<PermissionType> perms) {
+    private void addPermissionAsync(final String gname, final String role, final List<PermissionType> perms) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1035,7 +1035,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void addPermission(String groupName, String role, List<PermissionType> perms) {
+    private void addPermission(String groupName, String role, List<PermissionType> perms) {
         try (Connection connection = db.getConnection();
              PreparedStatement addPermission = connection.prepareStatement(GroupManagerDao.addPermissionByGroupName)) {
             for (PermissionType perm : perms) {
@@ -1088,7 +1088,7 @@ public class GroupManagerDao {
         return perms;
     }
 
-    public void removePermissionAsync(final String group, final PlayerType ptype, final PermissionType perm) {
+    private void removePermissionAsync(final String group, final PlayerType ptype, final PermissionType perm) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1099,7 +1099,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void removePermission(String group, PlayerType pType, PermissionType perm) {
+    private void removePermission(String group, PlayerType pType, PermissionType perm) {
         try (Connection connection = db.getConnection();
              PreparedStatement removePermission = connection.prepareStatement(GroupManagerDao.removePermissionByName)) {
             removePermission.setString(1, group);
@@ -1159,7 +1159,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void updatePasswordAsync(final String groupname, final String password) {
+    private void updatePasswordAsync(final String groupname, final String password) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1170,7 +1170,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void updatePassword(String groupName, String password) {
+    private void updatePassword(String groupName, String password) {
         try (Connection connection = db.getConnection();
              PreparedStatement updatePassword = connection.prepareStatement(GroupManagerDao.updatePassword);) {
             updatePassword.setString(1, password);
@@ -1206,7 +1206,7 @@ public class GroupManagerDao {
      *
      * @param uuid sets up this player by uuid to accept groups async
      */
-    public void autoAcceptGroupsAsync(final UUID uuid) {
+    private void autoAcceptGroupsAsync(final UUID uuid) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1216,7 +1216,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void autoAcceptGroups(final UUID uuid) {
+    private void autoAcceptGroups(final UUID uuid) {
         try (Connection connection = db.getConnection();
              PreparedStatement addAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.addAutoAcceptGroup);) {
             addAutoAcceptGroup.setString(1, uuid.toString());
@@ -1246,7 +1246,7 @@ public class GroupManagerDao {
         return false;
     }
 
-    public void removeAutoAcceptGroupAsync(final UUID uuid) {
+    private void removeAutoAcceptGroupAsync(final UUID uuid) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1256,7 +1256,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void removeAutoAcceptGroup(final UUID uuid) {
+    private void removeAutoAcceptGroup(final UUID uuid) {
         try (Connection connection = db.getConnection();
              PreparedStatement removeAutoAcceptGroup = connection.prepareStatement(GroupManagerDao.removeAutoAcceptGroup);) {
             removeAutoAcceptGroup.setString(1, uuid.toString());
@@ -1266,7 +1266,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void setDefaultGroupAsync(final UUID uuid, final String groupname) {
+    private void setDefaultGroupAsync(final UUID uuid, final String groupname) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1277,7 +1277,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void setDefaultGroup(UUID uuid, String groupName) {
+    private void setDefaultGroup(UUID uuid, String groupName) {
         try (Connection connection = db.getConnection();
              PreparedStatement setDefaultGroup = connection.prepareStatement(GroupManagerDao.setDefaultGroup);) {
             setDefaultGroup.setString(1, uuid.toString());
@@ -1288,7 +1288,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void changeDefaultGroupAsync(final UUID uuid, final String groupname) {
+    private void changeDefaultGroupAsync(final UUID uuid, final String groupname) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1299,7 +1299,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void changeDefaultGroup(UUID uuid, String groupName) {
+    private void changeDefaultGroup(UUID uuid, String groupName) {
         try (Connection connection = db.getConnection();
              PreparedStatement changeDefaultGroup = connection.prepareStatement(GroupManagerDao.changeDefaultGroup);) {
             changeDefaultGroup.setString(1, groupName);
@@ -1349,7 +1349,7 @@ public class GroupManagerDao {
      * @param uuid  This is the uuid of the player.
      * @param group This is the group that we are changing the founder of.
      */
-    public void setFounderAsync(final UUID uuid, final Group group) {
+    private void setFounderAsync(final UUID uuid, final Group group) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1360,7 +1360,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void setFounder(UUID uuid, Group group) {
+    private void setFounder(UUID uuid, Group group) {
         try (Connection connection = db.getConnection();
              PreparedStatement updateOwner = connection.prepareStatement(GroupManagerDao.updateOwner);) {
             updateOwner.setString(1, uuid.toString());
@@ -1371,7 +1371,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void setDisciplinedAsync(final Group group, final boolean disciplined) {
+    private void setDisciplinedAsync(final Group group, final boolean disciplined) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1382,7 +1382,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void setDisciplined(Group group, boolean disciplined) {
+    private void setDisciplined(Group group, boolean disciplined) {
         try (Connection connection = db.getConnection();
              PreparedStatement updateDisciplined = connection.prepareStatement(GroupManagerDao.updateDisciplined);) {
             updateDisciplined.setInt(1, disciplined ? 1 : 0);
@@ -1395,7 +1395,7 @@ public class GroupManagerDao {
     }
 
 
-    public void addGroupInvitationAsync(final UUID uuid, final String groupName, final String role) {
+    private void addGroupInvitationAsync(final UUID uuid, final String groupName, final String role) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1406,7 +1406,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void addGroupInvitation(UUID uuid, String groupName, String role) {
+    private void addGroupInvitation(UUID uuid, String groupName, String role) {
         try (Connection connection = db.getConnection();
              PreparedStatement addGroupInvitation = connection.prepareStatement(GroupManagerDao.addGroupInvitation);) {
             addGroupInvitation.setString(1, uuid.toString());
@@ -1419,7 +1419,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void removeGroupInvitationAsync(final UUID uuid, final String groupName) {
+    private void removeGroupInvitationAsync(final UUID uuid, final String groupName) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1430,7 +1430,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void removeGroupInvitation(UUID uuid, String groupName) {
+    private void removeGroupInvitation(UUID uuid, String groupName) {
         try (Connection connection = db.getConnection();
              PreparedStatement removeGroupInvitation = connection.prepareStatement(GroupManagerDao.removeGroupInvitation);) {
             removeGroupInvitation.setString(1, uuid.toString());
@@ -1594,7 +1594,7 @@ public class GroupManagerDao {
         return ret;
     }
 
-    public void addBlackListMemberAsync(final String groupName, final UUID uuid) {
+    private void addBlackListMemberAsync(final String groupName, final UUID uuid) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1605,7 +1605,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void addBlackListMember(String groupName, UUID player) {
+    private void addBlackListMember(String groupName, UUID player) {
         try (Connection connection = db.getConnection();
              PreparedStatement addBlacklistMember = connection.prepareStatement(GroupManagerDao.addBlacklistMember);) {
             addBlacklistMember.setString(1, player.toString());
@@ -1616,7 +1616,7 @@ public class GroupManagerDao {
         }
     }
 
-    public void removeBlackListMemberAsync(final String gname, final UUID uuid) {
+    private void removeBlackListMemberAsync(final String gname, final UUID uuid) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
             @Override
@@ -1627,7 +1627,7 @@ public class GroupManagerDao {
         });
     }
 
-    public void removeBlackListMember(String groupName, UUID player) {
+    private void removeBlackListMember(String groupName, UUID player) {
         try (Connection connection = db.getConnection();
              PreparedStatement removeBlackListMember = connection.prepareStatement(GroupManagerDao.removeBlackListMember);) {
             removeBlackListMember.setString(1, groupName);
@@ -1776,7 +1776,7 @@ public class GroupManagerDao {
         return new GroupLoadSnapshot(groups, cacheVersion);
     }
 
-    public void setGroupColor(String groupName, String groupColor) {
+    private void setGroupColor(String groupName, String groupColor) {
         try (Connection connection = db.getConnection();
              PreparedStatement setGroupColor = connection.prepareStatement(GroupManagerDao.setGroupColor)) {
             setGroupColor.setString(1, groupColor);

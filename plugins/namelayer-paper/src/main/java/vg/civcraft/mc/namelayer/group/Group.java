@@ -126,7 +126,7 @@ public class Group {
 
     public void updateActivityTimeStamp() {
         this.activityTimestamp = System.currentTimeMillis();
-        db.updateTimestampAsync(name);
+        NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper group timestamp write for " + name);
     }
 
     public void prepareForDeletion() {
@@ -504,13 +504,32 @@ public class Group {
             return;
         }
         if (savetodb) {
-            // TODO: Make this atomic. UPDATE, don't remove and add! (Use INSERT ... UPDATE ON DUPLICATE / FAILURE semantic)
-            if (isMember(uuid, type)) {
-                db.removeMember(uuid, name);
-            }
-            db.addMember(uuid, name, type);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper member add for " + name);
+            return;
         }
         players.put(uuid, type);
+    }
+
+    public void joinGroupAsync(
+        final UUID actorUuid,
+        final String password,
+        final PlayerType role,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        if (role == PlayerType.NOT_BLACKLISTED || role == PlayerType.OWNER) {
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure("Invalid password join role"));
+            return;
+        }
+        sendMemberWrite(
+            actorUuid,
+            NameLayerWriteOperation.JOIN_GROUP,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "password", password,
+                "role", role.name()
+            ),
+            callback
+        );
     }
 
     /**
@@ -524,7 +543,8 @@ public class Group {
 
     public void removeMember(UUID uuid, boolean savetodb) {
         if (savetodb) {
-            db.removeMember(uuid, name);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper member removal for " + name);
+            return;
         }
         players.remove(uuid);
     }
@@ -779,7 +799,8 @@ public class Group {
 
     public void removeAllMembers(boolean savetodb) {
         if (savetodb) {
-            db.removeAllMembers(this.name);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper all-members removal for " + name);
+            return;
         }
         players.clear();
     }
@@ -922,10 +943,11 @@ public class Group {
     }
 
     public void setPassword(String password, boolean savetodb) {
-        this.password = password;
         if (savetodb) {
-            db.updatePassword(name, password);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper password write for " + name);
+            return;
         }
+        this.password = password;
     }
 
     /**
@@ -938,10 +960,11 @@ public class Group {
     }
 
     public void setOwner(UUID uuid, boolean savetodb) {
-        this.owner = uuid;
         if (savetodb) {
-            db.setFounder(uuid, this);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper owner write for " + name);
+            return;
         }
+        this.owner = uuid;
     }
 
     public void setDisciplined(boolean value) {
@@ -949,10 +972,11 @@ public class Group {
     }
 
     public void setDisciplined(boolean value, boolean savetodb) {
-        this.isDisciplined = value;
         if (savetodb) {
-            db.setDisciplined(this, value);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper discipline write for " + name);
+            return;
         }
+        this.isDisciplined = value;
     }
 
     public void setValid(boolean valid) {
@@ -977,10 +1001,11 @@ public class Group {
     }
 
     public void setGroupColor(TextColor groupColor, boolean saveToDB) {
-        this.groupColor = groupColor;
         if (saveToDB) {
-            db.setGroupColor(this.getName(), groupColor.toString());
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper group color write for " + name);
+            return;
         }
+        this.groupColor = groupColor;
     }
 
     public Component getGroupNameColored() {

@@ -425,9 +425,14 @@ public class GUIGroupOverview {
                                         p.getName() + " joined with password "
                                             + " to group " + g.getName()
                                             + " via the gui");
-                                    gro.addMember(p.getUniqueId(), pType);
-                                    p.sendMessage(ChatColor.GREEN + "You have successfully been added to " + gro.getName());
-                                    showScreen();
+                                    gro.joinGroupAsync(p.getUniqueId(), message[0], pType, result -> {
+                                        if (result.success()) {
+                                            p.sendMessage(ChatColor.GREEN + "You have successfully been added to " + gro.getName());
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + result.message());
+                                        }
+                                        showScreen();
+                                    });
                                 }
 
                             }

@@ -53,7 +53,12 @@ public class JoinGroup extends BaseCommandMiddle {
             return;
         }
 
-        g.addMember(uuid, pType);
-        p.sendMessage(ChatColor.GREEN + "You have successfully been added to this group.");
+        g.joinGroupAsync(uuid, attemptedPassword, pType, result -> {
+            if (result.success()) {
+                p.sendMessage(ChatColor.GREEN + "You have successfully been added to this group.");
+            } else {
+                p.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 }
