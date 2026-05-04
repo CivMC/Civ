@@ -23,6 +23,7 @@ public final class NameLayerWriteCoordinator {
     private static final String HAS_ROLE_PERMISSION = "SELECT 1 FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ? LIMIT 1";
     private static final String ADD_PERMISSION = "INSERT IGNORE INTO permissionByGroup(group_id, role, perm_id) VALUES (?, ?, ?)";
     private static final String REMOVE_PERMISSION = "DELETE FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ?";
+    private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
 
     private final DataSource dataSource;
     private final NameLayerInvalidationPublisher invalidationPublisher;
@@ -83,6 +84,7 @@ public final class NameLayerWriteCoordinator {
                     statement.setInt(3, permissionWrite.permissionId());
                     statement.executeUpdate();
                 }
+                incrementCacheVersion(connection);
                 connection.commit();
                 publishInvalidation(permissionWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(permissionWrite.groupId()));
@@ -104,6 +106,12 @@ public final class NameLayerWriteCoordinator {
         final boolean published = invalidationPublisher.publish(NameLayerInvalidationMessage.targeted(Set.of(groupId)));
         if (!published) {
             logger.error("NameLayer write committed, but failed to publish invalidation for group {}", groupId);
+        }
+    }
+
+    private void incrementCacheVersion(final Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(INCREMENT_CACHE_VERSION)) {
+            statement.executeUpdate();
         }
     }
 

@@ -17,6 +17,7 @@ public final class NameLayerGroupCache {
     private final Map<Integer, Group> groupsById;
     private final Map<String, Group> groupsByName;
     private final Map<UUID, Set<Integer>> groupIdsByPlayer;
+    private volatile long appliedVersion;
 
     public NameLayerGroupCache() {
         this.groupsById = new ConcurrentHashMap<>();
@@ -25,10 +26,12 @@ public final class NameLayerGroupCache {
     }
 
     public static NameLayerGroupCache loadAll(final GroupManagerDao dao, final Logger logger) {
+        final GroupManagerDao.GroupLoadSnapshot snapshot = dao.loadAllGroupsSnapshot();
         final NameLayerGroupCache cache = new NameLayerGroupCache();
-        for (final Group group : dao.loadAllGroups()) {
+        for (final Group group : snapshot.groups()) {
             cache.putGroup(group);
         }
+        cache.setAppliedVersion(snapshot.cacheVersion());
         logger.log(Level.INFO, "Loaded " + cache.groupsByName.size() + " NameLayer groups into local cache");
         return cache;
     }
@@ -118,5 +121,13 @@ public final class NameLayerGroupCache {
             }
         }
         return new ArrayList<>(names);
+    }
+
+    public long getAppliedVersion() {
+        return appliedVersion;
+    }
+
+    public void setAppliedVersion(final long appliedVersion) {
+        this.appliedVersion = Math.max(0L, appliedVersion);
     }
 }

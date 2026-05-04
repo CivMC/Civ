@@ -6,11 +6,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import javax.sql.DataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -41,6 +43,9 @@ public class NameLayerPlugin extends ACivMod {
     private static boolean createGroupOnFirstJoin;
     private FileConfiguration config;
     private NameLayerInvalidationConsumer invalidationConsumer;
+    private BukkitTask freshnessCheckTask;
+    private long stateLocalVersion;
+    private long staleVersionDetectedAtMillis;
 
     @Override
     public void onEnable() {
@@ -79,6 +84,9 @@ public class NameLayerPlugin extends ACivMod {
         if (invalidationConsumer != null) {
             invalidationConsumer.close();
         }
+        if (freshnessCheckTask != null) {
+            freshnessCheckTask.cancel();
+        }
         super.onDisable();
     }
 
@@ -97,11 +105,52 @@ public class NameLayerPlugin extends ACivMod {
         invalidationConsumer = new NameLayerInvalidationConsumer(
             rabbitMqConfig.connectionFactory(),
             rabbitMqConfig.serverId(),
-            getLogger()
+            getLogger(),
+            this
         );
         if (!invalidationConsumer.start()) {
             getLogger().log(Level.SEVERE, "NameLayer RabbitMQ invalidation consumer failed to start");
         }
+        startFreshnessCheck(rabbitMqConfig);
+    }
+
+    private void startFreshnessCheck(final NameLayerRabbitMqConfig rabbitMqConfig) {
+        if (!rabbitMqConfig.freshnessCheckEnabled()) {
+            return;
+        }
+        final long intervalTicks = Math.max(20L, rabbitMqConfig.freshnessCheckIntervalSeconds() * 20L);
+        final long jitterTicks = Math.max(0L, rabbitMqConfig.freshnessCheckJitterSeconds() * 20L);
+        final long staleGraceMillis = Math.max(0L, rabbitMqConfig.freshnessCheckStaleGraceSeconds() * 1000L);
+        final long initialDelay = intervalTicks + (jitterTicks == 0L ? 0L : ThreadLocalRandom.current().nextLong(jitterTicks + 1L));
+        freshnessCheckTask = getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+            final NameLayerGroupCache activeCache = groupCache;
+            if (activeCache == null) {
+                return;
+            }
+            final long localVersion = activeCache.getAppliedVersion();
+            final long databaseVersion = groupManagerDao.loadCacheVersion();
+            if (databaseVersion <= localVersion) {
+                if (localVersion > databaseVersion) {
+                    getLogger().log(Level.WARNING, "Applied version is in the future? Constraint localVersion <= databaseVersion violated");
+                }
+                stateLocalVersion = 0L;
+                staleVersionDetectedAtMillis = 0L;
+                return;
+            }
+            if (stateLocalVersion != localVersion || staleVersionDetectedAtMillis == 0L) {
+                stateLocalVersion = localVersion;
+                staleVersionDetectedAtMillis = System.currentTimeMillis();
+                return;
+            }
+            final long staleMillis = System.currentTimeMillis() - staleVersionDetectedAtMillis;
+            if (staleMillis < staleGraceMillis) {
+                return;
+            }
+            getLogger().log(Level.WARNING, "NameLayer cache version stayed stale for " + staleMillis + "ms; full-resyncing");
+            fullResyncGroupCache();
+            stateLocalVersion = 0L;
+            staleVersionDetectedAtMillis = 0L;
+        }, initialDelay, intervalTicks);
     }
 
     public static NameLayerPlugin getInstance() {

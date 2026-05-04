@@ -197,6 +197,7 @@ public class GroupManagerDao {
         + "left join blacklist b on b.group_id = all_ids.group_id "
         + "where requested.group_id in (";
     private static final String loadGroupsByIdsSuffix = ") order by f.group_name, counts.member_count desc, all_ids.group_id";
+    private static final String loadCacheVersion = "select cache_version from namelayer_cache_version where id = 1";
 
 
     public GroupManagerDao(Logger logger, ManagedDatasource db) {
@@ -206,6 +207,12 @@ public class GroupManagerDao {
 
     private record GroupHeader(String name, UUID owner, boolean disciplined, String password, int groupId,
                                long activityTimestamp, String groupColor) {
+    }
+
+    public record GroupLoadSnapshot(List<Group> groups, long cacheVersion) {
+    }
+
+    public record GroupReloadSnapshot(Map<Integer, Group> groups, long cacheVersion) {
     }
 
     /**
@@ -524,6 +531,13 @@ public class GroupManagerDao {
         //Adding support for groups to have a color assigned to them
         db.registerMigration(15, false,
             "alter table faction add group_color varchar(12) NOT NULL DEFAULT 'gray';");
+
+        db.registerMigration(16, false,
+            "create table if not exists namelayer_cache_version(" +
+                "id tinyint not null," +
+                "cache_version bigint not null," +
+                "primary key(id))",
+            "insert ignore into namelayer_cache_version(id, cache_version) values (1, 0)");
     }
 
     public int createGroup(String group, UUID owner, String password) {
@@ -640,8 +654,13 @@ public class GroupManagerDao {
     }
 
     public Map<Integer, Group> loadGroupsByIds(final Set<Integer> requestedGroupIds) {
+        final GroupReloadSnapshot snapshot = loadGroupsByIdsSnapshot(requestedGroupIds);
+        return snapshot == null ? null : snapshot.groups();
+    }
+
+    public GroupReloadSnapshot loadGroupsByIdsSnapshot(final Set<Integer> requestedGroupIds) {
         if (requestedGroupIds == null || requestedGroupIds.isEmpty()) {
-            return new HashMap<>();
+            return new GroupReloadSnapshot(new HashMap<>(), loadCacheVersion());
         }
 
         final Map<Integer, String> requestedNames = new HashMap<>();
@@ -649,52 +668,57 @@ public class GroupManagerDao {
         final Map<String, List<Integer>> groupIds = new HashMap<>();
         final Map<String, Map<UUID, PlayerType>> members = new HashMap<>();
         final Map<String, Set<UUID>> blacklists = new HashMap<>();
+        final long cacheVersion;
 
-        try (Connection connection = db.getConnection();
-             PreparedStatement statement = connection.prepareStatement(loadGroupsByIdsSql(requestedGroupIds.size()))) {
-            int parameterIndex = 1;
-            for (final int groupId : requestedGroupIds) {
-                statement.setInt(parameterIndex++, groupId);
-            }
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    final int requestedGroupId = resultSet.getInt(1);
-                    final String name = resultSet.getString(2);
-                    requestedNames.put(requestedGroupId, name);
-                    if (!headers.containsKey(name)) {
-                        final String ownerString = resultSet.getString(3);
-                        final UUID owner = ownerString == null ? null : UUID.fromString(ownerString);
-                        final Timestamp timestamp = resultSet.getTimestamp(6);
-                        headers.put(name, new GroupHeader(
-                            name,
-                            owner,
-                            resultSet.getInt(5) != 0,
-                            resultSet.getString(4),
-                            requestedGroupId,
-                            timestamp == null ? System.currentTimeMillis() : timestamp.getTime(),
-                            resultSet.getString(7)));
-                    }
-
-                    final int groupId = resultSet.getInt(8);
-                    if (!resultSet.wasNull()) {
-                        final List<Integer> ids = groupIds.computeIfAbsent(name, key -> new ArrayList<>());
-                        if (!ids.contains(groupId)) {
-                            ids.add(groupId);
+        try (Connection connection = db.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(loadGroupsByIdsSql(requestedGroupIds.size()))) {
+                int parameterIndex = 1;
+                for (final int groupId : requestedGroupIds) {
+                    statement.setInt(parameterIndex++, groupId);
+                }
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        final int requestedGroupId = resultSet.getInt(1);
+                        final String name = resultSet.getString(2);
+                        requestedNames.put(requestedGroupId, name);
+                        if (!headers.containsKey(name)) {
+                            final String ownerString = resultSet.getString(3);
+                            final UUID owner = ownerString == null ? null : UUID.fromString(ownerString);
+                            final Timestamp timestamp = resultSet.getTimestamp(6);
+                            headers.put(name, new GroupHeader(
+                                name,
+                                owner,
+                                resultSet.getInt(5) != 0,
+                                resultSet.getString(4),
+                                requestedGroupId,
+                                timestamp == null ? System.currentTimeMillis() : timestamp.getTime(),
+                                resultSet.getString(7)));
                         }
-                    }
 
-                    final String memberUuidString = resultSet.getString(9);
-                    final PlayerType role = PlayerType.getPlayerType(resultSet.getString(10));
-                    if (memberUuidString != null && role != null) {
-                        members.computeIfAbsent(name, key -> new HashMap<>()).put(UUID.fromString(memberUuidString), role);
-                    }
+                        final int groupId = resultSet.getInt(8);
+                        if (!resultSet.wasNull()) {
+                            final List<Integer> ids = groupIds.computeIfAbsent(name, key -> new ArrayList<>());
+                            if (!ids.contains(groupId)) {
+                                ids.add(groupId);
+                            }
+                        }
 
-                    final String blacklistUuidString = resultSet.getString(11);
-                    if (blacklistUuidString != null) {
-                        blacklists.computeIfAbsent(name, key -> new HashSet<>()).add(UUID.fromString(blacklistUuidString));
+                        final String memberUuidString = resultSet.getString(9);
+                        final PlayerType role = PlayerType.getPlayerType(resultSet.getString(10));
+                        if (memberUuidString != null && role != null) {
+                            members.computeIfAbsent(name, key -> new HashMap<>()).put(UUID.fromString(memberUuidString), role);
+                        }
+
+                        final String blacklistUuidString = resultSet.getString(11);
+                        if (blacklistUuidString != null) {
+                            blacklists.computeIfAbsent(name, key -> new HashSet<>()).add(UUID.fromString(blacklistUuidString));
+                        }
                     }
                 }
             }
+            cacheVersion = loadCacheVersion(connection);
+            connection.commit();
         } catch (final SQLException exception) {
             logger.log(Level.WARNING, "Unable to bulk load NameLayer groups by ID", exception);
             return null;
@@ -721,7 +745,23 @@ public class GroupManagerDao {
         for (final Entry<Integer, String> entry : requestedNames.entrySet()) {
             groupsByRequestedId.put(entry.getKey(), groupsByName.get(entry.getValue()));
         }
-        return groupsByRequestedId;
+        return new GroupReloadSnapshot(groupsByRequestedId, cacheVersion);
+    }
+
+    public long loadCacheVersion() {
+        try (Connection connection = db.getConnection()) {
+            return loadCacheVersion(connection);
+        } catch (final SQLException exception) {
+            logger.log(Level.WARNING, "Unable to load NameLayer cache version", exception);
+        }
+        return 0L;
+    }
+
+    private long loadCacheVersion(final Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(loadCacheVersion);
+             ResultSet resultSet = statement.executeQuery()) {
+            return resultSet.next() ? resultSet.getLong(1) : 0L;
+        }
     }
 
     private String loadGroupsByIdsSql(final int groupIdCount) {
@@ -1704,11 +1744,12 @@ public class GroupManagerDao {
         return null;
     }
 
-    public List<Group> loadAllGroups() {
+    public GroupLoadSnapshot loadAllGroupsSnapshot() {
         final Map<String, GroupHeader> headers = new LinkedHashMap<>();
         final Map<String, List<Integer>> groupIds = new HashMap<>();
         final Map<String, Map<UUID, PlayerType>> members = new HashMap<>();
         final Map<String, Set<UUID>> blacklists = new HashMap<>();
+        final long cacheVersion;
 
         try (Connection connection = db.getConnection()) {
             connection.setAutoCommit(false);
@@ -1764,10 +1805,11 @@ public class GroupManagerDao {
                         .add(UUID.fromString(uuidString));
                 }
             }
+            cacheVersion = loadCacheVersion(connection);
             connection.commit();
         } catch (final SQLException exception) {
             logger.log(Level.WARNING, "Unable to bulk load NameLayer groups", exception);
-            return new ArrayList<>();
+            return new GroupLoadSnapshot(new ArrayList<>(), 0L);
         }
 
         final List<Group> groups = new ArrayList<>(headers.size());
@@ -1786,7 +1828,7 @@ public class GroupManagerDao {
                 members.get(header.name()),
                 blacklists.get(header.name())));
         }
-        return groups;
+        return new GroupLoadSnapshot(groups, cacheVersion);
     }
 
     public void setGroupColor(String groupName, String groupColor) {

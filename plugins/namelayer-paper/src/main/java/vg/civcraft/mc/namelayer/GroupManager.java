@@ -56,10 +56,11 @@ public class GroupManager {
             return false;
         }
         final Set<Integer> uniqueGroupIds = new LinkedHashSet<>(groupIds);
-        final Map<Integer, Group> groups = groupManagerDao.loadGroupsByIds(uniqueGroupIds);
-        if (groups == null) {
+        final GroupManagerDao.GroupReloadSnapshot snapshot = groupManagerDao.loadGroupsByIdsSnapshot(uniqueGroupIds);
+        if (snapshot == null) {
             return false;
         }
+        final Map<Integer, Group> groups = snapshot.groups();
         final NameLayerGroupCache cache = getCache();
         if (cache == null) {
             return false;
@@ -71,6 +72,7 @@ public class GroupManager {
                 oldGroup.setValid(false);
             }
         }
+        cache.setAppliedVersion(snapshot.cacheVersion());
         return true;
     }
 

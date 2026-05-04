@@ -20,6 +20,11 @@ rabbitmq:
   password: guest
   host: localhost
   port: 5672
+  freshnessCheck:
+    enabled: true
+    intervalSeconds: 300
+    jitterSeconds: 30
+    staleGraceSeconds: 300
 persistance:
   forceloadnamecaching: true
 #name_cleanser:
