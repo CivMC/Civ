@@ -284,6 +284,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                     + playerName
                                     + ". This player isn't invited currently.");
                                 showScreen();
+                                return;
                             }
                             // make sure the player still has permission to do
                             // this
@@ -316,13 +317,17 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                 NameLayerPlugin.log(Level.INFO, arg0.getName()
                                     + " revoked an invite for " + NameLayerAPI.getCurrentName(invitedUUID)
                                     + " for group " + g.getName() + " via the gui");
-                                g.removeInvite(invitedUUID, true);
-                                PlayerListener.removeNotification(invitedUUID, g);
-
-                                p.sendMessage(ChatColor.GREEN + playerName
-                                    + "'s invitation has been revoked.");
+                                g.removeInviteAsync(p.getUniqueId(), invitedUUID, false, result -> {
+                                    if (result.success()) {
+                                        PlayerListener.removeNotification(invitedUUID, g);
+                                        p.sendMessage(ChatColor.GREEN + playerName
+                                            + "'s invitation has been revoked.");
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + result.message());
+                                    }
+                                    showScreen();
+                                });
                             }
-                            showScreen();
                         }
                     };
                 } else {

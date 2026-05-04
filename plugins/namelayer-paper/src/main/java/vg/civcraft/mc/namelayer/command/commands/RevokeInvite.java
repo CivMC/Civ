@@ -76,9 +76,13 @@ public class RevokeInvite extends BaseCommandMiddle {
             return;
         }
 
-        group.removeInvite(uuid, true);
-        PlayerListener.removeNotification(uuid, group);
-
-        p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(uuid) + "'s invitation has been revoked.");
+        group.removeInviteAsync(p.getUniqueId(), uuid, p.hasPermission("namelayer.admin"), result -> {
+            if (result.success()) {
+                PlayerListener.removeNotification(uuid, group);
+                p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(uuid) + "'s invitation has been revoked.");
+            } else {
+                p.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 }

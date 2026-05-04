@@ -36,6 +36,12 @@ public final class NameLayerWriteCoordinator {
     private static final String IS_GROUP_MEMBER = "SELECT 1 FROM faction_member WHERE group_id = ? AND member_name = ? LIMIT 1";
     private static final String ADD_BLACKLIST = "INSERT IGNORE INTO blacklist(group_id, member_name) VALUES (?, ?)";
     private static final String REMOVE_BLACKLIST = "DELETE FROM blacklist WHERE group_id = ? AND member_name = ?";
+    private static final String IS_BLACKLISTED = "SELECT 1 FROM blacklist WHERE group_id = ? AND member_name = ? LIMIT 1";
+    private static final String IS_AUTO_ACCEPT = "SELECT 1 FROM toggleAutoAccept WHERE uuid = ? LIMIT 1";
+    private static final String ADD_MEMBER = "INSERT INTO faction_member(group_id, member_name, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE role = VALUES(role)";
+    private static final String ADD_INVITATION = "INSERT INTO group_invitation(uuid, groupName, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE role = VALUES(role), date = NOW()";
+    private static final String GET_INVITATION_ROLE = "SELECT role FROM group_invitation WHERE uuid = ? AND groupName = ? LIMIT 1";
+    private static final String REMOVE_INVITATION = "DELETE FROM group_invitation WHERE uuid = ? AND groupName = ?";
     private static final String GET_GROUP_NAME = "SELECT group_name FROM faction_id WHERE group_id = ? LIMIT 1";
     private static final String DELETE_GROUP = "CALL deletegroupfromtable(?, ?)";
     private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
@@ -68,6 +74,9 @@ public final class NameLayerWriteCoordinator {
             case DELETE_GROUP -> handleDeleteGroup(request);
             case ADD_BLACKLIST -> handleBlacklistWrite(request, ADD_BLACKLIST, true);
             case REMOVE_BLACKLIST -> handleBlacklistWrite(request, REMOVE_BLACKLIST, false);
+            case ADD_INVITATION -> handleAddInvitation(request);
+            case REMOVE_INVITATION -> handleRemoveInvitation(request);
+            case ACCEPT_INVITATION -> handleAcceptInvitation(request);
             default -> NameLayerWriteResponse.failure(
                 request.requestId(),
                 NameLayerWriteFailureCode.UNKNOWN_OPERATION,
@@ -200,6 +209,152 @@ public final class NameLayerWriteCoordinator {
             logger.error("NameLayer blacklist write failed", exception);
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
         }
+    }
+
+    private NameLayerWriteResponse handleAddInvitation(final NameLayerWriteRequest request) {
+        final InvitationWrite invitationWrite;
+        try {
+            invitationWrite = InvitationWrite.from(request.arguments(), true);
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                final NameLayerWriteResponse validationFailure = validateInvitationAccess(connection, request, invitationWrite, invitationWrite.role());
+                if (validationFailure != null) {
+                    connection.rollback();
+                    return validationFailure;
+                }
+                if (isGroupMember(connection, invitationWrite.groupId(), invitationWrite.memberUuid())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "Player is already a group member");
+                }
+                if (isBlacklisted(connection, invitationWrite.groupId(), invitationWrite.memberUuid())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "Player is blacklisted");
+                }
+                final String groupName = getGroupName(connection, invitationWrite.groupId());
+                if (groupName == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                if (isAutoAccept(connection, invitationWrite.memberUuid())) {
+                    addMember(connection, invitationWrite.groupId(), invitationWrite.memberUuid(), invitationWrite.role());
+                    removeInvitation(connection, invitationWrite.memberUuid(), groupName);
+                } else {
+                    addInvitation(connection, invitationWrite.memberUuid(), groupName, invitationWrite.role());
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(invitationWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(invitationWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer invitation add failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleRemoveInvitation(final NameLayerWriteRequest request) {
+        final InvitationWrite invitationWrite;
+        try {
+            invitationWrite = InvitationWrite.from(request.arguments(), false);
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, invitationWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                final String groupName = getGroupName(connection, invitationWrite.groupId());
+                if (groupName == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                final String role = getInvitationRole(connection, invitationWrite.memberUuid(), groupName);
+                if (role == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "Player is not invited");
+                }
+                if (!invitationWrite.adminOverride() && !request.actorUuid().equals(invitationWrite.memberUuid()) && !hasRoleEditAccess(connection, invitationWrite.groupId(), request.actorUuid(), role)) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor cannot remove this invitation");
+                }
+                removeInvitation(connection, invitationWrite.memberUuid(), groupName);
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(invitationWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(invitationWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer invitation removal failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleAcceptInvitation(final NameLayerWriteRequest request) {
+        final GroupIdWrite groupWrite;
+        try {
+            groupWrite = GroupIdWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, groupWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                final String groupName = getGroupName(connection, groupWrite.groupId());
+                if (groupName == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                final String role = getInvitationRole(connection, request.actorUuid(), groupName);
+                if (role == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "Actor is not invited");
+                }
+                addMember(connection, groupWrite.groupId(), request.actorUuid(), role);
+                removeInvitation(connection, request.actorUuid(), groupName);
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(groupWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(groupWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer invitation accept failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse validateInvitationAccess(
+        final Connection connection,
+        final NameLayerWriteRequest request,
+        final InvitationWrite invitationWrite,
+        final String role
+    ) throws SQLException {
+        if (!lockGroup(connection, invitationWrite.groupId())) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+        }
+        if (!invitationWrite.adminOverride() && !hasRoleEditAccess(connection, invitationWrite.groupId(), request.actorUuid(), role)) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor cannot invite this role");
+        }
+        return null;
     }
 
     private void insertDefaultPermissions(
@@ -578,6 +733,64 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
+    private boolean isBlacklisted(final Connection connection, final int groupId, final UUID memberUuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(IS_BLACKLISTED)) {
+            statement.setInt(1, groupId);
+            statement.setString(2, memberUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    private boolean isAutoAccept(final Connection connection, final UUID memberUuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(IS_AUTO_ACCEPT)) {
+            statement.setString(1, memberUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    private void addMember(final Connection connection, final int groupId, final UUID memberUuid, final String role) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(ADD_MEMBER)) {
+            statement.setInt(1, groupId);
+            statement.setString(2, memberUuid.toString());
+            statement.setString(3, role);
+            statement.executeUpdate();
+        }
+    }
+
+    private void addInvitation(final Connection connection, final UUID memberUuid, final String groupName, final String role) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(ADD_INVITATION)) {
+            statement.setString(1, memberUuid.toString());
+            statement.setString(2, groupName);
+            statement.setString(3, role);
+            statement.executeUpdate();
+        }
+    }
+
+    private String getInvitationRole(final Connection connection, final UUID memberUuid, final String groupName) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_INVITATION_ROLE)) {
+            statement.setString(1, memberUuid.toString());
+            statement.setString(2, groupName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return resultSet.getString(1);
+            }
+        }
+    }
+
+    private void removeInvitation(final Connection connection, final UUID memberUuid, final String groupName) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(REMOVE_INVITATION)) {
+            statement.setString(1, memberUuid.toString());
+            statement.setString(2, groupName);
+            statement.executeUpdate();
+        }
+    }
+
     private record PermissionWrite(int groupId, String role, String permissionName) {
 
         private static PermissionWrite from(final Map<String, String> arguments) {
@@ -653,6 +866,22 @@ public final class NameLayerWriteCoordinator {
             final MemberWrite memberWrite = MemberWrite.from(arguments);
             final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
             return new BlacklistWrite(memberWrite.groupId(), memberWrite.memberUuid(), adminOverride);
+        }
+    }
+
+    private record InvitationWrite(int groupId, UUID memberUuid, String role, boolean adminOverride) {
+
+        private static InvitationWrite from(final Map<String, String> arguments, final boolean requireRole) {
+            final MemberWrite memberWrite = MemberWrite.from(arguments);
+            final String role;
+            if (requireRole) {
+                role = PermissionWrite.requireNonBlank(arguments, "role");
+                PermissionWrite.validateRole(role);
+            } else {
+                role = null;
+            }
+            final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
+            return new InvitationWrite(memberWrite.groupId(), memberWrite.memberUuid(), role, adminOverride);
         }
     }
 

@@ -40,12 +40,16 @@ public class RejectInvite extends BaseCommandMiddle {
         }
         if (group.isMember(uuid)) {
             player.sendMessage(ChatColor.RED + "You cannot reject an invite to a group that you're already a member of.");
-            group.removeInvite(uuid, true);
             return;
         }
-        group.removeInvite(uuid, true);
-        PlayerListener.removeNotification(uuid, group);
-        player.sendMessage(ChatColor.GREEN + "You've successfully declined that group invitation.");
+        group.removeInviteAsync(uuid, uuid, false, result -> {
+            if (result.success()) {
+                PlayerListener.removeNotification(uuid, group);
+                player.sendMessage(ChatColor.GREEN + "You've successfully declined that group invitation.");
+            } else {
+                player.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 
     @TabComplete("NL_Invites")

@@ -322,10 +322,35 @@ public class Group {
      * @param saveToDB - save the invitation to the DB.
      */
     public void addInvite(UUID uuid, PlayerType type, boolean saveToDB) {
-        invites.put(uuid, type);
         if (saveToDB) {
-            db.addGroupInvitation(uuid, name, type.name());
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper invitation add for " + name);
+            return;
         }
+        invites.put(uuid, type);
+    }
+
+    public void addInviteAsync(
+        final UUID actorUuid,
+        final UUID invitedUuid,
+        final PlayerType type,
+        final boolean adminOverride,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        if (type == PlayerType.NOT_BLACKLISTED) {
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure("Invalid invite role"));
+            return;
+        }
+        sendMemberWrite(
+            actorUuid,
+            NameLayerWriteOperation.ADD_INVITATION,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "memberUuid", invitedUuid.toString(),
+                "role", type.name(),
+                "adminOverride", Boolean.toString(adminOverride)
+            ),
+            callback
+        );
     }
 
     /**
@@ -357,10 +382,38 @@ public class Group {
      * @param saveToDB - remove the invitation from the DB.
      */
     public void removeInvite(UUID uuid, boolean saveToDB) {
-        invites.remove(uuid);
         if (saveToDB) {
-            db.removeGroupInvitation(uuid, name);
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper invitation removal for " + name);
+            return;
         }
+        invites.remove(uuid);
+    }
+
+    public void removeInviteAsync(
+        final UUID actorUuid,
+        final UUID invitedUuid,
+        final boolean adminOverride,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        sendMemberWrite(
+            actorUuid,
+            NameLayerWriteOperation.REMOVE_INVITATION,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "memberUuid", invitedUuid.toString(),
+                "adminOverride", Boolean.toString(adminOverride)
+            ),
+            callback
+        );
+    }
+
+    public void acceptInviteAsync(final UUID actorUuid, final Consumer<MemberWriteResult> callback) {
+        sendMemberWrite(
+            actorUuid,
+            NameLayerWriteOperation.ACCEPT_INVITATION,
+            Map.of("groupId", Integer.toString(getGroupId())),
+            callback
+        );
     }
 
     /**

@@ -42,13 +42,16 @@ public class AcceptInvite extends BaseCommandMiddle {
         }
         if (group.isMember(uuid)) {
             p.sendMessage(Component.text("You are already a member you cannot join again.").color(NamedTextColor.RED));
-            group.removeInvite(uuid, true);
             return;
         }
-        group.addMember(uuid, type);
-        group.removeInvite(uuid, true);
-        PlayerListener.removeNotification(uuid, group);
-        p.sendMessage(Component.text("You have successfully been added to the group as a " + type.name() + ".").color(NamedTextColor.GREEN));
+        group.acceptInviteAsync(uuid, result -> {
+            if (result.success()) {
+                PlayerListener.removeNotification(uuid, group);
+                p.sendMessage(Component.text("You have successfully been added to the group as a " + type.name() + ".").color(NamedTextColor.GREEN));
+            } else {
+                p.sendMessage(Component.text(result.message()).color(NamedTextColor.RED));
+            }
+        });
     }
 
     @TabComplete("NL_Invites")
