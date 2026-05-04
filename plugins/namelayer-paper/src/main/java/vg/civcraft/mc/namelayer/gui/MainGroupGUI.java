@@ -196,15 +196,21 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                         + NameLayerAPI.getCurrentName(uuid)
                                         + " from the blacklist of "
                                         + g.getName() + " via the gui");
-                                black.removeBlacklistMember(g, uuid, true);
-                                p.sendMessage(ChatColor.GREEN + "You removed "
-                                    + NameLayerAPI.getCurrentName(uuid)
-                                    + " from the blacklist");
+                                black.removeBlacklistMemberAsync(p.getUniqueId(), g, uuid, false, result -> {
+                                    if (result.success()) {
+                                        p.sendMessage(ChatColor.GREEN + "You removed "
+                                            + NameLayerAPI.getCurrentName(uuid)
+                                            + " from the blacklist");
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + result.message());
+                                    }
+                                    showScreen();
+                                });
                             } else {
                                 p.sendMessage(ChatColor.RED
                                     + "You lost permission to remove this player from the blacklist");
+                                showScreen();
                             }
-                            showScreen();
                         }
                     };
                 } else {
@@ -779,16 +785,22 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                                 + " for group "
                                                 + g.getName()
                                                 + " via the gui");
-                                    bl.addBlacklistMember(g, blackUUID, true);
-                                    p.sendMessage(ChatColor.GREEN
-                                        + NameLayerAPI.getCurrentName(blackUUID)
-                                        + " was successfully blacklisted");
+                                    bl.addBlacklistMemberAsync(p.getUniqueId(), g, blackUUID, false, result -> {
+                                        if (result.success()) {
+                                            p.sendMessage(ChatColor.GREEN
+                                                + NameLayerAPI.getCurrentName(blackUUID)
+                                                + " was successfully blacklisted");
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + result.message());
+                                        }
+                                        showScreen();
+                                    });
                                 }
                             } else {
                                 p.sendMessage(ChatColor.RED
                                     + "You lost permission to do this");
+                                showScreen();
                             }
-                            showScreen();
                         }
                     };
 

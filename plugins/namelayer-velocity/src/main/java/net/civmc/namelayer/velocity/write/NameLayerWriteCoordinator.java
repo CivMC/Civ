@@ -33,6 +33,9 @@ public final class NameLayerWriteCoordinator {
     private static final String SET_OWNER_MEMBER_ROLE = "UPDATE faction_member SET role = 'OWNER' WHERE group_id = ? AND member_name = ?";
     private static final String CREATE_GROUP = "CALL createGroup(?, ?, ?, ?)";
     private static final String ADD_PERMISSION_BY_NAME = "INSERT IGNORE INTO permission_by_group_name(group_id, role, permission_name) VALUES (?, ?, ?)";
+    private static final String IS_GROUP_MEMBER = "SELECT 1 FROM faction_member WHERE group_id = ? AND member_name = ? LIMIT 1";
+    private static final String ADD_BLACKLIST = "INSERT IGNORE INTO blacklist(group_id, member_name) VALUES (?, ?)";
+    private static final String REMOVE_BLACKLIST = "DELETE FROM blacklist WHERE group_id = ? AND member_name = ?";
     private static final String GET_GROUP_NAME = "SELECT group_name FROM faction_id WHERE group_id = ? LIMIT 1";
     private static final String DELETE_GROUP = "CALL deletegroupfromtable(?, ?)";
     private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
@@ -63,6 +66,8 @@ public final class NameLayerWriteCoordinator {
             case SET_GROUP_OWNER -> handleSetGroupOwner(request);
             case CREATE_GROUP -> handleCreateGroup(request);
             case DELETE_GROUP -> handleDeleteGroup(request);
+            case ADD_BLACKLIST -> handleBlacklistWrite(request, ADD_BLACKLIST, true);
+            case REMOVE_BLACKLIST -> handleBlacklistWrite(request, REMOVE_BLACKLIST, false);
             default -> NameLayerWriteResponse.failure(
                 request.requestId(),
                 NameLayerWriteFailureCode.UNKNOWN_OPERATION,
@@ -148,6 +153,51 @@ public final class NameLayerWriteCoordinator {
             }
         } catch (final SQLException exception) {
             logger.error("NameLayer group delete failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleBlacklistWrite(
+        final NameLayerWriteRequest request,
+        final String sql,
+        final boolean add
+    ) {
+        final BlacklistWrite blacklistWrite;
+        try {
+            blacklistWrite = BlacklistWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, blacklistWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                if (!blacklistWrite.adminOverride() && !hasRoleEditAccess(connection, blacklistWrite.groupId(), request.actorUuid(), "BLACKLIST")) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have blacklist access");
+                }
+                if (add && isGroupMember(connection, blacklistWrite.groupId(), blacklistWrite.memberUuid())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "Cannot blacklist a group member");
+                }
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    statement.setInt(1, blacklistWrite.groupId());
+                    statement.setString(2, blacklistWrite.memberUuid().toString());
+                    statement.executeUpdate();
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(blacklistWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(blacklistWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer blacklist write failed", exception);
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
         }
     }
@@ -518,6 +568,16 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
+    private boolean isGroupMember(final Connection connection, final int groupId, final UUID memberUuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(IS_GROUP_MEMBER)) {
+            statement.setInt(1, groupId);
+            statement.setString(2, memberUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
     private record PermissionWrite(int groupId, String role, String permissionName) {
 
         private static PermissionWrite from(final Map<String, String> arguments) {
@@ -584,6 +644,15 @@ public final class NameLayerWriteCoordinator {
                 throw new IllegalArgumentException("role cannot be OWNER for member role writes");
             }
             return new MemberRoleWrite(memberWrite.groupId(), memberWrite.memberUuid(), role);
+        }
+    }
+
+    private record BlacklistWrite(int groupId, UUID memberUuid, boolean adminOverride) {
+
+        private static BlacklistWrite from(final Map<String, String> arguments) {
+            final MemberWrite memberWrite = MemberWrite.from(arguments);
+            final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
+            return new BlacklistWrite(memberWrite.groupId(), memberWrite.memberUuid(), adminOverride);
         }
     }
 

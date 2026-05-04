@@ -1,10 +1,18 @@
 package vg.civcraft.mc.namelayer.group;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import net.civmc.namelayer.sync.NameLayerWriteOperation;
+import net.civmc.namelayer.sync.NameLayerWriteRequest;
+import net.civmc.namelayer.sync.NameLayerWriteResponse;
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public class BlackList {
 
@@ -33,12 +41,23 @@ public class BlackList {
     }
 
     public void addBlacklistMember(Group group, UUID uuid, boolean writeToDb) {
+        if (writeToDb) {
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper blacklist add for " + group.getName());
+            return;
+        }
         if (!group.isBlacklisted(uuid)) {
             group.addBlacklisted(uuid);
-            if (writeToDb) {
-                NameLayerPlugin.getGroupManagerDao().addBlackListMember(group.getName(), uuid);
-            }
         }
+    }
+
+    public void addBlacklistMemberAsync(
+        final UUID actorUuid,
+        final Group group,
+        final UUID uuid,
+        final boolean adminOverride,
+        final Consumer<BlacklistWriteResult> callback
+    ) {
+        sendBlacklistWrite(actorUuid, NameLayerWriteOperation.ADD_BLACKLIST, group, uuid, adminOverride, callback);
     }
 
     public void addBlacklistMember(String groupName, UUID uuid, boolean writeToDb) {
@@ -49,18 +68,109 @@ public class BlackList {
     }
 
     public void removeBlacklistMember(Group group, UUID uuid, boolean writeToDb) {
+        if (writeToDb) {
+            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper blacklist removal for " + group.getName());
+            return;
+        }
         if (group.isBlacklisted(uuid)) {
             group.removeBlacklisted(uuid);
-            if (writeToDb) {
-                NameLayerPlugin.getGroupManagerDao().removeBlackListMember(group.getName(), uuid);
-            }
         }
+    }
+
+    public void removeBlacklistMemberAsync(
+        final UUID actorUuid,
+        final Group group,
+        final UUID uuid,
+        final boolean adminOverride,
+        final Consumer<BlacklistWriteResult> callback
+    ) {
+        sendBlacklistWrite(actorUuid, NameLayerWriteOperation.REMOVE_BLACKLIST, group, uuid, adminOverride, callback);
     }
 
     public void removeBlacklistMember(String groupName, UUID uuid, boolean writeToDb) {
         Group group = GroupManager.getGroup(groupName);
         if (group != null) {
             removeBlacklistMember(group, uuid, writeToDb);
+        }
+    }
+
+    private void sendBlacklistWrite(
+        final UUID actorUuid,
+        final NameLayerWriteOperation operation,
+        final Group group,
+        final UUID uuid,
+        final boolean adminOverride,
+        final Consumer<BlacklistWriteResult> callback
+    ) {
+        if (group == null || uuid == null) {
+            completeOnMain(callback, BlacklistWriteResult.failure("Group and player are required"));
+            return;
+        }
+        final NameLayerWriteClient writeClient = NameLayerPlugin.getWriteClient();
+        if (writeClient == null) {
+            completeOnMain(callback, BlacklistWriteResult.failure("NameLayer proxy write client is unavailable"));
+            return;
+        }
+        final NameLayerPlugin plugin = NameLayerPlugin.getInstance();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final NameLayerWriteRequest request = NameLayerWriteRequest.create(
+                plugin.getConfig().getString("rabbitmq.serverId", "paper"),
+                actorUuid,
+                operation,
+                Map.of(
+                    "groupId", Integer.toString(group.getGroupId()),
+                    "memberUuid", uuid.toString(),
+                    "adminOverride", Boolean.toString(adminOverride)
+                )
+            );
+            writeClient.send(request).whenComplete((response, error) -> handleWriteResponse(group, response, error, callback));
+        });
+    }
+
+    private void handleWriteResponse(
+        final Group group,
+        final NameLayerWriteResponse response,
+        final Throwable error,
+        final Consumer<BlacklistWriteResult> callback
+    ) {
+        if (error != null) {
+            NameLayerPlugin.getInstance().getLogger().log(Level.WARNING, "NameLayer blacklist proxy write failed", error);
+            completeOnMain(callback, BlacklistWriteResult.failure("NameLayer proxy write failed"));
+            return;
+        }
+        if (!response.success()) {
+            completeOnMain(callback, BlacklistWriteResult.failure(response.message()));
+            return;
+        }
+        final boolean reloadSucceeded;
+        if (response.requiresFullResync()) {
+            NameLayerPlugin.fullResyncGroupCache();
+            reloadSucceeded = true;
+        } else {
+            final Set<Integer> affectedGroupIds = response.affectedGroupIds().isEmpty()
+                ? Set.of(group.getGroupId())
+                : response.affectedGroupIds();
+            reloadSucceeded = GroupManager.reloadGroupsById(java.util.List.copyOf(affectedGroupIds));
+        }
+        if (!reloadSucceeded) {
+            completeOnMain(callback, BlacklistWriteResult.failure("Blacklist write succeeded, but local cache refresh failed"));
+            return;
+        }
+        completeOnMain(callback, BlacklistWriteResult.successResult());
+    }
+
+    private void completeOnMain(final Consumer<BlacklistWriteResult> callback, final BlacklistWriteResult result) {
+        Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> callback.accept(result));
+    }
+
+    public record BlacklistWriteResult(boolean success, String message) {
+
+        public static BlacklistWriteResult successResult() {
+            return new BlacklistWriteResult(true, "");
+        }
+
+        public static BlacklistWriteResult failure(final String message) {
+            return new BlacklistWriteResult(false, message == null || message.isBlank() ? "Blacklist write failed" : message);
         }
     }
 }
