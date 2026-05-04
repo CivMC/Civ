@@ -532,7 +532,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
                             getAccordingPermission(g
                                 .getCurrentRank(toChange)))) {
                             removeMember(toChange);
-                            showScreen();
                         }
                     }
                 };
@@ -556,7 +555,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
                     @Override
                     public void clicked(Player arg0) {
                         changePlayerRank(toChange, pType);
-                        showDetail(toChange);
                     }
                 };
             }
@@ -579,9 +577,16 @@ public class MainGroupGUI extends AbstractGroupGUI {
             NameLayerPlugin.log(Level.INFO,
                 p.getName() + " kicked " + NameLayerAPI.getCurrentName(toRemove)
                     + " from " + g.getName() + " via the gui");
-            g.removeMember(toRemove);
-            p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(toRemove)
-                + " has been removed from the group");
+            closeInventoryNextTick(p);
+            g.removeMemberAsync(p.getUniqueId(), toRemove, result -> {
+                if (result.success()) {
+                    p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(toRemove)
+                        + " has been removed from the group");
+                } else {
+                    p.sendMessage(ChatColor.RED + result.message());
+                }
+                showScreen();
+            });
         } else {
             p.sendMessage(ChatColor.RED
                 + "You have lost permission to remove this player");
@@ -620,21 +625,33 @@ public class MainGroupGUI extends AbstractGroupGUI {
                         + "Could not change player rank, you should complain about this");
                     return;
                 }
-                g.removeMember(toChange);
-                g.addMember(toChange, newRank);
-                oProm.sendMessage(ChatColor.GREEN
-                    + "You have been promoted to " + getRankName(toChange)
-                    + " in (Group) " + g.getName());
+                closeInventoryNextTick(p);
+                g.setMemberRoleAsync(p.getUniqueId(), toChange, newRank, result -> {
+                    if (result.success()) {
+                        oProm.sendMessage(ChatColor.GREEN
+                            + "You have been promoted to " + PlayerType.getNiceRankName(newRank)
+                            + " in (Group) " + g.getName());
+                        p.sendMessage(ChatColor.GREEN
+                            + NameLayerAPI.getCurrentName(toChange)
+                            + " has been changed to " + PlayerType.getNiceRankName(newRank));
+                    } else {
+                        p.sendMessage(ChatColor.RED + result.message());
+                    }
+                    showDetail(toChange);
+                });
             } else {
-                // player is offline change their perms
-                g.removeMember(toChange);
-                g.addMember(toChange, newRank);
+                closeInventoryNextTick(p);
+                g.setMemberRoleAsync(p.getUniqueId(), toChange, newRank, result -> {
+                    if (result.success()) {
+                        p.sendMessage(ChatColor.GREEN
+                            + NameLayerAPI.getCurrentName(toChange)
+                            + " has been changed to " + PlayerType.getNiceRankName(newRank));
+                    } else {
+                        p.sendMessage(ChatColor.RED + result.message());
+                    }
+                    showDetail(toChange);
+                });
             }
-            p.sendMessage(ChatColor.GREEN
-                + NameLayerAPI.getCurrentName(toChange)
-                + " has been "
-                + demoteOrPromote(g.getCurrentRank(toChange), newRank,
-                false) + "d to " + getRankName(toChange));
         } else {
             p.sendMessage(ChatColor.RED
                 + "You have lost permission to remove this player");
@@ -1022,9 +1039,14 @@ public class MainGroupGUI extends AbstractGroupGUI {
                             }
                             NameLayerPlugin.log(Level.INFO, p.getName()
                                 + " left " + g.getName() + " via the gui");
-                            g.removeMember(p.getUniqueId());
-                            p.sendMessage(ChatColor.GREEN + "You have left "
-                                + g.getName());
+                            closeInventoryNextTick(p);
+                            g.removeMemberAsync(p.getUniqueId(), p.getUniqueId(), result -> {
+                                if (result.success()) {
+                                    p.sendMessage(ChatColor.GREEN + "You have left " + g.getName());
+                                } else {
+                                    p.sendMessage(ChatColor.RED + result.message());
+                                }
+                            });
                         }
                     }, 11);
                     confirmInv.setSlot(new Clickable(no) {

@@ -3,15 +3,20 @@ package vg.civcraft.mc.namelayer.group;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.civmc.namelayer.sync.NameLayerWriteOperation;
+import net.civmc.namelayer.sync.NameLayerWriteRequest;
+import net.civmc.namelayer.sync.NameLayerWriteResponse;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class Group {
 
@@ -467,6 +474,113 @@ public class Group {
             db.removeMember(uuid, name);
         }
         players.remove(uuid);
+    }
+
+    public void setMemberRoleAsync(
+        final UUID actorUuid,
+        final UUID memberUuid,
+        final PlayerType role,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        if (role == PlayerType.NOT_BLACKLISTED || role == PlayerType.OWNER) {
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure("Invalid member role"));
+            return;
+        }
+        sendMemberWrite(
+            actorUuid,
+            NameLayerWriteOperation.SET_MEMBER_ROLE,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "memberUuid", memberUuid.toString(),
+                "role", role.name()
+            ),
+            callback
+        );
+    }
+
+    public void removeMemberAsync(
+        final UUID actorUuid,
+        final UUID memberUuid,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        sendMemberWrite(
+            actorUuid,
+            NameLayerWriteOperation.REMOVE_MEMBER,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "memberUuid", memberUuid.toString()
+            ),
+            callback
+        );
+    }
+
+    private void sendMemberWrite(
+        final UUID actorUuid,
+        final NameLayerWriteOperation operation,
+        final Map<String, String> arguments,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        final NameLayerWriteClient writeClient = NameLayerPlugin.getWriteClient();
+        if (writeClient == null) {
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure("NameLayer proxy write client is unavailable"));
+            return;
+        }
+        final NameLayerPlugin plugin = NameLayerPlugin.getInstance();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final NameLayerWriteRequest request = NameLayerWriteRequest.create(
+                plugin.getConfig().getString("rabbitmq.serverId", "paper"),
+                actorUuid,
+                operation,
+                arguments
+            );
+            writeClient.send(request).whenComplete((response, error) -> handleMemberWriteResponse(response, error, callback));
+        });
+    }
+
+    private void handleMemberWriteResponse(
+        final NameLayerWriteResponse response,
+        final Throwable error,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        if (error != null) {
+            NameLayerPlugin.getInstance().getLogger().log(Level.WARNING, "NameLayer member proxy write failed", error);
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure("NameLayer proxy write failed"));
+            return;
+        }
+        if (!response.success()) {
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure(response.message()));
+            return;
+        }
+        final boolean reloadSucceeded;
+        if (response.requiresFullResync()) {
+            NameLayerPlugin.fullResyncGroupCache();
+            reloadSucceeded = true;
+        } else {
+            final Set<Integer> affectedGroupIds = response.affectedGroupIds().isEmpty()
+                ? Set.of(getGroupId())
+                : response.affectedGroupIds();
+            reloadSucceeded = GroupManager.reloadGroupsById(List.copyOf(affectedGroupIds));
+        }
+        if (!reloadSucceeded) {
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure("Member write succeeded, but local cache refresh failed"));
+            return;
+        }
+        completeMemberWriteOnMain(callback, MemberWriteResult.successResult());
+    }
+
+    private void completeMemberWriteOnMain(final Consumer<MemberWriteResult> callback, final MemberWriteResult result) {
+        Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> callback.accept(result));
+    }
+
+    public record MemberWriteResult(boolean success, String message) {
+
+        public static MemberWriteResult successResult() {
+            return new MemberWriteResult(true, "");
+        }
+
+        public static MemberWriteResult failure(final String message) {
+            return new MemberWriteResult(false, message == null || message.isBlank() ? "Member write failed" : message);
+        }
     }
 
     public void removeAllMembers() {

@@ -28,6 +28,10 @@ public class PromotePlayer extends BaseCommandMiddle {
         final boolean isAdmin = sender instanceof ConsoleCommandSender || sender.hasPermission("namelayer.admin");
 
         UUID executor = sender instanceof Player p ? NameLayerAPI.getUUID(p.getName()) : null;
+        if (executor == null) {
+            sender.sendMessage(ChatColor.RED + "Member writes must be run by a player while proxy coordination is enabled.");
+            return;
+        }
         UUID promotee = NameLayerAPI.getUUID(playerName);
 
         if (promotee == null) {
@@ -136,18 +140,25 @@ public class PromotePlayer extends BaseCommandMiddle {
             if (event.isCancelled()) {
                 return;
             }
-            group.removeMember(promotee);
-            group.addMember(promotee, promoteeType);
-            sender.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
-                promoteeType.toString() + " in (Group) " + group.getName());
-            oProm.sendMessage(ChatColor.GREEN + "You have been promoted to (PlayerType) " +
-                promoteeType.toString() + " in (Group) " + group.getName());
+            group.setMemberRoleAsync(executor, promotee, promoteeType, result -> {
+                if (result.success()) {
+                    sender.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
+                        promoteeType.toString() + " in (Group) " + group.getName());
+                    oProm.sendMessage(ChatColor.GREEN + "You have been promoted to (PlayerType) " +
+                        promoteeType.toString() + " in (Group) " + group.getName());
+                } else {
+                    sender.sendMessage(ChatColor.RED + result.message());
+                }
+            });
         } else {
-            //player is offline change their perms
-            group.removeMember(promotee);
-            group.addMember(promotee, promoteeType);
-            sender.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
-                promoteeType.toString() + " in (Group) " + group.getName());
+            group.setMemberRoleAsync(executor, promotee, promoteeType, result -> {
+                if (result.success()) {
+                    sender.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
+                        promoteeType.toString() + " in (Group) " + group.getName());
+                } else {
+                    sender.sendMessage(ChatColor.RED + result.message());
+                }
+            });
         }
     }
 }

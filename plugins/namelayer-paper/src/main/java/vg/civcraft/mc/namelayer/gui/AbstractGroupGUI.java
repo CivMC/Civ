@@ -62,6 +62,10 @@ public abstract class AbstractGroupGUI {
         return p;
     }
 
+    protected void closeInventoryNextTick(final Player player) {
+        Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> player.closeInventory());
+    }
+
     public Group getGroup() {
         return g;
     }

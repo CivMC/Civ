@@ -80,7 +80,12 @@ public class RemoveMember extends BaseCommandMiddle {
             return;
         }
 
-        p.sendMessage(ChatColor.GREEN + playerName + " has been removed from the group.");
-        group.removeMember(uuid);
+        group.removeMemberAsync(executor, uuid, result -> {
+            if (result.success()) {
+                p.sendMessage(ChatColor.GREEN + playerName + " has been removed from the group.");
+            } else {
+                p.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 }

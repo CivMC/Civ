@@ -19,10 +19,15 @@ public final class NameLayerWriteCoordinator {
 
     private static final String LOCK_GROUP = "SELECT 1 FROM faction_id WHERE group_id = ? LIMIT 1 FOR UPDATE";
     private static final String GET_ACTOR_ROLE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
+    private static final String GET_MEMBER_ROLE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
+    private static final String GET_GROUP_OWNER = "SELECT founder FROM faction_id WHERE group_id = ? LIMIT 1";
     private static final String GET_PERMS_PERMISSION_ID = "SELECT perm_id FROM permissionIdMapping WHERE name = 'PERMS' LIMIT 1";
+    private static final String GET_PERMISSION_ID = "SELECT perm_id FROM permissionIdMapping WHERE name = ? LIMIT 1";
     private static final String HAS_ROLE_PERMISSION = "SELECT 1 FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ? LIMIT 1";
     private static final String ADD_PERMISSION = "INSERT IGNORE INTO permissionByGroup(group_id, role, perm_id) VALUES (?, ?, ?)";
     private static final String REMOVE_PERMISSION = "DELETE FROM permissionByGroup WHERE group_id = ? AND role = ? AND perm_id = ?";
+    private static final String SET_MEMBER_ROLE = "UPDATE faction_member SET role = ? WHERE group_id = ? AND member_name = ?";
+    private static final String REMOVE_MEMBER = "DELETE FROM faction_member WHERE group_id = ? AND member_name = ?";
     private static final String INCREMENT_CACHE_VERSION = "UPDATE namelayer_cache_version SET cache_version = cache_version + 1 WHERE id = 1";
 
     private final DataSource dataSource;
@@ -43,12 +48,122 @@ public final class NameLayerWriteCoordinator {
         return switch (request.operation()) {
             case ADD_PERMISSION -> handlePermissionWrite(request, ADD_PERMISSION);
             case REMOVE_PERMISSION -> handlePermissionWrite(request, REMOVE_PERMISSION);
+            case SET_MEMBER_ROLE -> handleSetMemberRole(request);
+            case REMOVE_MEMBER -> handleRemoveMember(request);
             default -> NameLayerWriteResponse.failure(
                 request.requestId(),
                 NameLayerWriteFailureCode.UNKNOWN_OPERATION,
                 "NameLayer proxy write operation is not implemented yet: " + request.operation()
             );
         };
+    }
+
+    private NameLayerWriteResponse handleSetMemberRole(final NameLayerWriteRequest request) {
+        final MemberRoleWrite memberWrite;
+        try {
+            memberWrite = MemberRoleWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                final String currentRole = getMemberRole(connection, memberWrite.groupId(), memberWrite.memberUuid());
+                final NameLayerWriteResponse validationFailure = validateMemberWriteAccess(connection, request, memberWrite.groupId(), memberWrite.memberUuid(), currentRole, false);
+                if (validationFailure != null) {
+                    connection.rollback();
+                    return validationFailure;
+                }
+                if (!currentRole.equals(memberWrite.role()) && !hasRoleEditAccess(connection, memberWrite.groupId(), request.actorUuid(), memberWrite.role())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have member edit access");
+                }
+                try (PreparedStatement statement = connection.prepareStatement(SET_MEMBER_ROLE)) {
+                    statement.setString(1, memberWrite.role());
+                    statement.setInt(2, memberWrite.groupId());
+                    statement.setString(3, memberWrite.memberUuid().toString());
+                    if (statement.executeUpdate() == 0) {
+                        connection.rollback();
+                        return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.MEMBER_NOT_FOUND, "Member does not exist");
+                    }
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(memberWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(memberWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer member role write failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleRemoveMember(final NameLayerWriteRequest request) {
+        final MemberWrite memberWrite;
+        try {
+            memberWrite = MemberWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                final String memberRole = getMemberRole(connection, memberWrite.groupId(), memberWrite.memberUuid());
+                final NameLayerWriteResponse validationFailure = validateMemberWriteAccess(connection, request, memberWrite.groupId(), memberWrite.memberUuid(), memberRole, true);
+                if (validationFailure != null) {
+                    connection.rollback();
+                    return validationFailure;
+                }
+                try (PreparedStatement statement = connection.prepareStatement(REMOVE_MEMBER)) {
+                    statement.setInt(1, memberWrite.groupId());
+                    statement.setString(2, memberWrite.memberUuid().toString());
+                    if (statement.executeUpdate() == 0) {
+                        connection.rollback();
+                        return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.MEMBER_NOT_FOUND, "Member does not exist");
+                    }
+                }
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(memberWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(memberWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer member removal failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse validateMemberWriteAccess(
+        final Connection connection,
+        final NameLayerWriteRequest request,
+        final int groupId,
+        final UUID memberUuid,
+        final String targetRole,
+        final boolean allowSelfRemoval
+    ) throws SQLException {
+        if (!lockGroup(connection, groupId)) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+        }
+        if (targetRole == null) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.MEMBER_NOT_FOUND, "Member does not exist");
+        }
+        if (isGroupOwner(connection, groupId, memberUuid)) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Group owner cannot be modified through member writes");
+        }
+        if (!allowSelfRemoval || !request.actorUuid().equals(memberUuid)) {
+            if (!hasRoleEditAccess(connection, groupId, request.actorUuid(), targetRole)) {
+                return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have member edit access");
+            }
+        }
+        return null;
     }
 
     private NameLayerWriteResponse handlePermissionWrite(final NameLayerWriteRequest request, final String sql) {
@@ -135,6 +250,26 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
+    private boolean hasRoleEditAccess(final Connection connection, final int groupId, final UUID actorUuid, final String permissionName) throws SQLException {
+        final String actorRole = getActorRole(connection, groupId, actorUuid);
+        if (actorRole == null) {
+            return false;
+        }
+        final Integer permissionId = getPermissionId(connection, permissionName);
+        if (permissionId == null) {
+            logger.warn("NameLayer {} permission is not registered; denying proxy member write", permissionName);
+            return false;
+        }
+        try (PreparedStatement statement = connection.prepareStatement(HAS_ROLE_PERMISSION)) {
+            statement.setInt(1, groupId);
+            statement.setString(2, actorRole);
+            statement.setInt(3, permissionId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
     private String getActorRole(final Connection connection, final int groupId, final UUID actorUuid) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(GET_ACTOR_ROLE)) {
             statement.setInt(1, groupId);
@@ -155,6 +290,40 @@ public final class NameLayerWriteCoordinator {
                 return null;
             }
             return resultSet.getInt(1);
+        }
+    }
+
+    private Integer getPermissionId(final Connection connection, final String permissionName) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_PERMISSION_ID)) {
+            statement.setString(1, permissionName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return resultSet.getInt(1);
+            }
+        }
+    }
+
+    private String getMemberRole(final Connection connection, final int groupId, final UUID memberUuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_MEMBER_ROLE)) {
+            statement.setInt(1, groupId);
+            statement.setString(2, memberUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return resultSet.getString(1);
+            }
+        }
+    }
+
+    private boolean isGroupOwner(final Connection connection, final int groupId, final UUID memberUuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_GROUP_OWNER)) {
+            statement.setInt(1, groupId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() && memberUuid.toString().equals(resultSet.getString(1));
+            }
         }
     }
 
@@ -202,6 +371,37 @@ public final class NameLayerWriteCoordinator {
                 throw new IllegalArgumentException("Missing required argument: " + key);
             }
             return value.trim();
+        }
+    }
+
+    private record MemberWrite(int groupId, UUID memberUuid) {
+
+        private static MemberWrite from(final Map<String, String> arguments) {
+            final int groupId = PermissionWrite.parsePositiveInt(arguments, "groupId");
+            final UUID memberUuid = parseUuid(arguments, "memberUuid");
+            return new MemberWrite(groupId, memberUuid);
+        }
+
+        private static UUID parseUuid(final Map<String, String> arguments, final String key) {
+            final String value = PermissionWrite.requireNonBlank(arguments, key);
+            try {
+                return UUID.fromString(value);
+            } catch (final IllegalArgumentException exception) {
+                throw new IllegalArgumentException(key + " must be a UUID", exception);
+            }
+        }
+    }
+
+    private record MemberRoleWrite(int groupId, UUID memberUuid, String role) {
+
+        private static MemberRoleWrite from(final Map<String, String> arguments) {
+            final MemberWrite memberWrite = MemberWrite.from(arguments);
+            final String role = PermissionWrite.requireNonBlank(arguments, "role");
+            PermissionWrite.validateRole(role);
+            if ("OWNER".equals(role)) {
+                throw new IllegalArgumentException("role cannot be OWNER for member role writes");
+            }
+            return new MemberRoleWrite(memberWrite.groupId(), memberWrite.memberUuid(), role);
         }
     }
 }

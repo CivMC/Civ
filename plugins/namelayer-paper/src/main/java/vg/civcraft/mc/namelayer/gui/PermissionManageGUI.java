@@ -179,7 +179,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
                                     + "the permission " + perm.getName()
                                     + "for player type " + pType.toString()
                                     + " for " + g.getName() + " via the gui");
-                                p.closeInventory();
+                                closeInventoryNextTick(p);
                                 p.sendMessage(Component.text("Updating permission...", NamedTextColor.GRAY));
                                 if (hasPerm) {
                                     gp.removePermission(p.getUniqueId(), pType, perm, result -> refreshPermissionEditing(pType, result));
