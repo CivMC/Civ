@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 
@@ -14,22 +13,14 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 public class PermissionType {
 
     private static Map<String, PermissionType> permissionByName;
-    private static Map<Integer, PermissionType> permissionById;
-    private static int maximumExistingId;
 
     public static void initialize() {
         permissionByName = new HashMap<>();
-        permissionById = new TreeMap<>();
-        maximumExistingId = 0;
         registerNameLayerPermissions();
     }
 
     public static PermissionType getPermission(String name) {
         return permissionByName.get(name);
-    }
-
-    public static PermissionType getPermission(int id) {
-        return permissionById.get(id);
     }
 
     public static PermissionType registerPermission(String name, List<PlayerType> defaultPermLevels) {
@@ -51,16 +42,12 @@ public class PermissionType {
             return existing;
         }
         //not in db yet
-        int id = maximumExistingId + 1;
-        maximumExistingId = id;
-        PermissionType perm = internalRegisterPermission(id, name, defaultPermLevels, description, canBeBlacklisted);
-        return perm;
+        return internalRegisterPermission(name, defaultPermLevels, description, canBeBlacklisted);
     }
 
-    private static PermissionType internalRegisterPermission(int id, String name, List<PlayerType> defaultPermLevels, String description, boolean canBeBlackListed) {
-        PermissionType p = new PermissionType(name, id, defaultPermLevels, description, canBeBlackListed);
+    private static PermissionType internalRegisterPermission(String name, List<PlayerType> defaultPermLevels, String description, boolean canBeBlackListed) {
+        PermissionType p = new PermissionType(name, defaultPermLevels, description, canBeBlackListed);
         permissionByName.put(name, p);
-        permissionById.put(id, p);
         return p;
     }
 
@@ -110,13 +97,11 @@ public class PermissionType {
 
     private String name;
     private List<PlayerType> defaultPermLevels;
-    private int id;
     private String description;
     private boolean canBeBlacklisted;
 
-    private PermissionType(String name, int id, List<PlayerType> defaultPermLevels, String description, boolean canBeBlacklisted) {
+    private PermissionType(String name, List<PlayerType> defaultPermLevels, String description, boolean canBeBlacklisted) {
         this.name = name;
-        this.id = id;
         this.defaultPermLevels = defaultPermLevels;
         this.description = description;
         this.canBeBlacklisted = canBeBlacklisted;
@@ -128,10 +113,6 @@ public class PermissionType {
 
     public List<PlayerType> getDefaultPermLevels() {
         return defaultPermLevels;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getDescription() {

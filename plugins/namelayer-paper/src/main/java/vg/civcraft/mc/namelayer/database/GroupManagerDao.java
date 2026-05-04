@@ -161,17 +161,13 @@ public class GroupManagerDao {
     private static final String checkForNameChange = "select * from nameLayerNameChanges where uuid=?;";
 
     private static final String addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
+    private static final String registerPermissionById = "insert into permissionIdMapping(perm_id,name) values(?,?);";
     private static final String addPermissionByName = "insert ignore into permission_by_group_name(group_id,role,permission_name) values(?,?,?);";
     private static final String addPermissionByGroupName = "insert ignore into permission_by_group_name(group_id,role,permission_name) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
-
-    private static final String addDefaultPermissionByName = "insert ignore into permission_by_group_name(group_id,role,permission_name) select group_id,?,? from faction_id group by group_id";
 
     private static final String getPermission = "select pg.role,pg.permission_name from permission_by_group_name pg inner join faction_id fi on fi.group_name=? "
         + "where pg.group_id = fi.group_id";
     private static final String removePermissionByName = "delete from permission_by_group_name where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and permission_name=?;";
-    private static final String registerPermission = "insert into permissionIdMapping(perm_id,name) values(?,?);";
-    private static final String getPermissionMapping = "select * from permissionIdMapping;";
-
     private static final String addBlacklistMember = "insert into blacklist(group_id, member_name) select group_id,? from faction_id where group_name=?;";
     private static final String removeBlackListMember = "delete from blacklist WHERE group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and member_name=?;";
     private static final String getBlackListMembers = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id;";
@@ -374,7 +370,7 @@ public class GroupManagerDao {
                 public Boolean call() {
                     try (Connection connection = db.getConnection();
                          PreparedStatement permInit = connection.prepareStatement(addPermissionById);
-                         PreparedStatement permReg = connection.prepareStatement(registerPermission);) {
+                         PreparedStatement permReg = connection.prepareStatement(registerPermissionById);) {
                         Map<String, Integer> permIds = new HashMap<>();
 
                         List<Object[]> unspool = new ArrayList<>();
@@ -549,7 +545,8 @@ public class GroupManagerDao {
             "insert ignore into permission_by_group_name(group_id, role, permission_name) "
                 + "select pbg.group_id, pbg.role, pim.name from permissionByGroup pbg "
                 + "inner join permissionIdMapping pim on pim.perm_id = pbg.perm_id",
-            "drop table if exists permissionByGroup");
+            "drop table if exists permissionByGroup",
+            "drop table if exists permissionIdMapping");
     }
 
     public int createGroup(String group, UUID owner, String password) {
@@ -1112,70 +1109,6 @@ public class GroupManagerDao {
         } catch (SQLException e) {
             logger.log(Level.WARNING, "Problem removing permissions for group " + group
                 + " on playertype " + pType.name(), e);
-        }
-    }
-
-    public void registerPermissionAsync(final PermissionType perm) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-
-            @Override
-            public void run() {
-                registerPermission(perm);
-            }
-
-        });
-    }
-
-    public void registerPermission(PermissionType perm) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement registerPermission = connection.prepareStatement(GroupManagerDao.registerPermission)) {
-            registerPermission.setInt(1, perm.getId());
-            registerPermission.setString(2, perm.getName());
-            registerPermission.executeUpdate();
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Problem register permission " + perm.getName(), e);
-        }
-    }
-
-    public Map<Integer, String> getPermissionMapping() {
-        Map<Integer, String> perms = new TreeMap<Integer, String>();
-        try (Connection connection = db.getConnection();
-             Statement getPermissionMapping = connection.createStatement()) {
-            try (ResultSet res = getPermissionMapping.executeQuery(GroupManagerDao.getPermissionMapping)) {
-                while (res.next()) {
-                    perms.put(res.getInt(1), res.getString(2));
-                }
-            } catch (SQLException e) {
-                logger.log(Level.WARNING, "Problem getting permissions from db", e);
-            }
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Problem forming statement to get permissions from db", e);
-        }
-        return perms;
-    }
-
-    public void addNewDefaultPermissionAsync(final List<PlayerType> ptypes, final PermissionType perm) {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-
-            @Override
-            public void run() {
-                addNewDefaultPermission(ptypes, perm);
-            }
-
-        });
-    }
-
-    public void addNewDefaultPermission(List<PlayerType> playerTypes, PermissionType perm) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement addPermissionByName = connection.prepareStatement(GroupManagerDao.addDefaultPermissionByName);) {
-            ;
-            for (PlayerType pType : playerTypes) {
-                addPermissionByName.setString(1, pType.name());
-                addPermissionByName.setString(2, perm.getName());
-                addPermissionByName.execute();
-            }
-        } catch (SQLException e) {
-            logger.log(Level.WARNING, "Error initiating connection to set default perms for permission " + perm + " for player types " + playerTypes, e);
         }
     }
 

@@ -219,13 +219,13 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                 }
                 NameLayerPlugin.log(Level.INFO,
                     p.getName() + " deleted " + g.getName() + " via the gui");
-                if (gm.deleteGroup(g.getName())) {
-                    p.sendMessage(ChatColor.GREEN + g.getName()
-                        + " was successfully deleted.");
-                } else {
-                    p.sendMessage(ChatColor.GREEN + "Group is now disciplined."
-                        + " Check back later to see if group is deleted.");
-                }
+                gm.deleteGroupAsync(p.getUniqueId(), g, false, result -> {
+                    if (result.success()) {
+                        p.sendMessage(ChatColor.GREEN + g.getName() + " was successfully deleted.");
+                    } else {
+                        p.sendMessage(ChatColor.RED + result.message());
+                    }
+                });
             }
         }, 11);
         confirmInv.setSlot(new Clickable(no) {
