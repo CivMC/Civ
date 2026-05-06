@@ -26,7 +26,6 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -321,30 +320,28 @@ public class GUIGroupOverview {
 
                         final UUID uuid = p.getUniqueId();
                         Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis(), "GRAY");
-                        gm.createGroupAsync(g, new RunnableOnGroup() {
-                            @Override
-                            public void run() {
-                                Player p = null;
-                                p = Bukkit.getPlayer(uuid);
-                                Group g = getGroup();
-                                if (p != null) {
-                                    if (g.getGroupId() == -1) { // failure
-                                        p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
-                                    } else {
-                                        p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
-                                        if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId())) {
-                                            p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with "
-                                                + NameLayerPlugin.getInstance().getGroupLimit()
-                                                + " groups! Please delete un-needed groups if you wish to create more.");
-                                        }
-                                    }
-                                    showScreen();
+                        gm.createGroupAsync(g, createdGroup -> {
+                            if (createdGroup != null) {
+                                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
+                                    new Object[]{createdGroup.getName(), createdGroup.getGroupId()});
+                            }
 
-                                } else {
-                                    NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
-                                        new Object[]{g.getName(), g.getGroupId()});
+                            Player player = Bukkit.getPlayer(uuid);
+                            if (player == null) {
+                                return;
+                            }
+
+                            if (createdGroup == null) { // failure
+                                player.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+                            } else {
+                                player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
+                                if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(player.getUniqueId())) {
+                                    player.sendMessage(ChatColor.YELLOW + "You have reached the group limit with "
+                                        + NameLayerPlugin.getInstance().getGroupLimit()
+                                        + " groups! Please delete un-needed groups if you wish to create more.");
                                 }
                             }
+                            showScreen();
                         }, false);
                     }
                 };

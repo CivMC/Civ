@@ -12,10 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class PlayerListener implements Listener {
@@ -85,60 +83,16 @@ public class PlayerListener implements Listener {
         final UUID uuid = p.getUniqueId();
         final String name = p.getName();
 
-        new NewfriendCreate(name, uuid).bootstrap();
-    }
-
-    /**
-     * This simple (hah) runnable encapsulates the prior logic in a safe, but asynchronous fashion.
-     * The code in this runnable is always called synchronously. It keeps track of which combination (name, name+1, name+2) that has been tried, and
-     * triggers the next attempt if prior has failed. If it runs out of tries, it gracefully ends.
-     * <p>
-     * Note that at every step it checks if group exists before creating. This adds some tick-time overhead but should work well.
-     * <p>
-     * All this is off the main thread (the actual database calls) so trauma should be low.
-     *
-     * @author ProgrammerDan
-     */
-    private static class NewfriendCreate extends RunnableOnGroup {
-
-        private Integer inc = null;
-        private final String name;
-        private final UUID uuid;
-
-        NewfriendCreate(final String name, final UUID uuid) {
-            this.name = name;
-            this.uuid = uuid;
-        }
-
-        public void bootstrap() {
-            GroupManager gm = NameLayerAPI.getGroupManager();
-            gm.createGroupAsync(new Group(name, uuid, false, null, -1, System.currentTimeMillis(), "GRAY"), this, true);
-        }
-
-        @Override
-        public void run() {
-            Group g = getGroup();
-            if (g.getGroupId() == -1) { // now try + num
-                NameLayerPlugin.log(Level.WARNING, "Newfriend automatic group creation failed for " + g.getName() + " " + uuid);
-                GroupManager gm = NameLayerAPI.getGroupManager();
-                if (inc == null) {
-                    inc = 0;
-                } else {
-                    inc++;
-                }
-                if (inc < 20) {
-                    String newName = name + String.valueOf(inc);
-                    gm.createGroupAsync(new Group(newName, uuid, false, null, -1, System.currentTimeMillis(), "GRAY"), this, true);
-                }
-            } else {
-                NameLayerPlugin.log(Level.WARNING, "Newfriend automatic group creation succeeded for " + g.getName() + " " + uuid);
-                g.setDefaultGroupAsync(uuid, result -> {
-                    if (!result.success()) {
-                        NameLayerPlugin.log(Level.WARNING, "Failed to set default group for newfriend " + uuid + ": " + result.message());
-                    }
-                });
+        NameLayerAPI.getGroupManager().ensureNewfriendGroupAsync(uuid, name, result -> {
+            if (!result.success() || result.group() == null) {
+                NameLayerPlugin.log(Level.WARNING,
+                    "Newfriend automatic group ensure failed for " + name + " " + uuid + ": " + result.message());
+                return;
             }
-        }
-
+            final Group group = result.group();
+            NameLayerPlugin.getDefaultGroupHandler().cacheDefaultGroup(uuid, group);
+            NameLayerPlugin.log(Level.WARNING,
+                "Newfriend automatic group ensured for " + group.getName() + " " + uuid);
+        });
     }
 }

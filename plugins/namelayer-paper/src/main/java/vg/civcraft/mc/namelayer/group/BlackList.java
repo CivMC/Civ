@@ -40,16 +40,6 @@ public class BlackList {
     public void initEmptyBlackList(String groupName) {
     }
 
-    public void addBlacklistMember(Group group, UUID uuid, boolean writeToDb) {
-        if (writeToDb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper blacklist add for " + group.getName());
-            return;
-        }
-        if (!group.isBlacklisted(uuid)) {
-            group.addBlacklisted(uuid);
-        }
-    }
-
     public void addBlacklistMemberAsync(
         final UUID actorUuid,
         final Group group,
@@ -60,23 +50,6 @@ public class BlackList {
         sendBlacklistWrite(actorUuid, NameLayerWriteOperation.ADD_BLACKLIST, group, uuid, adminOverride, callback);
     }
 
-    public void addBlacklistMember(String groupName, UUID uuid, boolean writeToDb) {
-        Group group = GroupManager.getGroup(groupName);
-        if (group != null) {
-            addBlacklistMember(group, uuid, writeToDb);
-        }
-    }
-
-    public void removeBlacklistMember(Group group, UUID uuid, boolean writeToDb) {
-        if (writeToDb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper blacklist removal for " + group.getName());
-            return;
-        }
-        if (group.isBlacklisted(uuid)) {
-            group.removeBlacklisted(uuid);
-        }
-    }
-
     public void removeBlacklistMemberAsync(
         final UUID actorUuid,
         final Group group,
@@ -85,13 +58,6 @@ public class BlackList {
         final Consumer<BlacklistWriteResult> callback
     ) {
         sendBlacklistWrite(actorUuid, NameLayerWriteOperation.REMOVE_BLACKLIST, group, uuid, adminOverride, callback);
-    }
-
-    public void removeBlacklistMember(String groupName, UUID uuid, boolean writeToDb) {
-        Group group = GroupManager.getGroup(groupName);
-        if (group != null) {
-            removeBlacklistMember(group, uuid, writeToDb);
-        }
     }
 
     private void sendBlacklistWrite(

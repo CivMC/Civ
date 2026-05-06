@@ -20,11 +20,7 @@ public class AutoAcceptHandler {
         this.autoAccepts = autoAccepts;
     }
 
-    public void setAutoAccept(UUID player, boolean accept, boolean persistToDb) {
-        if (persistToDb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper auto-accept write for " + player);
-            return;
-        }
+    private void cacheAutoAccept(UUID player, boolean accept) {
         if (accept && !autoAccepts.contains(player)) {
             autoAccepts.add(player);
         } else {
@@ -57,10 +53,6 @@ public class AutoAcceptHandler {
         setAutoAcceptAsync(player, !getAutoAccept(player), callback);
     }
 
-    public void toggleAutoAccept(UUID player, boolean persistToDb) {
-        setAutoAccept(player, !getAutoAccept(player), persistToDb);
-    }
-
     public boolean getAutoAccept(UUID uuid) {
         return autoAccepts.contains(uuid);
     }
@@ -85,7 +77,7 @@ public class AutoAcceptHandler {
             completeOnMain(callback, AutoAcceptWriteResult.failure(response.message()));
             return;
         }
-        setAutoAccept(player, accept, false);
+        cacheAutoAccept(player, accept);
         completeOnMain(callback, AutoAcceptWriteResult.successResult());
     }
 

@@ -1,8 +1,15 @@
 package vg.civcraft.mc.namelayer.group;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.logging.Level;
 import net.civmc.namelayer.sync.NameLayerWriteOperation;
 import net.civmc.namelayer.sync.NameLayerWriteRequest;
 import net.civmc.namelayer.sync.NameLayerWriteResponse;
@@ -15,122 +22,60 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.logging.Level;
+public final class Group {
 
-public class Group {
+    private final String name;
+    private final String password;
+    private final UUID owner;
+    private final boolean isDisciplined; // if true, prevents any interactions with this group
+    private final int id;
+    private final Set<Integer> ids;
+    private final Map<UUID, PlayerType> players;
+    private final Map<UUID, PlayerType> invites;
+    private final Set<UUID> blacklist;
+    private final long activityTimestamp;
+    private final TextColor groupColor;
 
-    private static NameLayerReadDao db;
-
-    private String name;
-    private String password;
-    private UUID owner;
-    private boolean isDisciplined; // if true, prevents any interactions with this group
-    private boolean isValid = true;  // if false, then group has recently been deleted and is invalid
-    private int id;
-    private Set<Integer> ids = Sets.<Integer>newConcurrentHashSet();
-
-    private Group supergroup;
-    private Set<Group> subgroups = Sets.<Group>newConcurrentHashSet();
-    private Map<UUID, PlayerType> players = Maps.<UUID, PlayerType>newHashMap();
-    private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
-    private Set<UUID> blacklist = Sets.<UUID>newConcurrentHashSet();
-    private long activityTimestamp;
-    private TextColor groupColor;
-
-    public Group(String name, UUID owner, boolean disciplined,
-                  String password, int id, long activityTimestamp, String groupColor) {
-        if (db == null) {
-            db = NameLayerPlugin.getNameLayerReadDao();
-        }
-
-        this.name = name;
-        this.password = password;
-        this.owner = owner;
-        this.isDisciplined = disciplined;
-        this.activityTimestamp = activityTimestamp;
-
-        if (name == null) {
-            this.ids.add(id);
-            this.id = id;
-            return;
-        }
-
-        for (PlayerType permission : PlayerType.values()) {
-            List<UUID> list = db.getAllMembers(name, permission);
-            for (UUID uuid : list) {
-                players.put(uuid, permission);
-            }
-        }
-
-        // This returns list of ids w/ id holding largest # of players at top.
-        List<Integer> allIds = db.getAllIDs(name);
-        if (allIds != null && allIds.size() > 0) {
-            this.ids.addAll(allIds);
-            this.id = allIds.get(0); // default "root" id is the one with the players.
-        } else {
-            this.ids.add(id);
-            this.id = id; // otherwise just use what we're given
-        }
-        this.blacklist.addAll(db.getBlackListMembers(name));
-
-        TextColor color = NamedTextColor.NAMES.value(groupColor);
-        if (color == null) {
-            color = TextColor.fromHexString(groupColor);
-        }
-        this.groupColor = color;
+    public Group(final String name, final UUID owner, final boolean disciplined, final String password, final int id,
+                 final long activityTimestamp, final String groupColor) {
+        this(name, owner, disciplined, password, id, activityTimestamp, groupColor, List.of(id), Map.of(), Set.of(),
+            Map.of());
     }
 
-    public Group(String name, UUID owner, boolean disciplined, String password, int id, long activityTimestamp,
-                 String groupColor, List<Integer> groupIds, Map<UUID, PlayerType> members, Set<UUID> blacklist) {
-        if (db == null) {
-            db = NameLayerPlugin.getNameLayerReadDao();
-        }
-
+    public Group(final String name, final UUID owner, final boolean disciplined, final String password, final int id,
+                 final long activityTimestamp, final String groupColor, final List<Integer> groupIds,
+                 final Map<UUID, PlayerType> members, final Set<UUID> blacklist,
+                 final Map<UUID, PlayerType> invites) {
         this.name = name;
         this.password = password;
         this.owner = owner;
         this.isDisciplined = disciplined;
         this.activityTimestamp = activityTimestamp;
         this.id = id;
-        if (groupIds != null) {
-            this.ids.addAll(groupIds);
-        }
-        this.ids.add(id);
-        if (members != null) {
-            this.players.putAll(members);
-        }
-        if (blacklist != null) {
-            this.blacklist.addAll(blacklist);
-        }
+        final Set<Integer> copiedIds = new HashSet<>(groupIds);
+        copiedIds.add(id);
+        this.ids = Collections.unmodifiableSet(copiedIds);
+        this.players = Map.copyOf(members);
+        this.invites = Map.copyOf(invites);
+        this.blacklist = Set.copyOf(blacklist);
+        this.groupColor = parseGroupColor(groupColor);
+    }
 
+    private TextColor parseGroupColor(final String groupColor) {
+        if (groupColor == null) {
+            return null;
+        }
         TextColor color = NamedTextColor.NAMES.value(groupColor);
         if (color == null) {
             color = TextColor.fromHexString(groupColor);
         }
-        this.groupColor = color;
+        return color;
     }
 
     public long getActivityTimeStamp() {
         return activityTimestamp;
-    }
-
-    public void updateActivityTimeStamp() {
-        this.activityTimestamp = System.currentTimeMillis();
-        NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper group timestamp write for " + name);
-    }
-
-    public void prepareForDeletion() {
-        // Groups are flat; subgroup links are ignored during deletion.
     }
 
     /**
@@ -164,14 +109,6 @@ public class Group {
 
     public boolean isBlacklisted(UUID uuid) {
         return blacklist.contains(uuid);
-    }
-
-    public void addBlacklisted(UUID uuid) {
-        blacklist.add(uuid);
-    }
-
-    public void removeBlacklisted(UUID uuid) {
-        blacklist.remove(uuid);
     }
 
     /**
@@ -221,112 +158,12 @@ public class Group {
     }
 
     /**
-     * Gives the uuids of players who are in this group and whos name is
-     * within the given range.
-     *
-     * @param lowerLimit lexicographically lowest acceptable name
-     * @param upperLimit lexicographically highest acceptable name
-     * @return list of uuids of all players in the group whose name is within the given range
-     */
-    public List<UUID> getMembersInNameRange(String lowerLimit, String upperLimit) {
-        List<UUID> uuids = Lists.newArrayList();
-        List<UUID> members = getAllMembers();
-
-        for (UUID member : members) {
-            String name = NameLayerAPI.getCurrentName(member);
-            if (name.compareToIgnoreCase(lowerLimit) >= 0
-                && name.compareToIgnoreCase(upperLimit) <= 0) {
-                uuids.add(member);
-            }
-        }
-        return uuids;
-    }
-
-    /**
      * Gives a list of the members of this group, excluding the inherited members.
      *
      * @return List of UUIDs of the current players in this group
      */
     public List<UUID> getCurrentMembers() {
         return Lists.newArrayList(players.keySet());
-    }
-
-    public List<UUID> getCurrentMembers(PlayerType rank) {
-        List<UUID> uuids = Lists.newArrayList();
-
-        for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) {
-            if (entry.getValue() == rank) {
-                uuids.add(entry.getKey());
-            }
-        }
-        return uuids;
-    }
-
-    /**
-     * @return Returns the SubGroups in this group.
-     */
-    public List<Group> getSubgroups() {
-        return Lists.newArrayList();
-    }
-
-    /**
-     * Checks if a sub group is on a group.
-     *
-     * @param group- The SubGroup.
-     * @return Returns true if it has that subgroup.
-     */
-    public boolean hasSubGroup(Group group) {
-        return false;
-    }
-
-    /**
-     * @return Returns the SubGroup for this group if there is one, null otherwise.
-     */
-    public Group getSuperGroup() {
-        return null;
-    }
-
-    /**
-     * @return Returns if this group has a super group or not.
-     */
-    public boolean hasSuperGroup() {
-        return false;
-    }
-
-    /**
-     * Checks if the given Group is a supergroup of this group and this
-     * group's supergroups.
-     *
-     * @param group - Group to check as supergroup.
-     * @return true if it is a supergroup, false otherwise.
-     */
-    public boolean hasSuperGroup(Group group) {
-        return false;
-    }
-
-    /**
-     * Adds the player to be allowed to join a group into a specific PlayerType.
-     *
-     * @param uuid- The UUID of the player.
-     * @param type- The PlayerType they will be joining.
-     */
-    public void addInvite(UUID uuid, PlayerType type) {
-        addInvite(uuid, type, true);
-    }
-
-    /**
-     * Adds the player to be allowed to join a group into a specific PlayerType.
-     *
-     * @param uuid-    The UUID of the player.
-     * @param type-    The PlayerType they will be joining.
-     * @param saveToDB - save the invitation to the DB.
-     */
-    public void addInvite(UUID uuid, PlayerType type, boolean saveToDB) {
-        if (saveToDB) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper invitation add for " + name);
-            return;
-        }
-        invites.put(uuid, type);
     }
 
     public void addInviteAsync(
@@ -360,33 +197,7 @@ public class Group {
      * @return Returns the PlayerType or null.
      */
     public PlayerType getInvite(UUID uuid) {
-        if (!invites.containsKey(uuid)) {
-            db.loadGroupInvitation(uuid, this);
-        }
         return invites.get(uuid);
-    }
-
-    /**
-     * Removes the invite of a Player
-     *
-     * @param uuid - The UUID of the player.
-     */
-    public void removeInvite(UUID uuid) {
-        removeInvite(uuid, true);
-    }
-
-    /**
-     * Removes the invite of a Player
-     *
-     * @param uuid-    The UUID of the player.
-     * @param saveToDB - remove the invitation from the DB.
-     */
-    public void removeInvite(UUID uuid, boolean saveToDB) {
-        if (saveToDB) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper invitation removal for " + name);
-            return;
-        }
-        invites.remove(uuid);
     }
 
     public void removeInviteAsync(
@@ -487,29 +298,6 @@ public class Group {
         return players.get(uuid);
     }
 
-    /**
-     * Adds a member to a group.
-     *
-     * @param uuid- The uuid of the player.
-     * @param type- The PlayerType to add. If a preexisting PlayerType is found,
-     *              it will be overwritten.
-     */
-
-    public void addMember(UUID uuid, PlayerType type) {
-        addMember(uuid, type, true);
-    }
-
-    public void addMember(UUID uuid, PlayerType type, boolean savetodb) {
-        if (type == PlayerType.NOT_BLACKLISTED) {
-            return;
-        }
-        if (savetodb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper member add for " + name);
-            return;
-        }
-        players.put(uuid, type);
-    }
-
     public void joinGroupAsync(
         final UUID actorUuid,
         final String password,
@@ -532,23 +320,6 @@ public class Group {
         );
     }
 
-    /**
-     * Removes the Player from the Group.
-     *
-     * @param uuid- The UUID of the Player.
-     */
-    public void removeMember(UUID uuid) {
-        removeMember(uuid, true);
-    }
-
-    public void removeMember(UUID uuid, boolean savetodb) {
-        if (savetodb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper member removal for " + name);
-            return;
-        }
-        players.remove(uuid);
-    }
-
     public void setMemberRoleAsync(
         final UUID actorUuid,
         final UUID memberUuid,
@@ -562,6 +333,28 @@ public class Group {
         sendMemberWrite(
             actorUuid,
             NameLayerWriteOperation.SET_MEMBER_ROLE,
+            Map.of(
+                "groupId", Integer.toString(getGroupId()),
+                "memberUuid", memberUuid.toString(),
+                "role", role.name()
+            ),
+            callback
+        );
+    }
+
+    public void addMemberAsync(
+        final UUID actorUuid,
+        final UUID memberUuid,
+        final PlayerType role,
+        final Consumer<MemberWriteResult> callback
+    ) {
+        if (role == PlayerType.NOT_BLACKLISTED || role == PlayerType.OWNER) {
+            completeMemberWriteOnMain(callback, MemberWriteResult.failure("Invalid member role"));
+            return;
+        }
+        sendMemberWrite(
+            actorUuid,
+            NameLayerWriteOperation.ADD_MEMBER,
             Map.of(
                 "groupId", Integer.toString(getGroupId()),
                 "memberUuid", memberUuid.toString(),
@@ -793,60 +586,8 @@ public class Group {
         }
     }
 
-    public void removeAllMembers() {
-        removeAllMembers(true);
-    }
-
-    public void removeAllMembers(boolean savetodb) {
-        if (savetodb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper all-members removal for " + name);
-            return;
-        }
-        players.clear();
-    }
-
-    /**
-     * @param supergroup the base group
-     * @param subgroup   the group to link under it
-     * @param saveToDb   - add link to the DB.
-     * @return true if linking succeeded, false otherwise.
-     */
-    public static boolean link(Group supergroup, Group subgroup, boolean saveToDb) {
-        return false;
-    }
-
-    /**
-     * @param supergroup the main group
-     * @param subgroup   the sub group to unlink
-     * @return true if unlink succeeded, false otherwise
-     */
-    public static boolean unlink(Group supergroup, Group subgroup) {
-        return unlink(supergroup, subgroup, true);
-    }
-
-    public static boolean unlink(Group supergroup, Group subgroup, boolean savetodb) {
-        return false;
-    }
-
-    public static boolean areLinked(Group supergroup, Group subgroup) {
-        return false;
-    }
-
-    /**
-     * Sets the default group for a player
-     *
-     * @param uuid- The UUID of the player.
-     */
-    public void setDefaultGroup(UUID uuid) {
-        NameLayerPlugin.getDefaultGroupHandler().setDefaultGroup(uuid, this);
-    }
-
     public void setDefaultGroupAsync(UUID uuid, Consumer<DefaultGroupHandler.DefaultGroupWriteResult> callback) {
         NameLayerPlugin.getDefaultGroupHandler().setDefaultGroupAsync(uuid, this, callback);
-    }
-
-    public void changeDefaultGroup(UUID uuid) {
-        NameLayerPlugin.getDefaultGroupHandler().setDefaultGroup(uuid, this);
     }
 
     public void changeDefaultGroupAsync(UUID uuid, Consumer<DefaultGroupHandler.DefaultGroupWriteResult> callback) {
@@ -864,16 +605,6 @@ public class Group {
 
     public String getPassword() {
         return password;
-    }
-
-    /**
-     * Checks if a string equals the password of a group.
-     *
-     * @param password- The password to compare.
-     * @return Returns true if they equal, otherwise false.
-     */
-    public boolean isPassword(String password) {
-        return this.password.equals(password);
     }
 
     /**
@@ -899,7 +630,13 @@ public class Group {
     }
 
     public boolean isValid() {
-        return isValid;
+        if (name == null) {
+            return false;
+        }
+        if (NameLayerPlugin.getGroupCache() == null) {
+            return true;
+        }
+        return NameLayerPlugin.getGroupCache().getById(id) == this;
     }
 
     /**
@@ -928,111 +665,21 @@ public class Group {
      * @return list of ids paired with this group name.
      */
     public List<Integer> getGroupIds() {
-        return new ArrayList<Integer>(this.ids);
-    }
-
-    // == SETTERS ========================================================================= //
-
-    /**
-     * Sets the password for a group. Set the parameter as null to remove the password.
-     *
-     * @param password- The password of the group.
-     */
-    public void setPassword(String password) {
-        setPassword(password, true);
-    }
-
-    public void setPassword(String password, boolean savetodb) {
-        if (savetodb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper password write for " + name);
-            return;
-        }
-        this.password = password;
-    }
-
-    /**
-     * Sets the owner of the group.
-     *
-     * @param uuid- The UUID of the Player.
-     */
-    public void setOwner(UUID uuid) {
-        setOwner(uuid, true);
-    }
-
-    public void setOwner(UUID uuid, boolean savetodb) {
-        if (savetodb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper owner write for " + name);
-            return;
-        }
-        this.owner = uuid;
-    }
-
-    public void setDisciplined(boolean value) {
-        setDisciplined(value, true);
-    }
-
-    public void setDisciplined(boolean value, boolean savetodb) {
-        if (savetodb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper discipline write for " + name);
-            return;
-        }
-        this.isDisciplined = value;
-    }
-
-    public void setValid(boolean valid) {
-        this.isValid = valid;
-    }
-
-    // acts as replace
-    public void setGroupId(int id) {
-        this.ids.remove(this.id);
-        this.id = id;
-        if (!ids.contains(this.id)) {
-            this.ids.add(this.id);
-        }
+        return new ArrayList<>(this.ids);
     }
 
     public TextColor getGroupColor() {
         return groupColor;
     }
 
-    public void setGroupColor(TextColor groupColor) {
-        setGroupColor(groupColor, true);
-    }
-
-    public void setGroupColor(TextColor groupColor, boolean saveToDB) {
-        if (saveToDB) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper group color write for " + name);
-            return;
-        }
-        this.groupColor = groupColor;
-    }
-
     public Component getGroupNameColored() {
         return Component.text(this.name, this.groupColor);
     }
 
-    /**
-     * Updates/replaces the group id list with a new one. Clears the old one, adds these,
-     * and ensures that the "main" id is added to the list as well.
-     *
-     * @param ids the list of IDs to replace
-     */
-    public void setGroupIds(List<Integer> ids) {
-        this.ids.clear();
-        if (ids != null) {
-            this.ids.addAll(ids);
-        }
-        if (!ids.contains(this.id)) {
-            this.ids.add(this.id);
-        }
-    }
-
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Group))
+        if (!(obj instanceof Group g))
             return false;
-        Group g = (Group) obj;
         return g.getName().equals(this.getName()); // If they have the same name they are equal.
     }
 }

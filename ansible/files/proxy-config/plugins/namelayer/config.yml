@@ -1,0 +1,17 @@
+database:
+  driver: mariadb
+  host: ${CIV_MYSQL_HOST}
+  port: 3306
+  database: namelayer
+  user: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  poolsize: 10
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+rabbitmq:
+  user: ${CIV_RABBITMQ_USERNAME}
+  password: ${CIV_RABBITMQ_PASSWORD}
+  host: ${CIV_RABBITMQ_HOST}
+  port: 5672

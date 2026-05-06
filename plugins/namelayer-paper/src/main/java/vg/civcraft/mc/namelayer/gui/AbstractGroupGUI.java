@@ -105,11 +105,6 @@ public abstract class AbstractGroupGUI {
         return new ItemStack(Material.BARRIER); // common for now
     }
 
-    public ItemStack mergeStack() {
-        if (mats != null) return mats.getItemStack(MaterialInterface.Specific.MERGE);
-        return new ItemStack(Material.BARRIER); // common for now
-    }
-
     public ItemStack defaultStack() {
         if (mats != null) return mats.getItemStack(MaterialInterface.Specific.DEFAULT);
         return new ItemStack(Material.BARRIER); // common for now

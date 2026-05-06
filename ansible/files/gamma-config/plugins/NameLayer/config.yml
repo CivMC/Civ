@@ -12,6 +12,18 @@ groups:
   enable: true
   grouplimit: 20
   creationOnFirstJoin: true
+rabbitmq:
+  enabled: true
+  serverId: gamma
+  user: ${CIV_RABBITMQ_USERNAME}
+  password: ${CIV_RABBITMQ_PASSWORD}
+  host: ${CIV_RABBITMQ_HOST}
+  port: 5672
+  freshnessCheck:
+    enabled: true
+    intervalSeconds: 300
+    jitterSeconds: 30
+    staleGraceSeconds: 300
 persistance:
   forceloadnamecaching: true
 #name_cleanser:

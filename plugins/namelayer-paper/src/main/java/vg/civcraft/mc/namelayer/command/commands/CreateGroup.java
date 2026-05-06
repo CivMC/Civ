@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -24,25 +23,21 @@ public class CreateGroup extends BaseCommandMiddle {
     @Syntax("<group> [password]")
     @Description("Create a group (Public or Private). Password is optional.")
     public void execute(Player sender, String groupName, @Optional String userPassword) {
-        Player p = (Player) sender;
         String name = groupName;
-        int currentGroupCount = gm.countGroups(p.getUniqueId());
+        int currentGroupCount = gm.countGroups(sender.getUniqueId());
 
-        if (NameLayerPlugin.getInstance().getGroupLimit() < currentGroupCount + 1 && !(p.isOp() || p.hasPermission("namelayer.admin"))) {
-            p.sendMessage(ChatColor.RED + "You cannot create any more groups! Please delete an un-needed group before making more.");
+        if (NameLayerPlugin.getInstance().getGroupLimit() < currentGroupCount + 1 && !(sender.isOp() || sender.hasPermission("namelayer.admin"))) {
+            sender.sendMessage(ChatColor.RED + "You cannot create any more groups! Please delete an un-needed group before making more.");
             return;
         }
 
         //enforce regulations on the name
         if (name.length() > 32) {
-            p.sendMessage(ChatColor.RED + "The group name is not allowed to contain more than 32 characters");
+            sender.sendMessage(ChatColor.RED + "The group name is not allowed to contain more than 32 characters");
             return;
         }
         Charset latin1 = StandardCharsets.ISO_8859_1;
-        boolean invalidChars = false;
-        if (!latin1.newEncoder().canEncode(name)) {
-            invalidChars = true;
-        }
+        boolean invalidChars = !latin1.newEncoder().canEncode(name);
         //cant allow them to hurt mercury :(
         if (name.contains("|")) {
             invalidChars = true;
@@ -51,46 +46,40 @@ public class CreateGroup extends BaseCommandMiddle {
         for (char c : name.toCharArray()) {
             if (Character.isISOControl(c)) {
                 invalidChars = true;
+                break;
             }
         }
 
         if (invalidChars) {
-            p.sendMessage(ChatColor.RED + "You used characters, which are not allowed");
+            sender.sendMessage(ChatColor.RED + "You used characters, which are not allowed");
             return;
         }
 
         if (GroupManager.getGroup(name) != null) {
-            p.sendMessage(ChatColor.RED + "That group is already taken. Try another unique group name.");
+            sender.sendMessage(ChatColor.RED + "That group is already taken. Try another unique group name.");
             return;
         }
-        String password = "";
-        if (userPassword != null) {
-            password = userPassword;
-        } else {
-            password = null;
-        }
-        final UUID uuid = NameLayerAPI.getUUID(p.getName());
-        Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis(), "GRAY");
-        gm.createGroupAsync(g, new RunnableOnGroup() {
-            @Override
-            public void run() {
-                Player p = null;
-                p = Bukkit.getPlayer(uuid);
-                Group g = getGroup();
-                if (p != null) {
-                    if (g.getGroupId() == -1) { // failure
-                        p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
-                    }
-                    p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
-                } else {
-                    NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
-                        new Object[]{g.getName(), g.getGroupId()});
-                }
+        final UUID uuid = NameLayerAPI.getUUID(sender.getName());
+        Group g = new Group(name, uuid, false, userPassword, -1, System.currentTimeMillis(), "GRAY");
+        gm.createGroupAsync(g, createdGroup -> {
+            if (createdGroup != null) {
+                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
+                    new Object[]{createdGroup.getName(), createdGroup.getGroupId()});
+            }
+
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) {
+                return;
+            }
+            if (createdGroup == null) {
+                player.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+            } else {
+                player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
             }
         }, false);
         if (NameLayerPlugin.getInstance().getGroupLimit() == (currentGroupCount + 1)) {
-            p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
+            sender.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
         }
-        p.sendMessage(ChatColor.GREEN + "Group creation request is in process.");
+        sender.sendMessage(ChatColor.GREEN + "Group creation request is in process.");
     }
 }

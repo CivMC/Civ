@@ -36,19 +36,7 @@ public class DefaultGroupHandler {
         defaultGroups = dao.getAllDefaultGroups();
     }
 
-    public void setDefaultGroup(Player p, Group g) {
-        setDefaultGroup(p.getUniqueId(), g, true);
-    }
-
-    public void setDefaultGroup(UUID uuid, Group g) {
-        setDefaultGroup(uuid, g, true);
-    }
-
-    public void setDefaultGroup(UUID uuid, Group g, boolean savetodb) {
-        if (savetodb) {
-            NameLayerPlugin.getInstance().getLogger().warning("Refusing direct Paper default group write for " + uuid);
-            return;
-        }
+    public void cacheDefaultGroup(UUID uuid, Group g) {
         defaultGroups.put(uuid, g.getName());
     }
 
@@ -94,7 +82,7 @@ public class DefaultGroupHandler {
             completeOnMain(callback, DefaultGroupWriteResult.failure(response.message()));
             return;
         }
-        setDefaultGroup(uuid, group, false);
+        cacheDefaultGroup(uuid, group);
         completeOnMain(callback, DefaultGroupWriteResult.successResult());
     }
 

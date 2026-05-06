@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -32,10 +31,6 @@ public final class NameLayerReadDao {
         + "from faction f "
         + "inner join faction_id fi on fi.group_name = f.group_name "
         + "where f.group_name = ?";
-    private static final String GET_GROUP_BY_ID = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp, f.group_color "
-        + "from faction f "
-        + "inner join faction_id fi on fi.group_id = ? "
-        + "where f.group_name = fi.group_name";
     private static final String GET_ALL_GROUP_NAMES = "select f.group_name from faction_id f "
         + "inner join faction_member fm on f.group_id = fm.group_id "
         + "where fm.member_name = ?";
@@ -63,27 +58,33 @@ public final class NameLayerReadDao {
     private static final String GET_BLACKLIST_MEMBERS = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id";
     private static final String GET_GROUP_IDS = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
         + "LEFT JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
-    private static final String LOAD_ALL_GROUP_HEADERS = "select f.group_name, f.founder, f.password, f.discipline_flags, "
-        + "fi.group_id, f.last_timestamp, f.group_color from faction f "
-        + "inner join faction_id fi on fi.group_name = f.group_name";
     private static final String LOAD_ALL_GROUP_IDS = "SELECT f.group_name, f.group_id, count(DISTINCT fm.member_name) AS sz "
         + "FROM faction_id f LEFT JOIN faction_member fm ON f.group_id = fm.group_id "
         + "GROUP BY f.group_name, f.group_id ORDER BY f.group_name, sz DESC";
-    private static final String LOAD_ALL_MEMBERS = "select fi.group_name, fm.member_name, fm.role from faction_member fm "
-        + "inner join faction_id fi on fi.group_id = fm.group_id";
-    private static final String LOAD_ALL_BLACKLISTS = "select fi.group_name, b.member_name from blacklist b "
-        + "inner join faction_id fi on fi.group_id = b.group_id";
-    private static final String LOAD_GROUPS_BY_IDS_PREFIX = "select requested.group_id, f.group_name, f.founder, f.password, "
-        + "f.discipline_flags, f.last_timestamp, f.group_color, all_ids.group_id, fm.member_name, fm.role, b.member_name "
-        + "from faction_id requested "
-        + "inner join faction f on f.group_name = requested.group_name "
-        + "left join faction_id all_ids on all_ids.group_name = f.group_name "
-        + "left join (select group_id, count(distinct member_name) member_count from faction_member group by group_id) counts "
-        + "on counts.group_id = all_ids.group_id "
-        + "left join faction_member fm on fm.group_id = all_ids.group_id "
-        + "left join blacklist b on b.group_id = all_ids.group_id "
+    private static final String LOAD_EXISTING_GROUP_IDS_PREFIX = "select group_id from faction_id where group_id in (";
+    private static final String LOAD_EXISTING_GROUP_IDS_SUFFIX = ")";
+    private static final String LOAD_GROUP_HEADERS_BY_IDS_PREFIX = "select f.group_name, f.founder, f.password, f.discipline_flags, "
+        + "fi.group_id, f.last_timestamp, f.group_color from faction f "
+        + "inner join faction_id fi on fi.group_name = f.group_name where fi.group_id in (";
+    private static final String LOAD_GROUP_HEADERS_BY_IDS_SUFFIX = ")";
+    private static final String LOAD_GROUP_IDS_BY_REQUESTED_IDS_PREFIX = "SELECT requested.group_id, all_ids.group_id, "
+        + "count(DISTINCT fm.member_name) AS sz FROM faction_id requested "
+        + "INNER JOIN faction_id all_ids ON all_ids.group_name = requested.group_name "
+        + "LEFT JOIN faction_member fm ON fm.group_id = all_ids.group_id WHERE requested.group_id in (";
+    private static final String LOAD_GROUP_IDS_BY_REQUESTED_IDS_SUFFIX = ") "
+        + "GROUP BY requested.group_id, all_ids.group_id ORDER BY requested.group_id, sz DESC";
+    private static final String LOAD_MEMBERS_BY_REQUESTED_IDS_PREFIX = "select requested.group_id, fm.member_name, fm.role "
+        + "from faction_id requested inner join faction_id all_ids on all_ids.group_name = requested.group_name "
+        + "inner join faction_member fm on fm.group_id = all_ids.group_id where requested.group_id in (";
+    private static final String LOAD_MEMBERS_BY_REQUESTED_IDS_SUFFIX = ")";
+    private static final String LOAD_BLACKLISTS_BY_REQUESTED_IDS_PREFIX = "select requested.group_id, b.member_name "
+        + "from faction_id requested inner join faction_id all_ids on all_ids.group_name = requested.group_name "
+        + "inner join blacklist b on b.group_id = all_ids.group_id where requested.group_id in (";
+    private static final String LOAD_BLACKLISTS_BY_REQUESTED_IDS_SUFFIX = ")";
+    private static final String LOAD_INVITATIONS_BY_REQUESTED_IDS_PREFIX = "select requested.group_id, gi.uuid, gi.role "
+        + "from faction_id requested inner join group_invitation gi on gi.groupName = requested.group_name "
         + "where requested.group_id in (";
-    private static final String LOAD_GROUPS_BY_IDS_SUFFIX = ") order by f.group_name, counts.member_count desc, all_ids.group_id";
+    private static final String LOAD_INVITATIONS_BY_REQUESTED_IDS_SUFFIX = ")";
     private static final String LOAD_CACHE_VERSION = "select cache_version from namelayer_cache_version where id = 1";
 
     private final Logger logger;
@@ -98,6 +99,12 @@ public final class NameLayerReadDao {
                                long activityTimestamp, String groupColor) {
     }
 
+    private record GroupSnapshotData(Map<Integer, GroupHeader> headers, Map<Integer, List<Integer>> groupIds,
+                                      Map<Integer, Map<UUID, PlayerType>> members,
+                                      Map<Integer, Set<UUID>> blacklists,
+                                      Map<Integer, Map<UUID, PlayerType>> invites) {
+    }
+
     public record GroupLoadSnapshot(List<Group> groups, long cacheVersion) {
     }
 
@@ -106,13 +113,13 @@ public final class NameLayerReadDao {
 
     public Group getGroup(final String groupName) {
         try (Connection connection = db.getConnection();
-             PreparedStatement getGroup = connection.prepareStatement(GET_GROUP)) {
+              PreparedStatement getGroup = connection.prepareStatement(GET_GROUP)) {
             getGroup.setString(1, groupName);
             try (ResultSet set = getGroup.executeQuery()) {
                 if (!set.next()) {
                     return null;
                 }
-                return groupFromResult(set);
+                return getGroup(set.getInt(5));
             }
         } catch (final SQLException exception) {
             logger.log(Level.WARNING, "Problem getting group " + groupName, exception);
@@ -121,33 +128,11 @@ public final class NameLayerReadDao {
     }
 
     public Group getGroup(final int groupId) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement getGroupById = connection.prepareStatement(GET_GROUP_BY_ID)) {
-            getGroupById.setInt(1, groupId);
-            try (ResultSet set = getGroupById.executeQuery()) {
-                if (!set.next()) {
-                    return null;
-                }
-                return groupFromResult(set);
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting group " + groupId, exception);
+        final GroupReloadSnapshot snapshot = loadGroupsByIdsSnapshot(Set.of(groupId));
+        if (snapshot == null) {
             return null;
         }
-    }
-
-    private Group groupFromResult(final ResultSet set) throws SQLException {
-        final String uuid = set.getString(2);
-        final UUID owner = uuid == null ? null : UUID.fromString(uuid);
-        final Timestamp timeStamp = set.getTimestamp(6);
-        return new Group(
-            set.getString(1),
-            owner,
-            set.getInt(4) != 0,
-            set.getString(3),
-            set.getInt(5),
-            timeStamp == null ? System.currentTimeMillis() : timeStamp.getTime(),
-            set.getString(7));
+        return snapshot.groups().get(groupId);
     }
 
     public GroupReloadSnapshot loadGroupsByIdsSnapshot(final Set<Integer> requestedGroupIds) {
@@ -155,59 +140,15 @@ public final class NameLayerReadDao {
             return new GroupReloadSnapshot(new HashMap<>(), loadCacheVersion());
         }
 
-        final Map<Integer, String> requestedNames = new HashMap<>();
-        final Map<String, GroupHeader> headers = new LinkedHashMap<>();
-        final Map<String, List<Integer>> groupIds = new HashMap<>();
-        final Map<String, Map<UUID, PlayerType>> members = new HashMap<>();
-        final Map<String, Set<UUID>> blacklists = new HashMap<>();
+        final Set<Integer> existingRequestedGroupIds;
+        final GroupSnapshotData data = newSnapshotData();
         final long cacheVersion;
 
         try (Connection connection = db.getConnection()) {
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(loadGroupsByIdsSql(requestedGroupIds.size()))) {
-                int parameterIndex = 1;
-                for (final int groupId : requestedGroupIds) {
-                    statement.setInt(parameterIndex++, groupId);
-                }
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        final int requestedGroupId = resultSet.getInt(1);
-                        final String name = resultSet.getString(2);
-                        requestedNames.put(requestedGroupId, name);
-                        if (!headers.containsKey(name)) {
-                            final String ownerString = resultSet.getString(3);
-                            final UUID owner = ownerString == null ? null : UUID.fromString(ownerString);
-                            final Timestamp timestamp = resultSet.getTimestamp(6);
-                            headers.put(name, new GroupHeader(
-                                name,
-                                owner,
-                                resultSet.getInt(5) != 0,
-                                resultSet.getString(4),
-                                requestedGroupId,
-                                timestamp == null ? System.currentTimeMillis() : timestamp.getTime(),
-                                resultSet.getString(7)));
-                        }
-
-                        final int groupId = resultSet.getInt(8);
-                        if (!resultSet.wasNull()) {
-                            final List<Integer> ids = groupIds.computeIfAbsent(name, key -> new ArrayList<>());
-                            if (!ids.contains(groupId)) {
-                                ids.add(groupId);
-                            }
-                        }
-
-                        final String memberUuidString = resultSet.getString(9);
-                        final PlayerType role = PlayerType.getPlayerType(resultSet.getString(10));
-                        if (memberUuidString != null && role != null) {
-                            members.computeIfAbsent(name, key -> new HashMap<>()).put(UUID.fromString(memberUuidString), role);
-                        }
-
-                        final String blacklistUuidString = resultSet.getString(11);
-                        if (blacklistUuidString != null) {
-                            blacklists.computeIfAbsent(name, key -> new HashSet<>()).add(UUID.fromString(blacklistUuidString));
-                        }
-                    }
-                }
+            existingRequestedGroupIds = loadExistingGroupIds(connection, requestedGroupIds);
+            if (!existingRequestedGroupIds.isEmpty()) {
+                loadGroupDataByRequestedIds(connection, data, existingRequestedGroupIds);
             }
             cacheVersion = loadCacheVersion(connection);
             connection.commit();
@@ -216,26 +157,12 @@ public final class NameLayerReadDao {
             return null;
         }
 
-        final Map<String, Group> groupsByName = new HashMap<>();
-        for (final GroupHeader header : headers.values()) {
-            final List<Integer> ids = groupIds.get(header.name());
-            final int primaryId = ids == null || ids.isEmpty() ? header.groupId() : ids.get(0);
-            groupsByName.put(header.name(), new Group(
-                header.name(),
-                header.owner(),
-                header.disciplined(),
-                header.password(),
-                primaryId,
-                header.activityTimestamp(),
-                header.groupColor(),
-                ids,
-                members.get(header.name()),
-                blacklists.get(header.name())));
-        }
-
         final Map<Integer, Group> groupsByRequestedId = new HashMap<>();
-        for (final Entry<Integer, String> entry : requestedNames.entrySet()) {
-            groupsByRequestedId.put(entry.getKey(), groupsByName.get(entry.getValue()));
+        for (final int requestedGroupId : existingRequestedGroupIds) {
+            final GroupHeader header = data.headers().get(requestedGroupId);
+            if (header != null) {
+                groupsByRequestedId.put(requestedGroupId, buildGroup(data, requestedGroupId, header));
+            }
         }
         return new GroupReloadSnapshot(groupsByRequestedId, cacheVersion);
     }
@@ -256,15 +183,208 @@ public final class NameLayerReadDao {
         }
     }
 
-    private String loadGroupsByIdsSql(final int groupIdCount) {
+    private GroupSnapshotData newSnapshotData() {
+        return new GroupSnapshotData(new LinkedHashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(),
+            new HashMap<>());
+    }
+
+    private String placeholders(final int count) {
         final StringBuilder placeholders = new StringBuilder();
-        for (int index = 0; index < groupIdCount; index++) {
+        for (int index = 0; index < count; index++) {
             if (index > 0) {
                 placeholders.append(',');
             }
             placeholders.append('?');
         }
-        return LOAD_GROUPS_BY_IDS_PREFIX + placeholders + LOAD_GROUPS_BY_IDS_SUFFIX;
+        return placeholders.toString();
+    }
+
+    private Set<Integer> loadExistingGroupIds(final Connection connection, final Set<Integer> requestedGroupIds)
+        throws SQLException {
+        final Set<Integer> existingGroupIds = new HashSet<>();
+        final String sql = LOAD_EXISTING_GROUP_IDS_PREFIX + placeholders(requestedGroupIds.size())
+            + LOAD_EXISTING_GROUP_IDS_SUFFIX;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            int parameterIndex = 1;
+            for (final int groupId : requestedGroupIds) {
+                statement.setInt(parameterIndex++, groupId);
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    existingGroupIds.add(resultSet.getInt(1));
+                }
+            }
+        }
+        return existingGroupIds;
+    }
+
+    private void loadGroupDataByRequestedIds(final Connection connection, final GroupSnapshotData data,
+                                             final Set<Integer> requestedGroupIds) throws SQLException {
+        loadGroupHeadersByIds(connection, data.headers(), requestedGroupIds);
+        loadGroupIdsByRequestedIds(connection, data.groupIds(), requestedGroupIds);
+        loadMembersByRequestedIds(connection, data.members(), requestedGroupIds);
+        loadBlacklistsByRequestedIds(connection, data.blacklists(), requestedGroupIds);
+        loadInvitationsByRequestedIds(connection, data.invites(), requestedGroupIds);
+    }
+
+    private void loadGroupHeadersByIds(final Connection connection, final Map<Integer, GroupHeader> headers,
+                                       final Set<Integer> groupIds) throws SQLException {
+        final String sql = LOAD_GROUP_HEADERS_BY_IDS_PREFIX + placeholders(groupIds.size())
+            + LOAD_GROUP_HEADERS_BY_IDS_SUFFIX;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindInts(statement, groupIds);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                loadGroupHeadersById(headers, resultSet);
+            }
+        }
+    }
+
+    private void loadGroupHeadersById(final Map<Integer, GroupHeader> headers, final ResultSet resultSet)
+        throws SQLException {
+        while (resultSet.next()) {
+            final int groupId = resultSet.getInt(5);
+            final String ownerString = resultSet.getString(2);
+            final UUID owner = ownerString == null ? null : UUID.fromString(ownerString);
+            final Timestamp timestamp = resultSet.getTimestamp(6);
+            headers.put(groupId, new GroupHeader(
+                resultSet.getString(1),
+                owner,
+                resultSet.getInt(4) != 0,
+                resultSet.getString(3),
+                groupId,
+                timestamp == null ? System.currentTimeMillis() : timestamp.getTime(),
+                resultSet.getString(7)));
+        }
+    }
+
+    private Map<String, List<Integer>> loadGroupIds(final Connection connection)
+        throws SQLException {
+        final Map<String, List<Integer>> groupIds = new LinkedHashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(LOAD_ALL_GROUP_IDS)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                loadGroupIds(groupIds, resultSet);
+            }
+        }
+        return groupIds;
+    }
+
+    private void loadGroupIdsByRequestedIds(final Connection connection, final Map<Integer, List<Integer>> groupIds,
+                                            final Set<Integer> requestedGroupIds) throws SQLException {
+        final String sql = LOAD_GROUP_IDS_BY_REQUESTED_IDS_PREFIX + placeholders(requestedGroupIds.size())
+            + LOAD_GROUP_IDS_BY_REQUESTED_IDS_SUFFIX;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindInts(statement, requestedGroupIds);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                loadGroupIdsById(groupIds, resultSet);
+            }
+        }
+    }
+
+    private void loadGroupIds(final Map<String, List<Integer>> groupIds, final ResultSet resultSet)
+        throws SQLException {
+        while (resultSet.next()) {
+            groupIds.computeIfAbsent(resultSet.getString(1), key -> new ArrayList<>()).add(resultSet.getInt(2));
+        }
+    }
+
+    private void loadGroupIdsById(final Map<Integer, List<Integer>> groupIds, final ResultSet resultSet)
+        throws SQLException {
+        while (resultSet.next()) {
+            groupIds.computeIfAbsent(resultSet.getInt(1), key -> new ArrayList<>()).add(resultSet.getInt(2));
+        }
+    }
+
+    private void loadMembersByRequestedIds(final Connection connection, final Map<Integer, Map<UUID, PlayerType>> members,
+                                           final Set<Integer> requestedGroupIds) throws SQLException {
+        final String sql = LOAD_MEMBERS_BY_REQUESTED_IDS_PREFIX + placeholders(requestedGroupIds.size())
+            + LOAD_MEMBERS_BY_REQUESTED_IDS_SUFFIX;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindInts(statement, requestedGroupIds);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                loadMembersById(members, resultSet);
+            }
+        }
+    }
+
+    private void loadMembersById(final Map<Integer, Map<UUID, PlayerType>> members, final ResultSet resultSet)
+        throws SQLException {
+        while (resultSet.next()) {
+            final String uuidString = resultSet.getString(2);
+            final PlayerType role = PlayerType.getPlayerType(resultSet.getString(3));
+            if (uuidString != null && role != null) {
+                members.computeIfAbsent(resultSet.getInt(1), key -> new HashMap<>())
+                    .put(UUID.fromString(uuidString), role);
+            }
+        }
+    }
+
+    private void loadBlacklistsByRequestedIds(final Connection connection, final Map<Integer, Set<UUID>> blacklists,
+                                             final Set<Integer> requestedGroupIds) throws SQLException {
+        final String sql = LOAD_BLACKLISTS_BY_REQUESTED_IDS_PREFIX + placeholders(requestedGroupIds.size())
+            + LOAD_BLACKLISTS_BY_REQUESTED_IDS_SUFFIX;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindInts(statement, requestedGroupIds);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                loadBlacklistsById(blacklists, resultSet);
+            }
+        }
+    }
+
+    private void loadBlacklistsById(final Map<Integer, Set<UUID>> blacklists, final ResultSet resultSet)
+        throws SQLException {
+        while (resultSet.next()) {
+            final String uuidString = resultSet.getString(2);
+            if (uuidString != null) {
+                blacklists.computeIfAbsent(resultSet.getInt(1), key -> new HashSet<>()).add(UUID.fromString(uuidString));
+            }
+        }
+    }
+
+    private void loadInvitationsByRequestedIds(final Connection connection, final Map<Integer, Map<UUID, PlayerType>> invites,
+                                               final Set<Integer> requestedGroupIds) throws SQLException {
+        final String sql = LOAD_INVITATIONS_BY_REQUESTED_IDS_PREFIX + placeholders(requestedGroupIds.size())
+            + LOAD_INVITATIONS_BY_REQUESTED_IDS_SUFFIX;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindInts(statement, requestedGroupIds);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                loadInvitationsById(invites, resultSet);
+            }
+        }
+    }
+
+    private void loadInvitationsById(final Map<Integer, Map<UUID, PlayerType>> invites, final ResultSet resultSet)
+        throws SQLException {
+        while (resultSet.next()) {
+            final String uuidString = resultSet.getString(2);
+            final PlayerType role = PlayerType.getPlayerType(resultSet.getString(3));
+            if (uuidString != null && role != null) {
+                invites.computeIfAbsent(resultSet.getInt(1), key -> new HashMap<>()).put(UUID.fromString(uuidString), role);
+            }
+        }
+    }
+
+    private void bindInts(final PreparedStatement statement, final Set<Integer> values) throws SQLException {
+        int parameterIndex = 1;
+        for (final int value : values) {
+            statement.setInt(parameterIndex++, value);
+        }
+    }
+
+    private Group buildGroup(final GroupSnapshotData data, final int groupId, final GroupHeader header) {
+        final List<Integer> ids = data.groupIds().get(groupId);
+        final int primaryId = ids == null || ids.isEmpty() ? header.groupId() : ids.get(0);
+        return new Group(
+            header.name(),
+            header.owner(),
+            header.disciplined(),
+            header.password(),
+            primaryId,
+            header.activityTimestamp(),
+            header.groupColor(),
+            ids == null ? List.of() : ids,
+            data.members().getOrDefault(groupId, Map.of()),
+            data.blacklists().getOrDefault(groupId, Set.of()),
+            data.invites().getOrDefault(groupId, Map.of()));
     }
 
     public List<String> getGroupNames(final UUID uuid) {
@@ -449,7 +569,7 @@ public final class NameLayerReadDao {
                 while (set.next()) {
                     final String role = set.getString("role");
                     final PlayerType type = role == null ? null : PlayerType.getPlayerType(role);
-                    group.addInvite(playerUUID, type, false);
+                    GroupManager.reloadGroupById(group.getGroupId());
                 }
             }
         } catch (final SQLException exception) {
@@ -493,7 +613,6 @@ public final class NameLayerReadDao {
                 final PlayerType type = role == null ? null : PlayerType.getPlayerType(role);
                 if (uuid != null && cachedGroup != null) {
                     final UUID playerUUID = UUID.fromString(uuid);
-                    cachedGroup.addInvite(playerUUID, type, false);
                     PlayerListener.addNotification(playerUUID, cachedGroup);
                 }
             }
@@ -564,63 +683,20 @@ public final class NameLayerReadDao {
     }
 
     public GroupLoadSnapshot loadAllGroupsSnapshot() {
-        final Map<String, GroupHeader> headers = new LinkedHashMap<>();
-        final Map<String, List<Integer>> groupIds = new HashMap<>();
-        final Map<String, Map<UUID, PlayerType>> members = new HashMap<>();
-        final Map<String, Set<UUID>> blacklists = new HashMap<>();
+        final GroupSnapshotData data = newSnapshotData();
         final long cacheVersion;
 
         try (Connection connection = db.getConnection()) {
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(LOAD_ALL_GROUP_HEADERS);
-                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    final String name = resultSet.getString(1);
-                    if (headers.containsKey(name)) {
-                        continue;
-                    }
-                    final String ownerString = resultSet.getString(2);
-                    final UUID owner = ownerString == null ? null : UUID.fromString(ownerString);
-                    final Timestamp timestamp = resultSet.getTimestamp(6);
-                    headers.put(name, new GroupHeader(
-                        name,
-                        owner,
-                        resultSet.getInt(4) != 0,
-                        resultSet.getString(3),
-                        resultSet.getInt(5),
-                        timestamp == null ? System.currentTimeMillis() : timestamp.getTime(),
-                        resultSet.getString(7)));
+            final Map<String, List<Integer>> groupIdsByName = loadGroupIds(connection);
+            final Set<Integer> primaryGroupIds = new HashSet<>();
+            for (final List<Integer> ids : groupIdsByName.values()) {
+                if (!ids.isEmpty()) {
+                    primaryGroupIds.add(ids.get(0));
                 }
             }
-
-            try (PreparedStatement statement = connection.prepareStatement(LOAD_ALL_GROUP_IDS);
-                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    groupIds.computeIfAbsent(resultSet.getString(1), key -> new ArrayList<>()).add(resultSet.getInt(2));
-                }
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(LOAD_ALL_MEMBERS);
-                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    final String uuidString = resultSet.getString(2);
-                    final PlayerType role = PlayerType.getPlayerType(resultSet.getString(3));
-                    if (uuidString != null && role != null) {
-                        members.computeIfAbsent(resultSet.getString(1), key -> new HashMap<>())
-                            .put(UUID.fromString(uuidString), role);
-                    }
-                }
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(LOAD_ALL_BLACKLISTS);
-                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    final String uuidString = resultSet.getString(2);
-                    if (uuidString != null) {
-                        blacklists.computeIfAbsent(resultSet.getString(1), key -> new HashSet<>())
-                            .add(UUID.fromString(uuidString));
-                    }
-                }
+            if (!primaryGroupIds.isEmpty()) {
+                loadGroupDataByRequestedIds(connection, data, primaryGroupIds);
             }
             cacheVersion = loadCacheVersion(connection);
             connection.commit();
@@ -629,21 +705,9 @@ public final class NameLayerReadDao {
             return new GroupLoadSnapshot(new ArrayList<>(), 0L);
         }
 
-        final List<Group> groups = new ArrayList<>(headers.size());
-        for (final GroupHeader header : headers.values()) {
-            final List<Integer> ids = groupIds.get(header.name());
-            final int primaryId = ids == null || ids.isEmpty() ? header.groupId() : ids.get(0);
-            groups.add(new Group(
-                header.name(),
-                header.owner(),
-                header.disciplined(),
-                header.password(),
-                primaryId,
-                header.activityTimestamp(),
-                header.groupColor(),
-                ids,
-                members.get(header.name()),
-                blacklists.get(header.name())));
+        final List<Group> groups = new ArrayList<>(data.headers().size());
+        for (final Entry<Integer, GroupHeader> entry : data.headers().entrySet()) {
+            groups.add(buildGroup(data, entry.getKey(), entry.getValue()));
         }
         return new GroupLoadSnapshot(groups, cacheVersion);
     }

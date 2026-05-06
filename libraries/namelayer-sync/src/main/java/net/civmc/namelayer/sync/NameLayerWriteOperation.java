@@ -3,10 +3,12 @@ package net.civmc.namelayer.sync;
 public enum NameLayerWriteOperation {
     ADD_BLACKLIST,
     ADD_INVITATION,
+    ADD_MEMBER,
     ADD_PERMISSION,
     ACCEPT_INVITATION,
     CREATE_GROUP,
     DELETE_GROUP,
+    ENSURE_NEWFRIEND_GROUP,
     JOIN_GROUP,
     LEAVE_GROUP,
     REMOVE_BLACKLIST,

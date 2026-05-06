@@ -33,6 +33,10 @@ public final class NameLayerWriteCoordinator {
     private static final String SET_OWNER_MEMBER_ROLE = "UPDATE faction_member SET role = 'OWNER' WHERE group_id = ? AND member_name = ?";
     private static final String CREATE_GROUP = "CALL createGroup(?, ?, ?, ?)";
     private static final String ADD_PERMISSION_BY_NAME = "INSERT IGNORE INTO permission_by_group_name(group_id, role, permission_name) VALUES (?, ?, ?)";
+    private static final String GET_DEFAULT_GROUP_ID = "SELECT dg.defaultgroup, fi.group_id FROM default_group dg "
+        + "INNER JOIN faction_id fi ON fi.group_name = dg.defaultgroup WHERE dg.uuid = ? LIMIT 1 FOR UPDATE";
+    private static final String GET_PLAYER_LOCK = "SELECT GET_LOCK(?, 10)";
+    private static final String RELEASE_PLAYER_LOCK = "SELECT RELEASE_LOCK(?)";
     private static final String IS_GROUP_MEMBER = "SELECT 1 FROM faction_member WHERE group_id = ? AND member_name = ? LIMIT 1";
     private static final String GET_GROUP_PASSWORD = "SELECT f.password FROM faction f JOIN faction_id fi ON fi.group_name = f.group_name WHERE fi.group_id = ? LIMIT 1";
     private static final String ADD_BLACKLIST = "INSERT IGNORE INTO blacklist(group_id, member_name) VALUES (?, ?)";
@@ -75,7 +79,9 @@ public final class NameLayerWriteCoordinator {
             case SET_GROUP_DISCIPLINE -> handleMetadataWrite(request, SET_GROUP_DISCIPLINE, null, MetadataWrite.ValueType.BOOLEAN_INT);
             case SET_GROUP_OWNER -> handleSetGroupOwner(request);
             case CREATE_GROUP -> handleCreateGroup(request);
+            case ENSURE_NEWFRIEND_GROUP -> handleEnsureNewfriendGroup(request);
             case DELETE_GROUP -> handleDeleteGroup(request);
+            case ADD_MEMBER -> handleAddMember(request);
             case JOIN_GROUP -> handleJoinGroup(request);
             case ADD_BLACKLIST -> handleBlacklistWrite(request, ADD_BLACKLIST, true);
             case REMOVE_BLACKLIST -> handleBlacklistWrite(request, REMOVE_BLACKLIST, false);
@@ -131,6 +137,50 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
+    private NameLayerWriteResponse handleEnsureNewfriendGroup(final NameLayerWriteRequest request) {
+        final NewfriendGroupWrite newfriendWrite;
+        try {
+            newfriendWrite = NewfriendGroupWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        final String lockName = "namelayer:newfriend:" + request.actorUuid();
+        try (Connection connection = dataSource.getConnection()) {
+            if (!acquireLock(connection, lockName)) {
+                return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Timed out waiting for player group lock");
+            }
+            try {
+                connection.setAutoCommit(false);
+                try {
+                    final DefaultGroup defaultGroup = getDefaultGroupId(connection, request.actorUuid());
+                    if (defaultGroup != null) {
+                        connection.commit();
+                        return NameLayerWriteResponse.success(request.requestId(), Set.of(defaultGroup.groupId()));
+                    }
+                    final CreatedGroup createdGroup = createFirstAvailableGroup(connection, request.actorUuid(), newfriendWrite);
+                    if (createdGroup == null) {
+                        connection.rollback();
+                        return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.NAME_CONFLICT, "Unable to find an available newfriend group name");
+                    }
+                    insertDefaultPermissions(connection, createdGroup.groupId(), newfriendWrite.defaultPermissions());
+                    setDefaultGroup(connection, request.actorUuid(), createdGroup.groupName());
+                    incrementCacheVersion(connection);
+                    connection.commit();
+                    publishFullInvalidation();
+                    return successFullResync(request, Set.of(createdGroup.groupId()));
+                } catch (final SQLException exception) {
+                    connection.rollback();
+                    throw exception;
+                }
+            } finally {
+                releaseLock(connection, lockName);
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer newfriend group ensure failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
     private NameLayerWriteResponse handleDeleteGroup(final NameLayerWriteRequest request) {
         final GroupIdWrite deleteWrite;
         try {
@@ -147,7 +197,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 if (!deleteWrite.adminOverride() && !hasRoleEditAccess(connection, deleteWrite.groupId(), request.actorUuid(), "DELETE")) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have delete access");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You do not have delete access");
                 }
                 final String groupName = getGroupName(connection, deleteWrite.groupId());
                 if (groupName == null) {
@@ -193,7 +243,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 if (!blacklistWrite.adminOverride() && !hasRoleEditAccess(connection, blacklistWrite.groupId(), request.actorUuid(), "BLACKLIST")) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have blacklist access");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You do not have blacklist access");
                 }
                 if (add && isGroupMember(connection, blacklistWrite.groupId(), blacklistWrite.memberUuid())) {
                     connection.rollback();
@@ -243,11 +293,11 @@ public final class NameLayerWriteCoordinator {
                 }
                 if (isGroupMember(connection, joinWrite.groupId(), request.actorUuid())) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "Actor is already a group member");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "You are already a group member");
                 }
                 if (isBlacklisted(connection, joinWrite.groupId(), request.actorUuid())) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor is blacklisted");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You are blacklisted");
                 }
                 addMember(connection, joinWrite.groupId(), request.actorUuid(), joinWrite.role());
                 incrementCacheVersion(connection);
@@ -260,6 +310,39 @@ public final class NameLayerWriteCoordinator {
             }
         } catch (final SQLException exception) {
             logger.error("NameLayer password join failed", exception);
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
+        }
+    }
+
+    private NameLayerWriteResponse handleAddMember(final NameLayerWriteRequest request) {
+        final MemberRoleWrite memberWrite;
+        try {
+            memberWrite = MemberRoleWrite.from(request.arguments());
+        } catch (final IllegalArgumentException exception) {
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                if (!lockGroup(connection, memberWrite.groupId())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
+                }
+                if (isBlacklisted(connection, memberWrite.groupId(), memberWrite.memberUuid())) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Player is blacklisted");
+                }
+                addMember(connection, memberWrite.groupId(), memberWrite.memberUuid(), memberWrite.role());
+                incrementCacheVersion(connection);
+                connection.commit();
+                publishInvalidation(memberWrite.groupId());
+                return NameLayerWriteResponse.success(request.requestId(), Set.of(memberWrite.groupId()));
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        } catch (final SQLException exception) {
+            logger.error("NameLayer member add failed", exception);
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Database write failed");
         }
     }
@@ -338,7 +421,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 if (!invitationWrite.adminOverride() && !request.actorUuid().equals(invitationWrite.memberUuid()) && !hasRoleEditAccess(connection, invitationWrite.groupId(), request.actorUuid(), role)) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor cannot remove this invitation");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You cannot remove this invitation");
                 }
                 removeInvitation(connection, invitationWrite.memberUuid(), groupName);
                 incrementCacheVersion(connection);
@@ -377,7 +460,7 @@ public final class NameLayerWriteCoordinator {
                 final String role = getInvitationRole(connection, request.actorUuid(), groupName);
                 if (role == null) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "Actor is not invited");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, "You are not invited");
                 }
                 addMember(connection, groupWrite.groupId(), request.actorUuid(), role);
                 removeInvitation(connection, request.actorUuid(), groupName);
@@ -411,18 +494,14 @@ public final class NameLayerWriteCoordinator {
                 }
                 if (!isGroupMember(connection, groupWrite.groupId(), request.actorUuid())) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor is not a group member");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You are not a group member");
                 }
                 final String groupName = getGroupName(connection, groupWrite.groupId());
                 if (groupName == null) {
                     connection.rollback();
                     return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
                 }
-                try (PreparedStatement statement = connection.prepareStatement(SET_DEFAULT_GROUP)) {
-                    statement.setString(1, request.actorUuid().toString());
-                    statement.setString(2, groupName);
-                    statement.executeUpdate();
-                }
+                setDefaultGroup(connection, request.actorUuid(), groupName);
                 incrementCacheVersion(connection);
                 connection.commit();
                 publishFullInvalidation();
@@ -477,7 +556,7 @@ public final class NameLayerWriteCoordinator {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
         }
         if (!invitationWrite.adminOverride() && !hasRoleEditAccess(connection, invitationWrite.groupId(), request.actorUuid(), role)) {
-            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor cannot invite this role");
+            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You cannot invite this role");
         }
         return null;
     }
@@ -495,6 +574,61 @@ public final class NameLayerWriteCoordinator {
                 statement.addBatch();
             }
             statement.executeBatch();
+        }
+    }
+
+    private CreatedGroup createFirstAvailableGroup(
+        final Connection connection,
+        final UUID ownerUuid,
+        final NewfriendGroupWrite newfriendWrite
+    ) throws SQLException {
+        for (int attempt = 0; attempt < 20; attempt++) {
+            final String groupName = attempt == 0 ? newfriendWrite.baseName() : newfriendWrite.baseName() + (attempt - 1);
+            final CreatedGroup createdGroup = createGroup(connection, groupName, ownerUuid, null);
+            if (createdGroup != null) {
+                return createdGroup;
+            }
+        }
+        return null;
+    }
+
+    private CreatedGroup createGroup(
+        final Connection connection,
+        final String groupName,
+        final UUID ownerUuid,
+        final String password
+    ) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_GROUP)) {
+            statement.setString(1, groupName);
+            statement.setString(2, ownerUuid.toString());
+            statement.setString(3, password);
+            statement.setInt(4, 0);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return new CreatedGroup(groupName, resultSet.getInt(1));
+            }
+        }
+    }
+
+    private DefaultGroup getDefaultGroupId(final Connection connection, final UUID playerUuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_DEFAULT_GROUP_ID)) {
+            statement.setString(1, playerUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return new DefaultGroup(resultSet.getString(1), resultSet.getInt(2));
+            }
+        }
+    }
+
+    private void setDefaultGroup(final Connection connection, final UUID playerUuid, final String groupName) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(SET_DEFAULT_GROUP)) {
+            statement.setString(1, playerUuid.toString());
+            statement.setString(2, groupName);
+            statement.executeUpdate();
         }
     }
 
@@ -519,7 +653,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 if (!metadataWrite.adminOverride() && permissionName != null && !hasRoleEditAccess(connection, metadataWrite.groupId(), request.actorUuid(), permissionName)) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have metadata edit access");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You do not have metadata edit access");
                 }
                 if (!metadataWrite.adminOverride() && permissionName == null) {
                     connection.rollback();
@@ -609,7 +743,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 if (!currentRole.equals(memberWrite.role()) && !hasRoleEditAccess(connection, memberWrite.groupId(), request.actorUuid(), memberWrite.role())) {
                     connection.rollback();
-                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have member edit access");
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You do not have member edit access");
                 }
                 try (PreparedStatement statement = connection.prepareStatement(SET_MEMBER_ROLE)) {
                     statement.setString(1, memberWrite.role());
@@ -692,7 +826,7 @@ public final class NameLayerWriteCoordinator {
         }
         if (!allowSelfRemoval || !request.actorUuid().equals(memberUuid)) {
             if (!hasRoleEditAccess(connection, groupId, request.actorUuid(), targetRole)) {
-                return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "Actor does not have member edit access");
+                return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.AUTHORIZATION_FAILED, "You do not have member edit access");
             }
         }
         return null;
@@ -722,7 +856,7 @@ public final class NameLayerWriteCoordinator {
                     return NameLayerWriteResponse.failure(
                         request.requestId(),
                         NameLayerWriteFailureCode.AUTHORIZATION_FAILED,
-                        "Actor does not have permission edit access"
+                        "You do not have permission edit access"
                     );
                 }
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -760,6 +894,34 @@ public final class NameLayerWriteCoordinator {
         final boolean published = invalidationPublisher.publish(NameLayerInvalidationMessage.fullResync());
         if (!published) {
             logger.error("NameLayer write committed, but failed to publish full resync invalidation");
+        }
+    }
+
+    private NameLayerWriteResponse successFullResync(final NameLayerWriteRequest request, final Set<Integer> affectedGroupIds) {
+        return new NameLayerWriteResponse(
+            request.requestId(),
+            true,
+            null,
+            "",
+            affectedGroupIds,
+            true,
+            System.currentTimeMillis()
+        );
+    }
+
+    private boolean acquireLock(final Connection connection, final String lockName) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_PLAYER_LOCK)) {
+            statement.setString(1, lockName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() && resultSet.getInt(1) == 1;
+            }
+        }
+    }
+
+    private void releaseLock(final Connection connection, final String lockName) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(RELEASE_PLAYER_LOCK)) {
+            statement.setString(1, lockName);
+            statement.executeQuery();
         }
     }
 
@@ -1110,6 +1272,20 @@ public final class NameLayerWriteCoordinator {
                 : null;
             return new CreateGroupWrite(groupName, password, DefaultPermission.parse(arguments.getOrDefault("defaultPermissions", "")));
         }
+    }
+
+    private record NewfriendGroupWrite(String baseName, Set<DefaultPermission> defaultPermissions) {
+
+        private static NewfriendGroupWrite from(final Map<String, String> arguments) {
+            final String baseName = PermissionWrite.requireNonBlank(arguments, "baseName");
+            return new NewfriendGroupWrite(baseName, DefaultPermission.parse(arguments.getOrDefault("defaultPermissions", "")));
+        }
+    }
+
+    private record CreatedGroup(String groupName, int groupId) {
+    }
+
+    private record DefaultGroup(String groupName, int groupId) {
     }
 
     private record DefaultPermission(String role, String permissionName) {
