@@ -178,10 +178,11 @@ public final class NameLayerWriteCoordinator {
                     setDefaultGroup(connection, request.actorUuid(), createdGroup.groupName());
                     incrementCacheVersion(connection);
                     connection.commit();
-                    publishInvalidation(NameLayerInvalidationMessage.targeted(
+                    publishInvalidation(NameLayerInvalidationMessage.withAffected(
                         Set.of(createdGroup.groupId()),
-                        Set.of(request.actorUuid()),
-                        Set.of()
+                        java.util.Map.of(request.actorUuid(), createdGroup.groupName()),
+                        Set.of(),
+                        java.util.Map.of()
                     ));
                     return NameLayerWriteResponse.success(request.requestId(), Set.of(createdGroup.groupId()));
                 } catch (final SQLException exception) {
@@ -520,7 +521,7 @@ public final class NameLayerWriteCoordinator {
                 setDefaultGroup(connection, request.actorUuid(), groupName);
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(NameLayerInvalidationMessage.defaultGroups(Set.of(request.actorUuid())));
+                publishInvalidation(NameLayerInvalidationMessage.defaultGroupAssignment(request.actorUuid(), groupName));
                 return NameLayerWriteResponse.success(request.requestId(), Set.of());
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -550,7 +551,7 @@ public final class NameLayerWriteCoordinator {
                 statement.executeUpdate();
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(NameLayerInvalidationMessage.autoAccepts(Set.of(request.actorUuid())));
+                publishInvalidation(NameLayerInvalidationMessage.autoAccept(request.actorUuid(), autoAccept));
                 return NameLayerWriteResponse.success(request.requestId(), Set.of());
             } catch (final SQLException exception) {
                 connection.rollback();

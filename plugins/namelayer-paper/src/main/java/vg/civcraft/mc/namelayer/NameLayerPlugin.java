@@ -76,12 +76,24 @@ public class NameLayerPlugin extends ACivMod {
             PermissionType.initialize();
             blackList = new BlackList();
             groupCache = NameLayerGroupCache.loadAll(nameLayerReadDao, getLogger());
+            seedInvitationNotificationsFromCache();
             startInvalidationConsumer();
             if (config.getBoolean("groups.interact", true)) {
-                nameLayerReadDao.loadGroupsInvitations();
                 defaultGroupHandler = new DefaultGroupHandler();
                 autoAcceptHandler = new AutoAcceptHandler(nameLayerReadDao.loadAllAutoAccept());
                 handle = new CommandHandler(this);
+            }
+        }
+    }
+
+    private void seedInvitationNotificationsFromCache() {
+        final NameLayerGroupCache cache = groupCache;
+        if (cache == null) {
+            return;
+        }
+        for (final vg.civcraft.mc.namelayer.group.Group group : cache.snapshotGroups()) {
+            for (final java.util.UUID invited : group.getAllInvites()) {
+                PlayerListener.addNotification(invited, group);
             }
         }
     }

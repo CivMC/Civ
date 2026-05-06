@@ -55,7 +55,10 @@ public class AutoAcceptHandler {
         this.autoAccepts = autoAccepts;
     }
 
-    public void reload(final UUID player, final boolean accept) {
+    /**
+     * Applies an authoritative assignment received via RabbitMQ invalidation. Does not hit the database.
+     */
+    public void applyAssignment(final UUID player, final boolean accept) {
         cacheAutoAccept(player, accept);
     }
 

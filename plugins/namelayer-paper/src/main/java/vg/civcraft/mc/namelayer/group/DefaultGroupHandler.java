@@ -36,13 +36,24 @@ public class DefaultGroupHandler {
         defaultGroups = dao.getAllDefaultGroups();
     }
 
-    public void reload(final UUID uuid) {
-        final String groupName = dao.getDefaultGroup(uuid);
-        if (groupName == null) {
-            defaultGroups.remove(uuid);
+    /**
+     * Applies an authoritative assignment received via RabbitMQ invalidation. Does not hit the database.
+     */
+    public void applyAssignment(final UUID uuid, final String groupName) {
+        if (uuid == null || groupName == null) {
             return;
         }
         defaultGroups.put(uuid, groupName);
+    }
+
+    /**
+     * Applies an authoritative clear received via RabbitMQ invalidation. Does not hit the database.
+     */
+    public void applyClear(final UUID uuid) {
+        if (uuid == null) {
+            return;
+        }
+        defaultGroups.remove(uuid);
     }
 
     public void cacheDefaultGroup(UUID uuid, Group g) {

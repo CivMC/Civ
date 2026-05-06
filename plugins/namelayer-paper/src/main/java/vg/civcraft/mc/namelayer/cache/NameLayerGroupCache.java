@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.cache;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +120,10 @@ public final class NameLayerGroupCache {
 
     public synchronized int countGroups() {
         return this.groupsById.size();
+    }
+
+    public synchronized Collection<Group> snapshotGroups() {
+        return new ArrayList<>(this.groupsByName.values());
     }
 
     public synchronized int countGroups(final UUID ownerUuid) {

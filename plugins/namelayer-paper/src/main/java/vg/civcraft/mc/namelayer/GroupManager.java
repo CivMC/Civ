@@ -351,13 +351,11 @@ public class GroupManager {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getAllGroupNames failed, caller passed in null", new Exception());
             return new ArrayList<>();
         }
-        if (getCache() != null) {
-            List<String> groups = getCache().getGroupNames(uuid);
-            if (!groups.isEmpty()) {
-                return groups;
-            }
+        final NameLayerGroupCache cache = getCache();
+        if (cache == null) {
+            return new ArrayList<>();
         }
-        return nameLayerReadDao.getGroupNames(uuid);
+        return cache.getGroupNames(uuid);
     }
 
     public String getDefaultGroup(UUID uuid) {

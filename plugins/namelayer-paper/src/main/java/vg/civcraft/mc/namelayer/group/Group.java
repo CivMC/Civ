@@ -3,6 +3,7 @@ package vg.civcraft.mc.namelayer.group;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public final class Group {
@@ -35,19 +37,21 @@ public final class Group {
     private final Map<UUID, PlayerType> players;
     private final Map<UUID, PlayerType> invites;
     private final Set<UUID> blacklist;
+    private final Map<PlayerType, List<PermissionType>> permissions;
     private final long activityTimestamp;
     private final TextColor groupColor;
 
     public Group(final String name, final UUID owner, final boolean disciplined, final String password, final int id,
                  final long activityTimestamp, final String groupColor) {
         this(name, owner, disciplined, password, id, activityTimestamp, groupColor, List.of(id), Map.of(), Set.of(),
-            Map.of());
+            Map.of(), Map.of());
     }
 
     public Group(final String name, final UUID owner, final boolean disciplined, final String password, final int id,
                  final long activityTimestamp, final String groupColor, final List<Integer> groupIds,
                  final Map<UUID, PlayerType> members, final Set<UUID> blacklist,
-                 final Map<UUID, PlayerType> invites) {
+                 final Map<UUID, PlayerType> invites,
+                 final Map<PlayerType, List<PermissionType>> permissions) {
         this.name = name;
         this.password = password;
         this.owner = owner;
@@ -60,7 +64,43 @@ public final class Group {
         this.players = Map.copyOf(members);
         this.invites = Map.copyOf(invites);
         this.blacklist = Set.copyOf(blacklist);
+        this.permissions = copyPermissions(permissions);
         this.groupColor = parseGroupColor(groupColor);
+    }
+
+    private static Map<PlayerType, List<PermissionType>> copyPermissions(
+        final Map<PlayerType, List<PermissionType>> permissions
+    ) {
+        if (permissions == null || permissions.isEmpty()) {
+            return Map.of();
+        }
+        final Map<PlayerType, List<PermissionType>> copy = new EnumMap<>(PlayerType.class);
+        for (final Map.Entry<PlayerType, List<PermissionType>> entry : permissions.entrySet()) {
+            if (entry.getKey() == null || entry.getValue() == null) {
+                continue;
+            }
+            copy.put(entry.getKey(), List.copyOf(entry.getValue()));
+        }
+        return Collections.unmodifiableMap(copy);
+    }
+
+    public Map<PlayerType, List<PermissionType>> getPermissions() {
+        return permissions;
+    }
+
+    public List<PermissionType> getPermissions(final PlayerType type) {
+        if (type == null) {
+            return List.of();
+        }
+        return permissions.getOrDefault(type, List.of());
+    }
+
+    public boolean hasPermission(final PlayerType type, final PermissionType permission) {
+        if (type == null || permission == null) {
+            return false;
+        }
+        final List<PermissionType> rolePermissions = permissions.get(type);
+        return rolePermissions != null && rolePermissions.contains(permission);
     }
 
     private TextColor parseGroupColor(final String groupColor) {
@@ -118,6 +158,13 @@ public final class Group {
      */
     public List<UUID> getAllInvites() {
         return new ArrayList<>(invites.keySet());
+    }
+
+    /**
+     * Returns the cached map of invitees to their pending player type.
+     */
+    public Map<UUID, PlayerType> getInvitesByUuid() {
+        return invites;
     }
 
     /**

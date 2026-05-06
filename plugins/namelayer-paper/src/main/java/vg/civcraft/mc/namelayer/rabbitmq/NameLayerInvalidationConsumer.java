@@ -11,6 +11,7 @@ import com.rabbitmq.client.DeliverCallback;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -92,7 +93,8 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
         }
         reconnectScheduled = true;
         NameLayerPlugin.recordRabbitMqReconnect();
-        logger.log(Level.WARNING, "NameLayer RabbitMQ invalidation connection closed; reconnecting after full resync");
+        logger.log(Level.WARNING,
+            "NameLayer RabbitMQ invalidation connection closed; reconnecting after full resync");
         plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             if (closing || !plugin.isEnabled()) {
                 reconnectScheduled = false;
@@ -135,25 +137,26 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
         }
         logger.log(Level.INFO, "Applying NameLayer targeted invalidation for "
             + invalidation.affectedGroupIds().size() + " groups, "
-            + invalidation.affectedDefaultGroupPlayers().size() + " default groups, "
-            + invalidation.affectedAutoAcceptPlayers().size() + " auto-accept entries");
+            + (invalidation.defaultGroupAssignments().size() + invalidation.defaultGroupClears().size())
+            + " default groups, "
+            + invalidation.autoAcceptAssignments().size() + " auto-accept entries");
         if (!invalidation.affectedGroupIds().isEmpty()
             && !GroupManager.reloadGroupsById(new ArrayList<>(invalidation.affectedGroupIds()))) {
             return false;
         }
         final DefaultGroupHandler defaultGroupHandler = NameLayerPlugin.getDefaultGroupHandler();
         if (defaultGroupHandler != null) {
-            for (final UUID playerUuid : invalidation.affectedDefaultGroupPlayers()) {
-                defaultGroupHandler.reload(playerUuid);
+            for (final Map.Entry<UUID, String> entry : invalidation.defaultGroupAssignments().entrySet()) {
+                defaultGroupHandler.applyAssignment(entry.getKey(), entry.getValue());
+            }
+            for (final UUID playerUuid : invalidation.defaultGroupClears()) {
+                defaultGroupHandler.applyClear(playerUuid);
             }
         }
         final AutoAcceptHandler autoAcceptHandler = NameLayerPlugin.getAutoAcceptHandler();
         if (autoAcceptHandler != null) {
-            for (final UUID playerUuid : invalidation.affectedAutoAcceptPlayers()) {
-                autoAcceptHandler.reload(
-                    playerUuid,
-                    NameLayerPlugin.getNameLayerReadDao().isAutoAcceptEnabled(playerUuid)
-                );
+            for (final Map.Entry<UUID, Boolean> entry : invalidation.autoAcceptAssignments().entrySet()) {
+                autoAcceptHandler.applyAssignment(entry.getKey(), entry.getValue());
             }
         }
         return true;

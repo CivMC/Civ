@@ -19,33 +19,14 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public final class NameLayerReadDao {
 
-    private static final String GET_GROUP = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp, f.group_color "
-        + "from faction f "
-        + "inner join faction_id fi on fi.group_name = f.group_name "
-        + "where f.group_name = ?";
-    private static final String GET_ALL_GROUP_NAMES = "select f.group_name from faction_id f "
-        + "inner join faction_member fm on f.group_id = fm.group_id "
-        + "where fm.member_name = ?";
-    private static final String GET_MEMBERS = "select fm.member_name from faction_member fm "
-        + "inner join faction_id id on id.group_name = ? "
-        + "where fm.group_id = id.group_id and fm.role = ?";
     private static final String LOAD_ALL_AUTO_ACCEPT = "select uuid from toggleAutoAccept";
-    private static final String GET_AUTO_ACCEPT = "select uuid from toggleAutoAccept where uuid = ?";
-    private static final String GET_DEFAULT_GROUP = "select defaultgroup from default_group where uuid = ?";
     private static final String GET_ALL_DEFAULT_GROUPS = "select uuid,defaultgroup from default_group";
-    private static final String LOAD_GROUPS_INVITATIONS = "select uuid, groupName, role from group_invitation";
-    private static final String LOAD_GROUP_INVITATIONS_FOR_GROUP = "select uuid,role from group_invitation where groupName=?";
-    private static final String GET_PLAYER_TYPE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
-    private static final String GET_PERMISSION = "select pg.role,pg.permission_name from permission_by_group_name pg inner join faction_id fi on fi.group_name=? "
-        + "where pg.group_id = fi.group_id";
     private static final String LOAD_ALL_GROUP_IDS = "SELECT f.group_name, f.group_id, count(DISTINCT fm.member_name) AS sz "
         + "FROM faction_id f LEFT JOIN faction_member fm ON f.group_id = fm.group_id "
         + "GROUP BY f.group_name, f.group_id ORDER BY f.group_name, sz DESC";
@@ -73,6 +54,10 @@ public final class NameLayerReadDao {
         + "from faction_id requested inner join group_invitation gi on gi.groupName = requested.group_name "
         + "where requested.group_id in (";
     private static final String LOAD_INVITATIONS_BY_REQUESTED_IDS_SUFFIX = ")";
+    private static final String LOAD_PERMISSIONS_BY_REQUESTED_IDS_PREFIX = "select requested.group_id, p.role, p.permission_name "
+        + "from faction_id requested inner join faction_id all_ids on all_ids.group_name = requested.group_name "
+        + "inner join permission_by_group_name p on p.group_id = all_ids.group_id where requested.group_id in (";
+    private static final String LOAD_PERMISSIONS_BY_REQUESTED_IDS_SUFFIX = ")";
     private static final String LOAD_CACHE_VERSION = "select cache_version from namelayer_cache_version where id = 1";
 
     private final Logger logger;
@@ -90,37 +75,14 @@ public final class NameLayerReadDao {
     private record GroupSnapshotData(Map<Integer, GroupHeader> headers, Map<Integer, List<Integer>> groupIds,
                                       Map<Integer, Map<UUID, PlayerType>> members,
                                       Map<Integer, Set<UUID>> blacklists,
-                                      Map<Integer, Map<UUID, PlayerType>> invites) {
+                                      Map<Integer, Map<UUID, PlayerType>> invites,
+                                      Map<Integer, Map<PlayerType, List<PermissionType>>> permissions) {
     }
 
     public record GroupLoadSnapshot(List<Group> groups, long cacheVersion) {
     }
 
     public record GroupReloadSnapshot(Map<Integer, Group> groups, long cacheVersion) {
-    }
-
-    public Group getGroup(final String groupName) {
-        try (Connection connection = db.getConnection();
-              PreparedStatement getGroup = connection.prepareStatement(GET_GROUP)) {
-            getGroup.setString(1, groupName);
-            try (ResultSet set = getGroup.executeQuery()) {
-                if (!set.next()) {
-                    return null;
-                }
-                return getGroup(set.getInt(5));
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting group " + groupName, exception);
-            return null;
-        }
-    }
-
-    public Group getGroup(final int groupId) {
-        final GroupReloadSnapshot snapshot = loadGroupsByIdsSnapshot(Set.of(groupId));
-        if (snapshot == null) {
-            return null;
-        }
-        return snapshot.groups().get(groupId);
     }
 
     public GroupReloadSnapshot loadGroupsByIdsSnapshot(final Set<Integer> requestedGroupIds) {
@@ -173,7 +135,7 @@ public final class NameLayerReadDao {
 
     private GroupSnapshotData newSnapshotData() {
         return new GroupSnapshotData(new LinkedHashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(),
-            new HashMap<>());
+            new HashMap<>(), new HashMap<>());
     }
 
     private String placeholders(final int count) {
@@ -213,6 +175,7 @@ public final class NameLayerReadDao {
         loadMembersByRequestedIds(connection, data.members(), requestedGroupIds);
         loadBlacklistsByRequestedIds(connection, data.blacklists(), requestedGroupIds);
         loadInvitationsByRequestedIds(connection, data.invites(), requestedGroupIds);
+        loadPermissionsByRequestedIds(connection, data.permissions(), requestedGroupIds);
     }
 
     private void loadGroupHeadersByIds(final Connection connection, final Map<Integer, GroupHeader> headers,
@@ -351,6 +314,41 @@ public final class NameLayerReadDao {
         }
     }
 
+    private void loadPermissionsByRequestedIds(final Connection connection,
+                                               final Map<Integer, Map<PlayerType, List<PermissionType>>> permissions,
+                                               final Set<Integer> requestedGroupIds) throws SQLException {
+        final String sql = LOAD_PERMISSIONS_BY_REQUESTED_IDS_PREFIX + placeholders(requestedGroupIds.size())
+            + LOAD_PERMISSIONS_BY_REQUESTED_IDS_SUFFIX;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            bindInts(statement, requestedGroupIds);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                loadPermissionsById(permissions, resultSet);
+            }
+        }
+    }
+
+    private void loadPermissionsById(final Map<Integer, Map<PlayerType, List<PermissionType>>> permissions,
+                                     final ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            final int groupId = resultSet.getInt(1);
+            final PlayerType type = PlayerType.getPlayerType(resultSet.getString(2));
+            final String permissionName = resultSet.getString(3);
+            if (type == null || permissionName == null) {
+                continue;
+            }
+            final PermissionType permission = PermissionType.getPermission(permissionName);
+            if (permission == null) {
+                continue;
+            }
+            final List<PermissionType> rolePermissions = permissions
+                .computeIfAbsent(groupId, key -> new HashMap<>())
+                .computeIfAbsent(type, key -> new ArrayList<>());
+            if (!rolePermissions.contains(permission)) {
+                rolePermissions.add(permission);
+            }
+        }
+    }
+
     private void bindInts(final PreparedStatement statement, final Set<Integer> values) throws SQLException {
         int parameterIndex = 1;
         for (final int value : values) {
@@ -372,81 +370,8 @@ public final class NameLayerReadDao {
             ids == null ? List.of() : ids,
             data.members().getOrDefault(groupId, Map.of()),
             data.blacklists().getOrDefault(groupId, Set.of()),
-            data.invites().getOrDefault(groupId, Map.of()));
-    }
-
-    public List<String> getGroupNames(final UUID uuid) {
-        final List<String> groups = new ArrayList<>();
-        try (Connection connection = db.getConnection();
-             PreparedStatement getAllGroupsNames = connection.prepareStatement(GET_ALL_GROUP_NAMES)) {
-            getAllGroupsNames.setString(1, uuid.toString());
-            try (ResultSet set = getAllGroupsNames.executeQuery()) {
-                while (set.next()) {
-                    groups.add(set.getString(1));
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting player's groups " + uuid, exception);
-        }
-        return groups;
-    }
-
-    public PlayerType getPlayerType(final int groupId, final UUID uuid) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement getPlayerType = connection.prepareStatement(GET_PLAYER_TYPE)) {
-            getPlayerType.setInt(1, groupId);
-            getPlayerType.setString(2, uuid.toString());
-            try (ResultSet set = getPlayerType.executeQuery()) {
-                return set.next() ? PlayerType.getPlayerType(set.getString(1)) : null;
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting player " + uuid + " type within group " + groupId, exception);
-        }
-        return null;
-    }
-
-    public List<UUID> getAllMembers(final String groupName, final PlayerType role) {
-        final List<UUID> members = new ArrayList<>();
-        try (Connection connection = db.getConnection();
-             PreparedStatement getMembers = connection.prepareStatement(GET_MEMBERS)) {
-            getMembers.setString(1, groupName);
-            getMembers.setString(2, role.name());
-            try (ResultSet set = getMembers.executeQuery()) {
-                while (set.next()) {
-                    final String uuid = set.getString(1);
-                    if (uuid != null) {
-                        members.add(UUID.fromString(uuid));
-                    }
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting all " + role + " for group " + groupName, exception);
-        }
-        return members;
-    }
-
-    public Map<PlayerType, List<PermissionType>> getPermissions(final String group) {
-        final Map<PlayerType, List<PermissionType>> perms = new HashMap<>();
-        try (Connection connection = db.getConnection();
-             PreparedStatement getPermission = connection.prepareStatement(GET_PERMISSION)) {
-            getPermission.setString(1, group);
-            try (ResultSet set = getPermission.executeQuery()) {
-                while (set.next()) {
-                    final PlayerType type = PlayerType.getPlayerType(set.getString(1));
-                    final String name = set.getString(2);
-                    final PermissionType perm = PermissionType.getPermission(name);
-                    if (type != null && perm != null) {
-                        final List<PermissionType> listPerm = perms.computeIfAbsent(type, key -> new ArrayList<>());
-                        if (!listPerm.contains(perm)) {
-                            listPerm.add(perm);
-                        }
-                    }
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting permissions for group " + group, exception);
-        }
-        return perms;
+            data.invites().getOrDefault(groupId, Map.of()),
+            data.permissions().getOrDefault(groupId, Map.of()));
     }
 
     public Set<UUID> loadAllAutoAccept() {
@@ -463,32 +388,6 @@ public final class NameLayerReadDao {
         return accepts;
     }
 
-    public boolean isAutoAcceptEnabled(final UUID uuid) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement statement = connection.prepareStatement(GET_AUTO_ACCEPT)) {
-            statement.setString(1, uuid.toString());
-            try (ResultSet set = statement.executeQuery()) {
-                return set.next();
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting autoaccept for " + uuid, exception);
-        }
-        return false;
-    }
-
-    public String getDefaultGroup(final UUID uuid) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement getDefaultGroup = connection.prepareStatement(GET_DEFAULT_GROUP)) {
-            getDefaultGroup.setString(1, uuid.toString());
-            try (ResultSet set = getDefaultGroup.executeQuery()) {
-                return set.next() ? set.getString(1) : null;
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting default group for " + uuid, exception);
-            return null;
-        }
-    }
-
     public Map<UUID, String> getAllDefaultGroups() {
         final Map<UUID, String> groups = new TreeMap<>();
         try (Connection connection = db.getConnection();
@@ -501,48 +400,6 @@ public final class NameLayerReadDao {
             logger.log(Level.WARNING, "Problem getting all default groups", exception);
         }
         return groups;
-    }
-
-    public Map<UUID, PlayerType> getInvitesForGroup(final String groupName) {
-        final Map<UUID, PlayerType> invitations = new TreeMap<>();
-        if (groupName == null) {
-            return invitations;
-        }
-        try (Connection connection = db.getConnection();
-             PreparedStatement loadGroupInvitationsForGroup = connection.prepareStatement(LOAD_GROUP_INVITATIONS_FOR_GROUP)) {
-            loadGroupInvitationsForGroup.setString(1, groupName);
-            try (ResultSet set = loadGroupInvitationsForGroup.executeQuery()) {
-                while (set.next()) {
-                    final String uuid = set.getString(1);
-                    final String role = set.getString(2);
-                    final PlayerType type = role == null ? null : PlayerType.getPlayerType(role);
-                    if (uuid != null && type != null) {
-                        invitations.put(UUID.fromString(uuid), type);
-                    }
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem loading group invitations for group " + groupName, exception);
-        }
-        return invitations;
-    }
-
-    public void loadGroupsInvitations() {
-        try (Connection connection = db.getConnection();
-             PreparedStatement loadGroupsInvitations = connection.prepareStatement(LOAD_GROUPS_INVITATIONS);
-             ResultSet set = loadGroupsInvitations.executeQuery()) {
-            while (set.next()) {
-                final String uuid = set.getString("uuid");
-                final String group = set.getString("groupName");
-                final Group cachedGroup = group == null ? null : GroupManager.getGroup(group);
-                if (uuid != null && cachedGroup != null) {
-                    final UUID playerUUID = UUID.fromString(uuid);
-                    PlayerListener.addNotification(playerUUID, cachedGroup);
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem loading all group invitations", exception);
-        }
     }
 
     public GroupLoadSnapshot loadAllGroupsSnapshot() {
