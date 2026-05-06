@@ -208,9 +208,11 @@ The most simple form of brews, made with either base and/or custom ingredients.
 |         Eggnog          |         8         |       6        |   300110   |
 |        Advocaat         |         5         |       6        |   300111   |
 |       Love Potion       |         3         |       6        |   300112   |
+|       Cigarette         |         4         |       8        |   300113   |
+|       Four Loko         |         5         |       6        |   300114   |
 |       Dirty Soda        |         5         |       6        |   300115   |
 |        Tea Wine         |         2         |       6        |   300116   |
-|       Cigarette         |         4         |       8        |   700172   |
+
 ### Food Brews
 Brews that restore saturation
 
@@ -248,6 +250,12 @@ Brews that restore saturation
 | Abnormal Rabbit Feed |         6         |       7        |     400030 |
 |     Cheeseburger     |         7         |       4        |     400031 |       
 |       Solyanka       |         8         |       5        |     400032 |
+|       Burrito        |         8         |       6        |     400033 |
+|       Pizza          |         6         |       6        |     400034 |
+|      Spaghetti       |         9         |       6        |     400035 |
+|     Fried Chicken    |         7         |       6        |     400036 |
+|     Banana Split     |         7         |       6        |     400037 |
+|      Miso Soup       |         8         |       6        |     400020 |
   
 ### Cocktail Brews
 Brews made from other brews, sometimes with extra ingredients
@@ -298,6 +306,9 @@ Brews that provide unique/useful effects
 |    Ritalin     |         5         |       8        |   600021   |
 | Battery Acid   |         4         |       8        |   600022   |
 | Nitrocellulose |         5         |       9        |   600023   |
+|GLP-1 Antagonist|         5         |       8        |   600024   |
+|      RSO       |         1         |       8        |   600025   |
+|      PCP       |         6         |       8        |   600026   |
 
 ### Nation Brews
 Brews that are part of a nation or group's PR/culture and were submitted by them.
@@ -481,7 +492,7 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |                     |       Polychromatic Love      |         9         |       7        |   700176   |
 |                     |       Hyperborean Palmer      |         4         |       7        |   700177   |
 |      SpleefCorp     |      SpleefCorp Nutcracker    |         4         |       7        |   700178   |
-|                     |          Brickstoners         |         3         |       6        |   700180   |
+|     Brickstone      |          Brickstoners         |         3         |       6        |   700180   |
 |       TuffCO        |        Strawberry Matcha      |         4         |       7        |   700181   |
 |       Melvera       |          Nectar Tide          |         6         |       7        |   700182   |
 |         IF          |     Secessionist Schnapps     |         4         |       7        |   700183   |
@@ -491,12 +502,12 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |   Pink Lotus Co.    |     Pink Lotus Pina Colada    |         7         |       7        |   700187   |
 |   Pink Lotus Co.    |     Pink Lotus Painkiller     |         4         |       8        |   700188   |
 |   Setra Marinese    |    Setra Marinese Root-Beer   |         3         |       7        |   700189   |
-|                     |     Spirit of the Mercutie    |         5         |       7        |   700190   |
+|     Mercutio        |     Spirit of the Mercutie    |         5         |       7        |   700190   |
 |                     |     Thinkertonistic Tequila   |         3         |       7        |   700191   |
 |    Bargain Bin      |         Bargain Bin           |         2         |       5        |   700192   |
 |                     |       Miner’s Margarita       |         4         |       7        |   700193   |
-|                     |     Belgian Trappist Beer     |         4         |       7        |   700194   |
-|                     |      Selene’s Starlight       |         4         |       7        |   700195   |
+|      Belgium        |     Belgian Trappist Beer     |         4         |       7        |   700194   |
+|       Selene        |      Selene’s Starlight       |         4         |       7        |   700195   |
 |      Valtoria       |       Valtorian Dunkel        |         4         |       7        |   700196   |
 |      Valtoria       |           Edler Met           |         4         |       7        |   700197   |
 |      Valtoria       |          Kriegergeist         |         2         |       7        |   700198   |
@@ -504,6 +515,35 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |      Anisso         |        Anisso Amaretto        |         4         |       7        |   700200   |
 |     Kaltsburg       |         Kalts Burger          |         6         |       6        |   700201   |
 |     Ambrosia        |       Ambrose Ambrosia        |         4         |       7        |   700202   |
+|     Mercutio        |         Tomo Tequila          |         4         |       6        |   700203   |
+|     Cascadia        |    Cascadian Mountain Ichor   |         4         |       6        |   700204   |
+|     Potato Bay      |     Potato Bay Potato Brew    |         2         |       6        |   700205   |
+|     Carnage         |          Carni-Cola           |         7         |       6        |   700206   |
+|      Silqui         |       Silqui Pale Tea         |         5         |       6        |   700207   |
+|     Ila'Kyavul      |        Gronrul's Gin          |         4         |       6        |   700208   |
+|      Zirakdum       |     Zirakdum Mythril Mead     |         4         |       6        |   700209   |
+|      Zirakdum       |     Zirakdum Deeprock Grog    |         4         |       6        |   700210   |  
+|                     |  Thieves’ Haven Pirate Grog   |         8         |       6        |   700211   |
+|                     |       Cobblestone Soup        |         4         |       6        |   700212   |
+|                     |     King Barry's Blessing     |         4         |       6        |   700213   |
+|                     |       Stone Confetti          |         5         |       6        |   700214   |
+|                     |      Oriental Naswar Pack     |         4         |       6        |   700215   |
+|      Pavia          |           BOSH.               |         5         |       6        |   700216   |
+|     Toontown        |    Toontown Toon-Up Tonic     |         6         |       6        |   700217`  |
+|     Skandic         |   Skandic Raw n' Cold Beer    |         5         |       6        |   700218   |
+|                     |         Fiji Water            |         2         |       6        |   700219   |
+|     TuffCO          |  TuffCOLand’s Nyquil Chicken  |         3         |       6        |   700220   |
+|                     |         Coca-Tshola           |         5         |       6        |   700221   |
+|    Commonwealth     |    Commonwealth Cool-Aid      |         4         |       6        |   700222   |
+|                     |          Ignatia              |         4         |       6        |   700223   |
+|      SnomCO         |         Snomelonade           |         4         |       6        |   700224   |
+|        ALX          |        ALX Firewater          |         2         |       6        |   700225   |
+|      Volterra       |     Shockton Sweet Pinot      |         4         |       6        |   700226   |
+|      Volterra       |   Lake Mickale Rapid Beaver   |         8         |       6        |   700227   |
+|     Cane Corp       |       Cane Corp Cachaça       |         2         |       6        |   700228   |
+|                     |        Maletian Vodka         |         4         |       6        |   700229   |
+|                     |        Potato Bay Soup        |         5         |       6        |   700230   |
+
 
 ### Player Brews
 Brews specific to individuals either for their contribution to the genre/server
@@ -627,7 +667,10 @@ or by way of donating a high amount to the server via patreon.
 | 70  |       Dough        |        200008        |
 | 71  |       Butter       |        200009        |
 | 72  |       Pomace       |        200010        |
-| 73  |       Pasta        |        100066        |
+| 73  |       Pasta        |        200011        |
+| 74  |      Soybeans      |        200012        |
+| 75  |      Tortilla      |        200013        |
+| 76  |      Strontium     |        200014        |
     
 ## List of Vanilla Ingredients.
 
@@ -799,3 +842,14 @@ or by way of donating a high amount to the server via patreon.
 | 164 |             Powered Rail              |
 | 165 |             Campfire                  |
 | 166 |             Lectern                   |
+| 167 |             Calcite                   |
+| 168 |             Sandstone                 |
+| 169 |             Cake                      |
+| 170 |             Oak Trapdoor              |
+| 171 |             Ladder                    |
+| 172 |             Granite                   |
+| 173 |             Diorite                   |
+| 174 |             Cobblestone               |
+| 175 |             Bush                      |
+| 176 |             Chicken                   |
+| 177 |             Glow Ink Sac              |
