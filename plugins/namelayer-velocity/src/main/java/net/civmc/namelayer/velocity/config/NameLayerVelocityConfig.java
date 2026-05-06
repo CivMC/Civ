@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-public record NameLayerVelocityConfig(DatabaseConfig database, RabbitMqConfig rabbitMq) {
+public record NameLayerVelocityConfig(DatabaseConfig database, RabbitMqConfig rabbitMq, Map<String, String> serverDatabases) {
 
     public static @Nullable NameLayerVelocityConfig load(
         final Path dataDirectory,
@@ -27,7 +30,6 @@ public record NameLayerVelocityConfig(DatabaseConfig database, RabbitMqConfig ra
                 database.node("driver").getString("mariadb"),
                 database.node("host").getString("localhost"),
                 database.node("port").getInt(3306),
-                database.node("database").getString("namelayer"),
                 database.node("user").getString("root"),
                 database.node("password").getString(""),
                 database.node("poolsize").getInt(10),
@@ -40,7 +42,11 @@ public record NameLayerVelocityConfig(DatabaseConfig database, RabbitMqConfig ra
                 rabbitMq.node("password").getString("guest"),
                 rabbitMq.node("host").getString("localhost"),
                 rabbitMq.node("port").getInt(5672)
-            )
+            ),
+            root.node("server_databases").childrenMap()
+                .entrySet().stream()
+                .map(v -> new AbstractMap.SimpleEntry<>(v.getKey(), v.getValue().getString()))
+                .collect(Collectors.toMap(v -> v.getKey().toString(), AbstractMap.SimpleEntry::getValue))
         );
     }
 

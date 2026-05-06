@@ -8,7 +8,6 @@ public record DatabaseConfig(
     String driver,
     String host,
     int port,
-    String database,
     String user,
     String password,
     int poolSize,
@@ -20,7 +19,6 @@ public record DatabaseConfig(
     public DatabaseConfig {
         driver = requireNonBlank(driver, "driver");
         host = requireNonBlank(host, "host");
-        database = requireNonBlank(database, "database");
         user = requireNonBlank(user, "user");
         password = password == null ? "" : password;
         if (port <= 0) {
@@ -33,7 +31,7 @@ public record DatabaseConfig(
 
     public HikariDataSource createDataSource() {
         final HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:" + driver + "://" + host + ":" + port + "/" + database);
+        config.setJdbcUrl("jdbc:" + driver + "://" + host + ":" + port);
         config.setConnectionTimeout(connectionTimeout);
         config.setIdleTimeout(idleTimeout);
         config.setMaxLifetime(maxLifetime);

@@ -8,6 +8,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.zaxxer.hikari.HikariDataSource;
 import java.nio.file.Path;
+import java.util.HashSet;
 import net.civmc.namelayer.velocity.config.NameLayerVelocityConfig;
 import net.civmc.namelayer.velocity.rabbitmq.NameLayerInvalidationPublisher;
 import net.civmc.namelayer.velocity.rabbitmq.NameLayerWriteRequestConsumer;
@@ -49,7 +50,7 @@ public final class NameLayerVelocityPlugin {
             throw new RuntimeException(e);
         }
         dataSource = config.database().createDataSource();
-        if (!NameLayerDatabaseMigrator.migrate(dataSource, logger)) {
+        if (!NameLayerDatabaseMigrator.migrate(dataSource, logger, new HashSet<>(config.serverDatabases().values()))) {
             return;
         }
         invalidationPublisher = new NameLayerInvalidationPublisher(config.rabbitMq().connectionFactory(), logger);
@@ -57,7 +58,7 @@ public final class NameLayerVelocityPlugin {
             logger.error("NameLayer Velocity failed to start RabbitMQ invalidation publisher");
             return;
         }
-        final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(dataSource, invalidationPublisher, logger);
+        final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(dataSource, invalidationPublisher, logger, config.serverDatabases());
         writeRequestConsumer = new NameLayerWriteRequestConsumer(config.rabbitMq().connectionFactory(), coordinator, logger);
         if (!writeRequestConsumer.start()) {
             logger.error("NameLayer Velocity failed to start RabbitMQ write request consumer");

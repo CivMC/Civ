@@ -2,6 +2,7 @@ package net.civmc.namelayer.velocity.write;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Set;
 import javax.sql.DataSource;
 import net.civmc.nameapi.Migrator;
 import org.slf4j.Logger;
@@ -11,7 +12,7 @@ public final class NameLayerDatabaseMigrator {
     private NameLayerDatabaseMigrator() {
     }
 
-    public static boolean migrate(final DataSource dataSource, final Logger logger) {
+    public static boolean migrate(final DataSource dataSource, final Logger logger, Set<String> databases) {
         final Migrator migrator = new Migrator();
         migrator.registerMigration("namelayer", 0,
             "create table if not exists faction_id("
@@ -114,13 +115,16 @@ public final class NameLayerDatabaseMigrator {
                 + "update faction_id set group_name = specialAdminGroup where group_name = targetGroupName;"
                 + "delete from faction where group_name = targetGroupName;"
                 + "end");
-        try (Connection connection = dataSource.getConnection()) {
-            migrator.migrate(connection);
-            logger.info("NameLayer Velocity database migration completed");
-            return true;
-        } catch (final SQLException exception) {
-            logger.error("NameLayer Velocity database migration failed", exception);
-            return false;
+        for (String database : databases) {
+            try (Connection connection = dataSource.getConnection()) {
+                connection.createStatement().execute("USE " + database);
+                migrator.migrate(connection);
+                logger.info("NameLayer Velocity database migration completed for " + database);
+            } catch (final SQLException exception) {
+                logger.error("NameLayer Velocity database migration failed", exception);
+                return false;
+            }
         }
+        return true;
     }
 }

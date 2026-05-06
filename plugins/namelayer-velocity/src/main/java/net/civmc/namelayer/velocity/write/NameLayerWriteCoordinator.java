@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -58,15 +59,17 @@ public final class NameLayerWriteCoordinator {
     private final DataSource dataSource;
     private final NameLayerInvalidationPublisher invalidationPublisher;
     private final Logger logger;
+    private final Map<String, String> serverDatabases;
 
     public NameLayerWriteCoordinator(
         final DataSource dataSource,
         final NameLayerInvalidationPublisher invalidationPublisher,
-        final Logger logger
-    ) {
+        final Logger logger,
+        Map<String, String> serverDatabases) {
         this.dataSource = dataSource;
         this.invalidationPublisher = invalidationPublisher;
         this.logger = logger;
+        this.serverDatabases = serverDatabases;
     }
 
     public NameLayerWriteResponse handle(final NameLayerWriteRequest request) {
@@ -99,6 +102,14 @@ public final class NameLayerWriteCoordinator {
         };
     }
 
+    private Connection getConnection(NameLayerWriteRequest request) throws SQLException {
+        Connection connection = dataSource.getConnection();
+        String database = serverDatabases.get(request.originServerId());
+        Objects.requireNonNull(database, "database required for server " + request.originServerId());
+        connection.createStatement().execute("USE " + database);
+        return connection;
+    }
+
     private NameLayerWriteResponse handleCreateGroup(final NameLayerWriteRequest request) {
         final CreateGroupWrite createWrite;
         try {
@@ -106,7 +117,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!createWrite.adminOverride() && createWrite.maxGroups() > 0) {
@@ -157,7 +168,7 @@ public final class NameLayerWriteCoordinator {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
         final String lockName = "namelayer:newfriend:" + request.actorUuid();
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             if (!acquireLock(connection, lockName)) {
                 return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.DATABASE_UNAVAILABLE, "Timed out waiting for player group lock");
             }
@@ -205,7 +216,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, deleteWrite.groupId())) {
@@ -251,7 +262,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, blacklistWrite.groupId())) {
@@ -292,7 +303,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, joinWrite.groupId())) {
@@ -338,7 +349,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, memberWrite.groupId())) {
@@ -371,7 +382,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 final NameLayerWriteResponse validationFailure = validateInvitationAccess(connection, request, invitationWrite, invitationWrite.role());
@@ -419,7 +430,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, invitationWrite.groupId())) {
@@ -462,7 +473,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, groupWrite.groupId())) {
@@ -502,7 +513,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, groupWrite.groupId())) {
@@ -544,7 +555,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(autoAccept ? ADD_AUTO_ACCEPT : REMOVE_AUTO_ACCEPT)) {
                 statement.setString(1, request.actorUuid().toString());
@@ -673,7 +684,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, metadataWrite.groupId())) {
@@ -714,7 +725,7 @@ public final class NameLayerWriteCoordinator {
         } catch (final IllegalArgumentException exception) {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, ownerWrite.groupId())) {
@@ -761,7 +772,7 @@ public final class NameLayerWriteCoordinator {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
 
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 final String currentRole = getMemberRole(connection, memberWrite.groupId(), memberWrite.memberUuid());
@@ -805,7 +816,7 @@ public final class NameLayerWriteCoordinator {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
 
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 final String memberRole = getMemberRole(connection, memberWrite.groupId(), memberWrite.memberUuid());
@@ -869,7 +880,7 @@ public final class NameLayerWriteCoordinator {
             return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.INVALID_REQUEST, exception.getMessage());
         }
 
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection(request)) {
             connection.setAutoCommit(false);
             try {
                 if (!lockGroup(connection, permissionWrite.groupId())) {
