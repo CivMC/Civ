@@ -15,7 +15,7 @@ import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public class DefaultGroupHandler {
 
-    private NameLayerReadDao dao;
+    private final NameLayerReadDao dao;
 
     private Map<UUID, String> defaultGroups;
 
@@ -34,6 +34,15 @@ public class DefaultGroupHandler {
 
     public void reloadAll() {
         defaultGroups = dao.getAllDefaultGroups();
+    }
+
+    public void reload(final UUID uuid) {
+        final String groupName = dao.getDefaultGroup(uuid);
+        if (groupName == null) {
+            defaultGroups.remove(uuid);
+            return;
+        }
+        defaultGroups.put(uuid, groupName);
     }
 
     public void cacheDefaultGroup(UUID uuid, Group g) {
@@ -101,9 +110,4 @@ public class DefaultGroupHandler {
         }
     }
 
-    public String recacheDefaultGroup(UUID uuid) {
-        String gName = dao.getDefaultGroup(uuid);
-        defaultGroups.put(uuid, gName);
-        return gName;
-    }
 }

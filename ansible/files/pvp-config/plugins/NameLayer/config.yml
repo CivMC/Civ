@@ -10,7 +10,6 @@ sql:
   max_lifetime: 7200000
 groups:
   enable: true
-  interact: false
   grouplimit: 35
   creationOnFirstJoin: true
 rabbitmq:

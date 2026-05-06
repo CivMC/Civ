@@ -240,23 +240,6 @@ public class NameLayerPlugin extends ACivMod {
         if (loadGroups) {
             nameLayerReadDao = new NameLayerReadDao(getLogger(), db);
         }
-
-        long begin_time = System.currentTimeMillis();
-
-        try {
-            getLogger().log(Level.INFO, "Update prepared, starting database update.");
-            if (!db.updateDatabase()) {
-                getLogger().log(Level.SEVERE, "Update failed, terminating Bukkit.");
-                Bukkit.shutdown();
-            }
-        } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "Update failed, terminating Bukkit. Cause:", e);
-            Bukkit.shutdown();
-        }
-
-        getLogger()
-            .log(Level.INFO, "Database update took {0} seconds", (System.currentTimeMillis() - begin_time) / 1000);
-
     }
 
     private DataSource getNameApiDataSource() {

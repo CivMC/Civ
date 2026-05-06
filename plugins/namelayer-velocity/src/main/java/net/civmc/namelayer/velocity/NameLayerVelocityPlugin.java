@@ -43,6 +43,11 @@ public final class NameLayerVelocityPlugin {
             return;
         }
 
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         dataSource = config.database().createDataSource();
         if (!NameLayerDatabaseMigrator.migrate(dataSource, logger)) {
             return;

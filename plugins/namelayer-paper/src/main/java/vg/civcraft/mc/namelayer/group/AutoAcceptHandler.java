@@ -24,9 +24,7 @@ public class AutoAcceptHandler {
         if (accept && !autoAccepts.contains(player)) {
             autoAccepts.add(player);
         } else {
-            if (autoAccepts.contains(player)) {
-                autoAccepts.remove(player);
-            }
+            autoAccepts.remove(player);
         }
 
     }
@@ -49,16 +47,16 @@ public class AutoAcceptHandler {
         });
     }
 
-    public void toggleAutoAcceptAsync(final UUID player, final Consumer<AutoAcceptWriteResult> callback) {
-        setAutoAcceptAsync(player, !getAutoAccept(player), callback);
-    }
-
     public boolean getAutoAccept(UUID uuid) {
         return autoAccepts.contains(uuid);
     }
 
     public void reloadAll(final Set<UUID> autoAccepts) {
         this.autoAccepts = autoAccepts;
+    }
+
+    public void reload(final UUID player, final boolean accept) {
+        cacheAutoAccept(player, accept);
     }
 
     private void handleWriteResponse(

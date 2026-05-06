@@ -32,6 +32,7 @@ public final class NameLayerWriteCoordinator {
     private static final String SET_GROUP_OWNER = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.founder = ? WHERE fi.group_id = ?";
     private static final String SET_OWNER_MEMBER_ROLE = "UPDATE faction_member SET role = 'OWNER' WHERE group_id = ? AND member_name = ?";
     private static final String CREATE_GROUP = "CALL createGroup(?, ?, ?, ?)";
+    private static final String COUNT_OWNED_GROUPS = "SELECT COUNT(*) FROM faction_id WHERE founder = ?";
     private static final String ADD_PERMISSION_BY_NAME = "INSERT IGNORE INTO permission_by_group_name(group_id, role, permission_name) VALUES (?, ?, ?)";
     private static final String GET_DEFAULT_GROUP_ID = "SELECT dg.defaultgroup, fi.group_id FROM default_group dg "
         + "INNER JOIN faction_id fi ON fi.group_name = dg.defaultgroup WHERE dg.uuid = ? LIMIT 1 FOR UPDATE";
@@ -108,6 +109,17 @@ public final class NameLayerWriteCoordinator {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             try {
+                if (!createWrite.adminOverride() && createWrite.maxGroups() > 0) {
+                    final int ownedGroups = countOwnedGroups(connection, request.actorUuid());
+                    if (ownedGroups >= createWrite.maxGroups()) {
+                        connection.rollback();
+                        return NameLayerWriteResponse.failure(
+                            request.requestId(),
+                            NameLayerWriteFailureCode.MAX_GROUPS_REACHED,
+                            "You have reached the group limit of " + createWrite.maxGroups()
+                        );
+                    }
+                }
                 final int groupId;
                 try (PreparedStatement statement = connection.prepareStatement(CREATE_GROUP)) {
                     statement.setString(1, createWrite.groupName());
@@ -166,8 +178,12 @@ public final class NameLayerWriteCoordinator {
                     setDefaultGroup(connection, request.actorUuid(), createdGroup.groupName());
                     incrementCacheVersion(connection);
                     connection.commit();
-                    publishFullInvalidation();
-                    return successFullResync(request, Set.of(createdGroup.groupId()));
+                    publishInvalidation(NameLayerInvalidationMessage.targeted(
+                        Set.of(createdGroup.groupId()),
+                        Set.of(request.actorUuid()),
+                        Set.of()
+                    ));
+                    return NameLayerWriteResponse.success(request.requestId(), Set.of(createdGroup.groupId()));
                 } catch (final SQLException exception) {
                     connection.rollback();
                     throw exception;
@@ -504,7 +520,7 @@ public final class NameLayerWriteCoordinator {
                 setDefaultGroup(connection, request.actorUuid(), groupName);
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishFullInvalidation();
+                publishInvalidation(NameLayerInvalidationMessage.defaultGroups(Set.of(request.actorUuid())));
                 return NameLayerWriteResponse.success(request.requestId(), Set.of());
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -534,7 +550,7 @@ public final class NameLayerWriteCoordinator {
                 statement.executeUpdate();
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishFullInvalidation();
+                publishInvalidation(NameLayerInvalidationMessage.autoAccepts(Set.of(request.actorUuid())));
                 return NameLayerWriteResponse.success(request.requestId(), Set.of());
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -629,6 +645,18 @@ public final class NameLayerWriteCoordinator {
             statement.setString(1, playerUuid.toString());
             statement.setString(2, groupName);
             statement.executeUpdate();
+        }
+    }
+
+    private int countOwnedGroups(final Connection connection, final UUID ownerUuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(COUNT_OWNED_GROUPS)) {
+            statement.setString(1, ownerUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return 0;
+                }
+                return resultSet.getInt(1);
+            }
         }
     }
 
@@ -884,29 +912,14 @@ public final class NameLayerWriteCoordinator {
     }
 
     private void publishInvalidation(final int groupId) {
-        final boolean published = invalidationPublisher.publish(NameLayerInvalidationMessage.targeted(Set.of(groupId)));
-        if (!published) {
-            logger.error("NameLayer write committed, but failed to publish invalidation for group {}", groupId);
-        }
+        publishInvalidation(NameLayerInvalidationMessage.targeted(Set.of(groupId)));
     }
 
-    private void publishFullInvalidation() {
-        final boolean published = invalidationPublisher.publish(NameLayerInvalidationMessage.fullResync());
+    private void publishInvalidation(final NameLayerInvalidationMessage invalidation) {
+        final boolean published = invalidationPublisher.publish(invalidation);
         if (!published) {
-            logger.error("NameLayer write committed, but failed to publish full resync invalidation");
+            logger.error("NameLayer write committed, but failed to publish invalidation {}", invalidation);
         }
-    }
-
-    private NameLayerWriteResponse successFullResync(final NameLayerWriteRequest request, final Set<Integer> affectedGroupIds) {
-        return new NameLayerWriteResponse(
-            request.requestId(),
-            true,
-            null,
-            "",
-            affectedGroupIds,
-            true,
-            System.currentTimeMillis()
-        );
     }
 
     private boolean acquireLock(final Connection connection, final String lockName) throws SQLException {
@@ -1263,14 +1276,33 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
-    private record CreateGroupWrite(String groupName, String password, Set<DefaultPermission> defaultPermissions) {
+    private record CreateGroupWrite(
+        String groupName,
+        String password,
+        Set<DefaultPermission> defaultPermissions,
+        int maxGroups,
+        boolean adminOverride
+    ) {
 
         private static CreateGroupWrite from(final Map<String, String> arguments) {
             final String groupName = PermissionWrite.requireNonBlank(arguments, "groupName");
             final String password = Boolean.parseBoolean(arguments.getOrDefault("hasPassword", "false"))
                 ? arguments.getOrDefault("password", "")
                 : null;
-            return new CreateGroupWrite(groupName, password, DefaultPermission.parse(arguments.getOrDefault("defaultPermissions", "")));
+            final int maxGroups;
+            try {
+                maxGroups = Integer.parseInt(arguments.getOrDefault("maxGroups", "0"));
+            } catch (final NumberFormatException exception) {
+                throw new IllegalArgumentException("maxGroups must be an integer");
+            }
+            final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
+            return new CreateGroupWrite(
+                groupName,
+                password,
+                DefaultPermission.parse(arguments.getOrDefault("defaultPermissions", "")),
+                maxGroups,
+                adminOverride
+            );
         }
     }
 

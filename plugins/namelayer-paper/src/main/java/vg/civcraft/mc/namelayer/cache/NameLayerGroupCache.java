@@ -47,10 +47,6 @@ public final class NameLayerGroupCache {
         return groupsById.get(groupId);
     }
 
-    public synchronized boolean containsName(final String name) {
-        return getByName(name) != null;
-    }
-
     public synchronized void putGroup(final Group group) {
         if (group == null || group.getName() == null) {
             return;
@@ -98,16 +94,6 @@ public final class NameLayerGroupCache {
         }
     }
 
-    public synchronized Group removeGroupById(final int groupId) {
-        final Group group = groupsById.get(groupId);
-        if (group != null) {
-            removeGroup(group);
-        } else {
-            groupsById.remove(groupId);
-        }
-        return group;
-    }
-
     public synchronized List<String> getGroupNames(final UUID uuid) {
         final Set<Integer> groupIds = groupIdsByPlayer.get(uuid);
         if (groupIds == null || groupIds.isEmpty()) {
@@ -129,5 +115,22 @@ public final class NameLayerGroupCache {
 
     public synchronized void setAppliedVersion(final long appliedVersion) {
         this.appliedVersion = Math.max(0L, appliedVersion);
+    }
+
+    public synchronized int countGroups() {
+        return this.groupsById.size();
+    }
+
+    public synchronized int countGroups(final UUID ownerUuid) {
+        if (ownerUuid == null) {
+            return 0;
+        }
+        int count = 0;
+        for (final Group group : this.groupsByName.values()) {
+            if (ownerUuid.equals(group.getOwner())) {
+                count++;
+            }
+        }
+        return count;
     }
 }

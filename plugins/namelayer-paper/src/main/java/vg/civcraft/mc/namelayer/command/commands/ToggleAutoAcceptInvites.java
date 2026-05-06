@@ -18,11 +18,10 @@ public class ToggleAutoAcceptInvites extends BaseCommandMiddle {
     @CommandAlias("nltaai|autoaccept")
     @Description("Toggle the acceptance of invites.")
     public void execute(CommandSender sender) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player p)) {
             sender.sendMessage("how would this even work");
             return;
         }
-        Player p = (Player) sender;
         UUID uuid = NameLayerAPI.getUUID(p.getName());
         final boolean enable = !handler.getAutoAccept(uuid);
         handler.setAutoAcceptAsync(uuid, enable, result -> {

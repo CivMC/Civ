@@ -24,12 +24,8 @@ public class CreateGroup extends BaseCommandMiddle {
     @Description("Create a group (Public or Private). Password is optional.")
     public void execute(Player sender, String groupName, @Optional String userPassword) {
         String name = groupName;
-        int currentGroupCount = gm.countGroups(sender.getUniqueId());
-
-        if (NameLayerPlugin.getInstance().getGroupLimit() < currentGroupCount + 1 && !(sender.isOp() || sender.hasPermission("namelayer.admin"))) {
-            sender.sendMessage(ChatColor.RED + "You cannot create any more groups! Please delete an un-needed group before making more.");
-            return;
-        }
+        final boolean adminOverride = sender.isOp() || sender.hasPermission("namelayer.admin");
+        final int groupLimit = NameLayerPlugin.getInstance().getGroupLimit();
 
         //enforce regulations on the name
         if (name.length() > 32) {
@@ -72,14 +68,11 @@ public class CreateGroup extends BaseCommandMiddle {
                 return;
             }
             if (createdGroup == null) {
-                player.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+                player.sendMessage(ChatColor.RED + "That group is already taken, you have reached the group limit, or creation failed.");
             } else {
                 player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
             }
-        }, false);
-        if (NameLayerPlugin.getInstance().getGroupLimit() == (currentGroupCount + 1)) {
-            sender.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
-        }
+        }, false, groupLimit, adminOverride);
         sender.sendMessage(ChatColor.GREEN + "Group creation request is in process.");
     }
 }

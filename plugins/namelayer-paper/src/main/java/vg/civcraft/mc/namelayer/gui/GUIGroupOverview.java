@@ -276,15 +276,6 @@ public class GUIGroupOverview {
                             showScreen();
                             return;
                         }
-                        if (NameLayerPlugin.getInstance().getGroupLimit() < gm
-                            .countGroups(p.getUniqueId()) + 1
-                            && !(p.isOp() || p
-                            .hasPermission("namelayer.admin"))) {
-                            p.sendMessage(ChatColor.RED
-                                + "You cannot create any more groups! Please delete an un-needed group before making more.");
-                            showScreen();
-                            return;
-                        }
                         // enforce regulations on the name
                         if (groupName.length() > 32) {
                             p.sendMessage(ChatColor.RED
@@ -319,6 +310,8 @@ public class GUIGroupOverview {
                         }
 
                         final UUID uuid = p.getUniqueId();
+                        final boolean adminOverride = p.isOp() || p.hasPermission("namelayer.admin");
+                        final int groupLimit = NameLayerPlugin.getInstance().getGroupLimit();
                         Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis(), "GRAY");
                         gm.createGroupAsync(g, createdGroup -> {
                             if (createdGroup != null) {
@@ -332,17 +325,12 @@ public class GUIGroupOverview {
                             }
 
                             if (createdGroup == null) { // failure
-                                player.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+                                player.sendMessage(ChatColor.RED + "That group is already taken, you have reached the group limit, or creation failed.");
                             } else {
                                 player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
-                                if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(player.getUniqueId())) {
-                                    player.sendMessage(ChatColor.YELLOW + "You have reached the group limit with "
-                                        + NameLayerPlugin.getInstance().getGroupLimit()
-                                        + " groups! Please delete un-needed groups if you wish to create more.");
-                                }
                             }
                             showScreen();
-                        }, false);
+                        }, false, groupLimit, adminOverride);
                     }
                 };
 

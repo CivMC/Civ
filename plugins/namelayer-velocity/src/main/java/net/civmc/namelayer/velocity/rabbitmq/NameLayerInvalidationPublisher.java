@@ -1,19 +1,23 @@
 package net.civmc.namelayer.velocity.rabbitmq;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import net.civmc.namelayer.sync.NameLayerInvalidationMessage;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
-import net.civmc.namelayer.sync.NameLayerSyncCodec;
 import org.slf4j.Logger;
 
 public final class NameLayerInvalidationPublisher implements AutoCloseable {
 
     private static final long PUBLISH_CONFIRM_TIMEOUT_MILLIS = 5_000L;
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     private final ConnectionFactory connectionFactory;
     private final Logger logger;
@@ -44,6 +48,7 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
     }
 
     public boolean publish(final NameLayerInvalidationMessage invalidation) {
+        Objects.requireNonNull(invalidation, "invalidation");
         if (channel == null || !channel.isOpen()) {
             logger.error("NameLayer invalidation publisher is not connected");
             return false;
@@ -57,7 +62,7 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
                 NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE,
                 "",
                 properties,
-                NameLayerSyncCodec.encodeInvalidation(invalidation)
+                GSON.toJson(invalidation).getBytes(StandardCharsets.UTF_8)
             );
             return channel.waitForConfirms(PUBLISH_CONFIRM_TIMEOUT_MILLIS);
         } catch (final IOException | InterruptedException | TimeoutException exception) {

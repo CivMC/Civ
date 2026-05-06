@@ -15,14 +15,10 @@ public class GlobalStats extends BaseCommandMiddle {
     @CommandPermission("namelayer.admin")
     @Description("Get the amount of global groups.")
     public void execute(final CommandSender sender) {
-        Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable() {
+        Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), () -> {
+            int count = NameLayerPlugin.getGroupCache().countGroups();
 
-            @Override
-            public void run() {
-                int count = NameLayerPlugin.getNameLayerReadDao().countGroups();
-                sender.sendMessage(ChatColor.GREEN + "The amount of groups are: " + count);
-            }
-
+            sender.sendMessage(ChatColor.GREEN + "The amount of groups are: " + count);
         });
         sender.sendMessage(ChatColor.GREEN + "Stats are being retrieved, please wait.");
     }

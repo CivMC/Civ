@@ -1,11 +1,15 @@
 package vg.civcraft.mc.namelayer.rabbitmq;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -15,13 +19,13 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
-import net.civmc.namelayer.sync.NameLayerSyncCodec;
 import net.civmc.namelayer.sync.NameLayerWriteRequest;
 import net.civmc.namelayer.sync.NameLayerWriteResponse;
 
 public final class NameLayerWriteClient implements AutoCloseable {
 
     private static final long RESPONSE_TIMEOUT_SECONDS = 10L;
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     private final ConnectionFactory connectionFactory;
     private final String responseQueue;
@@ -45,7 +49,7 @@ public final class NameLayerWriteClient implements AutoCloseable {
             connection = connectionFactory.newConnection("namelayer-paper-writes");
             channel = connection.createChannel();
             channel.queueDeclare(responseQueue, false, true, true, null);
-            final DeliverCallback deliverCallback = (consumerTag, delivery) -> handleResponse(delivery.getBody(), delivery.getProperties());
+            final DeliverCallback deliverCallback = (consumerTag, delivery) -> handleResponse(delivery.getBody());
             channel.basicConsume(responseQueue, true, deliverCallback, consumerTag -> {
             });
             return true;
@@ -73,7 +77,12 @@ public final class NameLayerWriteClient implements AutoCloseable {
                 .deliveryMode(2)
                 .build();
             synchronized (this) {
-                channel.basicPublish("", NameLayerRabbitMqTopology.WRITE_REQUEST_QUEUE, properties, NameLayerSyncCodec.encodeWriteRequest(request));
+                channel.basicPublish(
+                    "",
+                    NameLayerRabbitMqTopology.WRITE_REQUEST_QUEUE,
+                    properties,
+                    GSON.toJson(request).getBytes(StandardCharsets.UTF_8)
+                );
             }
         } catch (final IOException exception) {
             pendingResponses.remove(request.requestId());
@@ -82,11 +91,11 @@ public final class NameLayerWriteClient implements AutoCloseable {
         return responseFuture;
     }
 
-    private void handleResponse(final byte[] body, final AMQP.BasicProperties properties) {
+    private void handleResponse(final byte[] body) {
         final NameLayerWriteResponse response;
         try {
-            response = NameLayerSyncCodec.decodeWriteResponse(body);
-        } catch (final IllegalArgumentException exception) {
+            response = GSON.fromJson(new String(body, StandardCharsets.UTF_8), NameLayerWriteResponse.class);
+        } catch (final JsonParseException exception) {
             logger.log(Level.WARNING, "Dropping malformed NameLayer write response", exception);
             return;
         }

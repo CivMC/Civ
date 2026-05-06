@@ -1,15 +1,18 @@
 package net.civmc.namelayer.velocity.rabbitmq;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
-import net.civmc.namelayer.sync.NameLayerSyncCodec;
 import net.civmc.namelayer.sync.NameLayerWriteFailureCode;
 import net.civmc.namelayer.sync.NameLayerWriteRequest;
 import net.civmc.namelayer.sync.NameLayerWriteResponse;
@@ -17,6 +20,8 @@ import net.civmc.namelayer.velocity.write.NameLayerWriteCoordinator;
 import org.slf4j.Logger;
 
 public final class NameLayerWriteRequestConsumer implements AutoCloseable {
+
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     private final ConnectionFactory connectionFactory;
     private final NameLayerWriteCoordinator coordinator;
@@ -61,9 +66,9 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
         NameLayerWriteRequest request = null;
         NameLayerWriteResponse response;
         try {
-            request = NameLayerSyncCodec.decodeWriteRequest(body);
+            request = GSON.fromJson(new String(body, StandardCharsets.UTF_8), NameLayerWriteRequest.class);
             response = coordinator.handle(request);
-        } catch (final IllegalArgumentException exception) {
+        } catch (final JsonParseException exception) {
             logger.warn("Rejecting malformed NameLayer write request", exception);
             response = malformedRequestResponse(properties);
         } catch (final RuntimeException exception) {
@@ -113,7 +118,7 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
             .correlationId(response.requestId().toString())
             .deliveryMode(1)
             .build();
-        channel.basicPublish("", replyQueue, responseProperties, NameLayerSyncCodec.encodeWriteResponse(response));
+        channel.basicPublish("", replyQueue, responseProperties, GSON.toJson(response).getBytes(StandardCharsets.UTF_8));
     }
 
     private String responseQueue(final AMQP.BasicProperties properties, final NameLayerWriteRequest request) {

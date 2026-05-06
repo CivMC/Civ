@@ -1,23 +1,31 @@
 package vg.civcraft.mc.namelayer.rabbitmq;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.plugin.java.JavaPlugin;
 import net.civmc.namelayer.sync.NameLayerInvalidationMessage;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
-import net.civmc.namelayer.sync.NameLayerSyncCodec;
+import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
+import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
 
 public final class NameLayerInvalidationConsumer implements AutoCloseable {
+
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     private final ConnectionFactory connectionFactory;
     private final String serverId;
@@ -101,13 +109,16 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
 
     private void handleDelivery(final byte[] body, final long deliveryTag) throws IOException {
         try {
-            final NameLayerInvalidationMessage invalidation = NameLayerSyncCodec.decodeInvalidation(body);
+            final NameLayerInvalidationMessage invalidation = GSON.fromJson(
+                new String(body, StandardCharsets.UTF_8),
+                NameLayerInvalidationMessage.class
+            );
             if (applyInvalidation(invalidation)) {
                 channel.basicAck(deliveryTag, false);
             } else {
                 channel.basicNack(deliveryTag, false, true);
             }
-        } catch (final IllegalArgumentException exception) {
+        } catch (final JsonParseException exception) {
             logger.log(Level.WARNING, "Rejecting malformed NameLayer invalidation", exception);
             channel.basicReject(deliveryTag, false);
         } catch (final RuntimeException exception) {
@@ -122,8 +133,30 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
             GroupManager.fullResyncCache();
             return true;
         }
-        logger.log(Level.INFO, "Applying NameLayer targeted invalidation for " + invalidation.affectedGroupIds().size() + " groups");
-        return GroupManager.reloadGroupsById(new ArrayList<>(invalidation.affectedGroupIds()));
+        logger.log(Level.INFO, "Applying NameLayer targeted invalidation for "
+            + invalidation.affectedGroupIds().size() + " groups, "
+            + invalidation.affectedDefaultGroupPlayers().size() + " default groups, "
+            + invalidation.affectedAutoAcceptPlayers().size() + " auto-accept entries");
+        if (!invalidation.affectedGroupIds().isEmpty()
+            && !GroupManager.reloadGroupsById(new ArrayList<>(invalidation.affectedGroupIds()))) {
+            return false;
+        }
+        final DefaultGroupHandler defaultGroupHandler = NameLayerPlugin.getDefaultGroupHandler();
+        if (defaultGroupHandler != null) {
+            for (final UUID playerUuid : invalidation.affectedDefaultGroupPlayers()) {
+                defaultGroupHandler.reload(playerUuid);
+            }
+        }
+        final AutoAcceptHandler autoAcceptHandler = NameLayerPlugin.getAutoAcceptHandler();
+        if (autoAcceptHandler != null) {
+            for (final UUID playerUuid : invalidation.affectedAutoAcceptPlayers()) {
+                autoAcceptHandler.reload(
+                    playerUuid,
+                    NameLayerPlugin.getNameLayerReadDao().isAutoAcceptEnabled(playerUuid)
+                );
+            }
+        }
+        return true;
     }
 
     @Override

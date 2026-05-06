@@ -1,15 +1,14 @@
 package vg.civcraft.mc.namelayer;
 
 import com.google.common.collect.Maps;
-import java.util.Collection;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import net.civmc.namelayer.sync.NameLayerWriteOperation;
@@ -34,11 +33,6 @@ public class GroupManager {
     private static NameLayerReadDao nameLayerReadDao;
     private PermissionHandler permhandle;
 
-    private static Map<String, Group> groupsByName = new ConcurrentHashMap<>();
-    private static Map<Integer, Group> groupsById = new ConcurrentHashMap<>();
-
-    private static boolean mergingInProgress = false;
-
     public GroupManager() {
         nameLayerReadDao = NameLayerPlugin.getNameLayerReadDao();
         permhandle = new PermissionHandler();
@@ -50,10 +44,6 @@ public class GroupManager {
 
     public static void fullResyncCache() {
         NameLayerPlugin.fullResyncGroupCache();
-    }
-
-    public static boolean reloadGroupById(final int groupId) {
-        return reloadGroupsById(List.of(groupId));
     }
 
     public static boolean reloadGroupsById(final List<Integer> groupIds) {
@@ -82,10 +72,20 @@ public class GroupManager {
         return true;
     }
 
+    public int countGroups(final UUID ownerUuid) {
+        final NameLayerGroupCache cache = getCache();
+        if (cache == null) {
+            return 0;
+        }
+        return cache.countGroups(ownerUuid);
+    }
+
     public void createGroupAsync(
         final UUID actorUuid,
         final String groupName,
         final String password,
+        final int maxGroups,
+        final boolean adminOverride,
         final Consumer<GroupWriteResult> callback
     ) {
         final GroupCreateEvent event = new GroupCreateEvent(groupName, actorUuid, password);
@@ -101,6 +101,8 @@ public class GroupManager {
             arguments.put("password", event.getPassword());
         }
         arguments.put("defaultPermissions", encodeDefaultPermissions(PermissionType.getAllPermissions()));
+        arguments.put("maxGroups", Integer.toString(maxGroups));
+        arguments.put("adminOverride", Boolean.toString(adminOverride));
         sendGroupWrite(actorUuid, NameLayerWriteOperation.CREATE_GROUP, arguments, callback);
     }
 
@@ -241,7 +243,7 @@ public class GroupManager {
      * @param checkBeforeCreate Checks if the group already exists (asynchronously) prior to creating it. Runs the CreateEvent
      *                          synchronously, then behaves as normal after that (running async create).
      */
-    public void createGroupAsync(final Group group, final Consumer<Group> postCreate, boolean checkBeforeCreate) {
+    public void createGroupAsync(final Group group, final Consumer<Group> postCreate, boolean checkBeforeCreate, final int maxGroups, final boolean adminOverride) {
         if (group == null) {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
             Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> postCreate.accept(null));
@@ -252,7 +254,7 @@ public class GroupManager {
             Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> postCreate.accept(null));
             return;
         }
-        createGroupAsync(group.getOwner(), group.getName(), group.getPassword(), result -> {
+        createGroupAsync(group.getOwner(), group.getName(), group.getPassword(), maxGroups, adminOverride, result -> {
             Group createdGroup = result.group();
             if (!result.success() || createdGroup == null) {
                 createdGroup = null;
@@ -270,113 +272,30 @@ public class GroupManager {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup failed, caller passed in null", new Exception());
             return null;
         }
-
         String lower = name.toLowerCase();
-        if (getCache() != null) {
-            Group group = getCache().getByName(lower);
+        NameLayerGroupCache cache = getCache();
+        if (cache != null) {
+            Group group = cache.getByName(lower);
             if (group != null) {
                 return group;
             }
-        } else if (groupsByName.containsKey(lower)) {
-            return groupsByName.get(lower);
         }
 
-        Group group = nameLayerReadDao.getGroup(name);
-        if (group != null) {
-            if (getCache() != null) {
-                getCache().putGroup(group);
-            } else {
-                groupsByName.put(lower, group);
-                for (int j : group.getGroupIds()) {
-                    groupsById.put(j, group);
-                }
-            }
-        } else {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name);
-        }
-        return group;
+        NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name);
+        return null;
     }
 
     public static Group getGroup(int groupId) {
-        if (getCache() != null) {
-            Group group = getCache().getById(groupId);
+        NameLayerGroupCache cache = getCache();
+        if (cache != null) {
+            Group group = cache.getById(groupId);
             if (group != null) {
                 return group;
             }
-        } else if (groupsById.containsKey(groupId)) {
-            return groupsById.get(groupId);
         }
 
-        Group group = nameLayerReadDao.getGroup(groupId);
-        if (group != null) {
-            if (getCache() != null) {
-                getCache().putGroup(group);
-            } else {
-                groupsByName.put(group.getName().toLowerCase(), group);
-                for (int j : group.getGroupIds()) {
-                    groupsById.put(j, group);
-                }
-            }
-        } else {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId);
-        }
-        return group;
-    }
-
-    public static boolean hasGroup(String groupName) {
-        if (groupName == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "HasGroup Name failed, name was null ", new Exception());
-            return false;
-        }
-
-        if (getCache() != null) {
-            return getCache().containsName(groupName) || getGroup(groupName.toLowerCase()) != null;
-        } else if (!groupsByName.containsKey(groupName.toLowerCase())) {
-            return (getGroup(groupName.toLowerCase()) != null);
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Returns the admin group for groups if the group was found to be null.
-     * Good for when you have to have a group that can't be null.
-     *
-     * @param name - The group name for the group
-     * @return Either the group or the special admin group.
-     */
-    public static Group getSpecialCircumstanceGroup(String name) {
-        if (name == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getSpecialCircumstance failed, caller passed in null", new Exception());
-            return null;
-        }
-        String lower = name.toLowerCase();
-        if (getCache() != null) {
-            Group group = getCache().getByName(lower);
-            if (group != null) {
-                return group;
-            }
-        } else if (groupsByName.containsKey(lower)) {
-            return groupsByName.get(lower);
-        }
-
-        Group group = nameLayerReadDao.getGroup(name);
-        if (group != null) {
-            if (getCache() != null) {
-                getCache().putGroup(group);
-            } else {
-                groupsByName.put(lower, group);
-                for (int j : group.getGroupIds()) {
-                    groupsById.put(j, group);
-                }
-            }
-        } else {
-            group = nameLayerReadDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
-            if (group != null && getCache() != null) {
-                getCache().putGroup(group);
-            }
-        }
-        return group;
+        NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId);
+        return null;
     }
 
     /**
@@ -450,67 +369,6 @@ public class GroupManager {
     }
 
     /**
-     * Invalidates a group from cache.
-     *
-     * @param group the group to invalidate cache for
-     */
-    public static void invalidateCache(String group) {
-        if (group == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "invalidateCache failed, caller passed in null", new Exception());
-            return;
-        }
-
-        Group g = groupsByName.get(group.toLowerCase());
-        if (getCache() != null) {
-            g = getCache().getByName(group);
-        }
-        if (g != null) {
-            if (getCache() != null) {
-                getCache().removeGroup(g);
-            } else {
-                List<Integer> k = g.getGroupIds();
-                groupsByName.remove(group.toLowerCase());
-                boolean fail = true;
-                for (int j : k) {
-                    if (groupsById.remove(j) != null) {
-                        fail = false;
-                    }
-                }
-
-                // FALLBACK is hardloop
-                if (fail) { // can't find ID or cache is wrong.
-                    for (Group x : groupsById.values()) {
-                        if (x.getName().equals(g.getName())) {
-                            groupsById.remove(x.getGroupId());
-                        }
-                    }
-                }
-            }
-        } else {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Invalidate cache by name failed, unable to find the group " + group);
-        }
-    }
-
-    public static void invalidateCache(int groupId) {
-        if (getCache() != null) {
-            getCache().removeGroupById(groupId);
-            return;
-        }
-        Group group = groupsById.remove(groupId);
-        if (group != null) {
-            groupsByName.remove(group.getName().toLowerCase());
-        }
-    }
-
-    public int countGroups(UUID uuid) {
-        if (uuid == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "countGroups failed, caller passed in null", new Exception());
-            return 0;
-        }
-        return nameLayerReadDao.countGroups(uuid);
-    }
-
-    /**
      * In ascending order
      * Add an enum here if you wish to add more than the four default tiers of
      * roles.
@@ -553,23 +411,6 @@ public class GroupManager {
             p.sendMessage(ChatColor.GREEN
                 + "The current types are: " + getStringOfTypes());
             //dont yell at player for nllpt
-        }
-
-        public static PlayerType getByID(int id) {
-            switch (id) {
-                case 0:
-                    return PlayerType.NOT_BLACKLISTED;
-                case 1:
-                    return PlayerType.MEMBERS;
-                case 2:
-                    return PlayerType.MODS;
-                case 3:
-                    return PlayerType.ADMINS;
-                case 4:
-                    return PlayerType.OWNER;
-                default:
-                    return null;
-            }
         }
 
         public static int getID(PlayerType type) {

@@ -37,27 +37,15 @@ public final class NameLayerReadDao {
     private static final String GET_MEMBERS = "select fm.member_name from faction_member fm "
         + "inner join faction_id id on id.group_name = ? "
         + "where fm.group_id = id.group_id and fm.role = ?";
-    private static final String COUNT_GROUPS = "select count(DISTINCT group_name) as count from faction";
-    private static final String COUNT_GROUPS_FROM_UUID = "select count(DISTINCT group_name) as count from faction where founder = ?";
     private static final String LOAD_ALL_AUTO_ACCEPT = "select uuid from toggleAutoAccept";
     private static final String GET_AUTO_ACCEPT = "select uuid from toggleAutoAccept where uuid = ?";
     private static final String GET_DEFAULT_GROUP = "select defaultgroup from default_group where uuid = ?";
     private static final String GET_ALL_DEFAULT_GROUPS = "select uuid,defaultgroup from default_group";
     private static final String LOAD_GROUPS_INVITATIONS = "select uuid, groupName, role from group_invitation";
-    private static final String LOAD_GROUP_INVITATION = "select role from group_invitation where uuid = ? and groupName = ?";
     private static final String LOAD_GROUP_INVITATIONS_FOR_GROUP = "select uuid,role from group_invitation where groupName=?";
-    private static final String GET_GROUP_NAME_FROM_ROLE = "SELECT DISTINCT faction_id.group_name FROM faction_member "
-        + "inner join faction_id on faction_member.group_id = faction_id.group_id "
-        + "WHERE member_name = ? "
-        + "AND role = ?";
     private static final String GET_PLAYER_TYPE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
-    private static final String LOG_NAME_CHANGE = "insert into nameLayerNameChanges (uuid,oldName,newName) values(?,?,?)";
-    private static final String CHECK_FOR_NAME_CHANGE = "select * from nameLayerNameChanges where uuid=?";
     private static final String GET_PERMISSION = "select pg.role,pg.permission_name from permission_by_group_name pg inner join faction_id fi on fi.group_name=? "
         + "where pg.group_id = fi.group_id";
-    private static final String GET_BLACKLIST_MEMBERS = "select b.member_name from blacklist b inner join faction_id fi on fi.group_name=? where b.group_id=fi.group_id";
-    private static final String GET_GROUP_IDS = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
-        + "LEFT JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
     private static final String LOAD_ALL_GROUP_IDS = "SELECT f.group_name, f.group_id, count(DISTINCT fm.member_name) AS sz "
         + "FROM faction_id f LEFT JOIN faction_member fm ON f.group_id = fm.group_id "
         + "GROUP BY f.group_name, f.group_id ORDER BY f.group_name, sz DESC";
@@ -403,23 +391,6 @@ public final class NameLayerReadDao {
         return groups;
     }
 
-    public List<String> getGroupNames(final UUID uuid, final String role) {
-        final List<String> groups = new ArrayList<>();
-        try (Connection connection = db.getConnection();
-             PreparedStatement getGroupNameFromRole = connection.prepareStatement(GET_GROUP_NAME_FROM_ROLE)) {
-            getGroupNameFromRole.setString(1, uuid.toString());
-            getGroupNameFromRole.setString(2, role);
-            try (ResultSet set = getGroupNameFromRole.executeQuery()) {
-                while (set.next()) {
-                    groups.add(set.getString(1));
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem getting player " + uuid + " groups by role " + role, exception);
-        }
-        return groups;
-    }
-
     public PlayerType getPlayerType(final int groupId, final UUID uuid) {
         try (Connection connection = db.getConnection();
              PreparedStatement getPlayerType = connection.prepareStatement(GET_PLAYER_TYPE)) {
@@ -478,30 +449,6 @@ public final class NameLayerReadDao {
         return perms;
     }
 
-    public int countGroups() {
-        try (Connection connection = db.getConnection();
-             Statement countGroups = connection.createStatement();
-             ResultSet set = countGroups.executeQuery(COUNT_GROUPS)) {
-            return set.next() ? set.getInt("count") : 0;
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem counting groups", exception);
-            return 0;
-        }
-    }
-
-    public int countGroups(final UUID uuid) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement countGroupsFromUUID = connection.prepareStatement(COUNT_GROUPS_FROM_UUID)) {
-            countGroupsFromUUID.setString(1, uuid.toString());
-            try (ResultSet set = countGroupsFromUUID.executeQuery()) {
-                return set.next() ? set.getInt("count") : 0;
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem counting groups for " + uuid, exception);
-            return 0;
-        }
-    }
-
     public Set<UUID> loadAllAutoAccept() {
         final Set<UUID> accepts = new HashSet<>();
         try (Connection connection = db.getConnection();
@@ -516,8 +463,7 @@ public final class NameLayerReadDao {
         return accepts;
     }
 
-    @Deprecated
-    public boolean shouldAutoAcceptGroups(final UUID uuid) {
+    public boolean isAutoAcceptEnabled(final UUID uuid) {
         try (Connection connection = db.getConnection();
              PreparedStatement statement = connection.prepareStatement(GET_AUTO_ACCEPT)) {
             statement.setString(1, uuid.toString());
@@ -557,26 +503,6 @@ public final class NameLayerReadDao {
         return groups;
     }
 
-    public void loadGroupInvitation(final UUID playerUUID, final Group group) {
-        if (group == null) {
-            return;
-        }
-        try (Connection connection = db.getConnection();
-             PreparedStatement loadGroupInvitation = connection.prepareStatement(LOAD_GROUP_INVITATION)) {
-            loadGroupInvitation.setString(1, playerUUID.toString());
-            loadGroupInvitation.setString(2, group.getName());
-            try (ResultSet set = loadGroupInvitation.executeQuery()) {
-                while (set.next()) {
-                    final String role = set.getString("role");
-                    final PlayerType type = role == null ? null : PlayerType.getPlayerType(role);
-                    GroupManager.reloadGroupById(group.getGroupId());
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Problem loading group " + group.getName() + " invites for " + playerUUID, exception);
-        }
-    }
-
     public Map<UUID, PlayerType> getInvitesForGroup(final String groupName) {
         final Map<UUID, PlayerType> invitations = new TreeMap<>();
         if (groupName == null) {
@@ -608,9 +534,7 @@ public final class NameLayerReadDao {
             while (set.next()) {
                 final String uuid = set.getString("uuid");
                 final String group = set.getString("groupName");
-                final String role = set.getString("role");
                 final Group cachedGroup = group == null ? null : GroupManager.getGroup(group);
-                final PlayerType type = role == null ? null : PlayerType.getPlayerType(role);
                 if (uuid != null && cachedGroup != null) {
                     final UUID playerUUID = UUID.fromString(uuid);
                     PlayerListener.addNotification(playerUUID, cachedGroup);
@@ -619,67 +543,6 @@ public final class NameLayerReadDao {
         } catch (final SQLException exception) {
             logger.log(Level.WARNING, "Problem loading all group invitations", exception);
         }
-    }
-
-    public void logNameChange(final UUID uuid, final String oldName, final String newName) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement logNameChange = connection.prepareStatement(LOG_NAME_CHANGE)) {
-            logNameChange.setString(1, uuid.toString());
-            logNameChange.setString(2, oldName);
-            logNameChange.setString(3, newName);
-            logNameChange.executeUpdate();
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Failed to log a name change for " + uuid + " from " + oldName + " -> " + newName, exception);
-        }
-    }
-
-    public boolean hasChangedNameBefore(final UUID uuid) {
-        try (Connection connection = db.getConnection();
-             PreparedStatement checkForNameChange = connection.prepareStatement(CHECK_FOR_NAME_CHANGE)) {
-            checkForNameChange.setString(1, uuid.toString());
-            try (ResultSet set = checkForNameChange.executeQuery()) {
-                return set.next();
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Failed to check if " + uuid + " has previously changed names", exception);
-        }
-        return false;
-    }
-
-    public Set<UUID> getBlackListMembers(final String groupName) {
-        final Set<UUID> uuids = new HashSet<>();
-        try (Connection connection = db.getConnection();
-             PreparedStatement getBlackListMembers = connection.prepareStatement(GET_BLACKLIST_MEMBERS)) {
-            getBlackListMembers.setString(1, groupName);
-            try (ResultSet set = getBlackListMembers.executeQuery()) {
-                while (set.next()) {
-                    uuids.add(UUID.fromString(set.getString(1)));
-                }
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Unable to retrieve black list members for group " + groupName, exception);
-        }
-        return uuids;
-    }
-
-    public List<Integer> getAllIDs(final String groupName) {
-        if (groupName == null) {
-            return null;
-        }
-        try (Connection connection = db.getConnection();
-             PreparedStatement getGroupIDs = connection.prepareStatement(GET_GROUP_IDS)) {
-            getGroupIDs.setString(1, groupName);
-            try (ResultSet set = getGroupIDs.executeQuery()) {
-                final List<Integer> ids = new ArrayList<>();
-                while (set.next()) {
-                    ids.add(set.getInt(1));
-                }
-                return ids;
-            }
-        } catch (final SQLException exception) {
-            logger.log(Level.WARNING, "Unable to fully load group ID set", exception);
-        }
-        return null;
     }
 
     public GroupLoadSnapshot loadAllGroupsSnapshot() {
