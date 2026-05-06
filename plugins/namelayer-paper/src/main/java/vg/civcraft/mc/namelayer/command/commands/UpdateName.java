@@ -27,7 +27,7 @@ public class UpdateName extends BaseCommandMiddle {
         final UUID uuid = p.getUniqueId();
         final String oldName = NameLayerAPI.getCurrentName(uuid);
 
-        if (NameLayerPlugin.getGroupManagerDao().hasChangedNameBefore(uuid)) {
+        if (NameLayerPlugin.getNameLayerReadDao().hasChangedNameBefore(uuid)) {
             p.sendMessage(ChatColor.RED + "You already changed your name");
             return;
         }
@@ -95,7 +95,7 @@ public class UpdateName extends BaseCommandMiddle {
                     + newName + "\"");
                 return;
             }
-            NameLayerPlugin.getGroupManagerDao().logNameChange(uuid, oldName,
+            NameLayerPlugin.getNameLayerReadDao().logNameChange(uuid, oldName,
                 newName);
             // uncomment following to directly change name
             // NameAPI.getAssociationList().changePlayer(newName, uuid);

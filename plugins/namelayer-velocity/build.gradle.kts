@@ -12,5 +12,6 @@ dependencies {
     api(libs.hikaricp)
     api(libs.mariadb.client)
     api(libs.rabbitmq.client)
+    api(project(":libraries:name-api"))
     api(project(":libraries:namelayer-sync"))
 }

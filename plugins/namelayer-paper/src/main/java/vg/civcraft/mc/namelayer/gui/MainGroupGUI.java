@@ -226,7 +226,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
         }
         if (showInvites) {
             Map<UUID, PlayerType> invites = NameLayerPlugin
-                .getGroupManagerDao().getInvitesForGroup(g.getName());
+                .getNameLayerReadDao().getInvitesForGroup(g.getName());
             for (Entry<UUID, PlayerType> entry : invites.entrySet()) {
                 ItemStack is = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
                 ItemMeta im = is.getItemMeta();

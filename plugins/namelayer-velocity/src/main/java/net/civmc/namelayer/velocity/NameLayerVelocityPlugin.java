@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import net.civmc.namelayer.velocity.config.NameLayerVelocityConfig;
 import net.civmc.namelayer.velocity.rabbitmq.NameLayerInvalidationPublisher;
 import net.civmc.namelayer.velocity.rabbitmq.NameLayerWriteRequestConsumer;
+import net.civmc.namelayer.velocity.write.NameLayerDatabaseMigrator;
 import net.civmc.namelayer.velocity.write.NameLayerWriteCoordinator;
 import org.slf4j.Logger;
 
@@ -43,6 +44,9 @@ public final class NameLayerVelocityPlugin {
         }
 
         dataSource = config.database().createDataSource();
+        if (!NameLayerDatabaseMigrator.migrate(dataSource, logger)) {
+            return;
+        }
         invalidationPublisher = new NameLayerInvalidationPublisher(config.rabbitMq().connectionFactory(), logger);
         if (!invalidationPublisher.start()) {
             logger.error("NameLayer Velocity failed to start RabbitMQ invalidation publisher");

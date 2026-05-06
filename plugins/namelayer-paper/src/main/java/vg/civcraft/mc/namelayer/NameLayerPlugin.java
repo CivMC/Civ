@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import javax.sql.DataSource;
 import org.bukkit.Bukkit;
@@ -18,7 +19,7 @@ import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.cache.NameLayerGroupCache;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
@@ -32,7 +33,7 @@ import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 public class NameLayerPlugin extends ACivMod {
 
     private static BlackList blackList;
-    private static GroupManagerDao groupManagerDao;
+    private static NameLayerReadDao nameLayerReadDao;
     private static DefaultGroupHandler defaultGroupHandler;
     private static NameLayerPlugin instance;
     private static AutoAcceptHandler autoAcceptHandler;
@@ -48,6 +49,10 @@ public class NameLayerPlugin extends ACivMod {
     private BukkitTask freshnessCheckTask;
     private long stateLocalVersion;
     private long staleVersionDetectedAtMillis;
+    private final AtomicLong fullResyncCount = new AtomicLong();
+    private final AtomicLong targetedReloadCount = new AtomicLong();
+    private final AtomicLong targetedReloadFailureCount = new AtomicLong();
+    private final AtomicLong rabbitMqReconnectCount = new AtomicLong();
 
     @Override
     public void onEnable() {
@@ -70,12 +75,12 @@ public class NameLayerPlugin extends ACivMod {
         if (loadGroups) {
             PermissionType.initialize();
             blackList = new BlackList();
-            groupCache = NameLayerGroupCache.loadAll(groupManagerDao, getLogger());
+            groupCache = NameLayerGroupCache.loadAll(nameLayerReadDao, getLogger());
             startInvalidationConsumer();
             if (config.getBoolean("groups.interact", true)) {
-                groupManagerDao.loadGroupsInvitations();
+                nameLayerReadDao.loadGroupsInvitations();
                 defaultGroupHandler = new DefaultGroupHandler();
-                autoAcceptHandler = new AutoAcceptHandler(groupManagerDao.loadAllAutoAccept());
+                autoAcceptHandler = new AutoAcceptHandler(nameLayerReadDao.loadAllAutoAccept());
                 handle = new CommandHandler(this);
             }
         }
@@ -141,7 +146,7 @@ public class NameLayerPlugin extends ACivMod {
                 return;
             }
             final long localVersion = activeCache.getAppliedVersion();
-            final long databaseVersion = groupManagerDao.loadCacheVersion();
+            final long databaseVersion = nameLayerReadDao.loadCacheVersion();
             if (databaseVersion <= localVersion) {
                 if (localVersion > databaseVersion) {
                     getLogger().log(Level.WARNING, "Applied version is in the future? Constraint localVersion <= databaseVersion violated");
@@ -192,7 +197,7 @@ public class NameLayerPlugin extends ACivMod {
         }
 
         if (!db.isManaged()) {
-            // First "migration" is conversion from old system to new, and lives outside AssociationList and GroupManagerDao.
+            // First "migration" is conversion from old system to new, and lives outside AssociationList.
             boolean isNew = true;
             try (Connection connection = db.getConnection();
                  PreparedStatement checkNewInstall = connection.prepareStatement("SELECT * FROM db_version LIMIT 1;");
@@ -233,8 +238,7 @@ public class NameLayerPlugin extends ACivMod {
 
 
         if (loadGroups) {
-            groupManagerDao = new GroupManagerDao(getLogger(), db);
-            groupManagerDao.registerMigrations();
+            nameLayerReadDao = new NameLayerReadDao(getLogger(), db);
         }
 
         long begin_time = System.currentTimeMillis();
@@ -282,8 +286,8 @@ public class NameLayerPlugin extends ACivMod {
     /**
      * @return Returns the GroupManagerDatabase.
      */
-    public static GroupManagerDao getGroupManagerDao() {
-        return groupManagerDao;
+    public static NameLayerReadDao getNameLayerReadDao() {
+        return nameLayerReadDao;
     }
 
     public static NameLayerGroupCache getGroupCache() {
@@ -295,13 +299,40 @@ public class NameLayerPlugin extends ACivMod {
     }
 
     public static void fullResyncGroupCache() {
-        groupCache = NameLayerGroupCache.loadAll(groupManagerDao, getInstance().getLogger());
+        final long startedAtMillis = System.currentTimeMillis();
+        groupCache = NameLayerGroupCache.loadAll(nameLayerReadDao, getInstance().getLogger());
         if (defaultGroupHandler != null) {
             defaultGroupHandler.reloadAll();
         }
         if (autoAcceptHandler != null) {
-            autoAcceptHandler.reloadAll(groupManagerDao.loadAllAutoAccept());
+            autoAcceptHandler.reloadAll(nameLayerReadDao.loadAllAutoAccept());
         }
+        final long count = instance.fullResyncCount.incrementAndGet();
+        getInstance().getLogger().log(
+            Level.INFO,
+            "NameLayer full resync completed in " + (System.currentTimeMillis() - startedAtMillis) + "ms; count=" + count
+        );
+    }
+
+    public static void recordTargetedReload(final int groupCount, final long elapsedMillis) {
+        final long count = instance.targetedReloadCount.incrementAndGet();
+        getInstance().getLogger().log(
+            Level.INFO,
+            "NameLayer targeted reload completed for " + groupCount + " groups in " + elapsedMillis + "ms; count=" + count
+        );
+    }
+
+    public static void recordTargetedReloadFailure(final int groupCount) {
+        final long count = instance.targetedReloadFailureCount.incrementAndGet();
+        getInstance().getLogger().log(
+            Level.WARNING,
+            "NameLayer targeted reload failed for " + groupCount + " groups; failures=" + count
+        );
+    }
+
+    public static void recordRabbitMqReconnect() {
+        final long count = instance.rabbitMqReconnectCount.incrementAndGet();
+        getInstance().getLogger().log(Level.WARNING, "NameLayer RabbitMQ reconnect scheduled; count=" + count);
     }
 
     public static void log(Level level, String message) {

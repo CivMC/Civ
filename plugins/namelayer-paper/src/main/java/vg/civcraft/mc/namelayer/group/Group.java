@@ -15,7 +15,7 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.logging.Level;
 
 public class Group {
 
-    private static GroupManagerDao db;
+    private static NameLayerReadDao db;
 
     private String name;
     private String password;
@@ -50,7 +50,7 @@ public class Group {
     public Group(String name, UUID owner, boolean disciplined,
                   String password, int id, long activityTimestamp, String groupColor) {
         if (db == null) {
-            db = NameLayerPlugin.getGroupManagerDao();
+            db = NameLayerPlugin.getNameLayerReadDao();
         }
 
         this.name = name;
@@ -93,7 +93,7 @@ public class Group {
     public Group(String name, UUID owner, boolean disciplined, String password, int id, long activityTimestamp,
                  String groupColor, List<Integer> groupIds, Map<UUID, PlayerType> members, Set<UUID> blacklist) {
         if (db == null) {
-            db = NameLayerPlugin.getGroupManagerDao();
+            db = NameLayerPlugin.getNameLayerReadDao();
         }
 
         this.name = name;

@@ -15,6 +15,7 @@ import net.civmc.namelayer.sync.NameLayerInvalidationMessage;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
 import net.civmc.namelayer.sync.NameLayerSyncCodec;
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public final class NameLayerInvalidationConsumer implements AutoCloseable {
 
@@ -82,6 +83,7 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
             return;
         }
         reconnectScheduled = true;
+        NameLayerPlugin.recordRabbitMqReconnect();
         logger.log(Level.WARNING, "NameLayer RabbitMQ invalidation connection closed; reconnecting after full resync");
         plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             if (closing || !plugin.isEnabled()) {
@@ -116,9 +118,11 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
 
     private boolean applyInvalidation(final NameLayerInvalidationMessage invalidation) {
         if (invalidation.requiresFullResync()) {
+            logger.log(Level.INFO, "Applying NameLayer full-resync invalidation");
             GroupManager.fullResyncCache();
             return true;
         }
+        logger.log(Level.INFO, "Applying NameLayer targeted invalidation for " + invalidation.affectedGroupIds().size() + " groups");
         return GroupManager.reloadGroupsById(new ArrayList<>(invalidation.affectedGroupIds()));
     }
 

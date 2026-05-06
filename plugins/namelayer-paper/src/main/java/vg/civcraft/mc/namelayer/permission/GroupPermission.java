@@ -13,14 +13,14 @@ import net.civmc.namelayer.sync.NameLayerWriteResponse;
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public class GroupPermission {
 
     private Map<PlayerType, List<PermissionType>> perms;
-    private GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
+    private NameLayerReadDao db = NameLayerPlugin.getNameLayerReadDao();
 
     private Group group;
 

@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public final class NameLayerGroupCache {
@@ -25,8 +25,8 @@ public final class NameLayerGroupCache {
         this.groupIdsByPlayer = new ConcurrentHashMap<>();
     }
 
-    public static NameLayerGroupCache loadAll(final GroupManagerDao dao, final Logger logger) {
-        final GroupManagerDao.GroupLoadSnapshot snapshot = dao.loadAllGroupsSnapshot();
+    public static NameLayerGroupCache loadAll(final NameLayerReadDao dao, final Logger logger) {
+        final NameLayerReadDao.GroupLoadSnapshot snapshot = dao.loadAllGroupsSnapshot();
         final NameLayerGroupCache cache = new NameLayerGroupCache();
         for (final Group group : snapshot.groups()) {
             cache.putGroup(group);
@@ -36,22 +36,22 @@ public final class NameLayerGroupCache {
         return cache;
     }
 
-    public Group getByName(final String name) {
+    public synchronized Group getByName(final String name) {
         if (name == null) {
             return null;
         }
         return groupsByName.get(name.toLowerCase());
     }
 
-    public Group getById(final int groupId) {
+    public synchronized Group getById(final int groupId) {
         return groupsById.get(groupId);
     }
 
-    public boolean containsName(final String name) {
+    public synchronized boolean containsName(final String name) {
         return getByName(name) != null;
     }
 
-    public void putGroup(final Group group) {
+    public synchronized void putGroup(final Group group) {
         if (group == null || group.getName() == null) {
             return;
         }
@@ -65,7 +65,7 @@ public final class NameLayerGroupCache {
         }
     }
 
-    public void replaceGroupById(final int groupId, final Group group) {
+    public synchronized void replaceGroupById(final int groupId, final Group group) {
         final Group oldGroup = groupsById.get(groupId);
         if (oldGroup != null) {
             removeGroup(oldGroup);
@@ -77,7 +77,7 @@ public final class NameLayerGroupCache {
         }
     }
 
-    public void removeGroup(final Group group) {
+    public synchronized void removeGroup(final Group group) {
         if (group == null || group.getName() == null) {
             return;
         }
@@ -98,7 +98,7 @@ public final class NameLayerGroupCache {
         }
     }
 
-    public Group removeGroupById(final int groupId) {
+    public synchronized Group removeGroupById(final int groupId) {
         final Group group = groupsById.get(groupId);
         if (group != null) {
             removeGroup(group);
@@ -108,7 +108,7 @@ public final class NameLayerGroupCache {
         return group;
     }
 
-    public List<String> getGroupNames(final UUID uuid) {
+    public synchronized List<String> getGroupNames(final UUID uuid) {
         final Set<Integer> groupIds = groupIdsByPlayer.get(uuid);
         if (groupIds == null || groupIds.isEmpty()) {
             return new ArrayList<>();
@@ -123,11 +123,11 @@ public final class NameLayerGroupCache {
         return new ArrayList<>(names);
     }
 
-    public long getAppliedVersion() {
+    public synchronized long getAppliedVersion() {
         return appliedVersion;
     }
 
-    public void setAppliedVersion(final long appliedVersion) {
+    public synchronized void setAppliedVersion(final long appliedVersion) {
         this.appliedVersion = Math.max(0L, appliedVersion);
     }
 }

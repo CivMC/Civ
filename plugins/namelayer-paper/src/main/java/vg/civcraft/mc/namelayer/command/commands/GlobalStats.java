@@ -19,7 +19,7 @@ public class GlobalStats extends BaseCommandMiddle {
 
             @Override
             public void run() {
-                int count = NameLayerPlugin.getGroupManagerDao().countGroups();
+                int count = NameLayerPlugin.getNameLayerReadDao().countGroups();
                 sender.sendMessage(ChatColor.GREEN + "The amount of groups are: " + count);
             }
 

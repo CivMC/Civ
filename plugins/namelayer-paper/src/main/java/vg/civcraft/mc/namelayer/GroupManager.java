@@ -20,7 +20,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.cache.NameLayerGroupCache;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.events.GroupCreateEvent;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
@@ -32,7 +32,7 @@ import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public class GroupManager {
 
-    private static GroupManagerDao groupManagerDao;
+    private static NameLayerReadDao nameLayerReadDao;
     private PermissionHandler permhandle;
 
     private static Map<String, Group> groupsByName = new ConcurrentHashMap<>();
@@ -41,7 +41,7 @@ public class GroupManager {
     private static boolean mergingInProgress = false;
 
     public GroupManager() {
-        groupManagerDao = NameLayerPlugin.getGroupManagerDao();
+        nameLayerReadDao = NameLayerPlugin.getNameLayerReadDao();
         permhandle = new PermissionHandler();
     }
 
@@ -59,16 +59,20 @@ public class GroupManager {
 
     public static boolean reloadGroupsById(final List<Integer> groupIds) {
         if (groupIds == null) {
+            NameLayerPlugin.recordTargetedReloadFailure(0);
             return false;
         }
+        final long startedAtMillis = System.currentTimeMillis();
         final Set<Integer> uniqueGroupIds = new LinkedHashSet<>(groupIds);
-        final GroupManagerDao.GroupReloadSnapshot snapshot = groupManagerDao.loadGroupsByIdsSnapshot(uniqueGroupIds);
+        final NameLayerReadDao.GroupReloadSnapshot snapshot = nameLayerReadDao.loadGroupsByIdsSnapshot(uniqueGroupIds);
         if (snapshot == null) {
+            NameLayerPlugin.recordTargetedReloadFailure(uniqueGroupIds.size());
             return false;
         }
         final Map<Integer, Group> groups = snapshot.groups();
         final NameLayerGroupCache cache = getCache();
         if (cache == null) {
+            NameLayerPlugin.recordTargetedReloadFailure(uniqueGroupIds.size());
             return false;
         }
         for (final int groupId : uniqueGroupIds) {
@@ -79,6 +83,7 @@ public class GroupManager {
             }
         }
         cache.setAppliedVersion(snapshot.cacheVersion());
+        NameLayerPlugin.recordTargetedReload(uniqueGroupIds.size(), System.currentTimeMillis() - startedAtMillis);
         return true;
     }
 
@@ -406,7 +411,7 @@ public class GroupManager {
             return groupsByName.get(lower);
         }
 
-        Group group = groupManagerDao.getGroup(name);
+        Group group = nameLayerReadDao.getGroup(name);
         if (group != null) {
             if (getCache() != null) {
                 getCache().putGroup(group);
@@ -432,7 +437,7 @@ public class GroupManager {
             return groupsById.get(groupId);
         }
 
-        Group group = groupManagerDao.getGroup(groupId);
+        Group group = nameLayerReadDao.getGroup(groupId);
         if (group != null) {
             if (getCache() != null) {
                 getCache().putGroup(group);
@@ -485,7 +490,7 @@ public class GroupManager {
             return groupsByName.get(lower);
         }
 
-        Group group = groupManagerDao.getGroup(name);
+        Group group = nameLayerReadDao.getGroup(name);
         if (group != null) {
             if (getCache() != null) {
                 getCache().putGroup(group);
@@ -496,7 +501,7 @@ public class GroupManager {
                 }
             }
         } else {
-            group = groupManagerDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
+            group = nameLayerReadDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
             if (group != null && getCache() != null) {
                 getCache().putGroup(group);
             }
@@ -571,7 +576,7 @@ public class GroupManager {
                 return groups;
             }
         }
-        return groupManagerDao.getGroupNames(uuid);
+        return nameLayerReadDao.getGroupNames(uuid);
     }
 
     public String getDefaultGroup(UUID uuid) {
@@ -645,7 +650,7 @@ public class GroupManager {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "countGroups failed, caller passed in null", new Exception());
             return 0;
         }
-        return groupManagerDao.countGroups(uuid);
+        return nameLayerReadDao.countGroups(uuid);
     }
 
     /**

@@ -10,17 +10,17 @@ import net.civmc.namelayer.sync.NameLayerWriteResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public class DefaultGroupHandler {
 
-    private GroupManagerDao dao;
+    private NameLayerReadDao dao;
 
     private Map<UUID, String> defaultGroups;
 
     public DefaultGroupHandler() {
-        dao = NameLayerPlugin.getGroupManagerDao();
+        dao = NameLayerPlugin.getNameLayerReadDao();
         defaultGroups = dao.getAllDefaultGroups();
     }
 
