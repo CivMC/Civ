@@ -5,9 +5,10 @@ subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
 
+    var javaVersion = 21
     configure<JavaPluginExtension> {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(21))
+            languageVersion.set(JavaLanguageVersion.of(javaVersion))
         }
         withSourcesJar()
         withJavadocJar()
@@ -21,7 +22,7 @@ subprojects {
 
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
-        options.release = 21
+        options.release = javaVersion
     }
 
     tasks.withType<ProcessResources> {
