@@ -128,6 +128,7 @@ public class NameLayerPlugin extends ACivMod {
             rabbitMqConfig.connectionFactory(),
             rabbitMqConfig.serverId(),
             getLogger(),
+            config.getString("sql.dbname", "namelayer"),
             this
         );
         if (!invalidationConsumer.start()) {
@@ -135,7 +136,6 @@ public class NameLayerPlugin extends ACivMod {
         }
         writeClient = new NameLayerWriteClient(
             rabbitMqConfig.connectionFactory(),
-            rabbitMqConfig.serverId(),
             getLogger()
         );
         if (!writeClient.start()) {

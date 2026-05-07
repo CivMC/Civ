@@ -19,7 +19,6 @@ public record NameLayerRabbitMqConfig(
 
     public NameLayerRabbitMqConfig {
         if (enabled) {
-            serverId = requireNonBlank(serverId, "serverId");
             user = requireNonBlank(user, "user");
             host = requireNonBlank(host, "host");
             if (port <= 0) {
@@ -40,7 +39,7 @@ public record NameLayerRabbitMqConfig(
 
     public static NameLayerRabbitMqConfig from(final ConfigurationSection section) {
         if (section == null) {
-            return new NameLayerRabbitMqConfig(false, "paper", "guest", "guest", "localhost", 5672, true, 300L, 30L, 300L);
+            throw new IllegalArgumentException("section is null");
         }
         final ConfigurationSection freshnessCheck = section.getConfigurationSection("freshnessCheck");
         return new NameLayerRabbitMqConfig(

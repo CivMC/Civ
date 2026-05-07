@@ -140,7 +140,7 @@ public final class NameLayerWriteCoordinator {
                 insertDefaultPermissions(connection, groupId, createWrite.defaultPermissions());
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(groupId);
+                publishInvalidation(request, groupId);
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(groupId));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -181,7 +181,7 @@ public final class NameLayerWriteCoordinator {
                     setDefaultGroup(connection, request.actorUuid(), createdGroup.groupName());
                     incrementCacheVersion(connection);
                     connection.commit();
-                    publishInvalidation(NameLayerInvalidationMessage.withAffected(
+                    publishInvalidation(request, NameLayerInvalidationMessage.withAffected(
                         Set.of(createdGroup.groupId()),
                         java.util.Map.of(request.actorUuid(), createdGroup.groupName()),
                         Set.of(),
@@ -231,7 +231,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(deleteWrite.groupId());
+                publishInvalidation(request, deleteWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(deleteWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -276,7 +276,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(blacklistWrite.groupId());
+                publishInvalidation(request, blacklistWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(blacklistWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -322,7 +322,7 @@ public final class NameLayerWriteCoordinator {
                 addMember(connection, joinWrite.groupId(), request.actorUuid(), joinWrite.role());
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(joinWrite.groupId());
+                publishInvalidation(request, joinWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(joinWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -355,7 +355,7 @@ public final class NameLayerWriteCoordinator {
                 addMember(connection, memberWrite.groupId(), memberWrite.memberUuid(), memberWrite.role());
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(memberWrite.groupId());
+                publishInvalidation(request, memberWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(memberWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -403,7 +403,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(invitationWrite.groupId());
+                publishInvalidation(request, invitationWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(invitationWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -446,7 +446,7 @@ public final class NameLayerWriteCoordinator {
                 removeInvitation(connection, invitationWrite.memberUuid(), groupName);
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(invitationWrite.groupId());
+                publishInvalidation(request, invitationWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(invitationWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -486,7 +486,7 @@ public final class NameLayerWriteCoordinator {
                 removeInvitation(connection, request.actorUuid(), groupName);
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(groupWrite.groupId());
+                publishInvalidation(request, groupWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(groupWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -524,7 +524,7 @@ public final class NameLayerWriteCoordinator {
                 setDefaultGroup(connection, request.actorUuid(), groupName);
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(NameLayerInvalidationMessage.defaultGroupAssignment(request.actorUuid(), groupName));
+                publishInvalidation(request, NameLayerInvalidationMessage.defaultGroupAssignment(request.actorUuid(), groupName));
                 return NameLayerWriteResponse.success(request.requestId(), Set.of());
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -554,7 +554,7 @@ public final class NameLayerWriteCoordinator {
                 statement.executeUpdate();
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(NameLayerInvalidationMessage.autoAccept(request.actorUuid(), autoAccept));
+                publishInvalidation(request, NameLayerInvalidationMessage.autoAccept(request.actorUuid(), autoAccept));
                 return NameLayerWriteResponse.success(request.requestId(), Set.of());
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -698,7 +698,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(metadataWrite.groupId());
+                publishInvalidation(request, metadataWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(metadataWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -744,7 +744,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(ownerWrite.groupId());
+                publishInvalidation(request, ownerWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(ownerWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -788,7 +788,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(memberWrite.groupId());
+                publishInvalidation(request, memberWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(memberWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -827,7 +827,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(memberWrite.groupId());
+                publishInvalidation(request, memberWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(memberWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -899,7 +899,7 @@ public final class NameLayerWriteCoordinator {
                 }
                 incrementCacheVersion(connection);
                 connection.commit();
-                publishInvalidation(permissionWrite.groupId());
+                publishInvalidation(request, permissionWrite.groupId());
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(permissionWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -915,12 +915,12 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
-    private void publishInvalidation(final int groupId) {
-        publishInvalidation(NameLayerInvalidationMessage.targeted(Set.of(groupId)));
+    private void publishInvalidation(NameLayerWriteRequest request, final int groupId) {
+        publishInvalidation(request, NameLayerInvalidationMessage.targeted(Set.of(groupId)));
     }
 
-    private void publishInvalidation(final NameLayerInvalidationMessage invalidation) {
-        final boolean published = invalidationPublisher.publish(invalidation);
+    private void publishInvalidation(NameLayerWriteRequest request, final NameLayerInvalidationMessage invalidation) {
+        final boolean published = invalidationPublisher.publish(serverDatabases.get(request.originServerId()), invalidation);
         if (!published) {
             logger.error("NameLayer write committed, but failed to publish invalidation {}", invalidation);
         }

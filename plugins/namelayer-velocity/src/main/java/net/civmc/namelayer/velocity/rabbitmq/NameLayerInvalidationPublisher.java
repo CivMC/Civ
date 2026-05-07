@@ -47,7 +47,7 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
         }
     }
 
-    public boolean publish(final NameLayerInvalidationMessage invalidation) {
+    public boolean publish(String database, final NameLayerInvalidationMessage invalidation) {
         Objects.requireNonNull(invalidation, "invalidation");
         if (channel == null || !channel.isOpen()) {
             logger.error("NameLayer invalidation publisher is not connected");
@@ -60,7 +60,7 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
                 .build();
             channel.basicPublish(
                 NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE,
-                "",
+                database,
                 properties,
                 GSON.toJson(invalidation).getBytes(StandardCharsets.UTF_8)
             );

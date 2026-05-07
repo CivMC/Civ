@@ -31,6 +31,7 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
     private final ConnectionFactory connectionFactory;
     private final String serverId;
     private final Logger logger;
+    private final String database;
     private final JavaPlugin plugin;
     private volatile boolean closing;
     private volatile boolean reconnectScheduled;
@@ -40,12 +41,13 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
     public NameLayerInvalidationConsumer(
         final ConnectionFactory connectionFactory,
         final String serverId,
-        final Logger logger,
+        final Logger logger, String database,
         final JavaPlugin plugin
     ) {
         this.connectionFactory = connectionFactory;
         this.serverId = serverId;
         this.logger = logger;
+        this.database = database;
         this.plugin = plugin;
     }
 
@@ -69,7 +71,7 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
             );
             AMQP.Queue.DeclareOk declare = channel.queueDeclare();
             String queueName = declare.getQueue();
-            channel.queueBind(queueName, NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE, "");
+            channel.queueBind(queueName, NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE, database);
             channel.basicQos(1);
             final DeliverCallback deliverCallback = (consumerTag, delivery) -> handleDelivery(delivery.getBody(), delivery.getEnvelope().getDeliveryTag());
             channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {

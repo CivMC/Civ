@@ -10,6 +10,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -24,23 +25,22 @@ import net.civmc.namelayer.sync.NameLayerWriteResponse;
 
 public final class NameLayerWriteClient implements AutoCloseable {
 
-    private static final long RESPONSE_TIMEOUT_SECONDS = 10L;
+    private static final long RESPONSE_TIMEOUT_SECONDS = 15L;
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     private final ConnectionFactory connectionFactory;
-    private final String responseQueue;
     private final Logger logger;
     private final Map<UUID, CompletableFuture<NameLayerWriteResponse>> pendingResponses = new ConcurrentHashMap<>();
     private Connection connection;
     private Channel channel;
 
+    private String queue;
+
     public NameLayerWriteClient(
         final ConnectionFactory connectionFactory,
-        final String serverId,
         final Logger logger
     ) {
         this.connectionFactory = connectionFactory;
-        this.responseQueue = NameLayerRabbitMqTopology.WRITE_RESPONSE_QUEUE_PREFIX + serverId;
         this.logger = logger;
     }
 
@@ -48,9 +48,12 @@ public final class NameLayerWriteClient implements AutoCloseable {
         try {
             connection = connectionFactory.newConnection("namelayer-paper-writes");
             channel = connection.createChannel();
-            channel.queueDeclare(responseQueue, false, true, true, null);
+            Map<String, Object> args = new HashMap<>();
+            args.put("x-message-ttl", 12000);
+            AMQP.Queue.DeclareOk ok = channel.queueDeclare("", false, true, true, args);
+            this.queue = ok.getQueue();
             final DeliverCallback deliverCallback = (consumerTag, delivery) -> handleResponse(delivery.getBody());
-            channel.basicConsume(responseQueue, true, deliverCallback, consumerTag -> {
+            channel.basicConsume(queue, true, deliverCallback, consumerTag -> {
             });
             return true;
         } catch (final IOException | TimeoutException exception) {
@@ -73,7 +76,7 @@ public final class NameLayerWriteClient implements AutoCloseable {
             final AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
                 .contentType(NameLayerRabbitMqTopology.CONTENT_TYPE_JSON)
                 .correlationId(request.requestId().toString())
-                .replyTo(responseQueue)
+                .replyTo(queue)
                 .deliveryMode(2)
                 .build();
             synchronized (this) {
