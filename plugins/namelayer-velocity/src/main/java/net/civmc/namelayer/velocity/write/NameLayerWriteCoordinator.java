@@ -131,20 +131,12 @@ public final class NameLayerWriteCoordinator {
                         );
                     }
                 }
-                final int groupId;
-                try (PreparedStatement statement = connection.prepareStatement(CREATE_GROUP)) {
-                    statement.setString(1, createWrite.groupName());
-                    statement.setString(2, request.actorUuid().toString());
-                    statement.setString(3, createWrite.password());
-                    statement.setInt(4, 0);
-                    try (ResultSet resultSet = statement.executeQuery()) {
-                        if (!resultSet.next()) {
-                            connection.rollback();
-                            return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.NAME_CONFLICT, "Group name is already taken");
-                        }
-                        groupId = resultSet.getInt(1);
-                    }
+                CreatedGroup created = createGroup(connection, createWrite.groupName(), request.actorUuid(), createWrite.password);
+                if (created == null) {
+                    connection.rollback();
+                    return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.NAME_CONFLICT, "Group name is already taken");
                 }
+                final int groupId = created.groupId();
                 insertDefaultPermissions(connection, groupId, createWrite.defaultPermissions());
                 incrementCacheVersion(connection);
                 connection.commit();
