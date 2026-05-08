@@ -25,6 +25,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.model.ActivityDB;
@@ -42,6 +43,7 @@ public class ActivityMap {
     private static final long UNLOAD_INTERVAL_MS = 60L * 1000L; // 1 min
 
     private final Logger logger;
+    @Nullable
     private final ActivityDB activityDB;
     private final ScheduledExecutorService scheduler;
     private AtomicBoolean loadChunkDisabled;
@@ -63,9 +65,9 @@ public class ActivityMap {
 
     private boolean enabled;
 
-    public ActivityMap(Logger logger, ManagedDatasource source) {
+    public ActivityMap(final Logger logger, @Nullable final ManagedDatasource source) {
         this.logger = logger;
-        this.activityDB = new ActivityDB(source);
+        this.activityDB = source == null ? null : new ActivityDB(source);
         this.scheduler = Executors.newScheduledThreadPool(2);
         this.worldIdManager = CivModCorePlugin.getInstance().getWorldIdManager();
         this.data = new ConcurrentHashMap<>();
@@ -89,17 +91,27 @@ public class ActivityMap {
     }
 
     public void enable() {
+        List<String> worlds = Citadel.getInstance().getConfigManager().getActivityWorlds();
+        if (worlds.isEmpty()) {
+            return;
+        }
+
+        if (activityDB == null) {
+            logger.info("ActivityMap is disabled because Citadel has no database configured");
+            return;
+        }
+
         if (!activityDB.enable()) {
             logger.severe("ActivityMap cannot be enabled");
             return;
         }
 
-        for (String world : Citadel.getInstance().getConfigManager().getActivityWorlds()) {
+        for (String world : worlds) {
             World bukkitWorld = Bukkit.getWorld(world);
             if (bukkitWorld == null) {
                 Citadel.getInstance().getLogger().warning("World not found: " + world);
             } else {
-                worlds.add(bukkitWorld.getUID());
+                this.worlds.add(bukkitWorld.getUID());
             }
         }
 
@@ -422,7 +434,8 @@ public class ActivityMap {
     }
 
     private boolean isEnabled(World world) {
-        return enabled && world != null && this.worlds.contains(world.getUID());
+        return enabled && world != null && !Citadel.getInstance().getConfigManager().isMemoryOnlyWorld(world)
+            && this.worlds.contains(world.getUID());
     }
 
     public void loadChunk(Chunk chunk) {
