@@ -34,6 +34,8 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class MainGroupGUI extends AbstractGroupGUI {
 
+    private static final int CONTENT_SLOTS = 36;
+
     private boolean showInheritedMembers;
     private boolean showBlacklist;
     private boolean showInvites;
@@ -79,16 +81,18 @@ public class MainGroupGUI extends AbstractGroupGUI {
             return;
         }
         ClickableInventory ci = new ClickableInventory(54, g.getName());
-        final List<Clickable> clicks = constructClickables();
-        if (clicks.size() < 36 * currentPage) {
+        final ClickablePage clickablePage = constructClickables(CONTENT_SLOTS * currentPage,
+            CONTENT_SLOTS * (currentPage + 1));
+        if (currentPage > 0 && clickablePage.totalClickables() <= CONTENT_SLOTS * currentPage) {
             // would show an empty page, so go to previous
             currentPage--;
             showScreen();
+            return;
         }
         // fill gui
-        for (int i = 36 * currentPage; i < 36 * (currentPage + 1)
-            && i < clicks.size(); i++) {
-            ci.setSlot(clicks.get(i), 9 + i - (36 * currentPage));
+        final List<Clickable> clicks = clickablePage.clickables();
+        for (int i = 0; i < clicks.size(); i++) {
+            ci.setSlot(clicks.get(i), 9 + i);
         }
         // back button
         if (currentPage > 0) {
@@ -110,14 +114,14 @@ public class MainGroupGUI extends AbstractGroupGUI {
             ci.setSlot(getSuperMenuClickable(), 45);
         }
         // next button
-        if ((36 * (currentPage + 1)) < clicks.size()) {
+        if ((CONTENT_SLOTS * (currentPage + 1)) < clickablePage.totalClickables()) {
             ItemStack forward = new ItemStack(Material.ARROW);
             ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
             Clickable forCl = new Clickable(forward) {
 
                 @Override
                 public void clicked(Player arg0) {
-                    if ((36 * (currentPage + 1)) < clicks.size()) {
+                    if ((CONTENT_SLOTS * (currentPage + 1)) < clickablePage.totalClickables()) {
                         currentPage++;
                     }
                     showScreen();
@@ -166,11 +170,16 @@ public class MainGroupGUI extends AbstractGroupGUI {
      * blacklisted players, if they are supposed to be displayed. This is whats
      * directly fed into the middle of the gui
      */
-    private List<Clickable> constructClickables() {
-        List<Clickable> clicks = new ArrayList<>();
+    private ClickablePage constructClickables(final int startInclusive, final int endExclusive) {
+        final List<Clickable> clicks = new ArrayList<>();
+        int totalClickables = 0;
         if (showBlacklist) {
             final BlackList black = NameLayerPlugin.getBlackList();
             for (final UUID uuid : black.getBlacklist(g)) {
+                final int clickableIndex = totalClickables++;
+                if (clickableIndex < startInclusive || clickableIndex >= endExclusive) {
+                    continue;
+                }
                 ItemStack is = new ItemStack(Material.LEATHER_CHESTPLATE);
                 LeatherArmorMeta meta = (LeatherArmorMeta) is.getItemMeta();
                 meta.setColor(Color.BLACK);
@@ -226,6 +235,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
         if (showInvites) {
             Map<UUID, PlayerType> invites = g.getInvitesByUuid();
             for (Entry<UUID, PlayerType> entry : invites.entrySet()) {
+                if (entry.getValue() == null || entry.getValue() == PlayerType.NOT_BLACKLISTED) {
+                    continue;
+                }
+                final int clickableIndex = totalClickables++;
+                if (clickableIndex < startInclusive || clickableIndex >= endExclusive) {
+                    continue;
+                }
                 ItemStack is = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
                 ItemMeta im = is.getItemMeta();
                 im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -342,30 +358,34 @@ public class MainGroupGUI extends AbstractGroupGUI {
             .thenComparing(NameLayerAPI::getCurrentName, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
         for (UUID uuid : allMembers) {
             Clickable c = null;
-            switch (g.getPlayerType(uuid)) {
+            final Material material;
+            final PlayerType playerType = g.getPlayerType(uuid);
+            material = switch (playerType) {
+                case MEMBERS -> showMembers ? Material.LEATHER_CHESTPLATE : null;
+                case MODS -> showMods ? modMat() : null;
+                case ADMINS -> showAdmins ? Material.IRON_CHESTPLATE : null;
+                case OWNER -> showOwners ? Material.DIAMOND_CHESTPLATE : null;
+                default -> null;
+            };
+            if (material == null) {
+                continue;
+            }
+            final int clickableIndex = totalClickables++;
+            if (clickableIndex < startInclusive || clickableIndex >= endExclusive) {
+                continue;
+            }
+            switch (playerType) {
                 case MEMBERS:
-                    if (showMembers) {
-                        c = constructMemberClickable(Material.LEATHER_CHESTPLATE,
-                            uuid, PlayerType.MEMBERS);
-                    }
+                    c = constructMemberClickable(material, uuid, PlayerType.MEMBERS);
                     break;
                 case MODS:
-                    if (showMods) {
-                        c = constructMemberClickable(modMat(),
-                            uuid, PlayerType.MODS);
-                    }
+                    c = constructMemberClickable(material, uuid, PlayerType.MODS);
                     break;
                 case ADMINS:
-                    if (showAdmins) {
-                        c = constructMemberClickable(Material.IRON_CHESTPLATE,
-                            uuid, PlayerType.ADMINS);
-                    }
+                    c = constructMemberClickable(material, uuid, PlayerType.ADMINS);
                     break;
                 case OWNER:
-                    if (showOwners) {
-                        c = constructMemberClickable(Material.DIAMOND_CHESTPLATE,
-                            uuid, PlayerType.OWNER);
-                    }
+                    c = constructMemberClickable(material, uuid, PlayerType.OWNER);
                     break;
                 default:
                     // should never happen
@@ -375,7 +395,10 @@ public class MainGroupGUI extends AbstractGroupGUI {
             }
         }
 
-        return clicks;
+        return new ClickablePage(clicks, totalClickables);
+    }
+
+    private record ClickablePage(List<Clickable> clickables, int totalClickables) {
     }
 
     /**
