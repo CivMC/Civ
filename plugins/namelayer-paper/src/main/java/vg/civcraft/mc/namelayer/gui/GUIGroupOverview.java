@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,7 +25,6 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -73,20 +71,26 @@ public class GUIGroupOverview {
 
             @Override
             public void clicked(Player p) {
-                if (autoAccept) {
-                    NameLayerPlugin.log(Level.INFO,
-                        p.getName() + " turned autoaccept for invites off "
-                            + " via the gui");
-                    p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
-                } else {
-                    NameLayerPlugin.log(Level.INFO,
-                        p.getName() + " turned autoaccept for invites on "
-                            + " via the gui");
-                    p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
-                }
-                autoAccept = !autoAccept;
-                NameLayerPlugin.getAutoAcceptHandler().toggleAutoAccept(p.getUniqueId(), true);
-                showScreen();
+                final boolean enable = !autoAccept;
+                NameLayerPlugin.getAutoAcceptHandler().setAutoAcceptAsync(p.getUniqueId(), enable, result -> {
+                    if (result.success()) {
+                        autoAccept = enable;
+                        if (enable) {
+                            p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
+                            NameLayerPlugin.log(Level.INFO,
+                                p.getName() + " turned autoaccept for invites on "
+                                    + " via the gui");
+                        } else {
+                            p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
+                            NameLayerPlugin.log(Level.INFO,
+                                p.getName() + " turned autoaccept for invites off "
+                                    + " via the gui");
+                        }
+                    } else {
+                        p.sendMessage(ChatColor.RED + result.message());
+                    }
+                    showScreen();
+                });
             }
         };
         ci.setSlot(toggleClick, 48);
@@ -271,15 +275,6 @@ public class GUIGroupOverview {
                             showScreen();
                             return;
                         }
-                        if (NameLayerPlugin.getInstance().getGroupLimit() < gm
-                            .countGroups(p.getUniqueId()) + 1
-                            && !(p.isOp() || p
-                            .hasPermission("namelayer.admin"))) {
-                            p.sendMessage(ChatColor.RED
-                                + "You cannot create any more groups! Please delete an un-needed group before making more.");
-                            showScreen();
-                            return;
-                        }
                         // enforce regulations on the name
                         if (groupName.length() > 32) {
                             p.sendMessage(ChatColor.RED
@@ -314,32 +309,10 @@ public class GUIGroupOverview {
                         }
 
                         final UUID uuid = p.getUniqueId();
+                        final boolean adminOverride = p.isOp() || p.hasPermission("namelayer.admin");
+                        final int groupLimit = NameLayerPlugin.getInstance().getGroupLimit();
                         Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis(), "GRAY");
-                        gm.createGroupAsync(g, new RunnableOnGroup() {
-                            @Override
-                            public void run() {
-                                Player p = null;
-                                p = Bukkit.getPlayer(uuid);
-                                Group g = getGroup();
-                                if (p != null) {
-                                    if (g.getGroupId() == -1) { // failure
-                                        p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
-                                    } else {
-                                        p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
-                                        if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId())) {
-                                            p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with "
-                                                + NameLayerPlugin.getInstance().getGroupLimit()
-                                                + " groups! Please delete un-needed groups if you wish to create more.");
-                                        }
-                                    }
-                                    showScreen();
-
-                                } else {
-                                    NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
-                                        new Object[]{g.getName(), g.getGroupId()});
-                                }
-                            }
-                        }, false);
+                        gm.createGroupAsync(g, groupLimit, adminOverride);
                     }
                 };
 
@@ -419,9 +392,14 @@ public class GUIGroupOverview {
                                         p.getName() + " joined with password "
                                             + " to group " + g.getName()
                                             + " via the gui");
-                                    gro.addMember(p.getUniqueId(), pType);
-                                    p.sendMessage(ChatColor.GREEN + "You have successfully been added to " + gro.getName());
-                                    showScreen();
+                                    gro.joinGroupAsync(p.getUniqueId(), message[0], pType, result -> {
+                                        if (result.success()) {
+                                            p.sendMessage(ChatColor.GREEN + "You have successfully been added to " + gro.getName());
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + result.message());
+                                        }
+                                        showScreen();
+                                    });
                                 }
 
                             }

@@ -93,14 +93,19 @@ public class InvitationGUI extends AbstractGroupGUI {
                                             + " to group " + g.getName()
                                             + " via the gui");
 
-                                    InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
-
-                                    p.sendMessage(ChatColor.GREEN + "Invited " + NameLayerAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
+                                    InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), false, result -> {
+                                        if (result.success()) {
+                                            p.sendMessage(ChatColor.GREEN + "Invited " + NameLayerAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
+                                        } else {
+                                            p.sendMessage(ChatColor.RED + result.message());
+                                        }
+                                        parent.showScreen();
+                                    });
                                 }
                             } else {
                                 p.sendMessage(ChatColor.RED + "You do not have permission to invite a player to this rank");
+                                parent.showScreen();
                             }
-                            parent.showScreen();
                         }
 
                         public List<String> onTabComplete(String word, String[] msg) {

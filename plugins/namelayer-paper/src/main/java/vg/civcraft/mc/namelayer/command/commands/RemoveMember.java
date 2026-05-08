@@ -31,7 +31,7 @@ public class RemoveMember extends BaseCommandMiddle {
             return;
         }
         if (group.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is disiplined.");
+            p.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
         UUID executor = NameLayerAPI.getUUID(p.getName());
@@ -80,7 +80,12 @@ public class RemoveMember extends BaseCommandMiddle {
             return;
         }
 
-        p.sendMessage(ChatColor.GREEN + playerName + " has been removed from the group.");
-        group.removeMember(uuid);
+        group.removeMemberAsync(executor, uuid, result -> {
+            if (result.success()) {
+                p.sendMessage(ChatColor.GREEN + playerName + " has been removed from the group.");
+            } else {
+                p.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 }

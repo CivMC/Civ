@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
@@ -26,7 +25,7 @@ public class TransferGroup extends BaseCommandMiddle {
             return;
         }
         Player p = (Player) sender;
-        Group g = GroupManager.getGroup(groupName);
+        Group g = gm.getGroup(groupName);
         if (groupIsNull(sender, groupName, g)) {
             return;
         }
@@ -42,7 +41,7 @@ public class TransferGroup extends BaseCommandMiddle {
     }
 
     public static boolean attemptTransfer(Group g, Player owner, UUID futureOwner) {
-        GroupManager gm = NameLayerAPI.getGroupManager();
+        vg.civcraft.mc.namelayer.GroupManager gm = NameLayerAPI.getGroupManager();
         if (!g.isOwner(owner.getUniqueId()) && !(owner.isOp() || owner.hasPermission("namelayer.admin"))) {
             owner.sendMessage(ChatColor.RED
                 + "You don't own this group");
@@ -66,11 +65,14 @@ public class TransferGroup extends BaseCommandMiddle {
                 + " is not a member of the group and can't be made primary owner!");
             return false;
         }
-        g.removeMember(futureOwner);
-        g.addMember(futureOwner, GroupManager.PlayerType.OWNER);
-        g.setOwner(futureOwner);
-        owner.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(futureOwner)
-            + " has been given ownership of the group and promoted to OWNER role.");
+        g.setOwnerAsync(owner.getUniqueId(), futureOwner, NameLayerPlugin.getInstance().getGroupLimit(), owner.isOp() || owner.hasPermission("namelayer.admin"), result -> {
+            if (result.success()) {
+                owner.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(futureOwner)
+                    + " has been given ownership of the group and promoted to OWNER role.");
+            } else {
+                owner.sendMessage(ChatColor.RED + result.message());
+            }
+        });
         return true;
     }
 }

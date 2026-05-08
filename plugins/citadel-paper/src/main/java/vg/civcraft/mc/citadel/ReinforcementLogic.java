@@ -67,6 +67,7 @@ public final class ReinforcementLogic {
         futureHealth = Math.min(futureHealth, rein.getType().getHealth());
         rein.setHealth(futureHealth);
         if (rein.isBroken()) {
+            Citadel.getInstance().getReinforcementManager().removeReinforcement(rein);
             if (rein.getType().getDestructionEffect() != null) {
                 rein.getType().getDestructionEffect().playEffect(rein);
             }
@@ -112,7 +113,7 @@ public final class ReinforcementLogic {
         Location location = reinforcement.getLocation();
         WorldBorderBuffers buffer = Citadel.getInstance().getConfigManager().getWorldBorderBuffers()
             .get(location.getWorld().getUID());
-        if (!buffer.decay()) {
+        if (buffer == null || !buffer.decay()) {
             return 1;
         }
 
