@@ -74,7 +74,7 @@ public final class NameLayerWriteCoordinator {
         final NameLayerInvalidationPublisher invalidationPublisher,
         final ProxyServer proxyServer,
         final Logger logger,
-        Map<String, String> serverDatabases) {
+        final Map<String, String> serverDatabases) {
         this.dataSource = dataSource;
         this.invalidationPublisher = invalidationPublisher;
         this.proxyServer = proxyServer;
@@ -1147,6 +1147,9 @@ public final class NameLayerWriteCoordinator {
         if (player == null) {
             return;
         }
+        if (!isOnSameDatabase(player, request.originServerId())) {
+            return;
+        }
         if (autoAccept) {
             player.sendMessage(Component.text(" You have auto-accepted invite to the group: " + groupName, NamedTextColor.GREEN));
             return;
@@ -1168,6 +1171,16 @@ public final class NameLayerWriteCoordinator {
                 + "so they always are accepted please run /autoaccept", NamedTextColor.GREEN)
             .clickEvent(ClickEvent.runCommand("/nlag " + groupName))
             .hoverEvent(HoverEvent.showText(Component.text("  ---  Click to accept"))));
+    }
+
+    private boolean isOnSameDatabase(final Player player, final String originServerId) {
+        final String originDatabase = serverDatabases.get(originServerId);
+        if (originDatabase == null) {
+            return false;
+        }
+        return player.getCurrentServer()
+            .map(serverConnection -> originDatabase.equals(serverDatabases.get(serverConnection.getServerInfo().getName())))
+            .orElse(false);
     }
 
     private String getCurrentName(final Connection connection, final UUID uuid) throws SQLException {
