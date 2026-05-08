@@ -217,10 +217,12 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                     showScreen();
                     return;
                 }
-                NameLayerPlugin.log(Level.INFO,
-                    p.getName() + " deleted " + g.getName() + " via the gui");
+                Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () ->
+                    ClickableInventory.forceCloseInventory(p));
                 gm.deleteGroupAsync(p.getUniqueId(), g, false, result -> {
                     if (result.success()) {
+                        NameLayerPlugin.log(Level.INFO,
+                            p.getName() + " deleted " + g.getName() + " via the gui");
                         p.sendMessage(ChatColor.GREEN + g.getName() + " was successfully deleted.");
                     } else {
                         p.sendMessage(ChatColor.RED + result.message());
