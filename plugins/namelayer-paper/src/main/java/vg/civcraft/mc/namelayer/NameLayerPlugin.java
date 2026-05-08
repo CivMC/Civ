@@ -75,7 +75,10 @@ public class NameLayerPlugin extends ACivMod {
         if (loadGroups) {
             PermissionType.initialize();
             blackList = new BlackList();
-            groupCache = NameLayerGroupCache.loadAll(nameLayerReadDao, getLogger());
+            groupCache = new NameLayerGroupCache();
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                groupCache = NameLayerGroupCache.loadAll(nameLayerReadDao, getLogger());
+            });
             startInvalidationConsumer();
             if (config.getBoolean("groups.interact", true)) {
                 defaultGroupHandler = new DefaultGroupHandler();
