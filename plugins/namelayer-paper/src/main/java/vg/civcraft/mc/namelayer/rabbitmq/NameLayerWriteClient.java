@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
 import net.civmc.namelayer.sync.NameLayerWriteRequest;
 import net.civmc.namelayer.sync.NameLayerWriteResponse;
+import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public final class NameLayerWriteClient implements AutoCloseable {
 
@@ -33,20 +35,30 @@ public final class NameLayerWriteClient implements AutoCloseable {
     private final Map<UUID, CompletableFuture<NameLayerWriteResponse>> pendingResponses = new ConcurrentHashMap<>();
     private Connection connection;
     private Channel channel;
+    private final JavaPlugin plugin;
+    private volatile boolean closing;
+    private volatile boolean reconnectScheduled;
 
     private String queue;
 
     public NameLayerWriteClient(
         final ConnectionFactory connectionFactory,
-        final Logger logger
+        final Logger logger, JavaPlugin plugin
     ) {
         this.connectionFactory = connectionFactory;
         this.logger = logger;
+        this.plugin = plugin;
     }
 
     public boolean start() {
+        closing = false;
+        return connect();
+    }
+
+    public boolean connect() {
         try {
             connection = connectionFactory.newConnection("namelayer-paper-writes");
+            connection.addShutdownListener(cause -> scheduleReconnect());
             channel = connection.createChannel();
             Map<String, Object> args = new HashMap<>();
             args.put("x-message-ttl", 12000);
@@ -57,10 +69,33 @@ public final class NameLayerWriteClient implements AutoCloseable {
             });
             return true;
         } catch (final IOException | TimeoutException exception) {
-            logger.log(Level.SEVERE, "Failed to start NameLayer RabbitMQ write client", exception);
+            logger.log(Level.SEVERE, "Failed to connect NameLayer RabbitMQ write client", exception);
             close();
             return false;
         }
+    }
+
+    private void scheduleReconnect() {
+        if (closing || reconnectScheduled || !plugin.isEnabled()) {
+            return;
+        }
+        reconnectScheduled = true;
+        NameLayerPlugin.recordRabbitMqReconnect();
+        logger.log(Level.WARNING,
+            "NameLayer RabbitMQ write client connection closed; reconnecting after 5 seconds");
+        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            if (closing || !plugin.isEnabled()) {
+                reconnectScheduled = false;
+                return;
+            }
+            closeChannel();
+            closeChannel();
+            final boolean connected = connect();
+            reconnectScheduled = false;
+            if (!connected) {
+                scheduleReconnect();
+            }
+        }, 20L * 5L);
     }
 
     public CompletableFuture<NameLayerWriteResponse> send(final NameLayerWriteRequest request) {

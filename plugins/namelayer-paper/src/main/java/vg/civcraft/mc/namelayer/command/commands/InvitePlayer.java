@@ -6,11 +6,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +15,6 @@ import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitePlayer extends BaseCommandMiddle {
@@ -41,7 +35,7 @@ public class InvitePlayer extends BaseCommandMiddle {
             return;
         }
         if (!isAdmin && group.isDisciplined()) {
-            s.sendMessage(ChatColor.RED + "This group is disiplined.");
+            s.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
         final UUID targetAccount = NameLayerAPI.getUUID(targetPlayer);
@@ -121,35 +115,6 @@ public class InvitePlayer extends BaseCommandMiddle {
         boolean adminOverride,
         java.util.function.Consumer<Group.MemberWriteResult> callback
     ) {
-        Player invitee = Bukkit.getPlayer(invitedPlayer);
-        boolean shouldAutoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(invitedPlayer);
-        group.addInviteAsync(inviter == null ? invitedPlayer : inviter, invitedPlayer, pType, adminOverride, result -> {
-            if (result.success()) {
-                if (invitee != null) {
-                    if (shouldAutoAccept) {
-                        invitee.sendMessage(ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
-                    } else {
-                        String msg;
-                        if (inviter != null) {
-                            String inviterName = NameLayerAPI.getCurrentName(inviter);
-                            msg = "You have been invited to the group " + group.getName()
-                                + " by " + inviterName + ".\n";
-                        } else {
-                            msg = "You have been invited to the group " + group.getName() + ".\n";
-                        }
-                        TextComponent message = new TextComponent(msg + "Click this message to accept. If you wish to toggle invites "
-                            + "so they always are accepted please run /autoaccept");
-                        message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-                        message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/nlag " + group.getName()));
-                        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("  ---  Click to accept").create()));
-                        invitee.spigot().sendMessage(message);
-                    }
-                }
-                if (!shouldAutoAccept) {
-                    PlayerListener.addNotification(invitedPlayer, group);
-                }
-            }
-            callback.accept(result);
-        });
+        group.addInviteAsync(inviter == null ? invitedPlayer : inviter, invitedPlayer, pType, adminOverride, inviter != null, callback);
     }
 }

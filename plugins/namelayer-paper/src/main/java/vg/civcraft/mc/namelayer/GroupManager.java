@@ -239,27 +239,24 @@ public class GroupManager {
      *
      * @param group             the Group placeholder to use in creating a group. Calls GroupCreateEvent synchronously, then insert the
      *                          group asynchronously, then calls the callback synchronously.
-     * @param postCreate        The callback to run after insertion (whether successful or not!)
-     * @param checkBeforeCreate Checks if the group already exists (asynchronously) prior to creating it. Runs the CreateEvent
-     *                          synchronously, then behaves as normal after that (running async create).
      */
-    public void createGroupAsync(final Group group, final Consumer<Group> postCreate, boolean checkBeforeCreate, final int maxGroups, final boolean adminOverride) {
-        if (group == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
-            Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> postCreate.accept(null));
-            return;
-        }
-        if (checkBeforeCreate && getGroup(group.getName()) != null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, group {0} already exists", group.getName());
-            Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> postCreate.accept(null));
-            return;
-        }
+    public void createGroupAsync(final Group group, final int maxGroups, final boolean adminOverride) {
         createGroupAsync(group.getOwner(), group.getName(), group.getPassword(), maxGroups, adminOverride, result -> {
             Group createdGroup = result.group();
-            if (!result.success() || createdGroup == null) {
-                createdGroup = null;
+            if (createdGroup != null) {
+                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
+                    new Object[]{createdGroup.getName(), createdGroup.getGroupId()});
             }
-            postCreate.accept(createdGroup);
+
+            Player player = Bukkit.getPlayer(group.getOwner());
+            if (player == null) {
+                return;
+            }
+            if (createdGroup == null) {
+                player.sendMessage(ChatColor.RED + result.message());
+            } else {
+                player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
+            }
         });
     }
 

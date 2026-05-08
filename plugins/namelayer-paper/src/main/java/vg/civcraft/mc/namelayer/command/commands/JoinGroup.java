@@ -26,7 +26,7 @@ public class JoinGroup extends BaseCommandMiddle {
             return;
         }
         if (g.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is disiplined.");
+            p.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
         if (g.getPassword() == null) {

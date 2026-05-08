@@ -9,11 +9,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.sql.DataSource;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import net.civmc.namelayer.sync.NameLayerInvalidationMessage;
 import net.civmc.namelayer.sync.NameLayerWriteFailureCode;
 import net.civmc.namelayer.sync.NameLayerWriteRequest;
 import net.civmc.namelayer.sync.NameLayerWriteResponse;
 import net.civmc.namelayer.velocity.rabbitmq.NameLayerInvalidationPublisher;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.slf4j.Logger;
 
 public final class NameLayerWriteCoordinator {
@@ -51,6 +57,7 @@ public final class NameLayerWriteCoordinator {
     private static final String ADD_INVITATION = "INSERT INTO group_invitation(uuid, groupName, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE role = VALUES(role), date = NOW()";
     private static final String GET_INVITATION_ROLE = "SELECT role FROM group_invitation WHERE uuid = ? AND groupName = ? LIMIT 1";
     private static final String REMOVE_INVITATION = "DELETE FROM group_invitation WHERE uuid = ? AND groupName = ?";
+    private static final String GET_PLAYER_NAME = "SELECT player FROM Name_player WHERE uuid = ? LIMIT 1";
     private static final String SET_DEFAULT_GROUP = "INSERT INTO default_group(uuid, defaultgroup) VALUES (?, ?) ON DUPLICATE KEY UPDATE defaultgroup = VALUES(defaultgroup)";
     private static final String GET_GROUP_NAME = "SELECT group_name FROM faction_id WHERE group_id = ? LIMIT 1";
     private static final String DELETE_GROUP = "CALL deletegroupfromtable(?, ?)";
@@ -58,16 +65,19 @@ public final class NameLayerWriteCoordinator {
 
     private final DataSource dataSource;
     private final NameLayerInvalidationPublisher invalidationPublisher;
+    private final ProxyServer proxyServer;
     private final Logger logger;
     private final Map<String, String> serverDatabases;
 
     public NameLayerWriteCoordinator(
         final DataSource dataSource,
         final NameLayerInvalidationPublisher invalidationPublisher,
+        final ProxyServer proxyServer,
         final Logger logger,
         Map<String, String> serverDatabases) {
         this.dataSource = dataSource;
         this.invalidationPublisher = invalidationPublisher;
+        this.proxyServer = proxyServer;
         this.logger = logger;
         this.serverDatabases = serverDatabases;
     }
@@ -395,7 +405,8 @@ public final class NameLayerWriteCoordinator {
                     connection.rollback();
                     return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.GROUP_NOT_FOUND, "Group does not exist");
                 }
-                if (isAutoAccept(connection, invitationWrite.memberUuid())) {
+                final boolean autoAccept = isAutoAccept(connection, invitationWrite.memberUuid());
+                if (autoAccept) {
                     addMember(connection, invitationWrite.groupId(), invitationWrite.memberUuid(), invitationWrite.role());
                     removeInvitation(connection, invitationWrite.memberUuid(), groupName);
                 } else {
@@ -404,6 +415,7 @@ public final class NameLayerWriteCoordinator {
                 incrementCacheVersion(connection);
                 connection.commit();
                 publishInvalidation(request, invitationWrite.groupId());
+                sendInvitationMessage(connection, request, invitationWrite, groupName, autoAccept);
                 return NameLayerWriteResponse.success(request.requestId(), Set.of(invitationWrite.groupId()));
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -1118,6 +1130,52 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
+    private void sendInvitationMessage(
+        final Connection connection,
+        final NameLayerWriteRequest request,
+        final InvitationWrite invitationWrite,
+        final String groupName,
+        final boolean autoAccept
+    ) {
+        final Player player = proxyServer.getPlayer(invitationWrite.memberUuid()).orElse(null);
+        if (player == null) {
+            return;
+        }
+        if (autoAccept) {
+            player.sendMessage(Component.text(" You have auto-accepted invite to the group: " + groupName, NamedTextColor.GREEN));
+            return;
+        }
+        final String inviteText;
+        if (invitationWrite.showInviter()) {
+            final String inviterName;
+            try {
+                inviterName = getCurrentName(connection, request.actorUuid());
+            } catch (final SQLException exception) {
+                logger.warn("Failed to look up inviter name for invitation message", exception);
+                return;
+            }
+            inviteText = "You have been invited to the group " + groupName + " by " + inviterName + ".\n";
+        } else {
+            inviteText = "You have been invited to the group " + groupName + ".\n";
+        }
+        player.sendMessage(Component.text(inviteText + "Click this message to accept. If you wish to toggle invites "
+                + "so they always are accepted please run /autoaccept", NamedTextColor.GREEN)
+            .clickEvent(ClickEvent.runCommand("/nlag " + groupName))
+            .hoverEvent(HoverEvent.showText(Component.text("  ---  Click to accept"))));
+    }
+
+    private String getCurrentName(final Connection connection, final UUID uuid) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(GET_PLAYER_NAME)) {
+            statement.setString(1, uuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return resultSet.getString(1);
+            }
+        }
+    }
+
     private record PermissionWrite(int groupId, String role, String permissionName) {
 
         private static PermissionWrite from(final Map<String, String> arguments) {
@@ -1210,7 +1268,7 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
-    private record InvitationWrite(int groupId, UUID memberUuid, String role, boolean adminOverride) {
+    private record InvitationWrite(int groupId, UUID memberUuid, String role, boolean adminOverride, boolean showInviter) {
 
         private static InvitationWrite from(final Map<String, String> arguments, final boolean requireRole) {
             final MemberWrite memberWrite = MemberWrite.from(arguments);
@@ -1222,7 +1280,8 @@ public final class NameLayerWriteCoordinator {
                 role = null;
             }
             final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
-            return new InvitationWrite(memberWrite.groupId(), memberWrite.memberUuid(), role, adminOverride);
+            final boolean showInviter = Boolean.parseBoolean(arguments.getOrDefault("showInviter", "true"));
+            return new InvitationWrite(memberWrite.groupId(), memberWrite.memberUuid(), role, adminOverride, showInviter);
         }
     }
 

@@ -7,8 +7,6 @@ import co.aikar.commands.annotation.Syntax;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -57,22 +55,7 @@ public class CreateGroup extends BaseCommandMiddle {
         }
         final UUID uuid = NameLayerAPI.getUUID(sender.getName());
         Group g = new Group(name, uuid, false, userPassword, -1, System.currentTimeMillis(), "GRAY");
-        gm.createGroupAsync(g, createdGroup -> {
-            if (createdGroup != null) {
-                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
-                    new Object[]{createdGroup.getName(), createdGroup.getGroupId()});
-            }
-
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null) {
-                return;
-            }
-            if (createdGroup == null) {
-                player.sendMessage(ChatColor.RED + "That group is already taken, you have reached the group limit, or creation failed.");
-            } else {
-                player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
-            }
-        }, false, groupLimit, adminOverride);
+        gm.createGroupAsync(g, groupLimit, adminOverride);
         sender.sendMessage(ChatColor.GREEN + "Group creation request is in process.");
     }
 }

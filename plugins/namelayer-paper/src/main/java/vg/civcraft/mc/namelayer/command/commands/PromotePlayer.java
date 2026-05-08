@@ -49,7 +49,7 @@ public class PromotePlayer extends BaseCommandMiddle {
             return;
         }
         if (group.isDisciplined()) {
-            sender.sendMessage(ChatColor.RED + "This group is disiplined.");
+            sender.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
 

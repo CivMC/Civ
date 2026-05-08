@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -313,24 +312,7 @@ public class GUIGroupOverview {
                         final boolean adminOverride = p.isOp() || p.hasPermission("namelayer.admin");
                         final int groupLimit = NameLayerPlugin.getInstance().getGroupLimit();
                         Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis(), "GRAY");
-                        gm.createGroupAsync(g, createdGroup -> {
-                            if (createdGroup != null) {
-                                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
-                                    new Object[]{createdGroup.getName(), createdGroup.getGroupId()});
-                            }
-
-                            Player player = Bukkit.getPlayer(uuid);
-                            if (player == null) {
-                                return;
-                            }
-
-                            if (createdGroup == null) { // failure
-                                player.sendMessage(ChatColor.RED + "That group is already taken, you have reached the group limit, or creation failed.");
-                            } else {
-                                player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
-                            }
-                            showScreen();
-                        }, false, groupLimit, adminOverride);
+                        gm.createGroupAsync(g, groupLimit, adminOverride);
                     }
                 };
 

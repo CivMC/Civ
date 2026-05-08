@@ -81,7 +81,7 @@ public class DeleteGroup extends BaseCommandMiddle {
             return;
         }
         if (g.isDisciplined() && !p.hasPermission("namelayer.admin")) {
-            p.sendMessage(Component.text("Group is disiplined.").color(NamedTextColor.RED));
+            p.sendMessage(Component.text("Group is disciplined.").color(NamedTextColor.RED));
             return;
         }
         //set that user can confirm group in 15 seconds

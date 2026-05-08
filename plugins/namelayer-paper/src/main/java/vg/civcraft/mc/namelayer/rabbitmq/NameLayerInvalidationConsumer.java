@@ -79,7 +79,7 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
             logger.log(Level.INFO, "NameLayer consuming invalidations from " + queueName);
             return true;
         } catch (final IOException | TimeoutException exception) {
-            logger.log(Level.SEVERE, "Failed to start NameLayer RabbitMQ invalidation consumer", exception);
+            logger.log(Level.SEVERE, "Failed to connect NameLayer RabbitMQ invalidation consumer", exception);
             closeResources();
             return false;
         } catch (final RuntimeException exception) {

@@ -1,9 +1,7 @@
 package vg.civcraft.mc.namelayer.listeners;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
@@ -14,11 +12,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.cache.NameLayerGroupCache;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class PlayerListener implements Listener {
-
-    private static Map<UUID, Set<Group>> notifications = new HashMap<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerJoinEvent(PlayerJoinEvent event) {
@@ -29,17 +26,12 @@ public class PlayerListener implements Listener {
             handleFirstJoin(p);
         }
 
-        if (!notifications.containsKey(uuid) || notifications.get(uuid).isEmpty())
-            return;
-
-        String x = null;
-
         boolean shouldAutoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(uuid);
         if (shouldAutoAccept) {
-            x = "You have auto-accepted invitation from the following groups while you were away: ";
-        } else {
-            x = "You have been invited to the following groups while you were away. You can accept each invitation by using the command: /nlag [groupname].  ";
+            return;
         }
+
+        String x = "You have been invited to the following groups while you were away. You can accept each invitation by using the command: /nlag [groupname].  ";
 
         for (Group g : getNotifications(uuid)) {
             x += g.getName() + ", ";
@@ -49,16 +41,15 @@ public class PlayerListener implements Listener {
         p.sendMessage(ChatColor.YELLOW + x);
     }
 
-    public static void addNotification(UUID u, Group g) {
-        getNotifications(u).add(g);
-    }
-
-    public static Set<Group> getNotifications(UUID player) {
-        return notifications.computeIfAbsent(player, e -> new HashSet<>());
-    }
-
-    public static void removeNotification(UUID u, Group g) {
-        getNotifications(u).remove(g);
+    public static List<Group> getNotifications(UUID uuid) {
+        final NameLayerGroupCache cache = NameLayerPlugin.getGroupCache();
+        if (uuid == null || cache == null) {
+            return Collections.emptyList();
+        }
+        return cache.snapshotGroups().stream()
+            .filter(group -> group.getInvite(uuid) != null)
+            .sorted((first, second) -> String.CASE_INSENSITIVE_ORDER.compare(first.getName(), second.getName()))
+            .toList();
     }
 
     public static String getNotificationsInStringForm(UUID u) {

@@ -41,7 +41,7 @@ public class ModifyPermissions extends BaseCommandMiddle {
             return;
         }
         if (g.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is currently disiplined.");
+            p.sendMessage(ChatColor.RED + "This group is currently disciplined.");
             return;
         }
         if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))) {

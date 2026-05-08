@@ -13,7 +13,6 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RevokeInvite extends BaseCommandMiddle {
@@ -33,7 +32,7 @@ public class RevokeInvite extends BaseCommandMiddle {
             return;
         }
         if (group.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is disiplined.");
+            p.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
         UUID executor = NameLayerAPI.getUUID(p.getName());
@@ -78,7 +77,6 @@ public class RevokeInvite extends BaseCommandMiddle {
 
         group.removeInviteAsync(p.getUniqueId(), uuid, p.hasPermission("namelayer.admin"), result -> {
             if (result.success()) {
-                PlayerListener.removeNotification(uuid, group);
                 p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(uuid) + "'s invitation has been revoked.");
             } else {
                 p.sendMessage(ChatColor.RED + result.message());

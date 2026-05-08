@@ -70,7 +70,13 @@ public final class NameLayerVelocityPlugin {
             logger.error("NameLayer Velocity failed to start RabbitMQ invalidation publisher");
             return;
         }
-        final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(dataSource, invalidationPublisher, logger, config.serverDatabases());
+        final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(
+            dataSource,
+            invalidationPublisher,
+            proxyServer,
+            logger,
+            config.serverDatabases()
+        );
         writeRequestConsumer = new NameLayerWriteRequestConsumer(
             config.rabbitMq().connectionFactory(),
             coordinator,

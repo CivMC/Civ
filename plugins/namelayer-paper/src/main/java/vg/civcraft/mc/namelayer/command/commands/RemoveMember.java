@@ -31,7 +31,7 @@ public class RemoveMember extends BaseCommandMiddle {
             return;
         }
         if (group.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is disiplined.");
+            p.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
         UUID executor = NameLayerAPI.getUUID(p.getName());

@@ -218,6 +218,7 @@ public final class Group {
         final UUID invitedUuid,
         final PlayerType type,
         final boolean adminOverride,
+        final boolean showInviter,
         final Consumer<MemberWriteResult> callback
     ) {
         if (type == PlayerType.NOT_BLACKLISTED) {
@@ -231,7 +232,8 @@ public final class Group {
                 "groupId", Integer.toString(getGroupId()),
                 "memberUuid", invitedUuid.toString(),
                 "role", type.name(),
-                "adminOverride", Boolean.toString(adminOverride)
+                "adminOverride", Boolean.toString(adminOverride),
+                "showInviter", Boolean.toString(showInviter)
             ),
             callback
         );
