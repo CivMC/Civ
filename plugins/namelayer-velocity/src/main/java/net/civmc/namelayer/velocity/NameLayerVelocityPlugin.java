@@ -67,7 +67,7 @@ public final class NameLayerVelocityPlugin {
             logger
         );
         if (!invalidationPublisher.start()) {
-            logger.error("NameLayer Velocity failed to start RabbitMQ invalidation publisher");
+            logger.warn("NameLayer Velocity failed to start RabbitMQ invalidation publisher");
             return;
         }
         final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(
@@ -85,7 +85,7 @@ public final class NameLayerVelocityPlugin {
             logger
         );
         if (!writeRequestConsumer.start()) {
-            logger.error("NameLayer Velocity failed to start RabbitMQ write request consumer");
+            logger.warn("NameLayer Velocity failed to start RabbitMQ write request consumer");
         }
     }
 

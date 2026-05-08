@@ -8,6 +8,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -26,8 +27,6 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
     private final ProxyServer proxyServer;
     private final Object plugin;
     private final Logger logger;
-    private volatile boolean closing;
-    private volatile boolean reconnectScheduled;
     private Connection connection;
     private Channel channel;
 
@@ -44,18 +43,12 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
     }
 
     public boolean start() {
-        closing = false;
-        if (connect()) {
-            return true;
-        }
-        scheduleReconnect(null);
-        return true;
+        return connect();
     }
 
     private synchronized boolean connect() {
         try {
             final Connection newConnection = connectionFactory.newConnection("namelayer-velocity-invalidations");
-            newConnection.addShutdownListener(cause -> scheduleReconnect(newConnection));
             connection = newConnection;
             final Channel newChannel = newConnection.createChannel();
             channel = newChannel;
@@ -67,41 +60,20 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
             channel.confirmSelect();
             logger.info("NameLayer RabbitMQ invalidation publisher connected");
             return true;
+        } catch (ConnectException ex) {
+            logger.warn("Retrying RabbitMQ connection");
+            proxyServer.getScheduler().buildTask(plugin, this::connect).delay(RECONNECT_DELAY_SECONDS, TimeUnit.SECONDS).schedule();
+            return false;
         } catch (final IOException | TimeoutException exception) {
             logger.error("Failed to connect NameLayer RabbitMQ invalidation publisher", exception);
-            closeResources();
             return false;
         }
-    }
-
-    private synchronized void scheduleReconnect(final Connection closedConnection) {
-        if (closedConnection != null && closedConnection != connection) {
-            return;
-        }
-        if (closing || reconnectScheduled) {
-            return;
-        }
-        reconnectScheduled = true;
-        logger.warn("NameLayer RabbitMQ invalidation publisher disconnected; reconnecting in {} seconds", RECONNECT_DELAY_SECONDS);
-        proxyServer.getScheduler().buildTask(plugin, () -> {
-            if (closing) {
-                reconnectScheduled = false;
-                return;
-            }
-            closeResources();
-            final boolean connected = connect();
-            reconnectScheduled = false;
-            if (!connected) {
-                scheduleReconnect(null);
-            }
-        }).delay(RECONNECT_DELAY_SECONDS, TimeUnit.SECONDS).schedule();
     }
 
     public synchronized boolean publish(final String database, final NameLayerInvalidationMessage invalidation) {
         Objects.requireNonNull(invalidation, "invalidation");
         if (channel == null || !channel.isOpen()) {
             logger.error("NameLayer invalidation publisher is not connected");
-            scheduleReconnect(null);
             return false;
         }
         try {
@@ -121,28 +93,18 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
             if (exception instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
-            scheduleReconnect(null);
             return false;
         }
     }
 
     @Override
     public synchronized void close() {
-        closing = true;
-        closeResources();
-    }
-
-    private void closeResources() {
         closeChannel();
         closeConnection();
     }
 
     private void closeChannel() {
         if (channel == null) {
-            return;
-        }
-        if (!channel.isOpen()) {
-            channel = null;
             return;
         }
         try {
@@ -156,10 +118,6 @@ public final class NameLayerInvalidationPublisher implements AutoCloseable {
 
     private void closeConnection() {
         if (connection == null) {
-            return;
-        }
-        if (!connection.isOpen()) {
-            connection = null;
             return;
         }
         try {

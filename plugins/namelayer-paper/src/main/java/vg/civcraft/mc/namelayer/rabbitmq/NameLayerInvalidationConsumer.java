@@ -9,6 +9,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.civmc.namelayer.sync.NameLayerInvalidationMessage;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -33,8 +35,6 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
     private final Logger logger;
     private final String database;
     private final JavaPlugin plugin;
-    private volatile boolean closing;
-    private volatile boolean reconnectScheduled;
     private Connection connection;
     private Channel channel;
 
@@ -52,7 +52,6 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
     }
 
     public boolean start() {
-        closing = false;
         return connect(false);
     }
 
@@ -62,7 +61,6 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
                 GroupManager.fullResyncCache();
             }
             connection = connectionFactory.newConnection("namelayer-paper-invalidations-" + serverId);
-            connection.addShutdownListener(cause -> scheduleReconnect());
             channel = connection.createChannel();
             channel.exchangeDeclare(
                 NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE,
@@ -78,37 +76,17 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
             });
             logger.log(Level.INFO, "NameLayer consuming invalidations from " + queueName);
             return true;
+        } catch (ConnectException ex) {
+            logger.log(Level.WARNING, "Retrying RabbitMQ connection");
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> connect(true), 20 * 5);
+            return false;
         } catch (final IOException | TimeoutException exception) {
             logger.log(Level.SEVERE, "Failed to connect NameLayer RabbitMQ invalidation consumer", exception);
-            closeResources();
             return false;
         } catch (final RuntimeException exception) {
             logger.log(Level.SEVERE, "Failed to resync NameLayer before RabbitMQ reconnect", exception);
-            closeResources();
             return false;
         }
-    }
-
-    private void scheduleReconnect() {
-        if (closing || reconnectScheduled || !plugin.isEnabled()) {
-            return;
-        }
-        reconnectScheduled = true;
-        NameLayerPlugin.recordRabbitMqReconnect();
-        logger.log(Level.WARNING,
-            "NameLayer RabbitMQ invalidation connection closed; reconnecting after full resync");
-        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-            if (closing || !plugin.isEnabled()) {
-                reconnectScheduled = false;
-                return;
-            }
-            closeResources();
-            final boolean connected = connect(true);
-            reconnectScheduled = false;
-            if (!connected) {
-                scheduleReconnect();
-            }
-        }, 20L * 5L);
     }
 
     private void handleDelivery(final byte[] body, final long deliveryTag) throws IOException {
@@ -166,11 +144,6 @@ public final class NameLayerInvalidationConsumer implements AutoCloseable {
 
     @Override
     public void close() {
-        closing = true;
-        closeResources();
-    }
-
-    private void closeResources() {
         closeChannel();
         closeConnection();
     }

@@ -10,6 +10,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -31,8 +32,6 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
     private final ProxyServer proxyServer;
     private final Object plugin;
     private final Logger logger;
-    private volatile boolean closing;
-    private volatile boolean reconnectScheduled;
     private Connection connection;
     private Channel channel;
 
@@ -51,21 +50,14 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
     }
 
     public boolean start() {
-        closing = false;
-        if (connect()) {
-            return true;
-        }
-        scheduleReconnect(null);
-        return true;
+        return connect();
     }
 
     private synchronized boolean connect() {
         try {
             final Connection newConnection = connectionFactory.newConnection("namelayer-velocity-writes");
-            newConnection.addShutdownListener(cause -> scheduleReconnect(newConnection));
             connection = newConnection;
-            final Channel newChannel = newConnection.createChannel();
-            channel = newChannel;
+            channel = newConnection.createChannel();
             channel.queueDeclare(
                 NameLayerRabbitMqTopology.WRITE_REQUEST_QUEUE,
                 NameLayerRabbitMqTopology.WRITE_REQUEST_QUEUE_DURABLE,
@@ -79,34 +71,14 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
             });
             logger.info("NameLayer RabbitMQ write request consumer connected");
             return true;
+        } catch (ConnectException ex) {
+            logger.warn("Retrying RabbitMQ connection");
+            proxyServer.getScheduler().buildTask(plugin, this::connect).delay(RECONNECT_DELAY_SECONDS, TimeUnit.SECONDS).schedule();
+            return false;
         } catch (final IOException | TimeoutException exception) {
             logger.error("Failed to connect NameLayer RabbitMQ write request consumer", exception);
-            closeResources();
             return false;
         }
-    }
-
-    private synchronized void scheduleReconnect(final Connection closedConnection) {
-        if (closedConnection != null && closedConnection != connection) {
-            return;
-        }
-        if (closing || reconnectScheduled) {
-            return;
-        }
-        reconnectScheduled = true;
-        logger.warn("NameLayer RabbitMQ write request consumer disconnected; reconnecting in {} seconds", RECONNECT_DELAY_SECONDS);
-        proxyServer.getScheduler().buildTask(plugin, () -> {
-            if (closing) {
-                reconnectScheduled = false;
-                return;
-            }
-            closeResources();
-            final boolean connected = connect();
-            reconnectScheduled = false;
-            if (!connected) {
-                scheduleReconnect(null);
-            }
-        }).delay(RECONNECT_DELAY_SECONDS, TimeUnit.SECONDS).schedule();
     }
 
     private void handleDelivery(final byte[] body, final AMQP.BasicProperties properties, final long deliveryTag) throws IOException {
@@ -189,23 +161,8 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
         }
     }
 
-    @Override
-    public synchronized void close() {
-        closing = true;
-        closeResources();
-    }
-
-    private void closeResources() {
-        closeChannel();
-        closeConnection();
-    }
-
     private void closeChannel() {
         if (channel == null) {
-            return;
-        }
-        if (!channel.isOpen()) {
-            channel = null;
             return;
         }
         try {
@@ -221,10 +178,6 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
         if (connection == null) {
             return;
         }
-        if (!connection.isOpen()) {
-            connection = null;
-            return;
-        }
         try {
             connection.close();
         } catch (final IOException exception) {
@@ -232,5 +185,11 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
         } finally {
             connection = null;
         }
+    }
+
+    @Override
+    public void close() {
+        closeChannel();
+        closeConnection();
     }
 }
