@@ -39,7 +39,7 @@ public final class NameLayerWriteCoordinator {
     private static final String SET_GROUP_OWNER = "UPDATE faction f JOIN faction_id fi ON fi.group_name = f.group_name SET f.founder = ? WHERE fi.group_id = ?";
     private static final String SET_OWNER_MEMBER_ROLE = "UPDATE faction_member SET role = 'OWNER' WHERE group_id = ? AND member_name = ?";
     private static final String CREATE_GROUP = "CALL createGroup(?, ?, ?, ?)";
-    private static final String COUNT_OWNED_GROUPS = "SELECT COUNT(*) FROM faction_id WHERE founder = ?";
+    private static final String COUNT_OWNED_GROUPS = "SELECT COUNT(*) FROM faction WHERE founder = ?";
     private static final String ADD_PERMISSION_BY_NAME = "INSERT IGNORE INTO permission_by_group_name(group_id, role, permission_name) VALUES (?, ?, ?)";
     private static final String GET_DEFAULT_GROUP_ID = "SELECT dg.defaultgroup, fi.group_id FROM default_group dg "
         + "INNER JOIN faction_id fi ON fi.group_name = dg.defaultgroup WHERE dg.uuid = ? LIMIT 1 FOR UPDATE";
@@ -895,7 +895,7 @@ public final class NameLayerWriteCoordinator {
                         "Group does not exist"
                     );
                 }
-                if (!hasPermissionEditAccess(connection, permissionWrite.groupId(), request.actorUuid())) {
+                if (!permissionWrite.adminOverride() && !hasPermissionEditAccess(connection, permissionWrite.groupId(), request.actorUuid())) {
                     connection.rollback();
                     return NameLayerWriteResponse.failure(
                         request.requestId(),
@@ -965,6 +965,9 @@ public final class NameLayerWriteCoordinator {
         if (actorRole == null) {
             return false;
         }
+        if ("OWNER".equals(actorRole)) {
+            return true;
+        }
         try (PreparedStatement statement = connection.prepareStatement(HAS_ROLE_PERMISSION)) {
             statement.setInt(1, groupId);
             statement.setString(2, actorRole);
@@ -979,6 +982,9 @@ public final class NameLayerWriteCoordinator {
         final String actorRole = getActorRole(connection, groupId, actorUuid);
         if (actorRole == null) {
             return false;
+        }
+        if ("OWNER".equals(actorRole)) {
+            return true;
         }
         return hasRolePermission(connection, groupId, actorRole, permissionName);
     }
@@ -1176,14 +1182,15 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
-    private record PermissionWrite(int groupId, String role, String permissionName) {
+    private record PermissionWrite(int groupId, String role, String permissionName, boolean adminOverride) {
 
         private static PermissionWrite from(final Map<String, String> arguments) {
             final int groupId = parsePositiveInt(arguments, "groupId");
             final String role = requireNonBlank(arguments, "role");
             validateRole(role);
             final String permissionName = requireNonBlank(arguments, "permissionName");
-            return new PermissionWrite(groupId, role, permissionName);
+            final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
+            return new PermissionWrite(groupId, role, permissionName, adminOverride);
         }
 
         private static void validateRole(final String role) {

@@ -31,9 +31,14 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        List<Group> notifications = getNotifications(uuid);
+        if (notifications.isEmpty()) {
+            return;
+        }
+
         String x = "You have been invited to the following groups while you were away. You can accept each invitation by using the command: /nlag [groupname].  ";
 
-        for (Group g : getNotifications(uuid)) {
+        for (Group g : notifications) {
             x += g.getName() + ", ";
         }
         x = x.substring(0, x.length() - 2);

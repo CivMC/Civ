@@ -59,13 +59,14 @@ public class GroupPermission {
         final UUID actorUuid,
         final PlayerType pType,
         final PermissionType permType,
+        final boolean adminOverride,
         final Consumer<PermissionWriteResult> callback
     ) {
         if (permissionsFor(pType).contains(permType)) {
             completeOnMain(callback, PermissionWriteResult.failure("This PlayerType already has the PermissionType: " + permType.getName()));
             return;
         }
-        sendPermissionWrite(actorUuid, NameLayerWriteOperation.ADD_PERMISSION, pType, permType, callback);
+        sendPermissionWrite(actorUuid, NameLayerWriteOperation.ADD_PERMISSION, pType, permType, adminOverride, callback);
     }
 
     /**
@@ -75,13 +76,14 @@ public class GroupPermission {
         final UUID actorUuid,
         final PlayerType pType,
         final PermissionType permType,
+        final boolean adminOverride,
         final Consumer<PermissionWriteResult> callback
     ) {
         if (!permissionsFor(pType).contains(permType)) {
             completeOnMain(callback, PermissionWriteResult.failure("This PlayerType does not have the PermissionType: " + permType.getName()));
             return;
         }
-        sendPermissionWrite(actorUuid, NameLayerWriteOperation.REMOVE_PERMISSION, pType, permType, callback);
+        sendPermissionWrite(actorUuid, NameLayerWriteOperation.REMOVE_PERMISSION, pType, permType, adminOverride, callback);
     }
 
     private List<PermissionType> permissionsFor(final PlayerType type) {
@@ -104,6 +106,7 @@ public class GroupPermission {
         final NameLayerWriteOperation operation,
         final PlayerType pType,
         final PermissionType permType,
+        final boolean adminOverride,
         final Consumer<PermissionWriteResult> callback
     ) {
         final NameLayerWriteClient writeClient = NameLayerPlugin.getWriteClient();
@@ -120,7 +123,8 @@ public class GroupPermission {
                 Map.of(
                     "groupId", Integer.toString(group.getGroupId()),
                     "role", pType.name(),
-                    "permissionName", permType.getName()
+                    "permissionName", permType.getName(),
+                    "adminOverride", Boolean.toString(adminOverride)
                 )
             );
             writeClient.send(request).whenComplete((response, error) -> handleWriteResponse(response, error, callback));
