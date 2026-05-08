@@ -16,6 +16,6 @@ rabbitmq:
   port: 5672
 
 server_databases:
-  paper: namelayer
+  main: namelayer
   pvp: namelayer
-  gamma: gamma_namelayer
+  mini: gamma_namelayer

@@ -15,7 +15,7 @@ groups:
   creationOnFirstJoin: true
 rabbitmq:
   enabled: false
-  serverId: paper
+  serverId: main
   user: guest
   password: guest
   host: localhost

@@ -27,7 +27,7 @@ public final class NameLayerWriteCoordinator {
     private static final String LOCK_GROUP = "SELECT 1 FROM faction_id WHERE group_id = ? LIMIT 1 FOR UPDATE";
     private static final String GET_ACTOR_ROLE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
     private static final String GET_MEMBER_ROLE = "SELECT role FROM faction_member WHERE group_id = ? AND member_name = ?";
-    private static final String GET_GROUP_OWNER = "SELECT founder FROM faction_id WHERE group_id = ? LIMIT 1";
+    private static final String GET_GROUP_OWNER = "SELECT founder FROM faction f JOIN faction_id fi ON fi.group_name = f.group_name WHERE fi.group_id = ? LIMIT 1";
     private static final String HAS_ROLE_PERMISSION = "SELECT 1 FROM permission_by_group_name WHERE group_id = ? AND role = ? AND permission_name = ? LIMIT 1";
     private static final String ADD_PERMISSION = "INSERT IGNORE INTO permission_by_group_name(group_id, role, permission_name) VALUES (?, ?, ?)";
     private static final String REMOVE_PERMISSION = "DELETE FROM permission_by_group_name WHERE group_id = ? AND role = ? AND permission_name = ?";

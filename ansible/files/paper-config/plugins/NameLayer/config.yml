@@ -14,7 +14,7 @@ groups:
   creationOnFirstJoin: true
 rabbitmq:
   enabled: true
-  serverId: paper
+  serverId: main
   user: ${CIV_RABBITMQ_USERNAME}
   password: ${CIV_RABBITMQ_PASSWORD}
   host: ${CIV_RABBITMQ_HOST}
