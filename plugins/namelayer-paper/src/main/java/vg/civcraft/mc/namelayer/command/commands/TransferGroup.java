@@ -65,7 +65,7 @@ public class TransferGroup extends BaseCommandMiddle {
                 + " is not a member of the group and can't be made primary owner!");
             return false;
         }
-        g.setOwnerAsync(owner.getUniqueId(), futureOwner, owner.isOp() || owner.hasPermission("namelayer.admin"), result -> {
+        g.setOwnerAsync(owner.getUniqueId(), futureOwner, NameLayerPlugin.getInstance().getGroupLimit(), owner.isOp() || owner.hasPermission("namelayer.admin"), result -> {
             if (result.success()) {
                 owner.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(futureOwner)
                     + " has been given ownership of the group and promoted to OWNER role.");

@@ -515,6 +515,7 @@ public final class Group {
     public void setOwnerAsync(
         final UUID actorUuid,
         final UUID ownerUuid,
+        final int maxGroups,
         final boolean adminOverride,
         final Consumer<MetadataWriteResult> callback
     ) {
@@ -524,6 +525,7 @@ public final class Group {
             Map.of(
                 "groupId", Integer.toString(getGroupId()),
                 "ownerUuid", ownerUuid.toString(),
+                "maxGroups", Integer.toString(maxGroups),
                 "adminOverride", Boolean.toString(adminOverride)
             ),
             callback

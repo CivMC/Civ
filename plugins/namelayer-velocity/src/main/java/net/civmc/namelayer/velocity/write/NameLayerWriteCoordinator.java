@@ -744,6 +744,17 @@ public final class NameLayerWriteCoordinator {
                     connection.rollback();
                     return NameLayerWriteResponse.failure(request.requestId(), NameLayerWriteFailureCode.MEMBER_NOT_FOUND, "New owner must be a group member");
                 }
+                if (!ownerWrite.adminOverride() && ownerWrite.maxGroups() > 0) {
+                    final int ownedGroups = countOwnedGroups(connection, ownerWrite.ownerUuid());
+                    if (ownedGroups >= ownerWrite.maxGroups()) {
+                        connection.rollback();
+                        return NameLayerWriteResponse.failure(
+                            request.requestId(),
+                            NameLayerWriteFailureCode.MAX_GROUPS_REACHED,
+                            "New owner has reached the group limit of " + ownerWrite.maxGroups()
+                        );
+                    }
+                }
                 try (PreparedStatement statement = connection.prepareStatement(SET_GROUP_OWNER)) {
                     statement.setString(1, ownerWrite.ownerUuid().toString());
                     statement.setInt(2, ownerWrite.groupId());
@@ -1340,13 +1351,19 @@ public final class NameLayerWriteCoordinator {
         }
     }
 
-    private record OwnerWrite(int groupId, UUID ownerUuid, boolean adminOverride) {
+    private record OwnerWrite(int groupId, UUID ownerUuid, int maxGroups, boolean adminOverride) {
 
         private static OwnerWrite from(final Map<String, String> arguments) {
             final int groupId = PermissionWrite.parsePositiveInt(arguments, "groupId");
             final UUID ownerUuid = MemberWrite.parseUuid(arguments, "ownerUuid");
+            final int maxGroups;
+            try {
+                maxGroups = Integer.parseInt(arguments.getOrDefault("maxGroups", "0"));
+            } catch (final NumberFormatException exception) {
+                throw new IllegalArgumentException("maxGroups must be an integer", exception);
+            }
             final boolean adminOverride = Boolean.parseBoolean(arguments.getOrDefault("adminOverride", "false"));
-            return new OwnerWrite(groupId, ownerUuid, adminOverride);
+            return new OwnerWrite(groupId, ownerUuid, maxGroups, adminOverride);
         }
     }
 
