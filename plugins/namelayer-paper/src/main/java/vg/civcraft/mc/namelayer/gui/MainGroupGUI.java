@@ -341,7 +341,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
         }
         List<UUID> allMembers = g.getAllMembers();
         allMembers.sort(Comparator.comparing(g::isOwner).thenComparing(g::getPlayerType).reversed()
-            .thenComparing(NameLayerAPI::getCurrentName, String.CASE_INSENSITIVE_ORDER));
+            .thenComparing(NameLayerAPI::getCurrentName, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
         for (UUID uuid : allMembers) {
             Clickable c = null;
             switch (g.getPlayerType(uuid)) {

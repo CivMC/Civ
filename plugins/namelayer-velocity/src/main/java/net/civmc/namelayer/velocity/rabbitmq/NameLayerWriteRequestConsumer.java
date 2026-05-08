@@ -8,9 +8,11 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import com.velocitypowered.api.proxy.ProxyServer;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
 import net.civmc.namelayer.sync.NameLayerWriteFailureCode;
@@ -22,27 +24,48 @@ import org.slf4j.Logger;
 public final class NameLayerWriteRequestConsumer implements AutoCloseable {
 
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
+    private static final long RECONNECT_DELAY_SECONDS = 5L;
 
     private final ConnectionFactory connectionFactory;
     private final NameLayerWriteCoordinator coordinator;
+    private final ProxyServer proxyServer;
+    private final Object plugin;
     private final Logger logger;
+    private volatile boolean closing;
+    private volatile boolean reconnectScheduled;
     private Connection connection;
     private Channel channel;
 
     public NameLayerWriteRequestConsumer(
         final ConnectionFactory connectionFactory,
         final NameLayerWriteCoordinator coordinator,
+        final ProxyServer proxyServer,
+        final Object plugin,
         final Logger logger
     ) {
         this.connectionFactory = connectionFactory;
         this.coordinator = coordinator;
+        this.proxyServer = proxyServer;
+        this.plugin = plugin;
         this.logger = logger;
     }
 
     public boolean start() {
+        closing = false;
+        if (connect()) {
+            return true;
+        }
+        scheduleReconnect(null);
+        return true;
+    }
+
+    private synchronized boolean connect() {
         try {
-            connection = connectionFactory.newConnection("namelayer-velocity-writes");
-            channel = connection.createChannel();
+            final Connection newConnection = connectionFactory.newConnection("namelayer-velocity-writes");
+            newConnection.addShutdownListener(cause -> scheduleReconnect(newConnection));
+            connection = newConnection;
+            final Channel newChannel = newConnection.createChannel();
+            channel = newChannel;
             channel.queueDeclare(
                 NameLayerRabbitMqTopology.WRITE_REQUEST_QUEUE,
                 NameLayerRabbitMqTopology.WRITE_REQUEST_QUEUE_DURABLE,
@@ -54,12 +77,36 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
             final DeliverCallback deliverCallback = (consumerTag, delivery) -> handleDelivery(delivery.getBody(), delivery.getProperties(), delivery.getEnvelope().getDeliveryTag());
             channel.basicConsume(NameLayerRabbitMqTopology.WRITE_REQUEST_QUEUE, false, deliverCallback, consumerTag -> {
             });
+            logger.info("NameLayer RabbitMQ write request consumer connected");
             return true;
         } catch (final IOException | TimeoutException exception) {
-            logger.error("Failed to start NameLayer RabbitMQ write request consumer", exception);
-            close();
+            logger.error("Failed to connect NameLayer RabbitMQ write request consumer", exception);
+            closeResources();
             return false;
         }
+    }
+
+    private synchronized void scheduleReconnect(final Connection closedConnection) {
+        if (closedConnection != null && closedConnection != connection) {
+            return;
+        }
+        if (closing || reconnectScheduled) {
+            return;
+        }
+        reconnectScheduled = true;
+        logger.warn("NameLayer RabbitMQ write request consumer disconnected; reconnecting in {} seconds", RECONNECT_DELAY_SECONDS);
+        proxyServer.getScheduler().buildTask(plugin, () -> {
+            if (closing) {
+                reconnectScheduled = false;
+                return;
+            }
+            closeResources();
+            final boolean connected = connect();
+            reconnectScheduled = false;
+            if (!connected) {
+                scheduleReconnect(null);
+            }
+        }).delay(RECONNECT_DELAY_SECONDS, TimeUnit.SECONDS).schedule();
     }
 
     private void handleDelivery(final byte[] body, final AMQP.BasicProperties properties, final long deliveryTag) throws IOException {
@@ -143,7 +190,12 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
+        closing = true;
+        closeResources();
+    }
+
+    private void closeResources() {
         closeChannel();
         closeConnection();
     }
@@ -152,10 +204,16 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
         if (channel == null) {
             return;
         }
+        if (!channel.isOpen()) {
+            channel = null;
+            return;
+        }
         try {
             channel.close();
         } catch (final IOException | TimeoutException exception) {
             logger.warn("Failed to close NameLayer RabbitMQ channel", exception);
+        } finally {
+            channel = null;
         }
     }
 
@@ -163,10 +221,16 @@ public final class NameLayerWriteRequestConsumer implements AutoCloseable {
         if (connection == null) {
             return;
         }
+        if (!connection.isOpen()) {
+            connection = null;
+            return;
+        }
         try {
             connection.close();
         } catch (final IOException exception) {
             logger.warn("Failed to close NameLayer RabbitMQ connection", exception);
+        } finally {
+            connection = null;
         }
     }
 }

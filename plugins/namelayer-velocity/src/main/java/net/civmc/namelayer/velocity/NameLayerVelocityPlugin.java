@@ -6,6 +6,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.ProxyServer;
 import com.zaxxer.hikari.HikariDataSource;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -25,14 +26,20 @@ import org.slf4j.Logger;
 public final class NameLayerVelocityPlugin {
 
     private final Logger logger;
+    private final ProxyServer proxyServer;
     private final Path dataDirectory;
     private HikariDataSource dataSource;
     private NameLayerInvalidationPublisher invalidationPublisher;
     private NameLayerWriteRequestConsumer writeRequestConsumer;
 
     @Inject
-    public NameLayerVelocityPlugin(final Logger logger, @DataDirectory final Path dataDirectory) {
+    public NameLayerVelocityPlugin(
+        final Logger logger,
+        final ProxyServer proxyServer,
+        @DataDirectory final Path dataDirectory
+    ) {
         this.logger = logger;
+        this.proxyServer = proxyServer;
         this.dataDirectory = dataDirectory;
     }
 
@@ -46,20 +53,31 @@ public final class NameLayerVelocityPlugin {
 
         try {
             Class.forName("org.mariadb.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (final ClassNotFoundException exception) {
+            throw new RuntimeException(exception);
         }
         dataSource = config.database().createDataSource();
         if (!NameLayerDatabaseMigrator.migrate(dataSource, logger, new HashSet<>(config.serverDatabases().values()))) {
             return;
         }
-        invalidationPublisher = new NameLayerInvalidationPublisher(config.rabbitMq().connectionFactory(), logger);
+        invalidationPublisher = new NameLayerInvalidationPublisher(
+            config.rabbitMq().connectionFactory(),
+            proxyServer,
+            this,
+            logger
+        );
         if (!invalidationPublisher.start()) {
             logger.error("NameLayer Velocity failed to start RabbitMQ invalidation publisher");
             return;
         }
         final NameLayerWriteCoordinator coordinator = new NameLayerWriteCoordinator(dataSource, invalidationPublisher, logger, config.serverDatabases());
-        writeRequestConsumer = new NameLayerWriteRequestConsumer(config.rabbitMq().connectionFactory(), coordinator, logger);
+        writeRequestConsumer = new NameLayerWriteRequestConsumer(
+            config.rabbitMq().connectionFactory(),
+            coordinator,
+            proxyServer,
+            this,
+            logger
+        );
         if (!writeRequestConsumer.start()) {
             logger.error("NameLayer Velocity failed to start RabbitMQ write request consumer");
         }

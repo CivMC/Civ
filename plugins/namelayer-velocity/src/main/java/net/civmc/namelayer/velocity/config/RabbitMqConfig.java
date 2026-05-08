@@ -20,6 +20,7 @@ public record RabbitMqConfig(String user, String password, String host, int port
         factory.setPassword(password);
         factory.setHost(host);
         factory.setPort(port);
+        factory.setAutomaticRecoveryEnabled(false);
         return factory;
     }
 
