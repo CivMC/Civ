@@ -1036,7 +1036,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
         ItemStack is = new ItemStack(Material.IRON_DOOR);
         ItemUtils.setDisplayName(is, ChatColor.GOLD + "Leave group");
         if (g.isOwner(p.getUniqueId())) {
-            ItemUtils.addLore(is, ChatColor.RED + "You cant leave this group,",
+            ItemUtils.addLore(is, ChatColor.RED + "You can't leave this group,",
                 ChatColor.RED + "because you own it");
             c = new DecorationStack(is);
         } else {
