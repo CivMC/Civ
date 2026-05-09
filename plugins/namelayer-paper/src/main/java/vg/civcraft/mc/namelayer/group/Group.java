@@ -375,7 +375,7 @@ public final class Group {
         final PlayerType role,
         final Consumer<MemberWriteResult> callback
     ) {
-        if (role == PlayerType.NOT_BLACKLISTED || role == PlayerType.OWNER) {
+        if (role == PlayerType.NOT_BLACKLISTED) {
             completeMemberWriteOnMain(callback, MemberWriteResult.failure("Invalid member role"));
             return;
         }
@@ -397,7 +397,7 @@ public final class Group {
         final PlayerType role,
         final Consumer<MemberWriteResult> callback
     ) {
-        if (role == PlayerType.NOT_BLACKLISTED || role == PlayerType.OWNER) {
+        if (role == PlayerType.NOT_BLACKLISTED) {
             completeMemberWriteOnMain(callback, MemberWriteResult.failure("Invalid member role"));
             return;
         }

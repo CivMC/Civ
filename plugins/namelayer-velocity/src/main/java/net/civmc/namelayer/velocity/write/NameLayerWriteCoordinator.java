@@ -1269,9 +1269,6 @@ public final class NameLayerWriteCoordinator {
             final MemberWrite memberWrite = MemberWrite.from(arguments);
             final String role = PermissionWrite.requireNonBlank(arguments, "role");
             PermissionWrite.validateRole(role);
-            if ("OWNER".equals(role)) {
-                throw new IllegalArgumentException("role cannot be OWNER for member role writes");
-            }
             return new MemberRoleWrite(memberWrite.groupId(), memberWrite.memberUuid(), role);
         }
     }
