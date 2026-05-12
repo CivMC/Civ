@@ -252,6 +252,78 @@ services:
                 limits:
                     memory: '{{setting.minecraft.resources.gamma_memory_limit}}'
 
+    zorweth:
+        image: itzg/minecraft-server:stable-java25
+        restart: unless-stopped
+        tty: true
+        stdin_open: true
+        stop_grace_period: 60m
+        networks:
+            - minecraft_default
+        environment:
+            TYPE: 'paper'
+            VERSION: '1.21.11'
+            EULA: 'TRUE'
+            PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/115/downloads/leaf-1.21.11-115.jar'
+
+            REMOVE_OLD_MODS: 'TRUE'
+            COPY_CONFIG_DEST: '/data'
+            SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+            REPLACE_ENV_DURING_SYNC: 'TRUE'
+            REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
+            INIT_MEMORY: '{{setting.minecraft.resources.zorweth_memory}}'
+            MAX_MEMORY: '{{setting.minecraft.resources.zorweth_memory}}'
+            USE_MEOWICE_FLAGS: 'TRUE'
+            STOP_DURATION: 3600
+
+            CIV_SECUREBOOT_ENABLE: 'true'
+            CIV_SERVER_NAME: prod-server
+{% if setting.minecraft.zorweth_whitelist %}
+            ENABLE_WHITELIST: 'true'
+            CIV_WHITELIST: 'true'
+{% else %}
+            ENABLE_WHITELIST: 'false'
+            CIV_WHITELIST: 'false'
+{% endif %}
+
+            CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
+
+            CIV_MYSQL_HOST: minecraft_mariadb
+            CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
+            CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
+
+            CIV_POSTGRES_HOST: minecraft_postgres
+            CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
+            CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+
+            CIV_DATABASE_PREFIX: 'zorweth_'
+
+            CIV_RABBITMQ_HOST: minecraft_rabbitmq
+            CIV_RABBITMQ_USERNAME: rabbitmq
+            CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
+
+            CIV_WATCHDOG_TIMEOUT_TIME: 60
+            CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
+
+            JVM_OPTS: '-agentpath:./libti.so'
+        volumes:
+            # Persistence
+            - /opt/stacks/minecraft/zorweth-data:/data
+            # Config & Plugins
+            - /opt/stacks/minecraft/zorweth-config:/config
+            - /opt/stacks/minecraft/zorweth-plugins:/plugins
+            # Private Config & Plugins
+            - /opt/PrivateConfig/paper/plugins/Vulcan.jar:/config/plugins/Vulcan.jar
+            - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
+            - /opt/PrivateConfig/paper/config/CivChat2/banned-words.txt:/config/plugins/CivChat2/banned-words.txt
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+            resources:
+                limits:
+                    memory: '{{setting.minecraft.resources.zorweth_memory_limit}}'
+
     pvp:
         image: itzg/minecraft-server:stable-java25
         restart: unless-stopped

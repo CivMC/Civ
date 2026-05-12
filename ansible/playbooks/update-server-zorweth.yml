@@ -1,14 +1,10 @@
-- name: Update Server (Minecraft)
+- name: Update Zorweth Server
   hosts: all
   become: true
 
   vars:
     servers:
-      - pvp
-      - paper
-      - gamma
       - zorweth
-      - proxy
 
   tasks:
     - name: Update Serer | Include Preflight

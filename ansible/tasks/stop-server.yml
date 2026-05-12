@@ -21,6 +21,14 @@
   ignore_errors: true
   command: docker service scale minecraft_gamma=0
 
+- name: Stop Server | Stop Zorweth
+  when:
+    - "'swarm_manager' in group_names"
+    - "'zorweth' in servers"
+    - setting.minecraft.enabled
+  ignore_errors: true
+  command: docker service scale minecraft_zorweth=0
+
 - name: Stop Server | Stop PvP
   when:
     - "'swarm_manager' in group_names"

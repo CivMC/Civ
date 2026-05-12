@@ -122,7 +122,7 @@ val copyZorwethPlugins = tasks.register<Copy>("copyZorwethPlugins") {
     }
 
     from("$projectDir/src/zorweth-plugins")
-    from(paperPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
+    from(zorwethPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
     into("$buildDir/zorweth-plugins")
 }
 

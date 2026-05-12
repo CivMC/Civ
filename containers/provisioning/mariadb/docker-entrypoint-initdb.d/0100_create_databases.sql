@@ -67,3 +67,25 @@ GRANT ALL PRIVILEGES ON `gamma_heliodor`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_realisticbiomes`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_namelayer`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_exilepearl`.* TO 'mariadb'@'%';
+
+CREATE DATABASE zorweth_bastion;
+CREATE DATABASE zorweth_citadel;
+CREATE DATABASE zorweth_civduties;
+CREATE DATABASE zorweth_civmodcore;
+CREATE DATABASE zorweth_civspy;
+CREATE DATABASE zorweth_donum;
+CREATE DATABASE zorweth_essenceglue;
+CREATE DATABASE zorweth_jukealert;
+CREATE DATABASE zorweth_realisticbiomes;
+CREATE DATABASE zorweth_exilepearl;
+
+GRANT ALL PRIVILEGES ON `zorweth_bastion`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_citadel`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_civduties`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_civmodcore`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_civspy`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_donum`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_essenceglue`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_jukealert`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_realisticbiomes`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_exilepearl`.* TO 'mariadb'@'%';

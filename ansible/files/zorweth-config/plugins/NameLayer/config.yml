@@ -14,7 +14,7 @@ groups:
   creationOnFirstJoin: true
 rabbitmq:
   enabled: true
-  serverId: main
+  serverId: zorweth
   user: ${CIV_RABBITMQ_USERNAME}
   password: ${CIV_RABBITMQ_PASSWORD}
   host: ${CIV_RABBITMQ_HOST}
