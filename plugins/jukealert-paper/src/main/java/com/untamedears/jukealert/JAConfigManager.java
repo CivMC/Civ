@@ -20,6 +20,10 @@ public class JAConfigManager extends ConfigParser {
         return ManagedDatasource.construct((ACivMod) plugin, (DatabaseCredentials) config.get("database"));
     }
 
+    public boolean getServerBroadcastAlerts() {
+        return plugin.getConfig().getBoolean("serverBroadcastAlerts", false);
+    }
+
     @Override
     protected boolean parseInternal(ConfigurationSection config) {
         parseSnitchConfigs(config.getConfigurationSection("snitchConfigs"));
