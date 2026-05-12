@@ -46,11 +46,19 @@ public class HeliodorDebugCommand implements CommandExecutor {
                 player.getInventory().addItem(HeliodorGem.createHeliodorGem(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
                 return true;
             } else if (args[0].equalsIgnoreCase("listveins")) {
-                for (Vein vein : cache.getVeins()) {
-                    player.sendMessage(Component.text(vein.toString()));
+                if (cache == null) {
+                    player.sendMessage(Component.text("Veins are disabled"));
+                } else {
+                    for (Vein vein : cache.getVeins()) {
+                        player.sendMessage(Component.text(vein.toString()));
+                    }
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("listores")) {
+                if (oreLocationsKey == null) {
+                    player.sendMessage(Component.text("Spawning is disabled"));
+                    return true;
+                }
                 PersistentDataContainer chunkPdc = player.getLocation().getChunk().getPersistentDataContainer();
                 int[] ints = chunkPdc.get(oreLocationsKey, PersistentDataType.INTEGER_ARRAY);
                 if (ints == null || ints.length == 0) {
@@ -62,6 +70,10 @@ public class HeliodorDebugCommand implements CommandExecutor {
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("spawnmeteoricironvein")) {
+                if (spawner == null) {
+                    player.sendMessage(Component.text("Spawning is disabled"));
+                    return true;
+                }
                 if (!spawner.checkValidMeteoricIronConfig()) {
                     player.sendMessage(Component.text("Invalid meteoric iron config. Cannot spawn"));
                     return true;

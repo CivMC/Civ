@@ -74,7 +74,9 @@ public class HeliodorPlugin extends ACivMod {
             if (!database.updateDatabase()) {
                 Bukkit.shutdown();
             }
-            this.veinCache.load();
+            if (this.veinCache != null) {
+                this.veinCache.load();
+            }
 
             Supplier<CauldronInfuseData> newData = () -> new CauldronInfuseData(false, dao, infusionManager);
             this.chunkMetaView = ChunkMetaAPI.registerBlockBasedPlugin(this, newData, dao, true);

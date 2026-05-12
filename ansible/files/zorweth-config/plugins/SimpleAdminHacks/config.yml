@@ -472,7 +472,7 @@ hacks:
       - org.bukkit.event.weather
       - org.bukkit.event.world
   Introbook:
-    enabled: true
+    enabled: false
     follow: true
     contents:
       title: Welcome ${player}!
@@ -493,55 +493,15 @@ hacks:
         - "      &5Bugs/Issues&r\n\nIf you've found a bug or have any other issues that require an admin.\nThen you can either raise a ticket on the discord or send a modmail via our reddit.\n\n         &9R/CivMC&r"
         - "        &5Goodluck!&r\nThere are many things to do on CivMC. Let your ambitions run wild!\n\nLeave something behind people will remember for years to come.\n\nBe it your actions, your creations or your destruction..."
   NewfriendAssist:
-    enabled: true
+    enabled: false
     announce: '&f%Player% is brand new!'
     giveIntroKitToRandomSpawners: false
     broadcast: [CONSOLE, ALL]
     helptips: on
     helptips_end: 20m
     introkit:
-      enabled: true
-      contents:
-       - ==: org.bukkit.inventory.ItemStack
-         type: COOKIE
-         amount: 32
-         v: 3839
-         meta:
-           ==: ItemMeta
-           meta-type: UNSPECIFIC
-           lore:
-            - "Gift from the Admins as you"
-            - "begin your journey on CivMC"
-       - ==: org.bukkit.inventory.ItemStack
-         type: RED_BED
-         amount: 1
-         v: 3839
-         meta:
-           ==: ItemMeta
-           meta-type: UNSPECIFIC
-           lore:
-            - "This world is unforgiving."
-            - "Be sure to get a good night's"
-            - "rest soon."
-       - ==: org.bukkit.inventory.ItemStack
-         type: OAK_BOAT
-         amount: 1
-         v: 3839
-         meta:
-           ==: ItemMeta
-           meta-type: UNSPECIFIC
-           lore:
-            - "The world is your oyster"
-       - ==: org.bukkit.inventory.ItemStack
-         type: MINECART
-         amount: 1
-         v: 3839
-         meta:
-           ==: ItemMeta
-           meta-type: UNSPECIFIC
-           lore:
-            - "This will help you"
-            - "get on track."
+      enabled: false
+      contents: []
   ReinforcedChestBreak:
     enabled: true
     # in seconds
