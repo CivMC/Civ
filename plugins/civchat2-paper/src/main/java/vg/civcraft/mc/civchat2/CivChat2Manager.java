@@ -76,8 +76,6 @@ public class CivChat2Manager {
 
     private int muteTimeSeconds;
 
-    private Group modsGroup;
-
     private final StarManager starManager;
 
     public CivChat2Manager(CivChat2 pluginInstance, ServerBroadcaster broadcaster, StarManager starManager) {

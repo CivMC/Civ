@@ -1218,8 +1218,8 @@ public final class NameLayerWriteCoordinator {
         }
 
         private static void validateRole(final String role) {
-            if (!Set.of("MEMBERS", "MODS", "ADMINS", "OWNER").contains(role)) {
-                throw new IllegalArgumentException("role must be MEMBERS, MODS, ADMINS, or OWNER");
+            if (!Set.of("MEMBERS", "MODS", "ADMINS", "OWNER", "NOT_BLACKLISTED").contains(role)) {
+                throw new IllegalArgumentException("role must be MEMBERS, MODS, ADMINS, NOT_BLACKLISTED, or OWNER");
             }
         }
 
