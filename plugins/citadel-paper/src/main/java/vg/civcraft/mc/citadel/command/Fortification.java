@@ -72,6 +72,6 @@ public class Fortification extends BaseCommand {
                 return;
             }
         }
-        stateManager.setState(player, new FortificationState(player, type, group));
+        stateManager.setState(player, new FortificationState(player, type, group.getName()));
     }
 }

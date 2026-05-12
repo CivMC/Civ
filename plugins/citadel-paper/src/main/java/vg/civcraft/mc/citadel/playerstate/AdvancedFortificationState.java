@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class AdvancedFortificationState extends AbstractPlayerState {
@@ -41,7 +42,8 @@ public class AdvancedFortificationState extends AbstractPlayerState {
                 "No setup configured for this block type, no reinforcement was applied");
             return;
         }
-        boolean hadError = CitadelUtility.attemptReinforcementCreation(e.getBlock(), setup.type, setup.group, e.getPlayer());
+        Group group = GroupManager.getGroup(setup.groupName);
+        boolean hadError = CitadelUtility.attemptReinforcementCreation(e.getBlock(), setup.type, group, setup.groupName, e.getPlayer());
         if (hadError) {
             e.setCancelled(true);
             Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
@@ -52,13 +54,14 @@ public class AdvancedFortificationState extends AbstractPlayerState {
         ItemStack copy = forBlock.clone();
         copy.setAmount(1);
         ReinforcingSetup existing = setups.get(copy);
-        setups.put(copy, new ReinforcingSetup(type, group));
+        setups.put(copy, new ReinforcingSetup(type, group.getName()));
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
             if (existing != null) {
+                Group existingGroup = GroupManager.getGroup(existing.groupName);
                 CitadelUtility.sendAndLog(player, ChatColor.GOLD,
                     "Replaced existing setup with " + ChatColor.AQUA + existing.type.getName() + ChatColor.GOLD
-                        + " on " + ChatColor.LIGHT_PURPLE + existing.group.getName() + ChatColor.GOLD + "for "
+                        + " on " + ChatColor.LIGHT_PURPLE + (existingGroup == null ? "null" : existingGroup.getName()) + ChatColor.GOLD + "for "
                         + copy.getType() + " with " + ChatColor.AQUA + type.getName() + ChatColor.GOLD + " on "
                         + ChatColor.LIGHT_PURPLE + group.getName());
             } else {
@@ -73,15 +76,7 @@ public class AdvancedFortificationState extends AbstractPlayerState {
 
     }
 
-    private class ReinforcingSetup {
-
-        ReinforcementType type;
-        Group group;
-
-        ReinforcingSetup(ReinforcementType type, Group group) {
-            this.type = type;
-            this.group = group;
-        }
+    private record ReinforcingSetup(ReinforcementType type, String groupName) {
 
     }
 
