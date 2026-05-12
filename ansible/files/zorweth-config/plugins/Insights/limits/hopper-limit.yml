@@ -1,0 +1,15 @@
+limit:
+  name: "Hopper"
+  type: "GROUP"
+  bypass-permission: "insights.bypass.limit.redstone"
+  limit: 16
+  materials:
+    - "HOPPER"
+  settings:
+    enabled-worlds:
+      whitelist: false
+      worlds: []
+    enabled-addons:
+      whitelist: false
+      addons: []
+    disallow-placement-outside-region: false

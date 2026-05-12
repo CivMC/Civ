@@ -1,0 +1,53 @@
+# This is the world defaults configuration file for Gale.
+# As you can see, there's a lot to configure. Some options may impact gameplay, so use
+# with caution, and make sure you know what each option does before configuring.
+# 
+# If you need help with the configuration or have any questions related to Gale,
+# join us in our Discord, or check the GitHub Wiki pages.
+# 
+# Configuration options here apply to all worlds, unless you specify overrides inside
+# the world-specific config file inside each world folder.
+# 
+# Wiki: https://github.com/GaleMC/Gale/wiki
+# Discord: https://discord.gg/gwezNT8c24
+
+_version: 1
+gameplay-mechanics:
+  arrow-movement-resets-despawn-counter: false
+  entities-can-random-stroll-into-non-ticking-chunks: true
+  entity-wake-up-duration-ratio-standard-deviation: 0.2
+  fixes:
+    broadcast-crit-animations-as-the-entity-being-critted: false
+    mc-121706: false
+    mc-238526: false
+  hide-flames-on-entities-with-fire-resistance: false
+  try-respawn-ender-dragon-after-end-crystal-place: true
+small-optimizations:
+  load-chunks:
+    to-activate-climbing-entities: false
+    to-spawn-phantoms: false
+  max-projectile-chunk-loads:
+    per-projectile:
+      max: 10
+      remove-from-world-after-reach-limit: false
+      reset-movement-after-reach-limit: false
+    per-tick: 10
+  reduced-intervals:
+    acquire-poi-for-stuck-entity: 60
+    check-nearby-item:
+      hopper:
+        interval: 1
+        minecart:
+          interval: 1
+          temporary-immunity:
+            check-for-minecart-near-item-interval: 20
+            check-for-minecart-near-item-while-active: false
+            check-for-minecart-near-item-while-inactive: true
+            duration: 100
+            max-item-horizontal-distance: 24.0
+            max-item-vertical-distance: 4.0
+            nearby-item-max-age: 1200
+    check-stuck-in-wall: 10
+    villager-item-repickup: 100
+  save-fireworks: true
+  use-optimized-sheep-offspring-color: true

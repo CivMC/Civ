@@ -2,6 +2,7 @@ val paperPlugin by configurations.creating
 val gammaPlugin by configurations.creating
 val pvpPlugin by configurations.creating
 val proxyPlugin by configurations.creating
+val zorwethPlugin by configurations.creating
 
 dependencies {
     paperPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
@@ -29,6 +30,32 @@ dependencies {
     paperPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     paperPlugin(project(path = ":plugins:heliodor-paper"))
     paperPlugin(project(path = ":plugins:secureboot-paper"))
+
+    zorwethPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
+    zorwethPlugin(project(path = ":plugins:bastion-paper"))
+    zorwethPlugin(project(path = ":plugins:castlegates-paper"))
+    zorwethPlugin(project(path = ":plugins:citadel-paper"))
+    zorwethPlugin(project(path = ":plugins:civchat2-paper"))
+    zorwethPlugin(project(path = ":plugins:civduties-paper"))
+    zorwethPlugin(project(path = ":plugins:civmodcore-paper", configuration = "shadow"))
+    zorwethPlugin(project(path = ":plugins:finale-paper"))
+    zorwethPlugin(project(path = ":plugins:combattagplus-paper"))
+    zorwethPlugin(project(path = ":plugins:donum-paper"))
+    zorwethPlugin(project(path = ":plugins:essenceglue-paper"))
+    zorwethPlugin(project(path = ":plugins:exilepearl-paper"))
+    zorwethPlugin(project(path = ":plugins:factorymod-paper"))
+    zorwethPlugin(project(path = ":plugins:hiddenore-paper"))
+    zorwethPlugin(project(path = ":plugins:itemexchange-paper"))
+    zorwethPlugin(project(path = ":plugins:jukealert-paper", configuration = "shadow"))
+    zorwethPlugin(project(path = ":plugins:kirabukkitgateway-paper", configuration = "shadow"))
+    zorwethPlugin(project(path = ":plugins:namecolors-paper"))
+    zorwethPlugin(project(path = ":plugins:namelayer-paper", configuration = "shadow"))
+    zorwethPlugin(project(path = ":plugins:railswitch-paper"))
+    zorwethPlugin(project(path = ":plugins:randomspawn-paper"))
+    zorwethPlugin(project(path = ":plugins:realisticbiomes-paper"))
+    zorwethPlugin(project(path = ":plugins:simpleadminhacks-paper"))
+    zorwethPlugin(project(path = ":plugins:heliodor-paper"))
+    zorwethPlugin(project(path = ":plugins:secureboot-paper"))
 
     gammaPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     gammaPlugin(project(path = ":plugins:bastion-paper"))
@@ -87,6 +114,18 @@ val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
     into("$buildDir/paper-plugins")
 }
 
+val copyZorwethPlugins = tasks.register<Copy>("copyZorwethPlugins") {
+    dependsOn(zorwethPlugin)
+
+    doFirst {
+        project.delete(files("$projectDir/build/zorweth-plugins"))
+    }
+
+    from("$projectDir/src/zorweth-plugins")
+    from(paperPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
+    into("$buildDir/zorweth-plugins")
+}
+
 val copyPvpPlugins = tasks.register<Copy>("copyPvpPlugins") {
     dependsOn(pvpPlugin)
 
@@ -129,4 +168,5 @@ tasks.register("build") {
     dependsOn(copyGammaPlugins)
     dependsOn(copyPvpPlugins)
     dependsOn(copyProxyPlugins)
+    dependsOn(copyZorwethPlugins)
 }

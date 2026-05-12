@@ -1,0 +1,742 @@
+Menus:
+  RecipesViewer:
+    menu_settings:
+      name: 'Recipes viewer '
+      fill-space: 0-44
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '46':
+        action_type: PrvPage
+        extra: LIGHT_BLUE
+        material: STAINED_GLASS_PANE
+        name: '&aPrevious Page'
+        lore:
+        - '&fGo to the previous page'
+        glow: true
+      '48':
+        action_type: Search
+        material: PAPER
+        name: '&aSearch for a recipe'
+        lore:
+        - '&fSearch for same or similar recipes,'
+        - '&fit can be enough to type the first'
+        - '&fthree/four letters.'
+        glow: true
+      '49':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      '52':
+        action_type: NxtPage
+        extra: LIGHT_BLUE
+        material: STAINED_GLASS_PANE
+        name: '&aNext Page'
+        lore:
+        - '&fGo to the next page'
+        glow: true
+  RecipesCategorys:
+    menu_settings:
+      name: Categorys
+      fill-space: 0-45
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '46':
+        action_type: PrvPage
+        extra: LIGHT_BLUE
+        material: STAINED_GLASS_PANE
+        name: '&aPrevious Page'
+        lore:
+        - '&fGo to the previous page'
+        glow: true
+      '47':
+        action_type: NewCategory
+        passive:
+          material: BOOK
+          name: '&aNew category'
+          lore:
+          - '&fCan''t add category'
+          - '&flack of permission.'
+          glow: false
+        active:
+          material: BOOK
+          name: '&aNew category'
+          lore:
+          - '&fAdd new category'
+          glow: true
+      '49':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      '51':
+        action_type: Search
+        material: PAPER
+        name: '&aSearch for a category'
+        lore:
+        - '&fSearch for same or similar'
+        - '&fcategorys, it can be enough'
+        - '&fto type the first three/four'
+        - '&fletters.'
+        glow: true
+      '52':
+        action_type: NxtPage
+        extra: LIGHT_BLUE
+        material: STAINED_GLASS_PANE
+        name: '&aNext Page'
+        lore:
+        - '&fGo to the next page'
+        glow: true
+      '-1':
+        action_type: FillItems
+        material: STONE
+        name: '&aCategory:&3 [display_name]'
+        lore:
+        - '&fLeftclick to open'
+        - '&fRightclick to edit Category'
+        glow: true
+  CategorysSettings:
+    menu_settings:
+      name: Category settings
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '10':
+        action_type: RemoveCategory
+        material: BARRIER
+        name: '&aRemove category'
+        lore:
+        - '&fRemove category it will'
+        - '&fmove all recipes to defult.'
+        glow: true
+      '12':
+        action_type: ChangeCategoryName
+        material: BOOK
+        name: '&aChange category name'
+        lore:
+        - '&fChange category name.'
+        glow: true
+      '14':
+        action_type: ChangeCategory
+        material: WRITTEN_BOOK
+        name: '&aChange category'
+        lore:
+        - '&fMove this category to'
+        - '&fnew category.'
+        glow: true
+      '16':
+        action_type: ChangeCategoryItem
+        material: STONE
+        name: '&aChange category item'
+        lore:
+        - '&fChange category item'
+        - '&fsome you use for this'
+        - '&fcategory.'
+        - '&7'
+        - '&fLeftclick to add your own item'
+        - '&fand rightclick to type in chat'
+        - '&fthe itemtype you want.'
+        glow: true
+      '18':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      0-8,9,11,13,15,17,19-26:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ''
+        lore:
+        - ''
+        glow: false
+  ChangeCategoryItem:
+    menu_settings:
+      name: Category item
+      fill-space: '13'
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '18':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      '22':
+        action_type: Save
+        material: GOLD_INGOT
+        name: '&aSet item'
+        lore:
+        - '&fSet the the item'
+        - '&ffor the category.'
+        glow: true
+      0-8,9-11,12,14-17,19-21,23-26:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ''
+        lore:
+        - ''
+        glow: false
+  CategoryList:
+    menu_settings:
+      name: Category list
+      fill-space: 0-45
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '46':
+        action_type: PrvPage
+        extra: LIGHT_BLUE
+        material: STAINED_GLASS_PANE
+        name: '&aPrevious Page'
+        lore:
+        - '&fGo to the previous page'
+        glow: true
+      '48':
+        action_type: Search
+        material: PAPER
+        name: '&aSearch for a category'
+        lore:
+        - '&fSearch for same or similar'
+        - '&fcategorys, it can be enough'
+        - '&fto type the first three/four'
+        - '&fletters.'
+        glow: true
+      '49':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      '52':
+        action_type: NxtPage
+        extra: LIGHT_BLUE
+        material: STAINED_GLASS_PANE
+        name: '&aNext Page'
+        lore:
+        - '&fGo to the next page'
+        glow: true
+      '-1':
+        action_type: FillItems
+        material: STONE
+        name: '&aCategory:&3 [display_name]'
+        lore:
+        - ' '
+        - '&fLeftclick to open this Category'
+        - '&fRightclick to edit this Category'
+        glow: true
+  WBRecipeViewer:
+    menu_settings:
+      name: Workbench recipe
+      fill-space: 0-2,9-11,18-20,13
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '12':
+        material: WORKBENCH
+        name: '&aCustom crafting table recipe'
+        lore:
+        - '&fThis is a example on how you add'
+        - '&fthe items in the real crafting table. If'
+        - '&fit shaped recipe you need put the items'
+        - '&fin exact same patern.'
+        - '&f'
+        - '&fThe recipe is &3[shaped]&f'
+        - '&fThe ingredients need &3[match meta]'
+        - '&fYou can craft this recipe in this worlds:'
+        - '&3[worlds]'
+        glow: true
+      '25':
+        action_type: edit_recipe
+        passive:
+          extra: GRAY
+          material: STAINED_GLASS_PANE
+          name: '&6'
+          lore:
+          - '&a'
+          glow: false
+        active:
+          material: DIAMOND_AXE
+          name: '&aEdit recipe'
+          lore:
+          - '&fYou can edit the recipe, if'
+          - '&fyou have this permission:'
+          - '&a[config_permission]'
+          glow: true
+      '26':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      3-8,14-17,21-25:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ''
+        lore:
+        - ''
+        glow: false
+  WBRecipeEditor:
+    menu_settings:
+      name: Recipe editor
+      fill-space: 0-2,9-11,18-20,13
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '8':
+        action_type: DeleteRecipe
+        material: REDSTONE
+        name: '&cDelete the recipe'
+        lore:
+        - '&7&oNote that there''s no going back'
+        - '&7&oonce you delete your recipe.'
+        glow: true
+      '12':
+        material: WORKBENCH
+        name: '&3Enhanced crafting table recipe'
+        lore:
+        - '&fThe recipe is &3[shaped]&f'
+        - '&fThe ingredients need &3[match meta]'
+        - '&fThe key of the recipe is &3[key]'
+        - '&fThe permission of the recipe is &3[permission]'
+        glow: true
+      '17':
+        action_type: ResetRecipe
+        material: STONE
+        name: '&aReset the recipe'
+        lore:
+        - ''
+        glow: true
+      '24':
+        action_type: RecipeSettings
+        material: GOLD_INGOT
+        name: '&aSettings for recipe'
+        lore:
+        - ''
+        - '&fSet the settings for recipe.'
+        glow: true
+      '25':
+        action_type: SaveRecipe
+        material: EMERALD
+        name: '&aSave the recipe'
+        lore:
+        - ''
+        glow: true
+      '26':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      3-7,14-16,21-23:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ''
+        lore:
+        - ''
+        glow: false
+  RecipeDisabler:
+    menu_settings:
+      name: '     Server recipe toggler'
+      fill-space: 10-16,19-25,28-34,37-43
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '47':
+        action_type: PrvPage
+        material: ARROW
+        name: '&aPrevious Page'
+        lore:
+        - '&fGo to the previous page'
+        glow: true
+      '48':
+        action_type: SwitchDisablerMode
+        material: LEVER
+        name: '&f[mode] &7-&f click to toggle'
+        glow: true
+      '50':
+        action_type: Search
+        material: WRITTEN_BOOK
+        name: '&fclick to search for recipe'
+        lore:
+        - '&fLeftclick to reset'
+        - '&fRightclick to search'
+        - '&6'
+        - '&fIt can be enough to type'
+        - '&fthe first three/four'
+        - '&fletters.'
+        glow: true
+      '51':
+        action_type: NxtPage
+        material: ARROW
+        name: '&aNext Page'
+        lore:
+        - '&fGo to the next page'
+        glow: true
+      0-8,45-46,49,52-53:
+        extra: BLUE
+        material: STAINED_GLASS_PANE
+        name: '&f'
+        glow: false
+      9,17,18,26,27,35,36,44:
+        extra: BLACK
+        material: STAINED_GLASS_PANE
+        name: '&f'
+        glow: false
+  FurnaceRecipeViewer:
+    menu_settings:
+      name: '[Recipe_type] recipe'
+      fill-space: 10,12
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '11':
+        material: FURNACE
+        name: '&fEnhanced [Recipe_type] recipe'
+        lore:
+        - '&fThe recipe rewards &3[exp] &fexp'
+        - '&fThe cooking time is &3[duration] &fticks'
+        - '&fThe ingredients need &3[match meta]'
+        - '&fYou can use this recipe in this worlds:'
+        - '&3[worlds]'
+        glow: true
+      '25':
+        action_type: edit_recipe
+        passive:
+          extra: GRAY
+          material: STAINED_GLASS_PANE
+          name: '&6'
+          lore:
+          - '&a'
+          glow: false
+        active:
+          material: DIAMOND_AXE
+          name: '&aEdit recipe'
+          lore:
+          - '&fYou can edit the recipe, if'
+          - '&fyou have this permission:'
+          - '&a[config_permission]'
+          glow: true
+      '26':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      0-9,13-25:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ''
+        lore:
+        - ''
+        glow: false
+  FurnaceRecipeEditor:
+    menu_settings:
+      name: '[Recipe_type] editor'
+      fill-space: 10,12
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '8':
+        action_type: DeleteRecipe
+        material: REDSTONE
+        name: '&cDelete &fthe recipe'
+        lore:
+        - '&7&oNote that there''s no going back'
+        - '&7&oonce you delete your recipe.'
+        glow: true
+      '11':
+        material: FURNACE
+        name: '&aEnhanced [Recipe_type] recipe'
+        lore:
+        - '&fThe ingredients need &3[match meta]'
+        - '&fThe key of the recipe is &3[key]'
+        - '&fThe permission of the recipe is &3[permission]'
+        glow: true
+      '17':
+        action_type: ResetRecipe
+        material: STONE
+        name: '&7Reset &fthe recipe'
+        lore:
+        - ''
+        glow: true
+      '24':
+        action_type: RecipeSettings
+        material: GOLD_INGOT
+        name: '&aSettings for recipe'
+        lore:
+        - ''
+        - '&fSet the settings for recipe.'
+        glow: true
+      '25':
+        action_type: SaveRecipe
+        material: EMERALD
+        name: '&aSave &fthe recipe'
+        lore:
+        - ''
+        glow: true
+      '26':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      0-7,9,13-16,18-23:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ' '
+        lore:
+        - ''
+        glow: false
+  EditorTypeSelector:
+    menu_settings:
+      name: Select recipe type
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '2':
+        action_type: ChooseFurnaceType
+        material: FURNACE
+        name: '&fClick to create a furnace recipe'
+        lore:
+        - ''
+        glow: true
+      '6':
+        action_type: ChooseWorkbenchType
+        material: WORKBENCH
+        name: '&fClick to create a workbench recipe'
+        lore:
+        - ''
+        glow: true
+      '10':
+        action_type: ChooseBlastType
+        material: BLAST_FURNACE
+        name: '&fClick to create a blast recipe'
+        lore:
+        - ''
+        glow: true
+      '12':
+        action_type: ChooseSmokerType
+        material: SMOKER
+        name: '&fClick to create a smoker recipe'
+        lore:
+        - ''
+        glow: true
+      0-1,3-5,7-9,11,13-26:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ''
+        lore:
+        - ''
+        glow: false
+  RecipeSettingsCrafting:
+    menu_settings:
+      name: Recipe settings
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '10':
+        action_type: changeCategory
+        material: WRITTEN_BOOK
+        name: '&aChange category'
+        lore:
+        - '&fChange category, if it not exist'
+        - '&fcreate new one.'
+        - ''
+        - '&fCurrently set category:&3 [category]'
+        glow: true
+      '12':
+        action_type: AllowedWorldsCraft
+        material: IRON_INGOT
+        name: '&aChange or set worlds'
+        lore:
+        - '&fChange or set world.'
+        - ''
+        - '&fRight-click to remove world.'
+        - '&fLeft-click to add world.'
+        - '&fShift and left-click to add world'
+        - '&fwithout check if the world is valid.'
+        - ''
+        - '&fCurrently set worlds:'
+        - '&3[worlds]'
+        glow: true
+      '14':
+        action_type: changeCategoryList
+        material: WRITABLE_BOOK
+        name: '&aChose categorys from list'
+        lore:
+        - '&fChose categorys you have'
+        - '&fcreated.All categorys'
+        - '&fis listed here.'
+        - ''
+        - '&fCurrently set category:&3 [category]'
+        glow: true
+      '16':
+        action_type: SetPermission
+        material: PAPER
+        name: '&aClick to set permission'
+        lore:
+        - '&fcurrent:&3 [permission]'
+        glow: true
+      '19':
+        action_type: SwitchHidden
+        material: DIAMOND
+        name: '&aClick to change: &3[hidden]'
+        glow: true
+      '21':
+        action_type: SwitchMatchMeta
+        material: ENCHANTED_BOOK
+        name: '&aClick to change: &3[match meta]'
+        lore:
+        - ''
+        glow: true
+      '23':
+        action_type: SwitchShaped
+        material: WEB
+        name: '&aClick to change: &3[shaped]'
+        lore:
+        - ''
+        glow: true
+      '25':
+        action_type: SetPosition
+        material: PAPER
+        name: '&aClick to set the position'
+        lore:
+        - '&fCurrent position'
+        - '&fSlot &3[slot]'
+        - '&fPage &3[page]'
+        glow: true
+      '28':
+        action_type: SetPartialMatch
+        material: PAPER
+        name: '&aClick to set similar match'
+        lore:
+        - '&fChange this setting if you want to'
+        - '&fprevent crafting similar Minecraft'
+        - '&foriginal recipes.'
+        - '&fCurrently set to:'
+        - '&3[partial_match]'
+        glow: true
+      '44':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      0-8,36-43:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ''
+        lore:
+        - ''
+        glow: false
+  RecipeSettingsFurnace:
+    menu_settings:
+      name: '[Recipe_type] settings'
+      fill-space: 10,12
+      sound: BLOCK_NOTE_BLOCK_BASEDRUM
+    buttons:
+      '10':
+        action_type: changeCategory
+        material: WRITTEN_BOOK
+        name: '&aChange category'
+        lore:
+        - '&fChange category, if it not exist'
+        - '&fcreate new one.'
+        - ''
+        - '&fCurrently set category:&3 [category]'
+        glow: true
+      '12':
+        action_type: changeCategoryList
+        material: WRITABLE_BOOK
+        name: '&aChose categorys from list'
+        lore:
+        - '&fChose categorys you have'
+        - '&fcreated.All categorys'
+        - '&fis listed here.'
+        glow: true
+      '14':
+        action_type: SetPermission
+        material: PAPER
+        name: '&fClick to set permission'
+        lore:
+        - '&fcurrent:&3 [permission]'
+        glow: true
+      '16':
+        action_type: SetCookTime
+        material: CLOCK
+        name: '&fClick to set the cook time'
+        lore:
+        - '&fcurrent:&3 [duration]'
+        glow: true
+      '18':
+        action_type: SetExp
+        material: EXP_BOTTLE
+        name: '&aClick to set the rewarded exp amount'
+        lore:
+        - '&fcurrent:&3 [exp]'
+        glow: true
+      '20':
+        action_type: SwitchHidden
+        material: DIAMOND
+        name: '&fClick to change: &e[hidden]'
+        glow: true
+      '22':
+        action_type: SwitchMatchMeta
+        material: ENCHANTED_BOOK
+        name: '&fClick to change: &e[match meta]'
+        lore:
+        - ''
+        glow: true
+      '24':
+        action_type: SetPosition
+        material: PAPER
+        name: '&fClick to set the position'
+        lore:
+        - '&fCurrent position'
+        - '&fSlot &3[slot]'
+        - '&fPage &3[page]'
+        glow: true
+      '26':
+        action_type: AllowedWorldsCraft
+        material: IRON_INGOT
+        name: '&aChange or set worlds'
+        lore:
+        - '&fChange or set world.'
+        - ''
+        - '&fRight-click to remove world'
+        - '&fLeft-click to add world'
+        - ''
+        - '&fCurrently set worlds:'
+        - '&3 [worlds]'
+        glow: true
+      '28':
+        action_type: SetPartialMatch
+        material: PAPER
+        name: '&aClick to prevent similar match'
+        lore:
+        - '&fChange this setting if you want to'
+        - '&fprevent burn similar Minecraft'
+        - '&foriginal recipes.'
+        - '&fCurrently set to:'
+        - '&3[partial_match]'
+        glow: true
+      '35':
+        action_type: Back
+        material: GLOWSTONE_DUST
+        name: '&aBack'
+        lore:
+        - '&fGo back to the previous GUI'
+        glow: true
+      0-8,27,29-34:
+        extra: GRAY
+        material: STAINED_GLASS_PANE
+        name: ' '
+        lore:
+        - ''
+        glow: false
+#Do not change this.
+Version: 13

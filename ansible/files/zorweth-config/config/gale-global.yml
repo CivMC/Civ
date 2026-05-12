@@ -1,0 +1,46 @@
+# This is the global configuration file for Gale.
+# As you can see, there's a lot to configure. Some options may impact gameplay, so use
+# with caution, and make sure you know what each option does before configuring.
+# 
+# If you need help with the configuration or have any questions related to Gale,
+# join us in our Discord, or check the GitHub Wiki pages.
+# 
+# The world configuration options are inside
+# their respective world folder. The files are named gale-world.yml
+# 
+# Wiki: https://github.com/GaleMC/Gale/wiki
+# Discord: https://discord.gg/gwezNT8c24
+
+_version: 1
+gameplay-mechanics:
+  enable-book-writing: true
+log-to-console:
+  chat:
+    empty-message-warning: false
+    expired-message-warning: false
+    not-secure-marker: true
+  ignored-advancements: true
+  invalid-legacy-text-component: true
+  invalid-statistics: true
+  legacy-material-initialization: false
+  null-id-disconnections: true
+  player-login-locations: true
+  plugin-library-loader:
+    downloads: true
+    library-loaded: true
+    start-load-libraries-for-plugin: true
+  set-block-in-far-chunk: true
+  unrecognized-recipes: false
+misc:
+  ignore-null-legacy-structure-data: false
+  keepalive:
+    send-multiple: false
+  last-tick-time-in-tps-command:
+    add-oversleep: false
+    enabled: false
+  premium-account-slow-login-timeout: -1
+  verify-chat-order: true
+small-optimizations:
+  reduced-intervals:
+    increase-time-statistics: 20
+    update-entity-line-of-sight: 4
