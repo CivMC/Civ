@@ -6,6 +6,7 @@ import com.untamedears.jukealert.JukeAlert;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.entity.Player;
@@ -48,6 +49,9 @@ public class BungeeSnitchAlertListener implements PluginMessageListener {
             if (System.currentTimeMillis() - alert.sentAt() > MAX_MESSAGE_AGE_MILLIS) {
                 return;
             }
+            if (!Objects.equals(alert.databaseName(), JukeAlert.getInstance().getConfigManager().getDatabaseName())) {
+                return;
+            }
             RemoteSnitchAlertDispatcher.send(alert);
         } catch (final IOException exception) {
             JukeAlert.getInstance().getLogger().log(Level.WARNING, "Reading plugin message", exception);
@@ -59,6 +63,7 @@ public class BungeeSnitchAlertListener implements PluginMessageListener {
     private RemoteSnitchAlert readAlert(final DataInputStream input) throws IOException {
         return new RemoteSnitchAlert(
             input.readLong(),
+            input.readUTF(),
             input.readUTF(),
             UUID.fromString(input.readUTF()),
             input.readUTF(),

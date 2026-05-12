@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public record RemoteSnitchAlert(
     long sentAt,
+    String databaseName,
     String actionIdentifier,
     UUID playerId,
     String playerName,

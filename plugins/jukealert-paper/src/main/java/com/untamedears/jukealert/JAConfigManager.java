@@ -24,6 +24,10 @@ public class JAConfigManager extends ConfigParser {
         return plugin.getConfig().getBoolean("serverBroadcastAlerts", false);
     }
 
+    public String getDatabaseName() {
+        return plugin.getConfig().getString("database.database", "");
+    }
+
     @Override
     protected boolean parseInternal(ConfigurationSection config) {
         parseSnitchConfigs(config.getConfigurationSection("snitchConfigs"));

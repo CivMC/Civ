@@ -32,6 +32,7 @@ public class BungeeSnitchAlertBroadcaster implements SnitchAlertBroadcaster {
         try {
             messageOutput.writeUTF(TYPE_ALERT);
             messageOutput.writeLong(alert.sentAt());
+            messageOutput.writeUTF(alert.databaseName());
             messageOutput.writeUTF(alert.actionIdentifier());
             messageOutput.writeUTF(alert.playerId().toString());
             messageOutput.writeUTF(alert.playerName());

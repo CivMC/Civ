@@ -32,6 +32,7 @@ public class BungeeServerBroadcaster implements ServerBroadcaster {
         try {
             msgout.writeUTF("group");
             msgout.writeLong(System.currentTimeMillis());
+            msgout.writeUTF(CivChat2.getInstance().getPluginConfig().getMysqlDBname());
             msgout.writeUTF(senderId.toString());
             msgout.writeUTF(senderName);
             msgout.writeUTF(GsonComponentSerializer.gson().serialize(senderDisplayName));

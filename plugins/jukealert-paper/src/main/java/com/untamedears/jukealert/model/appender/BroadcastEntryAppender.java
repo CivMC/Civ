@@ -71,6 +71,7 @@ public class BroadcastEntryAppender extends ConfigurableSnitchAppender<LimitedAc
         final Location location = snitch.getLocation();
         JukeAlert.getInstance().getBroadcaster().broadcast(new RemoteSnitchAlert(
             System.currentTimeMillis(),
+            JukeAlert.getInstance().getConfigManager().getDatabaseName(),
             log.getIdentifier(),
             log.getPlayer(),
             log.getPlayerName(),
