@@ -9,4 +9,11 @@ dependencies {
     compileOnly(project(":plugins:civmodcore-paper"))
     api(project(":libraries:name-api"))
     compileOnly(libs.worldedit)
+
+    testImplementation(libs.paper.api)
+    testImplementation(libs.bundles.junit)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
