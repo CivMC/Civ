@@ -1828,6 +1828,7 @@ recipes:
     production_time: 4s
     name: Build Rocket
     type: BUILD_ROCKET
+    flight_computer_reinforcement: DIAMOND
     input:
       daylight_sensor:
         v: 3839

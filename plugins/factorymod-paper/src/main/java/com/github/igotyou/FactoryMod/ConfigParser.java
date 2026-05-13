@@ -959,7 +959,13 @@ public class ConfigParser {
                 result = new HeliodorFinishRecipe(identifier, name, productionTime, input, inputCount, outputCountFinish);
                 break;
             case "BUILD_ROCKET":
-                result = new BuildRocketRecipe(identifier, name, productionTime, input);
+                ItemStack flightComputerReinforcement = parseFirstItem(config.getConfigurationSection("flight_computer_reinforcement"));
+                if (flightComputerReinforcement == null) {
+                    plugin.warning("Flight computer reinforcement of BUILD_ROCKET recipe not set");
+                    result = null;
+                    break;
+                }
+                result = new BuildRocketRecipe(identifier, name, productionTime, input, flightComputerReinforcement);
                 break;
             default:
                 plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");

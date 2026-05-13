@@ -1,6 +1,6 @@
 name: Zorweth
-version: ${version}
+version: 1.0.0
 main: net.civmc.zorweth.ZorwethPlugin
 author: Okx
 api-version: 1.21.11
-depend: [WorldEdit]
+depend: [CivModCore, WorldEdit]

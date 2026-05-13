@@ -23,6 +23,7 @@ public final class ZorwethPlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
         this.rocketClipboard = loadRocketClipboard();
+        getServer().getPluginManager().registerEvents(new FlightComputer(this), this);
     }
 
     public Clipboard getRocketClipboard() {
