@@ -584,7 +584,7 @@ public final class FlightComputer implements Listener {
         for (final RocketManifestPassenger passenger : manifest.passengers()) {
             if (Bukkit.getPlayer(passenger.playerUuid()) == null) {
                 markPreparedTransferCancelled(manifest);
-                clicker.sendMessage(Component.text("Passenger disconnected before launch commit completed.", NamedTextColor.RED));
+                clicker.sendMessage(Component.text("Passenger disconnected before launch completed.", NamedTextColor.RED));
                 return;
             }
         }
