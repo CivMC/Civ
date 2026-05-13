@@ -19,15 +19,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Dispenser;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Furnace;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
@@ -36,6 +40,7 @@ public class BuildRocketRecipe extends InputRecipe {
     private static final int WIDTH = 11;
     private static final int HEIGHT = 24;
     private static final int DEPTH = 12;
+    private static final int ROCKET_LAYER_PLACE_INTERVAL_TICKS = 15;
     private static final DustOptions RED_DUST = new DustOptions(Color.RED, 1.0f);
 
     private int timesRun = 0;
@@ -117,15 +122,47 @@ public class BuildRocketRecipe extends InputRecipe {
         final Region region = clipboard.getRegion();
         final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
 
-        for (BlockVector3 position : region) {
-            final BlockState block = clipboard.getBlock(position);
-            final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
-            final Block target = northWestOrigin.getRelative(relative.getX(), relative.getY(), relative.getZ());
+        final int maxLayer = region.getMaximumPoint().getY() - schematicNorthWestCorner.getY();
+        final int[] currentLayer = {0};
+        Bukkit.getScheduler().runTaskTimer(FactoryMod.getInstance(), task -> {
+            if (currentLayer[0] > maxLayer) {
+                task.cancel();
+                return;
+            }
 
-            final BlockData data = Bukkit.createBlockData(block.getAsString());
+            Location furnace = fccf.getFurnace().getLocation();
+            World world = furnace.getWorld();
 
-            target.setBlockData(data, false);
-        }
+            for (BlockVector3 position : region) {
+                final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
+                if (relative.getY() != currentLayer[0]) {
+                    continue;
+                }
+                final BlockState block = clipboard.getBlock(position);
+                final Block target = northWestOrigin.getRelative(relative.getX(), relative.getY(), relative.getZ());
+
+                if (!target.getType().isAir()) {
+                    continue;
+                }
+
+                final BlockData data = Bukkit.createBlockData(block.getAsString());
+
+                target.setBlockData(data, false);
+                if (!data.getMaterial().isAir()) {
+                    target.getWorld().spawnParticle(Particle.BLOCK, target.getLocation().add(0.5, 0.5, 0.5), 16,
+                        0.25, 0.25, 0.25, 0.0, data);
+                    world.playSound(target.getLocation(), Sound.BLOCK_STONE_PLACE, .8f, 1);
+
+                }
+
+                if (target.getType() == Material.DISPENSER) {
+                    Dispenser dispenser = (Dispenser) target.getState(false);
+                    dispenser.getPersistentDataContainer().set(new NamespacedKey("zorweth", "rocket_computer"), PersistentDataType.BOOLEAN, true);
+                }
+            }
+            currentLayer[0]++;
+        }, 0, ROCKET_LAYER_PLACE_INTERVAL_TICKS);
+        input.removeSafelyFrom(inputInv);
         return true;
     }
 
