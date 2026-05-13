@@ -4,6 +4,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableInventory;
@@ -64,6 +66,10 @@ public final class FlightComputer implements Listener {
 
     public static boolean isSittingWithGSit(final Player player) {
         if (!player.isInsideVehicle()) {
+            return false;
+        }
+        Material on = player.getLocation().getBlock().getType();
+        if (!(on == Material.ANDESITE_STAIRS || on == Material.ANDESITE_SLAB)) {
             return false;
         }
         final Entity vehicle = player.getVehicle();
@@ -121,9 +127,12 @@ public final class FlightComputer implements Listener {
         final FuelStatus fuelStatus = calculateFuelStatus(computer, origin, region, schematicNorthWestCorner);
         final StaticDisplaySection summary = new StaticDisplaySection(9);
         summary.set(createAddFuelButton(computer), 1);
-        summary.set(new DecorationStack(createSummaryItem(matching, total, mismatches.isEmpty())), 3);
-        summary.set(new DecorationStack(createFuelStatusItem(fuelStatus)), 5);
-        summary.set(createSiphonFuelButton(computer), 7);
+        summary.set(createSiphonFuelButton(computer), 2);
+        summary.set(new DecorationStack(createFuelStatusItem(fuelStatus)), 3);
+
+        summary.set(new DecorationStack(createSummaryItem(matching, total, mismatches.isEmpty())), 5);
+
+        summary.set(createLaunchButton(computer), 7);
         inventory.addComponent(summary, SlotPredicates.rows(1));
         inventory.show();
     }
@@ -149,6 +158,35 @@ public final class FlightComputer implements Listener {
             ));
         });
         return item;
+    }
+
+    private Component getLaunchFailMessage(final Block computer, final Player player) {
+        final Clipboard clipboard = this.plugin.getRocketClipboard();
+        final Region region = clipboard.getRegion();
+        final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
+        final Block origin = getRocketOrigin(computer);
+
+        for (final BlockVector3 position : region) {
+            final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
+            final BlockState expectedState = clipboard.getBlock(position);
+            final Material expected = Bukkit.createBlockData(expectedState.getAsString()).getMaterial();
+            final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
+            final Material actual = actualBlock.getType();
+            if (actual != expected) {
+                return Component.text("Rocket is not structurally intact", NamedTextColor.RED);
+            }
+        }
+
+        final FuelStatus fuelStatus = calculateFuelStatus(computer, origin, region, schematicNorthWestCorner);
+        if (fuelStatus.currentFuelKg < fuelStatus.requiredFuelKg) {
+            return Component.text("Rocket is insufficiently fuelled", NamedTextColor.RED);
+        }
+
+        if (!isSittingWithGSit(player)) {
+            return Component.text("Pilot is not seated.");
+        }
+
+        return null;
     }
 
     private ItemStack createMismatchItem(final Location location, final Material expected, final Material actual) {
@@ -208,6 +246,86 @@ public final class FlightComputer implements Listener {
                 open(clicker, computer);
             }
         };
+    }
+
+    private IClickable createLaunchButton(final Block computer) {
+        final ItemStack item = new ItemStack(Material.FIREWORK_ROCKET);
+        item.unsetData(DataComponentTypes.FIREWORKS);
+        item.editMeta(meta -> {
+            meta.displayName(Component.text("Launch", NamedTextColor.DARK_PURPLE)
+                .decoration(TextDecoration.ITALIC, false));
+            meta.lore(List.of(
+                Component.text("Conduct pre-flight systems check and start main engine throttle.", NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false)
+            ));
+        });
+        return new Clickable(item) {
+
+            @Override
+            public void clicked(final Player clicker) {
+                Component fail = getLaunchFailMessage(computer, clicker);
+                if (fail != null) {
+                    clicker.sendMessage(fail);
+                    ClickableInventory.forceCloseInventory(clicker);
+                    return;
+                }
+                openLaunchConfirmation(clicker, computer);
+            }
+        };
+    }
+
+    private void openLaunchConfirmation(final Player player, final Block computer) {
+        final ClickableInventory inventory = new ClickableInventory(27, "Confirm Launch");
+        inventory.setSlot(new DecorationStack(createConfirmInfoItem()), 13);
+        inventory.setSlot(new Clickable(createConfirmLaunchItem()) {
+
+            @Override
+            public void clicked(final Player clicker) {
+                ClickableInventory.forceCloseInventory(clicker);
+
+                Component fail = getLaunchFailMessage(computer, clicker);
+                if (fail != null) {
+                    clicker.sendMessage(fail);
+                    return;
+                }
+                clicker.sendMessage(Component.text("Launch confirmed.", NamedTextColor.GREEN));
+            }
+        }, 11);
+        inventory.setSlot(new Clickable(createCancelLaunchItem()) {
+
+            @Override
+            public void clicked(final Player clicker) {
+                open(clicker, computer);
+            }
+        }, 15);
+        inventory.showInventory(player);
+    }
+
+    private ItemStack createConfirmInfoItem() {
+        final ItemStack item = new ItemStack(Material.BELL);
+        item.editMeta(meta -> {
+            meta.displayName(Component.text("Confirm Launch", NamedTextColor.GOLD)
+                .decoration(TextDecoration.ITALIC, false));
+            meta.lore(List.of(
+                Component.text("Launching cannot be undone.", NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false)
+            ));
+        });
+        return item;
+    }
+
+    private ItemStack createConfirmLaunchItem() {
+        final ItemStack item = new ItemStack(Material.LIME_CONCRETE);
+        item.editMeta(meta -> meta.displayName(Component.text("Confirm Launch", NamedTextColor.GREEN)
+            .decoration(TextDecoration.ITALIC, false)));
+        return item;
+    }
+
+    private ItemStack createCancelLaunchItem() {
+        final ItemStack item = new ItemStack(Material.RED_CONCRETE);
+        item.editMeta(meta -> meta.displayName(Component.text("Cancel", NamedTextColor.RED)
+            .decoration(TextDecoration.ITALIC, false)));
+        return item;
     }
 
     private ItemStack createFuelStatusItem(final FuelStatus status) {
