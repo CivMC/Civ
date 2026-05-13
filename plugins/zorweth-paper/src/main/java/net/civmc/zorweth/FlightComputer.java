@@ -6,7 +6,9 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -15,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Entity;
@@ -22,10 +25,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MenuType;
+import org.bukkit.inventory.view.AnvilView;
 import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
@@ -41,16 +50,20 @@ public final class FlightComputer implements Listener {
     public static final BlockVector3 RELATIVE_POSITION = BlockVector3.at(5, 17, 7);
     public static final NamespacedKey ROCKET_COMPUTER_KEY = new NamespacedKey("zorweth", "rocket_computer");
     public static final NamespacedKey ROCKET_FUEL_KEY = new NamespacedKey("zorweth", "rocket_fuel");
+    public static final NamespacedKey ROCKET_DESTINATION_X_KEY = new NamespacedKey("zorweth", "rocket_destination_x");
+    public static final NamespacedKey ROCKET_DESTINATION_Z_KEY = new NamespacedKey("zorweth", "rocket_destination_z");
 
     private static final double CHARCOAL_FUEL_KG = 4.0;
     private static final double DELTA_V_METERS_PER_SECOND = 10_000.0;
     private static final double EXHAUST_VELOCITY_METERS_PER_SECOND = 5_000.0;
     private static final double ROCKET_DRY_MASS_KG = 100.0;
     private static final double SITTING_PLAYER_MASS_KG = 50.0;
-    private static final int CONTENT_SLOTS = 45;
+    private static final int CONTENT_SLOTS = 27;
     private static final int SCROLL_OFFSET = 5;
 
     private final ZorwethPlugin plugin;
+    private final Map<Player, Inventory> coordinateAnvils = new HashMap<>();
+    private final Map<Player, Block> coordinateComputers = new HashMap<>();
 
     public FlightComputer(final ZorwethPlugin plugin) {
         this.plugin = plugin;
@@ -68,8 +81,8 @@ public final class FlightComputer implements Listener {
         if (!player.isInsideVehicle()) {
             return false;
         }
-        Material on = player.getLocation().getBlock().getType();
-        if (!(on == Material.ANDESITE_STAIRS || on == Material.ANDESITE_SLAB)) {
+        Material on = player.getLocation().getBlock().getRelative(BlockFace.UP).getType();
+        if (!(on == Material.POLISHED_ANDESITE_STAIRS || on == Material.POLISHED_ANDESITE_SLAB)) {
             return false;
         }
         final Entity vehicle = player.getVehicle();
@@ -97,6 +110,58 @@ public final class FlightComputer implements Listener {
         open(event.getPlayer(), block);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onInventoryClick(final InventoryClickEvent event) {
+        final Inventory anvil = this.coordinateAnvils.get(event.getWhoClicked());
+        if (anvil == null || anvil != event.getInventory()) {
+            return;
+        }
+
+        event.setCancelled(true);
+        if (event.getClickedInventory() != event.getInventory() || event.getSlot() != 2) {
+            return;
+        }
+
+        final String text = ((AnvilView) event.getView()).getRenameText();
+        if (text == null) {
+            return;
+        }
+        final Player player = (Player) event.getWhoClicked();
+        final Block computer = this.coordinateComputers.get(player);
+        final Coordinates coordinates = parseCoordinates(text);
+        if (coordinates == null) {
+            player.sendMessage(Component.text("Enter coordinates in the form X Y Z, for example: 1 2 3", NamedTextColor.RED));
+            return;
+        }
+
+        setDestination(computer, coordinates);
+        this.coordinateComputers.remove(player);
+        this.coordinateAnvils.remove(player).clear();
+        if (player.getOpenInventory().getTopInventory() == event.getInventory()) {
+            player.closeInventory();
+        }
+        player.sendMessage(Component.text("Destination set to " + formatCoordinates(coordinates) + ".", NamedTextColor.GREEN));
+        Bukkit.getScheduler().runTask(this.plugin, () -> open(player, computer));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onInventoryClose(final InventoryCloseEvent event) {
+        final Inventory anvil = this.coordinateAnvils.remove(event.getPlayer());
+        if (anvil != null) {
+            anvil.clear();
+            this.coordinateComputers.remove(event.getPlayer());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerQuit(final PlayerQuitEvent event) {
+        final Inventory anvil = this.coordinateAnvils.remove(event.getPlayer());
+        if (anvil != null) {
+            anvil.clear();
+            this.coordinateComputers.remove(event.getPlayer());
+        }
+    }
+
     private void open(final Player player, final Block computer) {
         final Clipboard clipboard = this.plugin.getRocketClipboard();
         final Region region = clipboard.getRegion();
@@ -120,9 +185,9 @@ public final class FlightComputer implements Listener {
             mismatches.add(new DecorationStack(createMismatchItem(actualBlock.getLocation(), expected, actual)));
         }
 
-        final ComponableInventory inventory = new ComponableInventory("Flight Computer", 6, player);
+        final ComponableInventory inventory = new ComponableInventory("Flight Computer", 4, player);
         final Scrollbar scrollbar = new Scrollbar(mismatches, CONTENT_SLOTS, SCROLL_OFFSET);
-        inventory.addComponent(scrollbar, SlotPredicates.rows(5));
+        inventory.addComponent(scrollbar, SlotPredicates.rows(3));
 
         final FuelStatus fuelStatus = calculateFuelStatus(computer, origin, region, schematicNorthWestCorner);
         final StaticDisplaySection summary = new StaticDisplaySection(9);
@@ -132,7 +197,9 @@ public final class FlightComputer implements Listener {
 
         summary.set(new DecorationStack(createSummaryItem(matching, total, mismatches.isEmpty())), 5);
 
-        summary.set(createLaunchButton(computer), 7);
+        summary.set(createCoordinatesButton(computer), 7);
+        summary.set(createLaunchButton(computer), 8);
+
         inventory.addComponent(summary, SlotPredicates.rows(1));
         inventory.show();
     }
@@ -177,13 +244,28 @@ public final class FlightComputer implements Listener {
             }
         }
 
+        for (Player seated : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld().equals(origin.getWorld())) {
+                continue;
+            }
+            final Location location = player.getLocation();
+            final BlockVector3 relative = BlockVector3.at(
+                location.getBlockX() - origin.getX(),
+                location.getBlockY() - origin.getY(),
+                location.getBlockZ() - origin.getZ()
+            );
+            if (region.contains(schematicNorthWestCorner.add(relative)) && !isSittingWithGSit(seated)) {
+                return Component.text((seated.equals(player) ? "Pilot" : "Passenger") + " " + seated.getName() + " is not seated.", NamedTextColor.RED);
+            }
+        }
+
         final FuelStatus fuelStatus = calculateFuelStatus(computer, origin, region, schematicNorthWestCorner);
         if (fuelStatus.currentFuelKg < fuelStatus.requiredFuelKg) {
             return Component.text("Rocket is insufficiently fuelled", NamedTextColor.RED);
         }
 
-        if (!isSittingWithGSit(player)) {
-            return Component.text("Pilot is not seated.");
+        if (getDestination(computer) == null) {
+            return Component.text("Destination not set.");
         }
 
         return null;
@@ -255,7 +337,9 @@ public final class FlightComputer implements Listener {
             meta.displayName(Component.text("Launch", NamedTextColor.DARK_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(
-                Component.text("Conduct pre-flight systems check and start main engine throttle.", NamedTextColor.GRAY)
+                Component.text("Conduct pre-flight systems check", NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("and start main engine throttle.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
@@ -274,9 +358,48 @@ public final class FlightComputer implements Listener {
         };
     }
 
+    private IClickable createCoordinatesButton(final Block computer) {
+        final ItemStack item = new ItemStack(Material.COMPASS);
+        item.editMeta(meta -> {
+            final Coordinates destination = getDestination(computer);
+            meta.displayName(Component.text("Coordinates", NamedTextColor.AQUA)
+                .decoration(TextDecoration.ITALIC, false));
+            meta.lore(List.of(
+                Component.text("Set destination as X Z, for example: 1000 -1000", NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("Current: " + (destination == null ? "not set" : formatCoordinates(destination)), NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false)
+            ));
+        });
+        return new Clickable(item) {
+
+            @Override
+            public void clicked(final Player clicker) {
+                openCoordinateInput(clicker, computer);
+            }
+        };
+    }
+
+    private void openCoordinateInput(final Player player, final Block computer) {
+        final InventoryView view = MenuType.ANVIL.builder()
+            .title(Component.text("Coordinates"))
+            .build(player);
+        player.openInventory(view);
+
+        this.coordinateAnvils.put(player, view.getTopInventory());
+        this.coordinateComputers.put(player, computer);
+        final ItemStack input = new ItemStack(Material.WRITABLE_BOOK);
+        input.editMeta(meta -> {
+            meta.displayName(Component.text("").decoration(TextDecoration.ITALIC, false));
+            meta.lore(List.of(Component.text("Format: X Z", NamedTextColor.GRAY)
+                .decoration(TextDecoration.ITALIC, false)));
+        });
+        view.getTopInventory().setItem(0, input);
+    }
+
     private void openLaunchConfirmation(final Player player, final Block computer) {
-        final ClickableInventory inventory = new ClickableInventory(27, "Confirm Launch");
-        inventory.setSlot(new DecorationStack(createConfirmInfoItem()), 13);
+        final ClickableInventory inventory = new ClickableInventory(27, "Begin ignition?");
+        inventory.setSlot(new DecorationStack(createConfirmInfoItem(computer)), 13);
         inventory.setSlot(new Clickable(createConfirmLaunchItem()) {
 
             @Override
@@ -301,13 +424,16 @@ public final class FlightComputer implements Listener {
         inventory.showInventory(player);
     }
 
-    private ItemStack createConfirmInfoItem() {
+    private ItemStack createConfirmInfoItem(final Block computer) {
         final ItemStack item = new ItemStack(Material.BELL);
         item.editMeta(meta -> {
-            meta.displayName(Component.text("Confirm Launch", NamedTextColor.GOLD)
+            final Coordinates destination = getDestination(computer);
+            meta.displayName(Component.text("Confirm launch and ignite engines", NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(
-                Component.text("Launching cannot be undone.", NamedTextColor.GRAY)
+                Component.text("Destination: " + (destination == null ? "not set" : formatCoordinates(destination)), NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("Once engines have been started, there is no going back.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
@@ -316,7 +442,7 @@ public final class FlightComputer implements Listener {
 
     private ItemStack createConfirmLaunchItem() {
         final ItemStack item = new ItemStack(Material.LIME_CONCRETE);
-        item.editMeta(meta -> meta.displayName(Component.text("Confirm Launch", NamedTextColor.GREEN)
+        item.editMeta(meta -> meta.displayName(Component.text("Confirm launch and ignite engines", NamedTextColor.GREEN)
             .decoration(TextDecoration.ITALIC, false)));
         return item;
     }
@@ -341,7 +467,6 @@ public final class FlightComputer implements Listener {
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Cargo mass: " + roundUpTenths(status.cargoMassKg()) + " kg", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-
                 Component.text("Sitting players: " + roundUpTenths(status.sittingPlayers() * SITTING_PLAYER_MASS_KG) + " kg (" + status.sittingPlayers() + " × " + roundUpTenths(SITTING_PLAYER_MASS_KG) + " kg)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
@@ -397,7 +522,7 @@ public final class FlightComputer implements Listener {
     private FuelStatus calculateFuelStatus(final Block computer, final Block origin, final Region region,
                                            final BlockVector3 schematicNorthWestCorner) {
         final double cargoMass = calculateCargoMass(origin, region, schematicNorthWestCorner);
-        final int sittingPlayers = countSittingPlayers(origin, region, schematicNorthWestCorner);
+        final int sittingPlayers = Math.max(1, countSittingPlayers(origin, region, schematicNorthWestCorner));
         final double nonFuelMass = ROCKET_DRY_MASS_KG + cargoMass + sittingPlayers * SITTING_PLAYER_MASS_KG;
         final double requiredFuelKg = nonFuelMass * (Math.exp(DELTA_V_METERS_PER_SECOND / EXHAUST_VELOCITY_METERS_PER_SECOND) - 1.0);
         final int fuelItems = getFuelItems(computer);
@@ -469,6 +594,39 @@ public final class FlightComputer implements Listener {
         dispenser.update(true, false);
     }
 
+    private Coordinates getDestination(final Block computer) {
+        final Dispenser dispenser = (Dispenser) computer.getState(false);
+        final Integer x = dispenser.getPersistentDataContainer().get(ROCKET_DESTINATION_X_KEY, PersistentDataType.INTEGER);
+        final Integer z = dispenser.getPersistentDataContainer().get(ROCKET_DESTINATION_Z_KEY, PersistentDataType.INTEGER);
+        if (x == null || z == null) {
+            return null;
+        }
+        return new Coordinates(x, z);
+    }
+
+    private void setDestination(final Block computer, final Coordinates coordinates) {
+        final Dispenser dispenser = (Dispenser) computer.getState(false);
+        dispenser.getPersistentDataContainer().set(ROCKET_DESTINATION_X_KEY, PersistentDataType.INTEGER, coordinates.x());
+        dispenser.getPersistentDataContainer().set(ROCKET_DESTINATION_Z_KEY, PersistentDataType.INTEGER, coordinates.z());
+        dispenser.update(true, false);
+    }
+
+    private Coordinates parseCoordinates(final String input) {
+        final String[] parts = input.trim().split("\\s+");
+        if (parts.length != 2) {
+            return null;
+        }
+        try {
+            return new Coordinates(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        } catch (final NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    private String formatCoordinates(final Coordinates coordinates) {
+        return coordinates.x() + " " + coordinates.z();
+    }
+
     private String roundUpTenths(final double amount) {
         return String.format("%.1f", Math.ceil(amount * 10.0) / 10.0);
     }
@@ -486,6 +644,10 @@ public final class FlightComputer implements Listener {
 
     private record FuelStatus(int fuelItems, double currentFuelKg, double requiredFuelKg, int requiredFuelItems,
                               double cargoMassKg, int sittingPlayers) {
+
+    }
+
+    private record Coordinates(int x, int z) {
 
     }
 }
