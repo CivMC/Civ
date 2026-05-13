@@ -1,0 +1,17 @@
+server-name: zorweth
+destination-server: zorweth
+destination-world: world
+transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  user: root
+  password: root
+  host: localhost
+  port: 3306
+  driver: mariadb
+  database: database
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000

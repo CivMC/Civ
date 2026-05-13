@@ -30,7 +30,7 @@ dependencies {
     paperPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     paperPlugin(project(path = ":plugins:heliodor-paper"))
     paperPlugin(project(path = ":plugins:secureboot-paper"))
-    paperPlugin(project(path = ":plugins:zorweth-paper"))
+    paperPlugin(project(path = ":plugins:zorweth-paper", configuration = "shadow"))
 
     zorwethPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     zorwethPlugin(project(path = ":plugins:bastion-paper"))
@@ -57,7 +57,7 @@ dependencies {
     zorwethPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     zorwethPlugin(project(path = ":plugins:heliodor-paper"))
     zorwethPlugin(project(path = ":plugins:secureboot-paper"))
-    zorwethPlugin(project(path = ":plugins:zorweth-paper"))
+    zorwethPlugin(project(path = ":plugins:zorweth-paper", configuration = "shadow"))
 
     gammaPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     gammaPlugin(project(path = ":plugins:bastion-paper"))
