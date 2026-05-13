@@ -5,16 +5,11 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.EffectFeasibility;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
+import net.civmc.zorweth.ZorwethPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -32,6 +27,7 @@ import org.bukkit.block.data.type.Furnace;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
@@ -50,14 +46,7 @@ public class BuildRocketRecipe extends InputRecipe {
 
     public BuildRocketRecipe(final String identifier, final String name, final int productionTime, final ItemMap input) {
         super(identifier, name, productionTime, input);
-
-        File file = FactoryMod.getInstance().getDataFile("rocket.schem");
-        ClipboardFormat format = ClipboardFormats.findByFile(file);
-        try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-            this.clipboard = reader.read();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        this.clipboard = JavaPlugin.getPlugin(ZorwethPlugin.class).getRocketClipboard();
     }
 
     @Override
