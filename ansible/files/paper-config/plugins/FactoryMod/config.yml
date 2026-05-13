@@ -1344,6 +1344,18 @@ factories:
       - make_redstone_kit
       - repair_redstone
       - repair_redstone_kit
+  space_factory:
+    type: FCC
+    name: Space Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      daylight_sensor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DAYLIGHT_DETECTOR
+        amount: 1
+    recipes:
+      - build_rocket
   bastion_factory:
     type: FCC
     name: Bastion Factory
@@ -1812,6 +1824,16 @@ factories:
       - repair_copper_workshop_kit
 #RECIPES
 recipes:
+  build_rocket:
+    production_time: 4s
+    name: Build Rocket
+    type: BUILD_ROCKET
+    input:
+      daylight_sensor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DAYLIGHT_DETECTOR
+        amount: 1
   facet_heliodor:
     production_time: 4s
     name: Facet Heliodor Gem

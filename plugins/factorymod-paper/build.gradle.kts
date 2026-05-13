@@ -13,4 +13,5 @@ dependencies {
     compileOnly(project(":plugins:namelayer-paper"))
     compileOnly(project(":plugins:citadel-paper"))
     compileOnly(project(":plugins:heliodor-paper"))
+    compileOnly(libs.worldedit)
 }

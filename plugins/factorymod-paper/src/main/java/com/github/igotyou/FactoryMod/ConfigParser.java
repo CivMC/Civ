@@ -30,6 +30,7 @@ import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorCreateRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorFinishRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorRefillRecipe;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
+import com.github.igotyou.FactoryMod.recipes.space.BuildRocketRecipe;
 import com.github.igotyou.FactoryMod.recipes.upgrade.CharcoalConsumptionUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.upgrade.SpeedUpgradeRecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
@@ -956,6 +957,9 @@ public class ConfigParser {
                     break;
                 }
                 result = new HeliodorFinishRecipe(identifier, name, productionTime, input, inputCount, outputCountFinish);
+                break;
+            case "BUILD_ROCKET":
+                result = new BuildRocketRecipe(identifier, name, productionTime, input);
                 break;
             default:
                 plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");
