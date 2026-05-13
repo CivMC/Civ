@@ -14,7 +14,8 @@ public record RocketManifest(
     int destinationRequestedX,
     int destinationRequestedZ,
     List<RocketManifestPassenger> passengers,
-    List<RocketManifestChest> chests
+    List<RocketManifestChest> chests,
+    double fuel
 ) {
 
     public RocketManifest {

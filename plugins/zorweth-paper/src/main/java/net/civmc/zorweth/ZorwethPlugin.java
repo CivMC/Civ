@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import javax.sql.DataSource;
 import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
+import net.civmc.zorweth.flight.FlightComputer;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
@@ -26,6 +27,7 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     private Clipboard rocketClipboard;
     private HikariDataSource dataSource;
+    private StasisHandler invincibilityHandler;
     private RocketTransferDao rocketTransferDao;
     private String serverName;
     private String destinationServer;
@@ -47,6 +49,8 @@ public final class ZorwethPlugin extends JavaPlugin {
         }
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
+        this.invincibilityHandler = new StasisHandler();
+        getServer().getPluginManager().registerEvents(this.invincibilityHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputer(this), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
     }
@@ -69,6 +73,10 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     public RocketTransferDao getRocketTransferDao() {
         return this.rocketTransferDao;
+    }
+
+    public StasisHandler getInvincibilityHandler() {
+        return this.invincibilityHandler;
     }
 
     public String getServerName() {

@@ -87,6 +87,9 @@ public final class ZorwethDatabase {
                     INDEX idx_player_server_state_last_server (last_server)
                 )
                 """);
+        migrator.registerMigration("zorweth", 1, """
+            ALTER TABLE rocket_transfers ADD COLUMN IF NOT EXISTS fuel FLOAT NOT NULL
+            """);
 
         try (Connection connection = dataSource.getConnection()) {
             migrator.migrate(connection);

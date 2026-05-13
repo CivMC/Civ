@@ -1,0 +1,16 @@
+server-name: main
+destination-server: zorweth
+destination-world: world
+transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  hostname: ${CIV_MYSQL_HOST}
+  dbname: zorweth
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  poolsize: 10
+  port: 3306
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000

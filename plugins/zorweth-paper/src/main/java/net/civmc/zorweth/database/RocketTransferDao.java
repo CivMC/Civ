@@ -131,7 +131,7 @@ public final class RocketTransferDao {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """)) {
             statement.setString(1, manifest.transferId().toString());
-            statement.setString(2, RocketTransferState.PREPARED.name());
+            statement.setString(2, RocketTransferState.SOURCE_CLEARED.name());
             statement.setString(3, manifest.sourceServer());
             statement.setString(4, manifest.destinationServer());
             statement.setString(5, manifest.sourceWorld());

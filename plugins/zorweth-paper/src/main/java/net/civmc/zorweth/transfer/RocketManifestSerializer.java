@@ -1,5 +1,6 @@
 package net.civmc.zorweth.transfer;
 
+import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public final class RocketManifestSerializer {
                 manifest.transferId(),
                 passenger.playerUuid(),
                 passenger.relativePosition(),
-                RocketInventorySerialization.serializeInventory(passenger.inventoryContents()),
+                ItemStack.serializeItemsAsBytes(passenger.inventoryContents()),
                 passenger.health(),
                 passenger.xpLevel(),
                 passenger.xpProgress(),
@@ -36,7 +37,7 @@ public final class RocketManifestSerializer {
             chests.add(new RocketChestTransfer(
                 manifest.transferId(),
                 chest.relativePosition(),
-                RocketInventorySerialization.serializeInventory(chest.contents()),
+                ItemStack.serializeItemsAsBytes(chest.contents()),
                 RocketTransferCargoState.PENDING
             ));
         }

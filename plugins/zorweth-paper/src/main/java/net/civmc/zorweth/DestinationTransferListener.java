@@ -5,6 +5,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
 import java.util.logging.Level;
+import net.civmc.zorweth.flight.FlightComputer;
 import net.civmc.zorweth.transfer.DestinationRocketTransfer;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
 import net.kyori.adventure.text.Component;
@@ -29,7 +30,7 @@ public final class DestinationTransferListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> handleJoin(player));

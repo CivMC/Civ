@@ -1,11 +1,10 @@
-package net.civmc.zorweth;
+package net.civmc.zorweth.flight;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.world.block.BlockState;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import net.civmc.zorweth.RocketTransferKeys;
+import net.civmc.zorweth.StasisHandler;
+import net.civmc.zorweth.ZorwethPlugin;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
 import net.civmc.zorweth.transfer.RocketEntityPosition;
 import net.civmc.zorweth.transfer.RocketChestTransfer;
@@ -21,7 +24,6 @@ import net.civmc.zorweth.transfer.RocketManifestChest;
 import net.civmc.zorweth.transfer.RocketManifestPassenger;
 import net.civmc.zorweth.transfer.RocketManifestSerializer;
 import net.civmc.zorweth.transfer.RocketPassengerTransfer;
-import net.civmc.zorweth.transfer.RocketTransferState;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -30,7 +32,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
@@ -80,8 +81,11 @@ public final class FlightComputer implements Listener {
     private final Map<Player, Inventory> coordinateAnvils = new HashMap<>();
     private final Map<Player, Block> coordinateComputers = new HashMap<>();
 
-    public FlightComputer(final ZorwethPlugin plugin) {
+    private final StasisHandler invincibilityHandler;
+
+    public FlightComputer(final ZorwethPlugin plugin, StasisHandler invincibilityHandler) {
         this.plugin = plugin;
+        this.invincibilityHandler = invincibilityHandler;
     }
 
     public static boolean isFlightComputerPosition(final BlockVector3 relative) {
@@ -188,7 +192,7 @@ public final class FlightComputer implements Listener {
         final List<IClickable> mismatches = new ArrayList<>();
         for (final BlockVector3 position : region) {
             final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
-            final BlockState expectedState = clipboard.getBlock(position);
+            final com.sk89q.worldedit.world.block.BlockState expectedState = clipboard.getBlock(position);
             final Material expected = Bukkit.createBlockData(expectedState.getAsString()).getMaterial();
             final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
             final Material actual = actualBlock.getType();
@@ -254,7 +258,7 @@ public final class FlightComputer implements Listener {
 
         for (final BlockVector3 position : region) {
             final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
-            final BlockState expectedState = clipboard.getBlock(position);
+            final com.sk89q.worldedit.world.block.BlockState expectedState = clipboard.getBlock(position);
             final Material expected = Bukkit.createBlockData(expectedState.getAsString()).getMaterial();
             final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
             final Material actual = actualBlock.getType();
@@ -312,16 +316,22 @@ public final class FlightComputer implements Listener {
 
         final Coordinates destination = getDestination(computer);
         if (destination == null) {
-            return new RocketManifestResult(createManifest(origin, new Coordinates(0, 0), passengers, chests),
+            return new RocketManifestResult(null,
                 Component.text("Destination not set.", NamedTextColor.RED));
         }
 
-        return new RocketManifestResult(createManifest(origin, destination, passengers, chests), null);
+        final double cargoMass = calculateCargoMass(chests);
+        final double dryMass = ROCKET_DRY_MASS_KG + cargoMass + passengers.size() * SITTING_PLAYER_MASS_KG;
+        final double wetMass = getFuelKg(computer) + dryMass;
+        final double remainingFuel = wetMass / (Math.exp(DELTA_V_METERS_PER_SECOND / EXHAUST_VELOCITY_METERS_PER_SECOND)) - dryMass;
+
+        return new RocketManifestResult(createManifest(origin, destination, passengers, chests, remainingFuel), null);
     }
 
     private RocketManifest createManifest(final Block origin, final Coordinates destination,
                                           final List<RocketManifestPassenger> passengers,
-                                          final List<RocketManifestChest> chests) {
+                                          final List<RocketManifestChest> chests,
+                                          final double fuelKg) {
         return new RocketManifest(
             UUID.randomUUID(),
             this.plugin.getServerName(),
@@ -332,7 +342,8 @@ public final class FlightComputer implements Listener {
             destination.x(),
             destination.z(),
             passengers,
-            chests
+            chests,
+            fuelKg
         );
     }
 
@@ -501,7 +512,7 @@ public final class FlightComputer implements Listener {
                 Component.text("Passengers: " + manifest.passengers().size(), NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Required fuel: " + roundUpTenths(fuelStatus.requiredFuelKg()) + " kg ("
-                    + fuelStatus.requiredFuelItems() + " charcoal)", NamedTextColor.GRAY)
+                        + fuelStatus.requiredFuelItems() + " charcoal)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Once engines have been started, there is no going back.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
@@ -555,18 +566,48 @@ public final class FlightComputer implements Listener {
             return;
         }
 
+        clearPassengerState(manifest);
+        setSourceClearedMarkers(manifest);
+        clearRocket(computer);
+
+        for (RocketPassengerTransfer passenger : passengers) {
+            invincibilityHandler.putInStasis(Bukkit.getPlayer(passenger.playerUuid()));
+        }
+
         clicker.sendMessage(Component.text("Preparing rocket transfer.", NamedTextColor.GREEN));
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            try {
-                this.plugin.getRocketTransferDao().insertPreparedTransfer(manifest, destinationOrigin, passengers, chests);
-            } catch (final Exception exception) {
-                this.plugin.getLogger().log(Level.SEVERE, "Failed to insert prepared rocket transfer", exception);
-                Bukkit.getScheduler().runTask(this.plugin, () -> clicker.sendMessage(
-                    Component.text("Failed to prepare rocket transfer.", NamedTextColor.RED)));
-                return;
+            for (int i = 0; i < 5; i++) {
+                if (i > 0) {
+                    try {
+                        Thread.sleep((1 << (i - 1)) * 1000L);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    }
+                }
+                try {
+                    this.plugin.getRocketTransferDao().insertPreparedTransfer(manifest, destinationOrigin, passengers, chests);
+                    break;
+                } catch (final Exception exception) {
+                    this.plugin.getLogger().log(Level.SEVERE, "Failed to insert prepared rocket transfer", exception);
+                }
+                if (i == 4) {
+                    this.plugin.getLogger().log(Level.SEVERE, "Failed to retry launch");
+                    clicker.sendMessage(Component.text("Rocket launch failed, please contact admins.", NamedTextColor.RED));
+
+                    for (RocketPassengerTransfer passenger : passengers) {
+                        Player player = Bukkit.getPlayer(passenger.playerUuid());
+                        if (player != null) {
+                            invincibilityHandler.removeStasis(player);
+                        }
+                    }
+                }
             }
 
-            Bukkit.getScheduler().runTask(this.plugin, () -> clearSourceAndTransition(computer, clicker, manifest, fuelStatus));
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                connectOrKickPassengers(manifest);
+                clicker.sendMessage(Component.text("Ignition.", NamedTextColor.GREEN));
+            });
         });
     }
 
@@ -577,45 +618,6 @@ public final class FlightComputer implements Listener {
         }
         final int y = destinationWorld.getHighestBlockYAt(manifest.destinationRequestedX(), manifest.destinationRequestedZ());
         return new RocketBlockPosition(manifest.destinationRequestedX(), y, manifest.destinationRequestedZ());
-    }
-
-    private void clearSourceAndTransition(final Block computer, final Player clicker, final RocketManifest manifest,
-                                          final FuelStatus fuelStatus) {
-        for (final RocketManifestPassenger passenger : manifest.passengers()) {
-            if (Bukkit.getPlayer(passenger.playerUuid()) == null) {
-                markPreparedTransferCancelled(manifest);
-                clicker.sendMessage(Component.text("Passenger disconnected before launch completed.", NamedTextColor.RED));
-                return;
-            }
-        }
-
-        final int originalFuelItems = getFuelItems(computer);
-        clearPassengerState(manifest);
-        clearChestState(manifest);
-        setFuelItems(computer, originalFuelItems - fuelStatus.requiredFuelItems());
-        setSourceClearedMarkers(manifest);
-
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            final boolean cleared;
-            try {
-                cleared = this.plugin.getRocketTransferDao().transitionTransferState(
-                    manifest, RocketTransferState.PREPARED, RocketTransferState.SOURCE_CLEARED);
-            } catch (final Exception exception) {
-                this.plugin.getLogger().log(Level.SEVERE, "Failed to mark rocket transfer source-cleared", exception);
-                Bukkit.getScheduler().runTask(this.plugin, () -> restoreCancelledSourceTransfer(computer, clicker, manifest,
-                    originalFuelItems));
-                return;
-            }
-
-            Bukkit.getScheduler().runTask(this.plugin, () -> {
-                if (!cleared) {
-                    restoreCancelledSourceTransfer(computer, clicker, manifest, originalFuelItems);
-                    return;
-                }
-                connectOrKickPassengers(manifest);
-                clicker.sendMessage(Component.text("Launch committed. Transfer is now destination-owned.", NamedTextColor.GREEN));
-            });
-        });
     }
 
     private void clearPassengerState(final RocketManifest manifest) {
@@ -634,15 +636,6 @@ public final class FlightComputer implements Listener {
         }
     }
 
-    private void clearChestState(final RocketManifest manifest) {
-        for (final RocketManifestChest chest : manifest.chests()) {
-            final Block block = getSourceBlock(manifest, chest.relativePosition());
-            if (block.getState(false) instanceof Chest sourceChest) {
-                sourceChest.getBlockInventory().clear();
-            }
-        }
-    }
-
     private void setSourceClearedMarkers(final RocketManifest manifest) {
         for (final RocketManifestPassenger passenger : manifest.passengers()) {
             final Player player = Bukkit.getPlayer(passenger.playerUuid());
@@ -655,47 +648,7 @@ public final class FlightComputer implements Listener {
         }
     }
 
-    private void restoreCancelledSourceTransfer(final Block computer, final Player clicker, final RocketManifest manifest,
-                                                final int originalFuelItems) {
-        restorePassengerState(manifest);
-        restoreChestState(manifest);
-        setFuelItems(computer, originalFuelItems);
-        clearSourceMarkers(manifest);
-        markPreparedTransferCancelled(manifest);
-        clicker.sendMessage(Component.text("Rocket transfer failed before destination ownership; source state restored.",
-            NamedTextColor.RED));
-    }
-
-    private void restorePassengerState(final RocketManifest manifest) {
-        for (final RocketManifestPassenger passenger : manifest.passengers()) {
-            final Player player = Bukkit.getPlayer(passenger.playerUuid());
-            if (player == null) {
-                continue;
-            }
-            player.getInventory().setContents(passenger.inventoryContents());
-            final double maxHealth = player.getAttribute(Attribute.MAX_HEALTH) == null
-                ? passenger.health()
-                : player.getAttribute(Attribute.MAX_HEALTH).getValue();
-            player.setHealth(Math.min(passenger.health(), maxHealth));
-            player.setLevel(passenger.xpLevel());
-            player.setExp(passenger.xpProgress());
-            player.setFoodLevel(passenger.foodLevel());
-            player.setSaturation(passenger.saturation());
-            player.setExhaustion(passenger.exhaustion());
-            player.getInventory().setHeldItemSlot(passenger.heldSlot());
-            player.setGameMode(passenger.gameMode());
-        }
-    }
-
-    private void restoreChestState(final RocketManifest manifest) {
-        for (final RocketManifestChest chest : manifest.chests()) {
-            final Block block = getSourceBlock(manifest, chest.relativePosition());
-            if (block.getState(false) instanceof Chest sourceChest) {
-                sourceChest.getBlockInventory().setStorageContents(chest.contents());
-            }
-        }
-    }
-
+    // TODO ??
     private void clearSourceMarkers(final RocketManifest manifest) {
         for (final RocketManifestPassenger passenger : manifest.passengers()) {
             final Player player = Bukkit.getPlayer(passenger.playerUuid());
@@ -705,29 +658,6 @@ public final class FlightComputer implements Listener {
             player.getPersistentDataContainer().remove(RocketTransferKeys.SOURCE_TRANSFER_ID);
             player.getPersistentDataContainer().remove(RocketTransferKeys.SOURCE_CLEARED);
         }
-    }
-
-    private void markPreparedTransferCancelled(final RocketManifest manifest) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            try {
-                this.plugin.getRocketTransferDao().transitionTransferState(
-                    manifest, RocketTransferState.PREPARED, RocketTransferState.CANCELLED);
-            } catch (final Exception exception) {
-                this.plugin.getLogger().log(Level.WARNING, "Failed to cancel prepared rocket transfer", exception);
-            }
-        });
-    }
-
-    private Block getSourceBlock(final RocketManifest manifest, final RocketBlockPosition relative) {
-        final World world = Bukkit.getWorld(manifest.sourceWorld());
-        if (world == null) {
-            throw new IllegalStateException("Source world is not loaded: " + manifest.sourceWorld());
-        }
-        return world.getBlockAt(
-            manifest.sourceOrigin().x() + relative.x(),
-            manifest.sourceOrigin().y() + relative.y(),
-            manifest.sourceOrigin().z() + relative.z()
-        );
     }
 
     private void connectOrKickPassengers(final RocketManifest manifest) {
@@ -782,13 +712,13 @@ public final class FlightComputer implements Listener {
         }
 
         final int amount = hand.getAmount();
-        setFuelItems(computer, getFuelItems(computer) + amount);
+        setFuelKg(computer, getFuelKg(computer) + (amount * CHARCOAL_FUEL_KG));
         player.getInventory().setItemInMainHand(null);
         player.sendMessage(Component.text("Added " + amount + " charcoal to the rocket.", NamedTextColor.GREEN));
     }
 
     private void siphonFuel(final Player player, final Block computer) {
-        final int stored = getFuelItems(computer);
+        final double stored = getFuelKg(computer);
         if (stored <= 0) {
             player.sendMessage(Component.text("This rocket has no fuel to siphon.", NamedTextColor.RED));
             return;
@@ -809,13 +739,13 @@ public final class FlightComputer implements Listener {
             return;
         }
 
-        final int removed = Math.min(stored, space);
-        if (hand == null || hand.getType().isAir()) {
+        final int removed = Math.min((int) (stored / CHARCOAL_FUEL_KG), space);
+        if (hand.getType().isAir()) {
             player.getInventory().setItemInMainHand(new ItemStack(Material.CHARCOAL, removed));
         } else {
             hand.setAmount(hand.getAmount() + removed);
         }
-        setFuelItems(computer, stored - removed);
+        setFuelKg(computer, stored - (removed * CHARCOAL_FUEL_KG));
         player.sendMessage(Component.text("Siphoned " + removed + " charcoal from the rocket.", NamedTextColor.GREEN));
     }
 
@@ -829,10 +759,10 @@ public final class FlightComputer implements Listener {
         final int sittingPlayers = Math.max(1, passengers.size());
         final double nonFuelMass = ROCKET_DRY_MASS_KG + cargoMass + sittingPlayers * SITTING_PLAYER_MASS_KG;
         final double requiredFuelKg = nonFuelMass * (Math.exp(DELTA_V_METERS_PER_SECOND / EXHAUST_VELOCITY_METERS_PER_SECOND) - 1.0);
-        final int fuelItems = getFuelItems(computer);
+        final double fuelKg = getFuelKg(computer);
         return new FuelStatus(
-            fuelItems,
-            fuelItems * CHARCOAL_FUEL_KG,
+            (int) (fuelKg / CHARCOAL_FUEL_KG),
+            fuelKg,
             requiredFuelKg,
             (int) Math.ceil(requiredFuelKg / CHARCOAL_FUEL_KG),
             cargoMass,
@@ -854,22 +784,23 @@ public final class FlightComputer implements Listener {
             if (item == null || item.getType().isAir()) {
                 continue;
             }
+            // TODO increase weight for fuel
             mass += (double) item.getAmount() / item.getMaxStackSize();
         }
         return mass;
     }
 
-    private int getFuelItems(final Block computer) {
+    private double getFuelKg(final Block computer) {
         final Dispenser dispenser = (Dispenser) computer.getState(false);
-        return dispenser.getPersistentDataContainer().getOrDefault(ROCKET_FUEL_KEY, PersistentDataType.INTEGER, 0);
+        return dispenser.getPersistentDataContainer().getOrDefault(ROCKET_FUEL_KEY, PersistentDataType.DOUBLE, 0D);
     }
 
-    private void setFuelItems(final Block computer, final int fuelItems) {
+    private void setFuelKg(final Block computer, final double fuelKg) {
         final Dispenser dispenser = (Dispenser) computer.getState(false);
-        if (fuelItems <= 0) {
+        if (fuelKg <= 0) {
             dispenser.getPersistentDataContainer().remove(ROCKET_FUEL_KEY);
         } else {
-            dispenser.getPersistentDataContainer().set(ROCKET_FUEL_KEY, PersistentDataType.INTEGER, fuelItems);
+            dispenser.getPersistentDataContainer().set(ROCKET_FUEL_KEY, PersistentDataType.DOUBLE, fuelKg);
         }
         dispenser.update(true, false);
     }
@@ -933,5 +864,18 @@ public final class FlightComputer implements Listener {
 
     private record Coordinates(int x, int z) {
 
+    }
+
+    private void clearRocket(Block computer) {
+        final Clipboard clipboard = this.plugin.getRocketClipboard();
+        final Region region = clipboard.getRegion();
+        final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
+        final Block origin = getRocketOrigin(computer);
+
+        for (final BlockVector3 position : region) {
+            final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
+            final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
+            actualBlock.setType(Material.AIR);
+        }
     }
 }

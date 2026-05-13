@@ -9,7 +9,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
 import java.util.List;
-import net.civmc.zorweth.FlightComputer;
+import net.civmc.zorweth.flight.FlightComputer;
 import net.civmc.zorweth.ZorwethPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

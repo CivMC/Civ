@@ -1,7 +1,7 @@
 Database:
   Host: ${CIV_MYSQL_HOST}
   Port: 3306
-  Schema: castlegates
+  Schema: ${CIV_DATABASE_PREFIX}castlegates
   User: ${CIV_MYSQL_USERNAME}
   Password: ${CIV_MYSQL_PASSWORD}
 Settings:
