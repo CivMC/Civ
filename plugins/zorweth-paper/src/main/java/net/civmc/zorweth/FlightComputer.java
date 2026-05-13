@@ -1,5 +1,7 @@
 package net.civmc.zorweth;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
@@ -10,11 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
 import net.civmc.zorweth.transfer.RocketEntityPosition;
+import net.civmc.zorweth.transfer.RocketChestTransfer;
 import net.civmc.zorweth.transfer.RocketManifest;
 import net.civmc.zorweth.transfer.RocketManifestChest;
 import net.civmc.zorweth.transfer.RocketManifestPassenger;
+import net.civmc.zorweth.transfer.RocketManifestSerializer;
+import net.civmc.zorweth.transfer.RocketPassengerTransfer;
+import net.civmc.zorweth.transfer.RocketTransferState;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -22,6 +29,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
@@ -234,20 +243,6 @@ public final class FlightComputer implements Listener {
             ));
         });
         return item;
-    }
-
-    private Component getLaunchFailMessage(final Block computer, final Player player) {
-        final RocketManifestResult result = collectLaunchManifest(computer, player);
-        if (result.failure() != null) {
-            return result.failure();
-        }
-
-        final FuelStatus fuelStatus = calculateFuelStatus(computer, result.manifest());
-        if (fuelStatus.currentFuelKg < fuelStatus.requiredFuelKg) {
-            return Component.text("Rocket is insufficiently fuelled", NamedTextColor.RED);
-        }
-
-        return null;
     }
 
     private RocketManifestResult collectLaunchManifest(final Block computer, final Player player) {
@@ -482,13 +477,7 @@ public final class FlightComputer implements Listener {
             @Override
             public void clicked(final Player clicker) {
                 ClickableInventory.forceCloseInventory(clicker);
-
-                Component fail = getLaunchFailMessage(computer, clicker);
-                if (fail != null) {
-                    clicker.sendMessage(fail);
-                    return;
-                }
-                clicker.sendMessage(Component.text("Launch confirmed.", NamedTextColor.GREEN));
+                commitLaunch(computer, clicker);
             }
         }, 11);
         inventory.setSlot(new Clickable(createCancelLaunchItem()) {
@@ -533,6 +522,236 @@ public final class FlightComputer implements Listener {
         item.editMeta(meta -> meta.displayName(Component.text("Cancel", NamedTextColor.RED)
             .decoration(TextDecoration.ITALIC, false)));
         return item;
+    }
+
+    private void commitLaunch(final Block computer, final Player clicker) {
+        final RocketManifestResult manifestResult = collectLaunchManifest(computer, clicker);
+        if (manifestResult.failure() != null) {
+            clicker.sendMessage(manifestResult.failure());
+            return;
+        }
+
+        final RocketManifest manifest = manifestResult.manifest();
+        final FuelStatus fuelStatus = calculateFuelStatus(computer, manifest);
+        if (fuelStatus.currentFuelKg < fuelStatus.requiredFuelKg) {
+            clicker.sendMessage(Component.text("Rocket is insufficiently fuelled", NamedTextColor.RED));
+            return;
+        }
+
+        final RocketBlockPosition destinationOrigin = findDestinationOrigin(manifest);
+        if (destinationOrigin == null) {
+            clicker.sendMessage(Component.text("Destination world is not available for landing calculation.", NamedTextColor.RED));
+            return;
+        }
+
+        final List<RocketPassengerTransfer> passengers;
+        final List<RocketChestTransfer> chests;
+        try {
+            passengers = RocketManifestSerializer.serializePassengers(manifest);
+            chests = RocketManifestSerializer.serializeChests(manifest);
+        } catch (final RuntimeException exception) {
+            this.plugin.getLogger().log(Level.SEVERE, "Failed to serialize rocket transfer payload", exception);
+            clicker.sendMessage(Component.text("Failed to prepare rocket transfer payload.", NamedTextColor.RED));
+            return;
+        }
+
+        clicker.sendMessage(Component.text("Preparing rocket transfer.", NamedTextColor.GREEN));
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            try {
+                this.plugin.getRocketTransferDao().insertPreparedTransfer(manifest, destinationOrigin, passengers, chests);
+            } catch (final Exception exception) {
+                this.plugin.getLogger().log(Level.SEVERE, "Failed to insert prepared rocket transfer", exception);
+                Bukkit.getScheduler().runTask(this.plugin, () -> clicker.sendMessage(
+                    Component.text("Failed to prepare rocket transfer.", NamedTextColor.RED)));
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(this.plugin, () -> clearSourceAndTransition(computer, clicker, manifest, fuelStatus));
+        });
+    }
+
+    private RocketBlockPosition findDestinationOrigin(final RocketManifest manifest) {
+        final World destinationWorld = Bukkit.getWorld(manifest.destinationWorld());
+        if (destinationWorld == null) {
+            return null;
+        }
+        final int y = destinationWorld.getHighestBlockYAt(manifest.destinationRequestedX(), manifest.destinationRequestedZ());
+        return new RocketBlockPosition(manifest.destinationRequestedX(), y, manifest.destinationRequestedZ());
+    }
+
+    private void clearSourceAndTransition(final Block computer, final Player clicker, final RocketManifest manifest,
+                                          final FuelStatus fuelStatus) {
+        for (final RocketManifestPassenger passenger : manifest.passengers()) {
+            if (Bukkit.getPlayer(passenger.playerUuid()) == null) {
+                markPreparedTransferCancelled(manifest);
+                clicker.sendMessage(Component.text("Passenger disconnected before launch commit completed.", NamedTextColor.RED));
+                return;
+            }
+        }
+
+        final int originalFuelItems = getFuelItems(computer);
+        clearPassengerState(manifest);
+        clearChestState(manifest);
+        setFuelItems(computer, originalFuelItems - fuelStatus.requiredFuelItems());
+        setSourceClearedMarkers(manifest);
+
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            final boolean cleared;
+            try {
+                cleared = this.plugin.getRocketTransferDao().transitionTransferState(
+                    manifest, RocketTransferState.PREPARED, RocketTransferState.SOURCE_CLEARED);
+            } catch (final Exception exception) {
+                this.plugin.getLogger().log(Level.SEVERE, "Failed to mark rocket transfer source-cleared", exception);
+                Bukkit.getScheduler().runTask(this.plugin, () -> restoreCancelledSourceTransfer(computer, clicker, manifest,
+                    originalFuelItems));
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                if (!cleared) {
+                    restoreCancelledSourceTransfer(computer, clicker, manifest, originalFuelItems);
+                    return;
+                }
+                connectOrKickPassengers(manifest);
+                clicker.sendMessage(Component.text("Launch committed. Transfer is now destination-owned.", NamedTextColor.GREEN));
+            });
+        });
+    }
+
+    private void clearPassengerState(final RocketManifest manifest) {
+        for (final RocketManifestPassenger passenger : manifest.passengers()) {
+            final Player player = Bukkit.getPlayer(passenger.playerUuid());
+            if (player == null) {
+                continue;
+            }
+            player.getInventory().clear();
+            player.setLevel(0);
+            player.setExp(0.0f);
+            player.setFoodLevel(20);
+            player.setSaturation(5.0f);
+            player.setExhaustion(0.0f);
+            player.getInventory().setHeldItemSlot(0);
+        }
+    }
+
+    private void clearChestState(final RocketManifest manifest) {
+        for (final RocketManifestChest chest : manifest.chests()) {
+            final Block block = getSourceBlock(manifest, chest.relativePosition());
+            if (block.getState(false) instanceof Chest sourceChest) {
+                sourceChest.getBlockInventory().clear();
+            }
+        }
+    }
+
+    private void setSourceClearedMarkers(final RocketManifest manifest) {
+        for (final RocketManifestPassenger passenger : manifest.passengers()) {
+            final Player player = Bukkit.getPlayer(passenger.playerUuid());
+            if (player == null) {
+                continue;
+            }
+            player.getPersistentDataContainer().set(RocketTransferKeys.SOURCE_TRANSFER_ID, PersistentDataType.STRING,
+                manifest.transferId().toString());
+            player.getPersistentDataContainer().set(RocketTransferKeys.SOURCE_CLEARED, PersistentDataType.BOOLEAN, true);
+        }
+    }
+
+    private void restoreCancelledSourceTransfer(final Block computer, final Player clicker, final RocketManifest manifest,
+                                                final int originalFuelItems) {
+        restorePassengerState(manifest);
+        restoreChestState(manifest);
+        setFuelItems(computer, originalFuelItems);
+        clearSourceMarkers(manifest);
+        markPreparedTransferCancelled(manifest);
+        clicker.sendMessage(Component.text("Rocket transfer failed before destination ownership; source state restored.",
+            NamedTextColor.RED));
+    }
+
+    private void restorePassengerState(final RocketManifest manifest) {
+        for (final RocketManifestPassenger passenger : manifest.passengers()) {
+            final Player player = Bukkit.getPlayer(passenger.playerUuid());
+            if (player == null) {
+                continue;
+            }
+            player.getInventory().setContents(passenger.inventoryContents());
+            final double maxHealth = player.getAttribute(Attribute.MAX_HEALTH) == null
+                ? passenger.health()
+                : player.getAttribute(Attribute.MAX_HEALTH).getValue();
+            player.setHealth(Math.min(passenger.health(), maxHealth));
+            player.setLevel(passenger.xpLevel());
+            player.setExp(passenger.xpProgress());
+            player.setFoodLevel(passenger.foodLevel());
+            player.setSaturation(passenger.saturation());
+            player.setExhaustion(passenger.exhaustion());
+            player.getInventory().setHeldItemSlot(passenger.heldSlot());
+            player.setGameMode(passenger.gameMode());
+        }
+    }
+
+    private void restoreChestState(final RocketManifest manifest) {
+        for (final RocketManifestChest chest : manifest.chests()) {
+            final Block block = getSourceBlock(manifest, chest.relativePosition());
+            if (block.getState(false) instanceof Chest sourceChest) {
+                sourceChest.getBlockInventory().setStorageContents(chest.contents());
+            }
+        }
+    }
+
+    private void clearSourceMarkers(final RocketManifest manifest) {
+        for (final RocketManifestPassenger passenger : manifest.passengers()) {
+            final Player player = Bukkit.getPlayer(passenger.playerUuid());
+            if (player == null) {
+                continue;
+            }
+            player.getPersistentDataContainer().remove(RocketTransferKeys.SOURCE_TRANSFER_ID);
+            player.getPersistentDataContainer().remove(RocketTransferKeys.SOURCE_CLEARED);
+        }
+    }
+
+    private void markPreparedTransferCancelled(final RocketManifest manifest) {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            try {
+                this.plugin.getRocketTransferDao().transitionTransferState(
+                    manifest, RocketTransferState.PREPARED, RocketTransferState.CANCELLED);
+            } catch (final Exception exception) {
+                this.plugin.getLogger().log(Level.WARNING, "Failed to cancel prepared rocket transfer", exception);
+            }
+        });
+    }
+
+    private Block getSourceBlock(final RocketManifest manifest, final RocketBlockPosition relative) {
+        final World world = Bukkit.getWorld(manifest.sourceWorld());
+        if (world == null) {
+            throw new IllegalStateException("Source world is not loaded: " + manifest.sourceWorld());
+        }
+        return world.getBlockAt(
+            manifest.sourceOrigin().x() + relative.x(),
+            manifest.sourceOrigin().y() + relative.y(),
+            manifest.sourceOrigin().z() + relative.z()
+        );
+    }
+
+    private void connectOrKickPassengers(final RocketManifest manifest) {
+        for (final RocketManifestPassenger passenger : manifest.passengers()) {
+            final Player player = Bukkit.getPlayer(passenger.playerUuid());
+            if (player == null) {
+                continue;
+            }
+            connect(player, manifest.destinationServer());
+            Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                if (player.isOnline()
+                    && manifest.transferId().toString().equals(player.getPersistentDataContainer()
+                    .get(RocketTransferKeys.SOURCE_TRANSFER_ID, PersistentDataType.STRING))) {
+                    player.kick(Component.text(this.plugin.getTransferFailureMessage(), NamedTextColor.RED));
+                }
+            }, 100L);
+        }
+    }
+
+    private void connect(final Player player, final String server) {
+        final ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeUTF("Connect");
+        output.writeUTF(server);
+        player.sendPluginMessage(this.plugin, "BungeeCord", output.toByteArray());
     }
 
     private ItemStack createFuelStatusItem(final FuelStatus status) {

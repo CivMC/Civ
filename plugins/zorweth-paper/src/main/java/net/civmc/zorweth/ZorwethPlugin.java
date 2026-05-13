@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import javax.sql.DataSource;
+import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
@@ -25,6 +26,7 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     private Clipboard rocketClipboard;
     private HikariDataSource dataSource;
+    private RocketTransferDao rocketTransferDao;
     private String serverName;
     private String destinationServer;
     private String destinationWorld;
@@ -43,6 +45,7 @@ public final class ZorwethPlugin extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
         getServer().getPluginManager().registerEvents(new FlightComputer(this), this);
     }
@@ -61,6 +64,10 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     public DataSource getDataSource() {
         return this.dataSource;
+    }
+
+    public RocketTransferDao getRocketTransferDao() {
+        return this.rocketTransferDao;
     }
 
     public String getServerName() {
@@ -105,6 +112,7 @@ public final class ZorwethPlugin extends JavaPlugin {
 
         try {
             ZorwethDatabase.migrate(this.dataSource);
+            this.rocketTransferDao = new RocketTransferDao(this.dataSource);
             return true;
         } catch (final SQLException exception) {
             getLogger().log(Level.SEVERE, "Unable to migrate the Zorweth database", exception);
