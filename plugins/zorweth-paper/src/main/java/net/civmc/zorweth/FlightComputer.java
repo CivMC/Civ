@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import net.civmc.zorweth.transfer.RocketBlockPosition;
+import net.civmc.zorweth.transfer.RocketEntityPosition;
+import net.civmc.zorweth.transfer.RocketManifest;
+import net.civmc.zorweth.transfer.RocketManifestChest;
+import net.civmc.zorweth.transfer.RocketManifestPassenger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -189,7 +195,10 @@ public final class FlightComputer implements Listener {
         final Scrollbar scrollbar = new Scrollbar(mismatches, CONTENT_SLOTS, SCROLL_OFFSET);
         inventory.addComponent(scrollbar, SlotPredicates.rows(3));
 
-        final FuelStatus fuelStatus = calculateFuelStatus(computer, origin, region, schematicNorthWestCorner);
+        final RocketManifestResult manifestResult = collectLaunchManifest(computer, player);
+        final FuelStatus fuelStatus = manifestResult.manifest() == null
+            ? calculateFuelStatus(computer, List.of(), List.of())
+            : calculateFuelStatus(computer, manifestResult.manifest());
         final StaticDisplaySection summary = new StaticDisplaySection(9);
         summary.set(createAddFuelButton(computer), 1);
         summary.set(createSiphonFuelButton(computer), 2);
@@ -228,10 +237,25 @@ public final class FlightComputer implements Listener {
     }
 
     private Component getLaunchFailMessage(final Block computer, final Player player) {
+        final RocketManifestResult result = collectLaunchManifest(computer, player);
+        if (result.failure() != null) {
+            return result.failure();
+        }
+
+        final FuelStatus fuelStatus = calculateFuelStatus(computer, result.manifest());
+        if (fuelStatus.currentFuelKg < fuelStatus.requiredFuelKg) {
+            return Component.text("Rocket is insufficiently fuelled", NamedTextColor.RED);
+        }
+
+        return null;
+    }
+
+    private RocketManifestResult collectLaunchManifest(final Block computer, final Player player) {
         final Clipboard clipboard = this.plugin.getRocketClipboard();
         final Region region = clipboard.getRegion();
         final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
         final Block origin = getRocketOrigin(computer);
+        final List<RocketManifestChest> chests = new ArrayList<>();
 
         for (final BlockVector3 position : region) {
             final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
@@ -240,35 +264,81 @@ public final class FlightComputer implements Listener {
             final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
             final Material actual = actualBlock.getType();
             if (actual != expected) {
-                return Component.text("Rocket is not structurally intact", NamedTextColor.RED);
+                return new RocketManifestResult(null,
+                    Component.text("Rocket is not structurally intact", NamedTextColor.RED));
+            }
+            if (actualBlock.getState(false) instanceof Chest chest) {
+                chests.add(new RocketManifestChest(
+                    new RocketBlockPosition(relative.getX(), relative.getY(), relative.getZ()),
+                    chest.getBlockInventory().getStorageContents()
+                ));
             }
         }
 
-        for (Player seated : Bukkit.getOnlinePlayers()) {
-            if (!player.getWorld().equals(origin.getWorld())) {
+        final List<RocketManifestPassenger> passengers = new ArrayList<>();
+        for (final Player seated : Bukkit.getOnlinePlayers()) {
+            if (!seated.getWorld().equals(origin.getWorld())) {
                 continue;
             }
-            final Location location = player.getLocation();
+            final Location location = seated.getLocation();
             final BlockVector3 relative = BlockVector3.at(
                 location.getBlockX() - origin.getX(),
                 location.getBlockY() - origin.getY(),
                 location.getBlockZ() - origin.getZ()
             );
-            if (region.contains(schematicNorthWestCorner.add(relative)) && !isSittingWithGSit(seated)) {
-                return Component.text((seated.equals(player) ? "Pilot" : "Passenger") + " " + seated.getName() + " is not seated.", NamedTextColor.RED);
+            final boolean insideRocket = region.contains(schematicNorthWestCorner.add(relative));
+            if (insideRocket && !isSittingWithGSit(seated)) {
+                return new RocketManifestResult(null,
+                    Component.text((seated.equals(player) ? "Pilot" : "Passenger") + " " + seated.getName()
+                        + " is not seated.", NamedTextColor.RED));
+            }
+            if (insideRocket) {
+                passengers.add(new RocketManifestPassenger(
+                    seated.getUniqueId(),
+                    new RocketEntityPosition(
+                        location.getX() - origin.getX(),
+                        location.getY() - origin.getY(),
+                        location.getZ() - origin.getZ(),
+                        location.getYaw(),
+                        location.getPitch()
+                    ),
+                    seated.getInventory().getContents(),
+                    seated.getHealth(),
+                    seated.getLevel(),
+                    seated.getExp(),
+                    seated.getFoodLevel(),
+                    seated.getSaturation(),
+                    seated.getExhaustion(),
+                    seated.getInventory().getHeldItemSlot(),
+                    seated.getGameMode()
+                ));
             }
         }
 
-        final FuelStatus fuelStatus = calculateFuelStatus(computer, origin, region, schematicNorthWestCorner);
-        if (fuelStatus.currentFuelKg < fuelStatus.requiredFuelKg) {
-            return Component.text("Rocket is insufficiently fuelled", NamedTextColor.RED);
+        final Coordinates destination = getDestination(computer);
+        if (destination == null) {
+            return new RocketManifestResult(createManifest(origin, new Coordinates(0, 0), passengers, chests),
+                Component.text("Destination not set.", NamedTextColor.RED));
         }
 
-        if (getDestination(computer) == null) {
-            return Component.text("Destination not set.");
-        }
+        return new RocketManifestResult(createManifest(origin, destination, passengers, chests), null);
+    }
 
-        return null;
+    private RocketManifest createManifest(final Block origin, final Coordinates destination,
+                                          final List<RocketManifestPassenger> passengers,
+                                          final List<RocketManifestChest> chests) {
+        return new RocketManifest(
+            UUID.randomUUID(),
+            this.plugin.getServerName(),
+            this.plugin.getDestinationServer(),
+            origin.getWorld().getName(),
+            this.plugin.getDestinationWorld(),
+            new RocketBlockPosition(origin.getX(), origin.getY(), origin.getZ()),
+            destination.x(),
+            destination.z(),
+            passengers,
+            chests
+        );
     }
 
     private ItemStack createMismatchItem(final Location location, final Material expected, final Material actual) {
@@ -347,13 +417,19 @@ public final class FlightComputer implements Listener {
 
             @Override
             public void clicked(final Player clicker) {
-                Component fail = getLaunchFailMessage(computer, clicker);
-                if (fail != null) {
-                    clicker.sendMessage(fail);
+                final RocketManifestResult manifestResult = collectLaunchManifest(computer, clicker);
+                if (manifestResult.failure() != null) {
+                    clicker.sendMessage(manifestResult.failure());
                     ClickableInventory.forceCloseInventory(clicker);
                     return;
                 }
-                openLaunchConfirmation(clicker, computer);
+                final FuelStatus fuelStatus = calculateFuelStatus(computer, manifestResult.manifest());
+                if (fuelStatus.currentFuelKg < fuelStatus.requiredFuelKg) {
+                    clicker.sendMessage(Component.text("Rocket is insufficiently fuelled", NamedTextColor.RED));
+                    ClickableInventory.forceCloseInventory(clicker);
+                    return;
+                }
+                openLaunchConfirmation(clicker, computer, manifestResult.manifest(), fuelStatus);
             }
         };
     }
@@ -397,9 +473,10 @@ public final class FlightComputer implements Listener {
         view.getTopInventory().setItem(0, input);
     }
 
-    private void openLaunchConfirmation(final Player player, final Block computer) {
+    private void openLaunchConfirmation(final Player player, final Block computer, final RocketManifest manifest,
+                                        final FuelStatus fuelStatus) {
         final ClickableInventory inventory = new ClickableInventory(27, "Begin ignition?");
-        inventory.setSlot(new DecorationStack(createConfirmInfoItem(computer)), 13);
+        inventory.setSlot(new DecorationStack(createConfirmInfoItem(manifest, fuelStatus)), 13);
         inventory.setSlot(new Clickable(createConfirmLaunchItem()) {
 
             @Override
@@ -424,14 +501,18 @@ public final class FlightComputer implements Listener {
         inventory.showInventory(player);
     }
 
-    private ItemStack createConfirmInfoItem(final Block computer) {
+    private ItemStack createConfirmInfoItem(final RocketManifest manifest, final FuelStatus fuelStatus) {
         final ItemStack item = new ItemStack(Material.BELL);
         item.editMeta(meta -> {
-            final Coordinates destination = getDestination(computer);
             meta.displayName(Component.text("Confirm launch and ignite engines", NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(
-                Component.text("Destination: " + (destination == null ? "not set" : formatCoordinates(destination)), NamedTextColor.GRAY)
+                Component.text("Destination: " + manifest.destinationRequestedX() + " " + manifest.destinationRequestedZ(), NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("Passengers: " + manifest.passengers().size(), NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("Required fuel: " + roundUpTenths(fuelStatus.requiredFuelKg()) + " kg ("
+                    + fuelStatus.requiredFuelItems() + " charcoal)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Once engines have been started, there is no going back.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
@@ -519,10 +600,14 @@ public final class FlightComputer implements Listener {
         player.sendMessage(Component.text("Siphoned " + removed + " charcoal from the rocket.", NamedTextColor.GREEN));
     }
 
-    private FuelStatus calculateFuelStatus(final Block computer, final Block origin, final Region region,
-                                           final BlockVector3 schematicNorthWestCorner) {
-        final double cargoMass = calculateCargoMass(origin, region, schematicNorthWestCorner);
-        final int sittingPlayers = Math.max(1, countSittingPlayers(origin, region, schematicNorthWestCorner));
+    private FuelStatus calculateFuelStatus(final Block computer, final RocketManifest manifest) {
+        return calculateFuelStatus(computer, manifest.passengers(), manifest.chests());
+    }
+
+    private FuelStatus calculateFuelStatus(final Block computer, final List<RocketManifestPassenger> passengers,
+                                           final List<RocketManifestChest> chests) {
+        final double cargoMass = calculateCargoMass(chests);
+        final int sittingPlayers = Math.max(1, passengers.size());
         final double nonFuelMass = ROCKET_DRY_MASS_KG + cargoMass + sittingPlayers * SITTING_PLAYER_MASS_KG;
         final double requiredFuelKg = nonFuelMass * (Math.exp(DELTA_V_METERS_PER_SECOND / EXHAUST_VELOCITY_METERS_PER_SECOND) - 1.0);
         final int fuelItems = getFuelItems(computer);
@@ -536,47 +621,23 @@ public final class FlightComputer implements Listener {
         );
     }
 
-    private double calculateCargoMass(final Block origin, final Region region, final BlockVector3 schematicNorthWestCorner) {
+    private double calculateCargoMass(final List<RocketManifestChest> chests) {
         double mass = 0.0;
-        for (final BlockVector3 position : region) {
-            final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
-            final Block block = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
-            if (!(block.getState(false) instanceof Chest chest)) {
-                continue;
-            }
-            mass += calculateChestMass(chest.getBlockInventory());
+        for (final RocketManifestChest chest : chests) {
+            mass += calculateChestMass(chest.contents());
         }
         return mass;
     }
 
-    private double calculateChestMass(final Inventory inventory) {
+    private double calculateChestMass(final ItemStack[] contents) {
         double mass = 0.0;
-        for (final ItemStack item : inventory.getStorageContents()) {
+        for (final ItemStack item : contents) {
             if (item == null || item.getType().isAir()) {
                 continue;
             }
             mass += (double) item.getAmount() / item.getMaxStackSize();
         }
         return mass;
-    }
-
-    private int countSittingPlayers(final Block origin, final Region region, final BlockVector3 schematicNorthWestCorner) {
-        int sittingPlayers = 0;
-        for (final Player player : Bukkit.getOnlinePlayers()) {
-            if (!isSittingWithGSit(player) || !player.getWorld().equals(origin.getWorld())) {
-                continue;
-            }
-            final Location location = player.getLocation();
-            final BlockVector3 relative = BlockVector3.at(
-                location.getBlockX() - origin.getX(),
-                location.getBlockY() - origin.getY(),
-                location.getBlockZ() - origin.getZ()
-            );
-            if (region.contains(schematicNorthWestCorner.add(relative))) {
-                sittingPlayers++;
-            }
-        }
-        return sittingPlayers;
     }
 
     private int getFuelItems(final Block computer) {
@@ -644,6 +705,10 @@ public final class FlightComputer implements Listener {
 
     private record FuelStatus(int fuelItems, double currentFuelKg, double requiredFuelKg, int requiredFuelItems,
                               double cargoMassKg, int sittingPlayers) {
+
+    }
+
+    private record RocketManifestResult(RocketManifest manifest, Component failure) {
 
     }
 

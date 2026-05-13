@@ -11,11 +11,10 @@ public record RocketManifest(
     String sourceWorld,
     String destinationWorld,
     RocketBlockPosition sourceOrigin,
-    RocketBlockPosition destinationOrigin,
     int destinationRequestedX,
     int destinationRequestedZ,
-    List<RocketPassengerTransfer> passengers,
-    List<RocketChestTransfer> chests
+    List<RocketManifestPassenger> passengers,
+    List<RocketManifestChest> chests
 ) {
 
     public RocketManifest {
@@ -25,7 +24,6 @@ public record RocketManifest(
         sourceWorld = requireNonBlank(sourceWorld, "sourceWorld");
         destinationWorld = requireNonBlank(destinationWorld, "destinationWorld");
         Objects.requireNonNull(sourceOrigin, "sourceOrigin");
-        Objects.requireNonNull(destinationOrigin, "destinationOrigin");
         passengers = List.copyOf(Objects.requireNonNull(passengers, "passengers"));
         chests = List.copyOf(Objects.requireNonNull(chests, "chests"));
     }
