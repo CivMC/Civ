@@ -2,8 +2,11 @@ package net.civmc.zorweth.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 import javax.sql.DataSource;
+import net.civmc.zorweth.transfer.DestinationRocketTransfer;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
 import net.civmc.zorweth.transfer.RocketChestTransfer;
 import net.civmc.zorweth.transfer.RocketManifest;
@@ -54,6 +57,69 @@ public final class RocketTransferDao {
         }
     }
 
+    public DestinationRocketTransfer getPendingDestinationTransfer(final UUID playerUuid, final String destinationServer)
+        throws SQLException {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("""
+                 SELECT rt.transfer_id, rt.state, rt.destination_world,
+                     rt.destination_origin_x, rt.destination_origin_y, rt.destination_origin_z
+                 FROM rocket_transfer_players rtp
+                 JOIN rocket_transfers rt ON rt.transfer_id = rtp.transfer_id
+                 WHERE rtp.player_uuid = ?
+                     AND rt.destination_server = ?
+                     AND rt.state IN ('SOURCE_CLEARED', 'CLAIMED')
+                     AND rtp.state IN ('PENDING', 'CLAIMED')
+                 ORDER BY rt.created_at DESC
+                 LIMIT 1
+                 """)) {
+            statement.setString(1, playerUuid.toString());
+            statement.setString(2, destinationServer);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return new DestinationRocketTransfer(
+                    UUID.fromString(resultSet.getString("transfer_id")),
+                    RocketTransferState.valueOf(resultSet.getString("state")),
+                    resultSet.getString("destination_world"),
+                    new RocketBlockPosition(
+                        resultSet.getInt("destination_origin_x"),
+                        resultSet.getInt("destination_origin_y"),
+                        resultSet.getInt("destination_origin_z")
+                    )
+                );
+            }
+        }
+    }
+
+    public boolean claimDestinationTransfer(final UUID transferId, final UUID playerUuid) throws SQLException {
+        try (Connection connection = this.dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                final RocketTransferState transferState = getTransferStateForUpdate(connection, transferId);
+                if (transferState == null || (transferState != RocketTransferState.SOURCE_CLEARED
+                    && transferState != RocketTransferState.CLAIMED)) {
+                    connection.rollback();
+                    return false;
+                }
+                if (transferState == RocketTransferState.SOURCE_CLEARED) {
+                    updateTransferState(connection, transferId, RocketTransferState.CLAIMED);
+                }
+                if (!claimPassenger(connection, transferId, playerUuid)) {
+                    connection.rollback();
+                    return false;
+                }
+                connection.commit();
+                return true;
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        }
+    }
+
     private void insertTransfer(final Connection connection, final RocketManifest manifest,
                                 final RocketBlockPosition destinationOrigin) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("""
@@ -79,6 +145,61 @@ public final class RocketTransferDao {
             statement.setInt(13, manifest.destinationRequestedX());
             statement.setInt(14, manifest.destinationRequestedZ());
             statement.executeUpdate();
+        }
+    }
+
+    private RocketTransferState getTransferStateForUpdate(final Connection connection, final UUID transferId)
+        throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("""
+            SELECT state
+            FROM rocket_transfers
+            WHERE transfer_id = ?
+            FOR UPDATE
+            """)) {
+            statement.setString(1, transferId.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return RocketTransferState.valueOf(resultSet.getString("state"));
+            }
+        }
+    }
+
+    private void updateTransferState(final Connection connection, final UUID transferId, final RocketTransferState state)
+        throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("""
+            UPDATE rocket_transfers
+            SET state = ?
+            WHERE transfer_id = ?
+            """)) {
+            statement.setString(1, state.name());
+            statement.setString(2, transferId.toString());
+            statement.executeUpdate();
+        }
+    }
+
+    private boolean claimPassenger(final Connection connection, final UUID transferId, final UUID playerUuid)
+        throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("""
+            UPDATE rocket_transfer_players
+            SET state = 'CLAIMED'
+            WHERE transfer_id = ? AND player_uuid = ? AND state IN ('PENDING', 'CLAIMED')
+            """)) {
+            statement.setString(1, transferId.toString());
+            statement.setString(2, playerUuid.toString());
+            statement.executeUpdate();
+        }
+        try (PreparedStatement statement = connection.prepareStatement("""
+            SELECT 1
+            FROM rocket_transfer_players
+            WHERE transfer_id = ? AND player_uuid = ? AND state = 'CLAIMED'
+            """)) {
+            statement.setString(1, transferId.toString());
+            statement.setString(2, playerUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
         }
     }
 

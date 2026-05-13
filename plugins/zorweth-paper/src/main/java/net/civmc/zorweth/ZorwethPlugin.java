@@ -48,6 +48,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
         getServer().getPluginManager().registerEvents(new FlightComputer(this), this);
+        getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
     }
 
     @Override
