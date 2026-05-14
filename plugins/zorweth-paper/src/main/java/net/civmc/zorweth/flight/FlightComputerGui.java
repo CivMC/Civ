@@ -158,10 +158,8 @@ public final class FlightComputerGui implements Listener {
         final Scrollbar scrollbar = new Scrollbar(mismatches, CONTENT_SLOTS);
         inventory.addComponent(scrollbar, SlotPredicates.rows(1));
 
-        final LaunchHandler.RocketManifestResult manifestResult = LaunchHandler.collectLaunchManifest(plugin, computer, player, plugin.getRocketClipboard());
-        final LaunchHandler.FuelStatus fuelStatus = manifestResult.manifest() == null
-            ? LaunchHandler.calculateFuelStatus(computer, List.of(), List.of())
-            : LaunchHandler.calculateFuelStatus(computer, manifestResult.manifest().passengers(), manifestResult.manifest().chests());
+        final LaunchHandler.RocketWeightPayload payload = LaunchHandler.collectRocketWeightPayload(computer, plugin.getRocketClipboard());
+        final LaunchHandler.FuelStatus fuelStatus = LaunchHandler.calculateFuelStatus(computer, payload.passengers(), payload.chests());
         final StaticDisplaySection summary = new StaticDisplaySection(9);
         summary.set(createAddFuelButton(computer), 1);
         summary.set(createSiphonFuelButton(computer), 2);
@@ -170,7 +168,7 @@ public final class FlightComputerGui implements Listener {
         summary.set(new DecorationStack(createSummaryItem(matching, total, mismatches.isEmpty())), 5);
 
         summary.set(createCoordinatesButton(computer), 7);
-        summary.set(createLaunchButton(computer, manifestResult.manifest(), fuelStatus), 8);
+        summary.set(createLaunchButton(computer, payload, fuelStatus), 8);
 
         inventory.addComponent(summary, SlotPredicates.rows(1));
         inventory.show();
@@ -252,23 +250,21 @@ public final class FlightComputerGui implements Listener {
         };
     }
 
-    private IClickable createLaunchButton(final Block computer, final RocketManifest manifest,
-                                         final LaunchHandler.FuelStatus fuelStatus) {
+    private IClickable createLaunchButton(final Block computer, final LaunchHandler.RocketWeightPayload payload,
+                                          final LaunchHandler.FuelStatus fuelStatus) {
         final ItemStack item = new ItemStack(Material.FIREWORK_ROCKET);
         item.unsetData(DataComponentTypes.FIREWORKS);
         item.editMeta(meta -> {
             meta.displayName(Component.text("Launch", NamedTextColor.DARK_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
-            final Component consumption = manifest == null
-                ? Component.text("Fuel consumption: unavailable", NamedTextColor.GRAY)
-                : Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(manifest, fuelStatus)) + " kg ("
-                    + calculateFuelConsumptionItems(manifest, fuelStatus) + " charcoal)", NamedTextColor.GRAY);
             meta.lore(List.of(
                 Component.text("Conduct pre-flight systems check", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("and start main engine throttle.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                consumption.decoration(TextDecoration.ITALIC, false)
+                Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(payload.fuelKg(), fuelStatus)) + " kg ("
+                        + calculateFuelConsumptionItems(payload.fuelKg(), fuelStatus) + " charcoal)", NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false)
             ));
         });
         return new Clickable(item) {
@@ -363,8 +359,8 @@ public final class FlightComputerGui implements Listener {
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Passengers: " + manifest.passengers().size(), NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(manifest, fuelStatus)) + " kg ("
-                        + calculateFuelConsumptionItems(manifest, fuelStatus) + " charcoal)", NamedTextColor.GRAY)
+                Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(manifest.fuelKg(), fuelStatus)) + " kg ("
+                        + calculateFuelConsumptionItems(manifest.fuelKg(), fuelStatus) + " charcoal)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Once engines have been started, there is no going back.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
@@ -373,12 +369,12 @@ public final class FlightComputerGui implements Listener {
         return item;
     }
 
-    private double calculateFuelConsumptionKg(final RocketManifest manifest, final LaunchHandler.FuelStatus fuelStatus) {
-        return fuelStatus.currentFuelKg() - manifest.fuelKg();
+    private double calculateFuelConsumptionKg(final double fuelKg, final LaunchHandler.FuelStatus fuelStatus) {
+        return fuelStatus.currentFuelKg() - fuelKg;
     }
 
-    private int calculateFuelConsumptionItems(final RocketManifest manifest, final LaunchHandler.FuelStatus fuelStatus) {
-        return (int) Math.ceil(calculateFuelConsumptionKg(manifest, fuelStatus) / LaunchHandler.FUEL_ITEM_MASS_KG);
+    private int calculateFuelConsumptionItems(final double fuelKg, final LaunchHandler.FuelStatus fuelStatus) {
+        return (int) Math.ceil(calculateFuelConsumptionKg(fuelKg, fuelStatus) / LaunchHandler.FUEL_ITEM_MASS_KG);
     }
 
     private ItemStack createConfirmLaunchItem() {
@@ -408,7 +404,7 @@ public final class FlightComputerGui implements Listener {
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Cargo mass: " + roundUpTenths(status.cargoMassKg()) + " kg", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("Sitting players: " + roundUpTenths(status.sittingPlayers() * SITTING_PLAYER_MASS_KG) + " kg (" + status.sittingPlayers() + " × " + roundUpTenths(SITTING_PLAYER_MASS_KG) + " kg)", NamedTextColor.GRAY)
+                Component.text("Players sitting: " + roundUpTenths(status.sittingPlayers() * SITTING_PLAYER_MASS_KG) + " kg (" + status.sittingPlayers() + " × " + roundUpTenths(SITTING_PLAYER_MASS_KG) + " kg)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });

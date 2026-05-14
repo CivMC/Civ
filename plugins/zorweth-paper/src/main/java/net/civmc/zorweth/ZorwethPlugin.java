@@ -21,8 +21,6 @@ import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
 public final class ZorwethPlugin extends JavaPlugin {
 
-    private static ZorwethPlugin instance;
-
     private Clipboard rocketClipboard;
     private HikariDataSource dataSource;
     private StasisHandler stasisHandler;
@@ -32,14 +30,10 @@ public final class ZorwethPlugin extends JavaPlugin {
     private String destinationWorld;
     private String transferFailureMessage;
     private int worldRadius;
-
-    public static ZorwethPlugin getInstance() {
-        return instance;
-    }
+    private double deltaVMetersPerSecond;
 
     @Override
     public void onEnable() {
-        instance = this;
         saveDefaultConfig();
         loadConfiguration();
         if (!initDatabase()) {
@@ -94,6 +88,10 @@ public final class ZorwethPlugin extends JavaPlugin {
         return this.worldRadius;
     }
 
+    public double getDeltaVMetersPerSecond() {
+        return this.deltaVMetersPerSecond;
+    }
+
     private void loadConfiguration() {
         this.serverName = getConfig().getString("server-name", "zorweth");
         this.destinationServer = getConfig().getString("destination-server", this.serverName);
@@ -101,6 +99,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         this.transferFailureMessage = getConfig().getString("transfer-failure-message",
             "Unable to complete rocket transfer. Please reconnect and try again.");
         this.worldRadius = getConfig().getInt("world-radius", 0);
+        this.deltaVMetersPerSecond = getConfig().getDouble("delta-v-meters-per-second", 10_000.0);
     }
 
     private boolean initDatabase() {

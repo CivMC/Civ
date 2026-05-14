@@ -39,17 +39,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class LaunchHandler {
 
     public static final double FUEL_ITEM_MASS_KG = 4.0;
-    public static final double DELTA_V_METERS_PER_SECOND = 10_000.0;
     public static final double EXHAUST_VELOCITY_METERS_PER_SECOND = 5_000.0;
     public static final double ROCKET_DRY_MASS_KG = 100.0;
     public static final double SITTING_PLAYER_MASS_KG = 50.0;
 
     public static FuelStatus calculateFuelStatus(final Block computer, final List<RocketManifestPassenger> passengers,
-                                                 final List<RocketManifestChest> chests) {
+                                                  final List<RocketManifestChest> chests) {
         final double cargoMass = calculateCargoMass(chests);
         final int sittingPlayers = Math.max(1, passengers.size());
         final double nonFuelMass = ROCKET_DRY_MASS_KG + cargoMass + sittingPlayers * SITTING_PLAYER_MASS_KG;
-        final double requiredFuelKg = nonFuelMass * (Math.exp(DELTA_V_METERS_PER_SECOND / EXHAUST_VELOCITY_METERS_PER_SECOND) - 1.0);
+        final double requiredFuelKg = nonFuelMass * (Math.exp(getDeltaVMetersPerSecond() / EXHAUST_VELOCITY_METERS_PER_SECOND) - 1.0);
         final double fuelKg = FlightComputer.getFuelKg(computer);
         return new FuelStatus(
             (int) (fuelKg / FUEL_ITEM_MASS_KG),
@@ -59,6 +58,61 @@ public class LaunchHandler {
             cargoMass,
             sittingPlayers
         );
+    }
+
+    public static RocketWeightPayload collectRocketWeightPayload(final Block computer, final Clipboard rocket) {
+        final Region region = rocket.getRegion();
+        final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
+        final Block origin = FlightComputer.getRocketOrigin(computer);
+        final List<RocketManifestChest> chests = new ArrayList<>();
+
+        for (final BlockVector3 position : region) {
+            final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
+            final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
+            if (actualBlock.getState(false) instanceof Chest chest) {
+                chests.add(new RocketManifestChest(
+                    new RocketBlockPosition(relative.getX(), relative.getY(), relative.getZ()),
+                    chest.getBlockInventory().getStorageContents()
+                ));
+            }
+        }
+
+        final List<RocketManifestPassenger> passengers = new ArrayList<>();
+        for (final Player seated : Bukkit.getOnlinePlayers()) {
+            if (!seated.getWorld().equals(origin.getWorld())) {
+                continue;
+            }
+            final Location location = seated.getLocation();
+            final BlockVector3 relative = BlockVector3.at(
+                location.getBlockX() - origin.getX(),
+                location.getBlockY() - origin.getY(),
+                location.getBlockZ() - origin.getZ()
+            );
+            if (!region.contains(schematicNorthWestCorner.add(relative)) || !FlightComputer.isSittingWithGSit(seated)) {
+                continue;
+            }
+            passengers.add(new RocketManifestPassenger(
+                seated.getUniqueId(),
+                new RocketEntityPosition(
+                    location.getX() - origin.getX(),
+                    location.getY() - origin.getY(),
+                    location.getZ() - origin.getZ(),
+                    location.getYaw(),
+                    location.getPitch()
+                ),
+                seated.getInventory().getContents(),
+                seated.getHealth(),
+                seated.getLevel(),
+                seated.getExp(),
+                seated.getFoodLevel(),
+                seated.getSaturation(),
+                seated.getExhaustion(),
+                seated.getInventory().getHeldItemSlot(),
+                seated.getGameMode()
+            ));
+        }
+
+        return new RocketWeightPayload(passengers, chests, getRemainingFuel(chests, passengers, computer));
     }
 
     private static double calculateCargoMass(final List<RocketManifestChest> chests) {
@@ -82,7 +136,7 @@ public class LaunchHandler {
         final Region region = rocket.getRegion();
         final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
         final Block origin = FlightComputer.getRocketOrigin(computer);
-        final List<RocketManifestChest> chests = new ArrayList<>();
+        final RocketWeightPayload payload = collectRocketWeightPayload(computer, rocket);
 
         for (final BlockVector3 position : region) {
             final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
@@ -94,15 +148,8 @@ public class LaunchHandler {
                 return new RocketManifestResult(null,
                     Component.text("Rocket is not structurally intact", NamedTextColor.RED));
             }
-            if (actualBlock.getState(false) instanceof Chest chest) {
-                chests.add(new RocketManifestChest(
-                    new RocketBlockPosition(relative.getX(), relative.getY(), relative.getZ()),
-                    chest.getBlockInventory().getStorageContents()
-                ));
-            }
         }
 
-        final List<RocketManifestPassenger> passengers = new ArrayList<>();
         for (final Player seated : Bukkit.getOnlinePlayers()) {
             if (!seated.getWorld().equals(origin.getWorld())) {
                 continue;
@@ -119,27 +166,6 @@ public class LaunchHandler {
                     Component.text((seated.equals(player) ? "Pilot" : "Passenger") + " " + seated.getName()
                         + " is not seated.", NamedTextColor.RED));
             }
-            if (insideRocket) {
-                passengers.add(new RocketManifestPassenger(
-                    seated.getUniqueId(),
-                    new RocketEntityPosition(
-                        location.getX() - origin.getX(),
-                        location.getY() - origin.getY(),
-                        location.getZ() - origin.getZ(),
-                        location.getYaw(),
-                        location.getPitch()
-                    ),
-                    seated.getInventory().getContents(),
-                    seated.getHealth(),
-                    seated.getLevel(),
-                    seated.getExp(),
-                    seated.getFoodLevel(),
-                    seated.getSaturation(),
-                    seated.getExhaustion(),
-                    seated.getInventory().getHeldItemSlot(),
-                    seated.getGameMode()
-                ));
-            }
         }
 
         final FlightComputerGui.Coordinates destination = FlightComputer.getDestination(computer);
@@ -147,11 +173,6 @@ public class LaunchHandler {
             return new RocketManifestResult(null,
                 Component.text("Destination not set.", NamedTextColor.RED));
         }
-
-        final double cargoMass = calculateCargoMass(chests);
-        final double dryMass = ROCKET_DRY_MASS_KG + cargoMass + passengers.size() * SITTING_PLAYER_MASS_KG;
-        final double wetMass = FlightComputer.getFuelKg(computer) + dryMass;
-        final double remainingFuel = wetMass / (Math.exp(DELTA_V_METERS_PER_SECOND / EXHAUST_VELOCITY_METERS_PER_SECOND)) - dryMass;
 
         return new RocketManifestResult(new RocketManifest(
             UUID.randomUUID(),
@@ -162,10 +183,23 @@ public class LaunchHandler {
             new RocketBlockPosition(origin.getX(), origin.getY(), origin.getZ()),
             destination.x(),
             destination.z(),
-            passengers,
-            chests,
-            remainingFuel
+            payload.passengers(),
+            payload.chests(),
+            getRemainingFuel(payload.chests(), payload.passengers(), computer)
         ), null);
+    }
+
+    private static double getRemainingFuel(final List<RocketManifestChest> chests,
+                                           final List<RocketManifestPassenger> passengers,
+                                           final Block computer) {
+        final double cargoMass = calculateCargoMass(chests);
+        final double dryMass = ROCKET_DRY_MASS_KG + cargoMass + passengers.size() * SITTING_PLAYER_MASS_KG;
+        final double wetMass = FlightComputer.getFuelKg(computer) + dryMass;
+        return wetMass / (Math.exp(getDeltaVMetersPerSecond() / EXHAUST_VELOCITY_METERS_PER_SECOND)) - dryMass;
+    }
+
+    private static double getDeltaVMetersPerSecond() {
+        return JavaPlugin.getPlugin(ZorwethPlugin.class).getDeltaVMetersPerSecond();
     }
 
     public static void commitLaunch(final ZorwethPlugin plugin, final Block computer, final Player clicker) {
@@ -340,6 +374,11 @@ public class LaunchHandler {
 
     public record FuelStatus(int fuelItems, double currentFuelKg, double requiredFuelKg, int requiredFuelItems,
                              double cargoMassKg, int sittingPlayers) {
+
+    }
+
+    public record RocketWeightPayload(List<RocketManifestPassenger> passengers, List<RocketManifestChest> chests,
+                                      double fuelKg) {
 
     }
 

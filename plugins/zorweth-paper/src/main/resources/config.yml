@@ -4,6 +4,7 @@ destination-world: world
 transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
 
 world-radius: 10000
+delta-v-meters-per-second: 10000
 
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials

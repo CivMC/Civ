@@ -263,15 +263,12 @@ public final class DestinationTransferListener implements Listener {
     }
 
     private void pasteChests(World world, RocketBlockPosition origin, List<RocketChestTransfer> chests) {
-        final Clipboard clipboard = this.plugin.getRocketClipboard();
-        final Region region = clipboard.getRegion();
-        final BlockVector3 nwCorner = region.getMinimumPoint();
         for (RocketChestTransfer chest : chests) {
             RocketBlockPosition chestPos = chest.relativePosition();
             Block block = world.getBlockAt(
-                origin.x() + chestPos.x() - nwCorner.getX(),
-                origin.y() + chestPos.y() - nwCorner.getY(),
-                origin.z() + chestPos.z() - nwCorner.getZ());
+                origin.x() + chestPos.x(),
+                origin.y() + chestPos.y(),
+                origin.z() + chestPos.z());
 
             ItemStack[] contents = ItemStack.deserializeItemsFromBytes(chest.serializedInventory());
 
