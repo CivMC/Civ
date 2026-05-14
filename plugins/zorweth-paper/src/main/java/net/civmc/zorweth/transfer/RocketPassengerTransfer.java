@@ -17,8 +17,7 @@ public record RocketPassengerTransfer(
     float saturation,
     float exhaustion,
     int heldSlot,
-    GameMode gameMode,
-    RocketTransferPlayerState state
+    GameMode gameMode
 ) {
 
     public RocketPassengerTransfer {
@@ -27,7 +26,6 @@ public record RocketPassengerTransfer(
         Objects.requireNonNull(relativePosition, "relativePosition");
         Objects.requireNonNull(serializedInventory, "serializedInventory");
         Objects.requireNonNull(gameMode, "gameMode");
-        Objects.requireNonNull(state, "state");
         serializedInventory = Arrays.copyOf(serializedInventory, serializedInventory.length);
     }
 

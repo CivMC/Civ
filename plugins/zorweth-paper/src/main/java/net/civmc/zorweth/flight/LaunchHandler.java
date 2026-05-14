@@ -337,13 +337,11 @@ public class LaunchHandler {
             }
             player.getPersistentDataContainer().set(RocketTransferKeys.SOURCE_TRANSFER_ID, PersistentDataType.STRING,
                 manifest.transferId().toString());
-            player.getPersistentDataContainer().set(RocketTransferKeys.SOURCE_CLEARED, PersistentDataType.BOOLEAN, true);
         }
     }
 
     private static void clearSourceMarkers(Player player) {
         player.getPersistentDataContainer().remove(RocketTransferKeys.SOURCE_TRANSFER_ID);
-        player.getPersistentDataContainer().remove(RocketTransferKeys.SOURCE_CLEARED);
     }
 
     public static void connectOrKickPassengers(final ZorwethPlugin plugin, final RocketManifest manifest) {

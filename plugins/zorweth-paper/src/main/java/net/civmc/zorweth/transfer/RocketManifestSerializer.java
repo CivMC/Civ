@@ -24,8 +24,7 @@ public final class RocketManifestSerializer {
                 passenger.saturation(),
                 passenger.exhaustion(),
                 passenger.heldSlot(),
-                passenger.gameMode(),
-                RocketTransferPlayerState.PENDING
+                passenger.gameMode()
             ));
         }
         return passengers;
@@ -37,8 +36,7 @@ public final class RocketManifestSerializer {
             chests.add(new RocketChestTransfer(
                 manifest.transferId(),
                 chest.relativePosition(),
-                ItemStack.serializeItemsAsBytes(chest.contents()),
-                RocketTransferCargoState.PENDING
+                ItemStack.serializeItemsAsBytes(chest.contents())
             ));
         }
         return chests;

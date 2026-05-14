@@ -139,7 +139,7 @@ public final class ZorwethVelocityPlugin {
         if (!isProtectedServer(expectedServer)) {
             throw new IllegalArgumentException("Expected server must be " + getMainServer() + " or " + getZorwethServer());
         }
-        this.router.setPlayerRoute(playerId, expectedServer, "OVERRIDE", null);
+        this.router.setPlayerRoute(playerId, expectedServer);
     }
 
     public String getDefaultServer() {
@@ -318,25 +318,16 @@ public final class ZorwethVelocityPlugin {
             }
         }
 
-        private void setPlayerRoute(final UUID playerUuid, final String expectedServer, final String source,
-                                    final UUID transferId) throws SQLException {
+        private void setPlayerRoute(final UUID playerUuid, final String expectedServer) throws SQLException {
             try (Connection connection = this.dataSource.getConnection();
                  PreparedStatement statement = connection.prepareStatement("""
-                     INSERT INTO rocket_player_routes (player_uuid, expected_server, source, transfer_id)
-                     VALUES (?, ?, ?, ?)
+                     INSERT INTO rocket_player_routes (player_uuid, expected_server)
+                     VALUES (?, ?)
                      ON DUPLICATE KEY UPDATE
-                         expected_server = VALUES(expected_server),
-                         source = VALUES(source),
-                         transfer_id = VALUES(transfer_id)
+                         expected_server = VALUES(expected_server)
                      """)) {
                 statement.setString(1, playerUuid.toString());
                 statement.setString(2, expectedServer);
-                statement.setString(3, source);
-                if (transferId == null) {
-                    statement.setNull(4, java.sql.Types.VARCHAR);
-                } else {
-                    statement.setString(4, transferId.toString());
-                }
                 statement.executeUpdate();
             }
         }

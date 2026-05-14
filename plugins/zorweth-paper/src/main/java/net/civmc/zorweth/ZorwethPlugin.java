@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import javax.sql.DataSource;
 import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
 import net.civmc.zorweth.flight.FlightComputerGui;
@@ -58,10 +57,6 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     public Clipboard getRocketClipboard() {
         return this.rocketClipboard;
-    }
-
-    public DataSource getDataSource() {
-        return this.dataSource;
     }
 
     public RocketTransferDao getRocketTransferDao() {

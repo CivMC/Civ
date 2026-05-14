@@ -16,7 +16,6 @@ public final class ZorwethDatabase {
             """
                 CREATE TABLE IF NOT EXISTS rocket_transfers (
                     transfer_id VARCHAR(36) NOT NULL,
-                    state VARCHAR(32) NOT NULL,
                     source_server VARCHAR(64) NOT NULL,
                     destination_server VARCHAR(64) NOT NULL,
                     destination_world VARCHAR(64) NOT NULL,
@@ -29,8 +28,7 @@ public final class ZorwethDatabase {
                     created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                     updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
                     PRIMARY KEY (transfer_id),
-                    INDEX idx_rocket_transfers_state (state),
-                    INDEX idx_rocket_transfers_destination (destination_server, state)
+                    INDEX idx_rocket_transfers_destination (destination_server)
                 )
                 """,
             """
@@ -67,7 +65,6 @@ public final class ZorwethDatabase {
                     relative_y INT NOT NULL,
                     relative_z INT NOT NULL,
                     inventory LONGBLOB NOT NULL,
-                    state VARCHAR(32) NOT NULL DEFAULT 'PENDING',
                     created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                     updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
                     PRIMARY KEY (transfer_id, relative_x, relative_y, relative_z),
@@ -76,44 +73,12 @@ public final class ZorwethDatabase {
                 )
                 """,
             """
-                CREATE TABLE IF NOT EXISTS player_server_state (
-                    player_uuid VARCHAR(36) NOT NULL,
-                    last_server VARCHAR(64) NOT NULL,
-                    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-                    PRIMARY KEY (player_uuid),
-                    INDEX idx_player_server_state_last_server (last_server)
-                )
-                """);
-
-        migrator.registerMigration("zorweth", 1,
-            """
                 CREATE TABLE IF NOT EXISTS rocket_player_routes (
                     player_uuid VARCHAR(36) NOT NULL,
                     expected_server VARCHAR(64) NOT NULL,
-                    source VARCHAR(32) NOT NULL,
-                    transfer_id VARCHAR(36),
                     updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-                    PRIMARY KEY (player_uuid),
-                    INDEX idx_rocket_player_routes_transfer (transfer_id)
+                    PRIMARY KEY (player_uuid)
                 )
-                """,
-            """
-                INSERT INTO rocket_player_routes (player_uuid, expected_server, source, transfer_id)
-                SELECT rtp.player_uuid, rt.destination_server, 'ROCKET', rt.transfer_id
-                FROM rocket_transfer_players rtp
-                JOIN rocket_transfers rt ON rt.transfer_id = rtp.transfer_id
-                JOIN (
-                    SELECT rtp_latest.player_uuid, MAX(rt_latest.created_at) AS created_at
-                    FROM rocket_transfer_players rtp_latest
-                    JOIN rocket_transfers rt_latest ON rt_latest.transfer_id = rtp_latest.transfer_id
-                    WHERE rt_latest.state <> 'CANCELLED'
-                    GROUP BY rtp_latest.player_uuid
-                ) latest ON latest.player_uuid = rtp.player_uuid AND latest.created_at = rt.created_at
-                WHERE rt.state <> 'CANCELLED'
-                ON DUPLICATE KEY UPDATE
-                    expected_server = VALUES(expected_server),
-                    source = VALUES(source),
-                    transfer_id = VALUES(transfer_id)
                 """);
 
         try (Connection connection = dataSource.getConnection()) {

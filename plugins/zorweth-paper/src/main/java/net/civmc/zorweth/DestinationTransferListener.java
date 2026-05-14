@@ -101,7 +101,7 @@ public final class DestinationTransferListener implements Listener {
 
     @EventHandler
     public void on(AsyncPlayerSpawnLocationEvent event) {
-        UUID playerId = event.getConnection().getProfile().getUniqueId();
+        UUID playerId = event.getConnection().getProfile().getId();
         DestinationRocketTransfer transfer = cachedRockets.get(playerId);
         RocketPassengerTransfer passenger = cachedPlayers.get(playerId);
         if (transfer == null || passenger == null) {
