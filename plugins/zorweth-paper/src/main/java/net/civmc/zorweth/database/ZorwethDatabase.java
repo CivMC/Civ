@@ -19,16 +19,13 @@ public final class ZorwethDatabase {
                     state VARCHAR(32) NOT NULL,
                     source_server VARCHAR(64) NOT NULL,
                     destination_server VARCHAR(64) NOT NULL,
-                    source_world VARCHAR(64) NOT NULL,
                     destination_world VARCHAR(64) NOT NULL,
-                    source_origin_x INT NOT NULL,
-                    source_origin_y INT NOT NULL,
-                    source_origin_z INT NOT NULL,
-                    destination_origin_x INT NOT NULL,
-                    destination_origin_y INT NOT NULL,
-                    destination_origin_z INT NOT NULL,
+                    destination_origin_x INT,
+                    destination_origin_y INT,
+                    destination_origin_z INT,
                     destination_requested_x INT NOT NULL,
                     destination_requested_z INT NOT NULL,
+                    fuel_kg DOUBLE NOT NULL,
                     created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                     updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
                     PRIMARY KEY (transfer_id),
@@ -87,9 +84,6 @@ public final class ZorwethDatabase {
                     INDEX idx_player_server_state_last_server (last_server)
                 )
                 """);
-        migrator.registerMigration("zorweth", 1, """
-            ALTER TABLE rocket_transfers ADD COLUMN IF NOT EXISTS fuel FLOAT NOT NULL
-            """);
 
         try (Connection connection = dataSource.getConnection()) {
             migrator.migrate(connection);

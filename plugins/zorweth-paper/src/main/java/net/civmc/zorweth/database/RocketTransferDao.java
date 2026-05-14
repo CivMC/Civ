@@ -4,16 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import javax.sql.DataSource;
 import net.civmc.zorweth.transfer.DestinationRocketTransfer;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
 import net.civmc.zorweth.transfer.RocketChestTransfer;
+import net.civmc.zorweth.transfer.RocketEntityPosition;
 import net.civmc.zorweth.transfer.RocketManifest;
 import net.civmc.zorweth.transfer.RocketPassengerTransfer;
 import net.civmc.zorweth.transfer.RocketTransferCargoState;
 import net.civmc.zorweth.transfer.RocketTransferPlayerState;
 import net.civmc.zorweth.transfer.RocketTransferState;
+import org.bukkit.GameMode;
 
 public final class RocketTransferDao {
 
@@ -23,13 +27,13 @@ public final class RocketTransferDao {
         this.dataSource = dataSource;
     }
 
-    public void insertPreparedTransfer(final RocketManifest manifest, final RocketBlockPosition destinationOrigin,
+    public void insertPreparedTransfer(final RocketManifest manifest,
                                        final Iterable<RocketPassengerTransfer> passengers,
                                        final Iterable<RocketChestTransfer> chests) throws SQLException {
         try (Connection connection = this.dataSource.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                insertTransfer(connection, manifest, destinationOrigin);
+                insertTransfer(connection, manifest);
                 insertPassengers(connection, passengers);
                 insertChests(connection, chests);
                 connection.commit();
@@ -42,27 +46,13 @@ public final class RocketTransferDao {
         }
     }
 
-    public boolean transitionTransferState(final RocketManifest manifest, final RocketTransferState from,
-                                           final RocketTransferState to) throws SQLException {
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("""
-                 UPDATE rocket_transfers
-                 SET state = ?
-                 WHERE transfer_id = ? AND state = ?
-                 """)) {
-            statement.setString(1, to.name());
-            statement.setString(2, manifest.transferId().toString());
-            statement.setString(3, from.name());
-            return statement.executeUpdate() == 1;
-        }
-    }
-
     public DestinationRocketTransfer getPendingDestinationTransfer(final UUID playerUuid, final String destinationServer)
         throws SQLException {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("""
-                 SELECT rt.transfer_id, rt.state, rt.destination_world,
-                     rt.destination_origin_x, rt.destination_origin_y, rt.destination_origin_z
+                 SELECT rt.transfer_id, rt.state, rt.destination_world, rt.fuel_kg,
+                     rt.destination_origin_x, rt.destination_origin_y, rt.destination_origin_z,
+                     rt.destination_requested_x, rt.destination_requested_z
                  FROM rocket_transfer_players rtp
                  JOIN rocket_transfers rt ON rt.transfer_id = rtp.transfer_id
                  WHERE rtp.player_uuid = ?
@@ -78,72 +68,132 @@ public final class RocketTransferDao {
                 if (!resultSet.next()) {
                     return null;
                 }
+                boolean destinationNull = false;
+                int destinationOriginX = resultSet.getInt("destination_origin_x");
+                destinationNull |= resultSet.wasNull();
+                int destinationOriginY = resultSet.getInt("destination_origin_y");
+                destinationNull |= resultSet.wasNull();
+                int destinationOriginZ = resultSet.getInt("destination_origin_z");
+                destinationNull |= resultSet.wasNull();
+
                 return new DestinationRocketTransfer(
                     UUID.fromString(resultSet.getString("transfer_id")),
                     RocketTransferState.valueOf(resultSet.getString("state")),
                     resultSet.getString("destination_world"),
-                    new RocketBlockPosition(
-                        resultSet.getInt("destination_origin_x"),
-                        resultSet.getInt("destination_origin_y"),
-                        resultSet.getInt("destination_origin_z")
-                    )
+                    destinationNull ? null : new RocketBlockPosition(
+                        destinationOriginX,
+                        destinationOriginY,
+                        destinationOriginZ
+                    ),
+                    resultSet.getInt("destination_requested_x"),
+                    resultSet.getInt("destination_requested_z"),
+                    resultSet.getDouble("fuel_kg")
                 );
             }
         }
     }
 
-    public boolean claimDestinationTransfer(final UUID transferId, final UUID playerUuid) throws SQLException {
-        try (Connection connection = this.dataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            try {
-                final RocketTransferState transferState = getTransferStateForUpdate(connection, transferId);
-                if (transferState == null || (transferState != RocketTransferState.SOURCE_CLEARED
-                    && transferState != RocketTransferState.CLAIMED)) {
-                    connection.rollback();
-                    return false;
+    public boolean setConfirmedDestinationOrigin(final UUID transferId, final RocketBlockPosition origin)
+        throws SQLException {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("""
+                 UPDATE rocket_transfers
+                 SET destination_origin_x = ?, destination_origin_y = ?, destination_origin_z = ?
+                 WHERE transfer_id = ?
+                 """)) {
+            statement.setInt(1, origin.x());
+            statement.setInt(2, origin.y());
+            statement.setInt(3, origin.z());
+            statement.setString(4, transferId.toString());
+            return statement.executeUpdate() > 0;
+        }
+    }
+
+    public RocketPassengerTransfer getPlayer(final UUID transferId, final UUID playerUuid) throws SQLException {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("""
+                 SELECT transfer_id, player_uuid, relative_x, relative_y, relative_z, yaw, pitch, inventory,
+                     health, xp_level, xp_progress, food_level, saturation, exhaustion, held_slot, game_mode, state
+                 FROM rocket_transfer_players
+                 WHERE transfer_id = ? AND player_uuid = ?
+                 """)) {
+            statement.setString(1, transferId.toString());
+            statement.setString(2, playerUuid.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
                 }
-                if (transferState == RocketTransferState.SOURCE_CLEARED) {
-                    updateTransferState(connection, transferId, RocketTransferState.CLAIMED);
-                }
-                if (!claimPassenger(connection, transferId, playerUuid)) {
-                    connection.rollback();
-                    return false;
-                }
-                connection.commit();
-                return true;
-            } catch (final SQLException exception) {
-                connection.rollback();
-                throw exception;
-            } finally {
-                connection.setAutoCommit(true);
+                return readPassenger(resultSet);
             }
         }
     }
 
-    private void insertTransfer(final Connection connection, final RocketManifest manifest,
-                                final RocketBlockPosition destinationOrigin) throws SQLException {
+    public List<RocketChestTransfer> getChests(final UUID transferId) throws SQLException {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("""
+                 SELECT transfer_id, relative_x, relative_y, relative_z, inventory, state
+                 FROM rocket_transfer_chests
+                 WHERE transfer_id = ?
+                 """)) {
+            statement.setString(1, transferId.toString());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                final List<RocketChestTransfer> chests = new ArrayList<>();
+                while (resultSet.next()) {
+                    chests.add(new RocketChestTransfer(
+                        UUID.fromString(resultSet.getString("transfer_id")),
+                        new RocketBlockPosition(
+                            resultSet.getInt("relative_x"),
+                            resultSet.getInt("relative_y"),
+                            resultSet.getInt("relative_z")
+                        ),
+                        resultSet.getBytes("inventory"),
+                        RocketTransferCargoState.valueOf(resultSet.getString("state"))
+                    ));
+                }
+                return chests;
+            }
+        }
+    }
+
+    private RocketPassengerTransfer readPassenger(final ResultSet resultSet) throws SQLException {
+        return new RocketPassengerTransfer(
+            UUID.fromString(resultSet.getString("transfer_id")),
+            UUID.fromString(resultSet.getString("player_uuid")),
+            new RocketEntityPosition(
+                resultSet.getDouble("relative_x"),
+                resultSet.getDouble("relative_y"),
+                resultSet.getDouble("relative_z"),
+                resultSet.getFloat("yaw"),
+                resultSet.getFloat("pitch")
+            ),
+            resultSet.getBytes("inventory"),
+            resultSet.getDouble("health"),
+            resultSet.getInt("xp_level"),
+            resultSet.getFloat("xp_progress"),
+            resultSet.getInt("food_level"),
+            resultSet.getFloat("saturation"),
+            resultSet.getFloat("exhaustion"),
+            resultSet.getInt("held_slot"),
+            GameMode.valueOf(resultSet.getString("game_mode")),
+            RocketTransferPlayerState.valueOf(resultSet.getString("state"))
+        );
+    }
+
+    private void insertTransfer(final Connection connection, final RocketManifest manifest) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("""
             INSERT INTO rocket_transfers (
-                transfer_id, state, source_server, destination_server, source_world, destination_world,
-                source_origin_x, source_origin_y, source_origin_z,
-                destination_origin_x, destination_origin_y, destination_origin_z,
-                destination_requested_x, destination_requested_z
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                transfer_id, state, source_server, destination_server, destination_world,
+                destination_requested_x, destination_requested_z, fuel_kg
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """)) {
             statement.setString(1, manifest.transferId().toString());
             statement.setString(2, RocketTransferState.SOURCE_CLEARED.name());
             statement.setString(3, manifest.sourceServer());
             statement.setString(4, manifest.destinationServer());
-            statement.setString(5, manifest.sourceWorld());
-            statement.setString(6, manifest.destinationWorld());
-            statement.setInt(7, manifest.sourceOrigin().x());
-            statement.setInt(8, manifest.sourceOrigin().y());
-            statement.setInt(9, manifest.sourceOrigin().z());
-            statement.setInt(10, destinationOrigin.x());
-            statement.setInt(11, destinationOrigin.y());
-            statement.setInt(12, destinationOrigin.z());
-            statement.setInt(13, manifest.destinationRequestedX());
-            statement.setInt(14, manifest.destinationRequestedZ());
+            statement.setString(5, manifest.destinationWorld());
+            statement.setInt(6, manifest.destinationRequestedX());
+            statement.setInt(7, manifest.destinationRequestedZ());
+            statement.setDouble(8, manifest.fuelKg());
             statement.executeUpdate();
         }
     }

@@ -7,13 +7,19 @@ public record DestinationRocketTransfer(
     UUID transferId,
     RocketTransferState state,
     String destinationWorld,
-    RocketBlockPosition destinationOrigin
+    RocketBlockPosition destinationOrigin,
+    int requestedX,
+    int requestedZ,
+    double fuelKg
 ) {
 
     public DestinationRocketTransfer {
         Objects.requireNonNull(transferId, "transferId");
         Objects.requireNonNull(state, "state");
         Objects.requireNonNull(destinationWorld, "destinationWorld");
-        Objects.requireNonNull(destinationOrigin, "destinationOrigin");
+    }
+
+    public DestinationRocketTransfer withPosition(RocketBlockPosition position) {
+        return new DestinationRocketTransfer(transferId, state, destinationWorld, position, requestedX, requestedZ, fuelKg);
     }
 }

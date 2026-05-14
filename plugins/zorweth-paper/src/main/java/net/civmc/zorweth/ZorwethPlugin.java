@@ -10,14 +10,12 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import javax.sql.DataSource;
 import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
-import net.civmc.zorweth.flight.FlightComputer;
+import net.civmc.zorweth.flight.FlightComputerGui;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
@@ -27,12 +25,13 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     private Clipboard rocketClipboard;
     private HikariDataSource dataSource;
-    private StasisHandler invincibilityHandler;
+    private StasisHandler stasisHandler;
     private RocketTransferDao rocketTransferDao;
     private String serverName;
     private String destinationServer;
     private String destinationWorld;
     private String transferFailureMessage;
+    private int worldRadius;
 
     public static ZorwethPlugin getInstance() {
         return instance;
@@ -49,9 +48,9 @@ public final class ZorwethPlugin extends JavaPlugin {
         }
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
-        this.invincibilityHandler = new StasisHandler();
-        getServer().getPluginManager().registerEvents(this.invincibilityHandler, this);
-        getServer().getPluginManager().registerEvents(new FlightComputer(this), this);
+        this.stasisHandler = new StasisHandler();
+        getServer().getPluginManager().registerEvents(this.stasisHandler, this);
+        getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
     }
 
@@ -75,10 +74,6 @@ public final class ZorwethPlugin extends JavaPlugin {
         return this.rocketTransferDao;
     }
 
-    public StasisHandler getInvincibilityHandler() {
-        return this.invincibilityHandler;
-    }
-
     public String getServerName() {
         return this.serverName;
     }
@@ -95,12 +90,17 @@ public final class ZorwethPlugin extends JavaPlugin {
         return this.transferFailureMessage;
     }
 
+    public int getWorldRadius() {
+        return this.worldRadius;
+    }
+
     private void loadConfiguration() {
         this.serverName = getConfig().getString("server-name", "zorweth");
         this.destinationServer = getConfig().getString("destination-server", this.serverName);
         this.destinationWorld = getConfig().getString("destination-world", "world");
         this.transferFailureMessage = getConfig().getString("transfer-failure-message",
             "Unable to complete rocket transfer. Please reconnect and try again.");
+        this.worldRadius = getConfig().getInt("world-radius", 0);
     }
 
     private boolean initDatabase() {
@@ -111,13 +111,6 @@ public final class ZorwethPlugin extends JavaPlugin {
         }
 
         this.dataSource = createDataSource(credentials);
-        try (Connection connection = this.dataSource.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeQuery("SELECT 1");
-        } catch (final SQLException exception) {
-            getLogger().log(Level.SEVERE, "Unable to connect to the Zorweth database", exception);
-            return false;
-        }
 
         try {
             ZorwethDatabase.migrate(this.dataSource);
@@ -157,5 +150,9 @@ public final class ZorwethPlugin extends JavaPlugin {
         } catch (final IOException exception) {
             throw new IllegalStateException("Failed to load " + file.getPath(), exception);
         }
+    }
+
+    public StasisHandler getStasisHandler() {
+        return stasisHandler;
     }
 }

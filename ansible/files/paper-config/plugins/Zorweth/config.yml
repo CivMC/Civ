@@ -3,6 +3,8 @@ destination-server: zorweth
 destination-world: world
 transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
 
+world-radius: 10000
+
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   hostname: ${CIV_MYSQL_HOST}

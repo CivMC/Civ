@@ -4,107 +4,265 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import net.civmc.zorweth.flight.FlightComputer;
 import net.civmc.zorweth.transfer.DestinationRocketTransfer;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
+import net.civmc.zorweth.transfer.RocketChestTransfer;
+import net.civmc.zorweth.transfer.RocketEntityPosition;
+import net.civmc.zorweth.transfer.RocketPassengerTransfer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public final class DestinationTransferListener implements Listener {
 
+    public static final int SPIRAL_ITERATION_DISTANCE = 8;
     private final ZorwethPlugin plugin;
+    private final Map<UUID, CompletableFuture<DestinationRocketTransfer>> futures = new ConcurrentHashMap<>();
+
+    private final Map<UUID, DestinationRocketTransfer> cachedRockets = new ConcurrentHashMap<>();
+    private final Map<UUID, RocketPassengerTransfer> cachedPlayers = new ConcurrentHashMap<>();
 
     public DestinationTransferListener(final ZorwethPlugin plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(final PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> handleJoin(player));
-    }
-
-    private void handleJoin(final Player player) {
+    @EventHandler
+    public void onPlayerPreJoin(final AsyncPlayerPreLoginEvent event) {
         final DestinationRocketTransfer transfer;
+        UUID playerId = event.getUniqueId();
         try {
             transfer = this.plugin.getRocketTransferDao().getPendingDestinationTransfer(
-                player.getUniqueId(), this.plugin.getServerName());
+                playerId, this.plugin.getServerName());
         } catch (final Exception exception) {
             this.plugin.getLogger().log(Level.SEVERE, "Failed to look up destination rocket transfer", exception);
-            kick(player);
+            event.kickMessage(Component.text("Unable process logins at this time, please try again later"));
+            event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
             return;
         }
+
         if (transfer == null) {
             return;
         }
 
-        final boolean claimed;
-        try {
-            claimed = this.plugin.getRocketTransferDao().claimDestinationTransfer(transfer.transferId(), player.getUniqueId());
-        } catch (final Exception exception) {
-            this.plugin.getLogger().log(Level.SEVERE, "Failed to claim destination rocket transfer", exception);
-            kick(player);
-            return;
+        CompletableFuture<DestinationRocketTransfer> success = new CompletableFuture<>();
+
+        RocketBlockPosition rocketBlockPosition = transfer.destinationOrigin();
+        if (rocketBlockPosition == null) {
+            CompletableFuture<DestinationRocketTransfer> existing = futures.putIfAbsent(transfer.transferId(), success);
+            if (existing != null) {
+                success.complete(existing.join());
+            } else {
+                Bukkit.getScheduler().runTask(plugin, () -> updateRocketPosition(transfer, success));
+            }
+        } else {
+            success.complete(transfer);
         }
-        if (!claimed) {
-            kick(player);
+
+        DestinationRocketTransfer pos = success.join();
+        if (pos == null) {
+            event.kickMessage(Component.text("Unable process rocket location at this time, please try again later"));
+            event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
             return;
         }
 
-        Bukkit.getScheduler().runTask(this.plugin, () -> {
+        try {
+            cachedPlayers.put(playerId, this.plugin.getRocketTransferDao().getPlayer(transfer.transferId(), playerId));
+        } catch (SQLException e) {
+            event.kickMessage(Component.text("Unable process passenger at this time, please try again later"));
+            event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
+            return;
+        }
+        cachedRockets.put(playerId, pos);
+    }
+
+    @EventHandler
+    public void on(PlayerJoinEvent event) {
+        DestinationRocketTransfer transfer = cachedRockets.remove(event.getPlayer().getUniqueId());
+        RocketPassengerTransfer passenger = cachedPlayers.remove(event.getPlayer().getUniqueId());
+
+        if (transfer == null || passenger == null) {
+            return;
+        }
+
+        final World world = Bukkit.getWorld(transfer.destinationWorld());
+        RocketBlockPosition pos = transfer.destinationOrigin();
+        final Clipboard clipboard = this.plugin.getRocketClipboard();
+        final Region region = clipboard.getRegion();
+        final BlockVector3 nwCorner = region.getMinimumPoint();
+
+        RocketEntityPosition passengerPos = passenger.relativePosition();
+        event.getPlayer().teleport(new Location(world,
+            pos.x() + passengerPos.x() - nwCorner.getX(),
+            pos.y() + passengerPos.y() - nwCorner.getY() + 1.5,
+            pos.z() + passengerPos.z() - nwCorner.getZ()
+        ));
+
+        // TODO restore rest of player state
+    }
+
+    private void updateRocketPosition(final DestinationRocketTransfer transfer, CompletableFuture<DestinationRocketTransfer> success) {
+        RocketBlockPosition position;
+        try {
+            position = findRocketPosition(transfer);
+        } catch (RuntimeException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to find rocket position", ex);
+            success.complete(null);
+            return;
+        }
+        if (position == null) {
+            success.complete(null);
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                if (!ensureDestinationRocketPasted(transfer)) {
-                    kick(player);
+                List<RocketChestTransfer> chests = this.plugin.getRocketTransferDao().getChests(transfer.transferId());
+                if (this.plugin.getRocketTransferDao().setConfirmedDestinationOrigin(transfer.transferId(), position)) {
+                    DestinationRocketTransfer updated = transfer.withPosition(position);
+                    success.complete(updated);
+
+                    Bukkit.getScheduler().runTask(plugin, () -> ensureDestinationRocketPasted(updated, chests));
                 }
-            } catch (final RuntimeException exception) {
-                this.plugin.getLogger().log(Level.SEVERE, "Failed to paste destination rocket", exception);
-                kick(player);
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to update destination rocket position", e);
+            } finally {
+                success.complete(null);
             }
         });
     }
 
-    private boolean ensureDestinationRocketPasted(final DestinationRocketTransfer transfer) {
+    private RocketBlockPosition findRocketPosition(final DestinationRocketTransfer transfer) {
+        int rx = transfer.requestedX() - FlightComputer.RELATIVE_POSITION.getX();
+        int rz = transfer.requestedZ() - FlightComputer.RELATIVE_POSITION.getZ();
+
+        final double distanceSquared = rx * rx + rz * rz;
+        final double radiusSquared = plugin.getWorldRadius() * plugin.getWorldRadius();
+        if (distanceSquared > radiusSquared) {
+            final double distance = Math.sqrt(distanceSquared);
+            final double scale = plugin.getWorldRadius() / distance;
+            rx = (int) (rx * scale);
+            rz = (int) (rz * scale);
+        }
+
+        final World world = Bukkit.getWorld(transfer.destinationWorld());
+        if (world == null) {
+            return null;
+        }
+        final Clipboard clipboard = this.plugin.getRocketClipboard();
+        final Region region = clipboard.getRegion();
+        final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
+
+        int distance = 0;
+        OUTER:
+        while (distance < 1000) {
+            final double angle = ThreadLocalRandom.current().nextDouble(0.0, 2.0 * Math.PI);
+            final int tx = rx + (int) (distance * Math.cos(angle));
+            final int tz = rz + (int) (distance * Math.sin(angle));
+
+            if (tx * tx + tz * tz > radiusSquared) {
+                distance += SPIRAL_ITERATION_DISTANCE;
+                continue;
+            }
+
+            int highestY = world.getMinHeight();
+            for (final BlockVector3 position : region) {
+                if (position.getY() != schematicNorthWestCorner.getY()) {
+                    continue;
+                }
+                final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
+                highestY = Math.max(highestY, world.getHighestBlockYAt(tx + relative.getX(), tz + relative.getZ()));
+
+                if (highestY + 1 + region.getHeight() >= world.getMaxHeight()) {
+                    distance += SPIRAL_ITERATION_DISTANCE;
+                    continue OUTER;
+                }
+            }
+
+            final RocketBlockPosition origin = new RocketBlockPosition(tx, highestY + 1, tz);
+            boolean empty = true;
+            for (final BlockVector3 position : region) {
+                final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
+                final BlockState block = clipboard.getBlock(position);
+                if (Bukkit.createBlockData(block.getAsString()).getMaterial().isAir()) {
+                    continue;
+                }
+                final Block target = world.getBlockAt(
+                    origin.x() + relative.getX(),
+                    origin.y() + relative.getY(),
+                    origin.z() + relative.getZ()
+                );
+                if (!target.getType().isAir()) {
+                    empty = false;
+                    break;
+                }
+            }
+
+            if (empty) {
+                return origin;
+            }
+
+            distance += SPIRAL_ITERATION_DISTANCE;
+        }
+
+        plugin.getLogger().warning("Unable to find position for rocket " + transfer.transferId());
+        return null;
+    }
+
+    private boolean ensureDestinationRocketPasted(final DestinationRocketTransfer transfer, List<RocketChestTransfer> chests) {
         final World world = Bukkit.getWorld(transfer.destinationWorld());
         if (world == null) {
             this.plugin.getLogger().warning("Destination world is not loaded: " + transfer.destinationWorld());
             return false;
         }
 
-        final Block computer = getDestinationComputerBlock(world, transfer.destinationOrigin());
-        final String existingTransferId = getSchematicPasteMarker(computer);
-        if (transfer.transferId().toString().equals(existingTransferId)) {
-            return true;
-        }
-        if (existingTransferId != null) {
-            this.plugin.getLogger().warning("Destination rocket already has schematic marker for " + existingTransferId
-                + " at " + computer.getLocation());
-            return false;
-        }
-
         pasteRocket(world, transfer.destinationOrigin());
+        pasteChests(world, transfer.destinationOrigin(), chests);
         markDestinationComputer(getDestinationComputerBlock(world, transfer.destinationOrigin()), transfer);
         return true;
     }
 
-    private String getSchematicPasteMarker(final Block computer) {
-        if (computer.getType() != Material.DISPENSER) {
-            return null;
+    private void pasteChests(World world, RocketBlockPosition origin, List<RocketChestTransfer> chests) {
+        final Clipboard clipboard = this.plugin.getRocketClipboard();
+        final Region region = clipboard.getRegion();
+        final BlockVector3 nwCorner = region.getMinimumPoint();
+        for (RocketChestTransfer chest : chests) {
+            RocketBlockPosition chestPos = chest.relativePosition();
+            Block block = world.getBlockAt(
+                origin.x() + chestPos.x() - nwCorner.getX(),
+                origin.y() + chestPos.y() - nwCorner.getY(),
+                origin.z() + chestPos.z() - nwCorner.getZ());
+
+            ItemStack[] contents = ItemStack.deserializeItemsFromBytes(chest.serializedInventory());
+
+            if (!(block.getState(false) instanceof Chest chestState)) {
+                this.plugin.getLogger().warning("Expected chest at " + block);
+                continue;
+            }
+
+            chestState.getBlockInventory().setContents(contents);
         }
-        final Dispenser dispenser = (Dispenser) computer.getState(false);
-        return dispenser.getPersistentDataContainer().get(RocketTransferKeys.SCHEMATIC_PASTED_LOCAL,
-            PersistentDataType.STRING);
     }
 
     private void pasteRocket(final World world, final RocketBlockPosition origin) {
@@ -130,11 +288,9 @@ public final class DestinationTransferListener implements Listener {
         }
         final Dispenser dispenser = (Dispenser) computer.getState(false);
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_COMPUTER_KEY, PersistentDataType.BOOLEAN, true);
+        dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_FUEL_KEY, PersistentDataType.DOUBLE, transfer.fuelKg());
         dispenser.getPersistentDataContainer().set(RocketTransferKeys.DESTINATION_TRANSFER_ID,
             PersistentDataType.STRING, transfer.transferId().toString());
-        dispenser.getPersistentDataContainer().set(RocketTransferKeys.SCHEMATIC_PASTED_LOCAL,
-            PersistentDataType.STRING, transfer.transferId().toString());
-        dispenser.update(true, false);
     }
 
     private Block getDestinationComputerBlock(final World world, final RocketBlockPosition origin) {
