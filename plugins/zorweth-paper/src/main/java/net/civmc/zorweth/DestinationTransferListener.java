@@ -53,6 +53,7 @@ public final class DestinationTransferListener implements Listener {
     public void onPlayerPreJoin(final AsyncPlayerPreLoginEvent event) {
         final DestinationRocketTransfer transfer;
         UUID playerId = event.getUniqueId();
+
         try {
             transfer = this.plugin.getRocketTransferDao().getPendingDestinationTransfer(
                 playerId, this.plugin.getServerName());
@@ -130,6 +131,11 @@ public final class DestinationTransferListener implements Listener {
         }
 
         final Player player = event.getPlayer();
+        if (hasAppliedTransferMarker(player, transfer.transferId())) {
+            markPassengerApplied(player.getUniqueId(), transfer.transferId());
+            return;
+        }
+
         player.getInventory().setContents(ItemStack.deserializeItemsFromBytes(passenger.serializedInventory()));
         player.setHealth(Math.min(passenger.health(), player.getAttribute(Attribute.MAX_HEALTH).getValue()));
         player.setLevel(passenger.xpLevel());
@@ -139,6 +145,36 @@ public final class DestinationTransferListener implements Listener {
         player.setExhaustion(passenger.exhaustion());
         player.getInventory().setHeldItemSlot(passenger.heldSlot());
         player.setGameMode(passenger.gameMode());
+        player.getPersistentDataContainer().set(RocketTransferKeys.DESTINATION_APPLIED_TRANSFER_ID,
+            PersistentDataType.STRING, transfer.transferId().toString());
+        markPassengerApplied(player.getUniqueId(), transfer.transferId());
+    }
+
+    private boolean hasAppliedTransferMarker(final Player player, final UUID transferId) {
+        return transferId.toString().equals(player.getPersistentDataContainer()
+            .get(RocketTransferKeys.DESTINATION_APPLIED_TRANSFER_ID, PersistentDataType.STRING));
+    }
+
+    private void markPassengerApplied(final UUID playerId, final UUID transferId) {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            try {
+                if (!this.plugin.getRocketTransferDao().markPassengerApplied(transferId, playerId)) {
+                    this.plugin.getLogger().warning("Unable to mark rocket passenger applied for "
+                        + playerId + " in transfer " + transferId);
+                    return;
+                }
+            } catch (final SQLException exception) {
+                this.plugin.getLogger().log(Level.SEVERE, "Failed to mark rocket passenger applied", exception);
+                return;
+            }
+
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                final Player onlinePlayer = Bukkit.getPlayer(playerId);
+                if (onlinePlayer != null && hasAppliedTransferMarker(onlinePlayer, transferId)) {
+                    onlinePlayer.getPersistentDataContainer().remove(RocketTransferKeys.DESTINATION_APPLIED_TRANSFER_ID);
+                }
+            });
+        });
     }
 
     private void updateRocketPosition(final DestinationRocketTransfer transfer, CompletableFuture<DestinationRocketTransfer> success) {
@@ -305,8 +341,6 @@ public final class DestinationTransferListener implements Listener {
         final Dispenser dispenser = (Dispenser) computer.getState(false);
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_COMPUTER_KEY, PersistentDataType.BOOLEAN, true);
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_FUEL_KEY, PersistentDataType.DOUBLE, transfer.fuelKg());
-        dispenser.getPersistentDataContainer().set(RocketTransferKeys.DESTINATION_TRANSFER_ID,
-            PersistentDataType.STRING, transfer.transferId().toString());
     }
 
     private Block getDestinationComputerBlock(final World world, final RocketBlockPosition origin) {

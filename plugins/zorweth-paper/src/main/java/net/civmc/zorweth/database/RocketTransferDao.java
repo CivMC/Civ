@@ -111,8 +111,8 @@ public final class RocketTransferDao {
 
     public RocketPassengerTransfer getPlayer(final UUID transferId, final UUID playerUuid) throws SQLException {
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("""
-                 SELECT transfer_id, player_uuid, relative_x, relative_y, relative_z, yaw, pitch, inventory,
+              PreparedStatement statement = connection.prepareStatement("""
+                  SELECT transfer_id, player_uuid, relative_x, relative_y, relative_z, yaw, pitch, inventory,
                      health, xp_level, xp_progress, food_level, saturation, exhaustion, held_slot, game_mode, state
                  FROM rocket_transfer_players
                  WHERE transfer_id = ? AND player_uuid = ?
@@ -128,9 +128,46 @@ public final class RocketTransferDao {
         }
     }
 
+    public boolean markPassengerApplied(final UUID transferId, final UUID playerUuid) throws SQLException {
+        try (Connection connection = this.dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                try (PreparedStatement statement = connection.prepareStatement("""
+                    UPDATE rocket_transfer_players
+                    SET state = 'APPLIED'
+                    WHERE transfer_id = ? AND player_uuid = ? AND state IN ('PENDING', 'CLAIMED')
+                    """)) {
+                    statement.setString(1, transferId.toString());
+                    statement.setString(2, playerUuid.toString());
+                    statement.executeUpdate();
+                }
+
+                final boolean applied;
+                try (PreparedStatement statement = connection.prepareStatement("""
+                    SELECT 1
+                    FROM rocket_transfer_players
+                    WHERE transfer_id = ? AND player_uuid = ? AND state = 'APPLIED'
+                    """)) {
+                    statement.setString(1, transferId.toString());
+                    statement.setString(2, playerUuid.toString());
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        applied = resultSet.next();
+                    }
+                }
+                connection.commit();
+                return applied;
+            } catch (final SQLException exception) {
+                connection.rollback();
+                throw exception;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        }
+    }
+
     public List<RocketChestTransfer> getChests(final UUID transferId) throws SQLException {
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement("""
+              PreparedStatement statement = connection.prepareStatement("""
                  SELECT transfer_id, relative_x, relative_y, relative_z, inventory, state
                  FROM rocket_transfer_chests
                  WHERE transfer_id = ?
@@ -195,61 +232,6 @@ public final class RocketTransferDao {
             statement.setInt(7, manifest.destinationRequestedZ());
             statement.setDouble(8, manifest.fuelKg());
             statement.executeUpdate();
-        }
-    }
-
-    private RocketTransferState getTransferStateForUpdate(final Connection connection, final UUID transferId)
-        throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement("""
-            SELECT state
-            FROM rocket_transfers
-            WHERE transfer_id = ?
-            FOR UPDATE
-            """)) {
-            statement.setString(1, transferId.toString());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (!resultSet.next()) {
-                    return null;
-                }
-                return RocketTransferState.valueOf(resultSet.getString("state"));
-            }
-        }
-    }
-
-    private void updateTransferState(final Connection connection, final UUID transferId, final RocketTransferState state)
-        throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement("""
-            UPDATE rocket_transfers
-            SET state = ?
-            WHERE transfer_id = ?
-            """)) {
-            statement.setString(1, state.name());
-            statement.setString(2, transferId.toString());
-            statement.executeUpdate();
-        }
-    }
-
-    private boolean claimPassenger(final Connection connection, final UUID transferId, final UUID playerUuid)
-        throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement("""
-            UPDATE rocket_transfer_players
-            SET state = 'CLAIMED'
-            WHERE transfer_id = ? AND player_uuid = ? AND state IN ('PENDING', 'CLAIMED')
-            """)) {
-            statement.setString(1, transferId.toString());
-            statement.setString(2, playerUuid.toString());
-            statement.executeUpdate();
-        }
-        try (PreparedStatement statement = connection.prepareStatement("""
-            SELECT 1
-            FROM rocket_transfer_players
-            WHERE transfer_id = ? AND player_uuid = ? AND state = 'CLAIMED'
-            """)) {
-            statement.setString(1, transferId.toString());
-            statement.setString(2, playerUuid.toString());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next();
-            }
         }
     }
 
