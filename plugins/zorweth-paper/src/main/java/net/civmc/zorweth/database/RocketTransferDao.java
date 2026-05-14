@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -51,8 +52,9 @@ public final class RocketTransferDao {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("""
                  SELECT rt.transfer_id, rt.destination_world, rt.fuel_kg,
-                     rt.destination_origin_x, rt.destination_origin_y, rt.destination_origin_z,
-                     rt.destination_requested_x, rt.destination_requested_z
+                      rt.destination_origin_x, rt.destination_origin_y, rt.destination_origin_z,
+                      rt.destination_requested_x, rt.destination_requested_z, rt.pilot_uuid,
+                      rt.flight_computer_group_id
                  FROM rocket_transfer_players rtp
                  JOIN rocket_transfers rt ON rt.transfer_id = rtp.transfer_id
                  WHERE rtp.player_uuid = ?
@@ -74,6 +76,9 @@ public final class RocketTransferDao {
                 destinationNull |= resultSet.wasNull();
                 int destinationOriginZ = resultSet.getInt("destination_origin_z");
                 destinationNull |= resultSet.wasNull();
+                final int flightComputerGroupId = resultSet.getInt("flight_computer_group_id");
+                final Integer nullableFlightComputerGroupId = resultSet.wasNull() ? null : flightComputerGroupId;
+                final String pilotUuid = resultSet.getString("pilot_uuid");
 
                 return new DestinationRocketTransfer(
                     UUID.fromString(resultSet.getString("transfer_id")),
@@ -85,6 +90,8 @@ public final class RocketTransferDao {
                     ),
                     resultSet.getInt("destination_requested_x"),
                     resultSet.getInt("destination_requested_z"),
+                    UUID.fromString(pilotUuid == null ? playerUuid.toString() : pilotUuid),
+                    nullableFlightComputerGroupId,
                     resultSet.getDouble("fuel_kg")
                 );
             }
@@ -216,8 +223,8 @@ public final class RocketTransferDao {
         try (PreparedStatement statement = connection.prepareStatement("""
             INSERT INTO rocket_transfers (
                 transfer_id, source_server, destination_server, destination_world,
-                destination_requested_x, destination_requested_z, fuel_kg
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                destination_requested_x, destination_requested_z, pilot_uuid, flight_computer_group_id, fuel_kg
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """)) {
             statement.setString(1, manifest.transferId().toString());
             statement.setString(2, manifest.sourceServer());
@@ -225,7 +232,13 @@ public final class RocketTransferDao {
             statement.setString(4, manifest.destinationWorld());
             statement.setInt(5, manifest.destinationRequestedX());
             statement.setInt(6, manifest.destinationRequestedZ());
-            statement.setDouble(7, manifest.fuelKg());
+            statement.setString(7, manifest.pilotUuid().toString());
+            if (manifest.flightComputerGroupId() == null) {
+                statement.setNull(8, Types.INTEGER);
+            } else {
+                statement.setInt(8, manifest.flightComputerGroupId());
+            }
+            statement.setDouble(9, manifest.fuelKg());
             statement.executeUpdate();
         }
     }

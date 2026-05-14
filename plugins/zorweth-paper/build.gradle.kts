@@ -8,6 +8,8 @@ dependencies {
     compileOnly(libs.paper.api)
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:citadel-paper"))
+    compileOnly(project(":plugins:bastion-paper"))
+    compileOnly(project(":plugins:namelayer-paper"))
     api(project(":libraries:name-api"))
     compileOnly(libs.worldedit)
 

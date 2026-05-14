@@ -18,3 +18,8 @@ database:
   connection_timeout: 10000
   idle_timeout: 600000
   max_lifetime: 7200000
+
+flight_computer_reinforcement:
+  ==: org.bukkit.inventory.ItemStack
+  v: 3839
+  type: DIAMOND

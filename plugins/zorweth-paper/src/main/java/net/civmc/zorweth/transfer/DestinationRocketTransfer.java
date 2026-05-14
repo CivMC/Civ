@@ -9,15 +9,19 @@ public record DestinationRocketTransfer(
     RocketBlockPosition destinationOrigin,
     int requestedX,
     int requestedZ,
+    UUID pilotUuid,
+    Integer flightComputerGroupId,
     double fuelKg
 ) {
 
     public DestinationRocketTransfer {
         Objects.requireNonNull(transferId, "transferId");
         Objects.requireNonNull(destinationWorld, "destinationWorld");
+        Objects.requireNonNull(pilotUuid, "pilotUuid");
     }
 
-    public DestinationRocketTransfer withPosition(RocketBlockPosition position) {
-        return new DestinationRocketTransfer(transferId, destinationWorld, position, requestedX, requestedZ, fuelKg);
+    public DestinationRocketTransfer withPosition(final RocketBlockPosition position) {
+        return new DestinationRocketTransfer(transferId, destinationWorld, position, requestedX, requestedZ,
+            pilotUuid, flightComputerGroupId, fuelKg);
     }
 }

@@ -185,6 +185,8 @@ public class LaunchHandler {
             new RocketBlockPosition(origin.getX(), origin.getY(), origin.getZ()),
             destination.x(),
             destination.z(),
+            player.getUniqueId(),
+            getDiamondFlightComputerGroupId(computer),
             payload.passengers(),
             payload.chests(),
             getRemainingFuel(payload.chests(), payload.passengers(), computer)
@@ -202,6 +204,15 @@ public class LaunchHandler {
 
     private static double getDeltaVMetersPerSecond() {
         return JavaPlugin.getPlugin(ZorwethPlugin.class).getDeltaVMetersPerSecond();
+    }
+
+    private static Integer getDiamondFlightComputerGroupId(final Block computer) {
+        final Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(computer.getLocation());
+        if (reinforcement == null || reinforcement.getType().getItem() == null
+            || reinforcement.getType().getItem().getType() != Material.DIAMOND) {
+            return null;
+        }
+        return reinforcement.getGroupId();
     }
 
     public static void commitLaunch(final ZorwethPlugin plugin, final Block computer, final Player clicker) {
@@ -250,7 +261,7 @@ public class LaunchHandler {
                     try {
                         Thread.sleep((1 << (i - 1)) * 1000L);
                         plugin.getLogger().log(Level.WARNING, "Retrying transfer #" + i + "...");
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException exception) {
                         Thread.currentThread().interrupt();
                         return;
                     }
@@ -280,8 +291,8 @@ public class LaunchHandler {
                         plugin.getLogger().log(Level.SEVERE, "Failed to retry launch, writing file..");
                         File write = RocketManifestFileWriter.write(plugin, manifest);
                         plugin.getLogger().log(Level.SEVERE, "Written launch failure to " + write.getName());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    } catch (final IOException exception) {
+                        throw new RuntimeException(exception);
                     }
                     return;
                 }

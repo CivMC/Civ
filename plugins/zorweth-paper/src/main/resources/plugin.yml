@@ -3,4 +3,4 @@ version: 1.0.0
 main: net.civmc.zorweth.ZorwethPlugin
 author: Okx
 api-version: 1.21.11
-depend: [CivModCore, WorldEdit, Citadel]
+depend: [CivModCore, WorldEdit, Citadel, Bastion, NameLayer]

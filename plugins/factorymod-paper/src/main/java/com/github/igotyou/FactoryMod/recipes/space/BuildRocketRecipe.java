@@ -9,6 +9,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
 import java.util.List;
+import java.util.Objects;
 import net.civmc.zorweth.ZorwethPlugin;
 import net.civmc.zorweth.flight.FlightComputer;
 import org.bukkit.Bukkit;
@@ -45,13 +46,13 @@ public class BuildRocketRecipe extends InputRecipe {
     private BukkitTask task;
 
     private final Clipboard clipboard;
-    private final ItemStack flightComputerReinforcement;
+    private final String world;
 
     public BuildRocketRecipe(final String identifier, final String name, final int productionTime, final ItemMap input,
-                             final ItemStack flightComputerReinforcement) {
+                             final String world) {
         super(identifier, name, productionTime, input);
         this.clipboard = JavaPlugin.getPlugin(ZorwethPlugin.class).getRocketClipboard();
-        this.flightComputerReinforcement = flightComputerReinforcement;
+        this.world = Objects.requireNonNull(world);
     }
 
     @Override
@@ -79,7 +80,9 @@ public class BuildRocketRecipe extends InputRecipe {
 
     @Override
     public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-        if (!isEmpty(fccf)) {
+        if (!fccf.getFurnace().getWorld().getName().equals(world)) {
+            return new EffectFeasibility(false, "wrong world");
+        } else if (!isEmpty(fccf)) {
             drawRocketArea(fccf);
             return new EffectFeasibility(false, "rocket requires clear area");
         }
@@ -107,8 +110,9 @@ public class BuildRocketRecipe extends InputRecipe {
     public boolean applyEffect(final Inventory inputInv, final Inventory outputInv, final FurnCraftChestFactory fccf) {
         if (!input.isContainedIn(inputInv)) {
             return false;
-        }
-        if (!isEmpty(fccf)) {
+        } else if (!fccf.getFurnace().getWorld().getName().equals(world)) {
+            return false;
+        } else if (!isEmpty(fccf)) {
             return false;
         }
 

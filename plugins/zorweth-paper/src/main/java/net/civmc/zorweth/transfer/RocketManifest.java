@@ -13,6 +13,8 @@ public record RocketManifest(
     RocketBlockPosition sourceOrigin,
     int destinationRequestedX,
     int destinationRequestedZ,
+    UUID pilotUuid,
+    Integer flightComputerGroupId,
     List<RocketManifestPassenger> passengers,
     List<RocketManifestChest> chests,
     double fuelKg
@@ -25,6 +27,7 @@ public record RocketManifest(
         sourceWorld = requireNonBlank(sourceWorld, "sourceWorld");
         destinationWorld = requireNonBlank(destinationWorld, "destinationWorld");
         Objects.requireNonNull(sourceOrigin, "sourceOrigin");
+        Objects.requireNonNull(pilotUuid, "pilotUuid");
         passengers = List.copyOf(Objects.requireNonNull(passengers, "passengers"));
         chests = List.copyOf(Objects.requireNonNull(chests, "chests"));
     }

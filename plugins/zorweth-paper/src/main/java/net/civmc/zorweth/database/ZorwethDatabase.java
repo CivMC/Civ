@@ -24,6 +24,8 @@ public final class ZorwethDatabase {
                     destination_origin_z INT,
                     destination_requested_x INT NOT NULL,
                     destination_requested_z INT NOT NULL,
+                    pilot_uuid VARCHAR(36) NOT NULL,
+                    flight_computer_group_id INT,
                     fuel_kg DOUBLE NOT NULL,
                     created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
                     updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),

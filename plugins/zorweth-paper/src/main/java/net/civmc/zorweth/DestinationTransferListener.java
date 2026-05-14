@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
+import isaac.bastion.Bastion;
 import net.civmc.zorweth.flight.FlightComputer;
 import net.civmc.zorweth.transfer.DestinationRocketTransfer;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
@@ -35,6 +36,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 
 public final class DestinationTransferListener implements Listener {
 
@@ -208,7 +210,6 @@ public final class DestinationTransferListener implements Listener {
         });
     }
 
-    // TODO can't land in city/vault bastions
     private RocketBlockPosition findRocketPosition(final DestinationRocketTransfer transfer) {
         int rx = transfer.requestedX() - FlightComputer.RELATIVE_POSITION.getX();
         int rz = transfer.requestedZ() - FlightComputer.RELATIVE_POSITION.getZ();
@@ -248,7 +249,15 @@ public final class DestinationTransferListener implements Listener {
                     continue;
                 }
                 final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
-                highestY = Math.max(highestY, world.getHighestBlockYAt(tx + relative.getX(), tz + relative.getZ()));
+                final int blockY = world.getHighestBlockYAt(tx + relative.getX(), tz + relative.getZ());
+                highestY = Math.max(highestY, blockY);
+
+                final Location location = new Location(world, tx + relative.getX(), blockY, tz + relative.getZ());
+                if (!Bastion.getBastionManager().getBlockingBastionsWithoutPermission(location,
+                    transfer.pilotUuid(), CitadelPermissionHandler.getReinforce()).isEmpty()) {
+                    distance += SPIRAL_ITERATION_DISTANCE;
+                    continue OUTER;
+                }
 
                 if (highestY + 1 + region.getHeight() >= world.getMaxHeight()) {
                     distance += SPIRAL_ITERATION_DISTANCE;
@@ -342,6 +351,9 @@ public final class DestinationTransferListener implements Listener {
         final Dispenser dispenser = (Dispenser) computer.getState(false);
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_COMPUTER_KEY, PersistentDataType.BOOLEAN, true);
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_FUEL_KEY, PersistentDataType.DOUBLE, transfer.fuelKg());
+        if (transfer.flightComputerGroupId() != null) {
+            FlightComputer.reinforceFlightComputer(computer, transfer.flightComputerGroupId());
+        }
     }
 
     private Block getDestinationComputerBlock(final World world, final RocketBlockPosition origin) {
