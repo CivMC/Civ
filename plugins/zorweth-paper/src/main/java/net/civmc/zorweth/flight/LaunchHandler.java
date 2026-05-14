@@ -275,7 +275,7 @@ public class LaunchHandler {
         for (final BlockVector3 position : region) {
             final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
             final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
-            actualBlock.setType(Material.AIR);
+            actualBlock.setType(Material.AIR, false);
         }
     }
 
@@ -326,7 +326,7 @@ public class LaunchHandler {
                     .get(RocketTransferKeys.SOURCE_TRANSFER_ID, PersistentDataType.STRING))) {
                     laterPlayer.kick(Component.text(plugin.getTransferFailureMessage(), NamedTextColor.RED));
                 }
-            }, 100L);
+            }, 150L);
         }
     }
 

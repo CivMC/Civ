@@ -66,48 +66,48 @@ public final class ZorwethVelocityPlugin {
         }
     }
 
-    @Subscribe(priority = -1)
-    public void onServerPreConnect(final ServerPreConnectEvent event) {
-        final PendingTransfer transfer;
-        try {
-            transfer = this.router.getPendingTransfer(event.getPlayer().getUniqueId());
-        } catch (final SQLException exception) {
-            this.logger.error("Failed to look up pending rocket transfer", exception);
-            routeToHoldingOrDisconnect(event);
-            return;
-        }
-
-        if (transfer == null || TRANSFER_PREPARED.equals(transfer.state())) {
-            return;
-        }
-        if (!TRANSFER_SOURCE_CLEARED.equals(transfer.state()) && !TRANSFER_CLAIMED.equals(transfer.state())) {
-            return;
-        }
-
-        final Optional<RegisteredServer> destination = this.server.getServer(transfer.destinationServer());
-        if (destination.isEmpty()) {
-            routeToHoldingOrDisconnect(event);
-            return;
-        }
-        event.setResult(ServerPreConnectEvent.ServerResult.allowed(destination.get()));
-    }
-
-    @Subscribe
-    public void onServerPostConnect(final ServerPostConnectEvent event) {
-        final Optional<ServerConnection> currentServer = event.getPlayer().getCurrentServer();
-        if (currentServer.isEmpty()) {
-            return;
-        }
-
-        try {
-            this.router.updateLastServer(
-                event.getPlayer().getUniqueId(),
-                currentServer.get().getServerInfo().getName()
-            );
-        } catch (final SQLException exception) {
-            this.logger.error("Failed to update player last server", exception);
-        }
-    }
+//    @Subscribe(priority = -1)
+//    public void onServerPreConnect(final ServerPreConnectEvent event) {
+//        final PendingTransfer transfer;
+//        try {
+//            transfer = this.router.getPendingTransfer(event.getPlayer().getUniqueId());
+//        } catch (final SQLException exception) {
+//            this.logger.error("Failed to look up pending rocket transfer", exception);
+//            routeToHoldingOrDisconnect(event);
+//            return;
+//        }
+//
+//        if (transfer == null || TRANSFER_PREPARED.equals(transfer.state())) {
+//            return;
+//        }
+//        if (!TRANSFER_SOURCE_CLEARED.equals(transfer.state()) && !TRANSFER_CLAIMED.equals(transfer.state())) {
+//            return;
+//        }
+//
+//        final Optional<RegisteredServer> destination = this.server.getServer(transfer.destinationServer());
+//        if (destination.isEmpty()) {
+//            routeToHoldingOrDisconnect(event);
+//            return;
+//        }
+//        event.setResult(ServerPreConnectEvent.ServerResult.allowed(destination.get()));
+//    }
+//
+//    @Subscribe
+//    public void onServerPostConnect(final ServerPostConnectEvent event) {
+//        final Optional<ServerConnection> currentServer = event.getPlayer().getCurrentServer();
+//        if (currentServer.isEmpty()) {
+//            return;
+//        }
+//
+//        try {
+//            this.router.updateLastServer(
+//                event.getPlayer().getUniqueId(),
+//                currentServer.get().getServerInfo().getName()
+//            );
+//        } catch (final SQLException exception) {
+//            this.logger.error("Failed to update player last server", exception);
+//        }
+//    }
 
     private void routeToHoldingOrDisconnect(final ServerPreConnectEvent event) {
         final String holdingServer = this.config.node("holding-server").getString("").trim();

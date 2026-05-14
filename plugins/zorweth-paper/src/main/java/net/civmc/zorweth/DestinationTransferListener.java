@@ -4,6 +4,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
+import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,11 @@ import net.civmc.zorweth.transfer.RocketChestTransfer;
 import net.civmc.zorweth.transfer.RocketEntityPosition;
 import net.civmc.zorweth.transfer.RocketPassengerTransfer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
@@ -98,6 +99,28 @@ public final class DestinationTransferListener implements Listener {
     }
 
     @EventHandler
+    public void on(AsyncPlayerSpawnLocationEvent event) {
+        UUID playerId = event.getConnection().getProfile().getUniqueId();
+        DestinationRocketTransfer transfer = cachedRockets.get(playerId);
+        RocketPassengerTransfer passenger = cachedPlayers.get(playerId);
+        if (transfer == null || passenger == null) {
+            return;
+        }
+
+        final World world = Bukkit.getWorld(transfer.destinationWorld());
+        RocketBlockPosition pos = transfer.destinationOrigin();
+
+        RocketEntityPosition passengerPos = passenger.relativePosition();
+        event.setSpawnLocation(new Location(world,
+            pos.x() + passengerPos.x(),
+            pos.y() + passengerPos.y() + 1.2, // teleport above seat
+            pos.z() + passengerPos.z(),
+            passengerPos.yaw(),
+            passengerPos.pitch()
+        ));
+    }
+
+    @EventHandler
     public void on(PlayerJoinEvent event) {
         DestinationRocketTransfer transfer = cachedRockets.remove(event.getPlayer().getUniqueId());
         RocketPassengerTransfer passenger = cachedPlayers.remove(event.getPlayer().getUniqueId());
@@ -106,20 +129,16 @@ public final class DestinationTransferListener implements Listener {
             return;
         }
 
-        final World world = Bukkit.getWorld(transfer.destinationWorld());
-        RocketBlockPosition pos = transfer.destinationOrigin();
-        final Clipboard clipboard = this.plugin.getRocketClipboard();
-        final Region region = clipboard.getRegion();
-        final BlockVector3 nwCorner = region.getMinimumPoint();
-
-        RocketEntityPosition passengerPos = passenger.relativePosition();
-        event.getPlayer().teleport(new Location(world,
-            pos.x() + passengerPos.x() - nwCorner.getX(),
-            pos.y() + passengerPos.y() - nwCorner.getY() + 1.5,
-            pos.z() + passengerPos.z() - nwCorner.getZ()
-        ));
-
-        // TODO restore rest of player state
+        final Player player = event.getPlayer();
+        player.getInventory().setContents(ItemStack.deserializeItemsFromBytes(passenger.serializedInventory()));
+        player.setHealth(Math.min(passenger.health(), player.getAttribute(Attribute.MAX_HEALTH).getValue()));
+        player.setLevel(passenger.xpLevel());
+        player.setExp(passenger.xpProgress());
+        player.setFoodLevel(passenger.foodLevel());
+        player.setSaturation(passenger.saturation());
+        player.setExhaustion(passenger.exhaustion());
+        player.getInventory().setHeldItemSlot(passenger.heldSlot());
+        player.setGameMode(passenger.gameMode());
     }
 
     private void updateRocketPosition(final DestinationRocketTransfer transfer, CompletableFuture<DestinationRocketTransfer> success) {
@@ -299,13 +318,5 @@ public final class DestinationTransferListener implements Listener {
             origin.y() + FlightComputer.RELATIVE_POSITION.getY(),
             origin.z() + FlightComputer.RELATIVE_POSITION.getZ()
         );
-    }
-
-    private void kick(final Player player) {
-        Bukkit.getScheduler().runTask(this.plugin, () -> {
-            if (player.isOnline()) {
-                player.kick(Component.text(this.plugin.getTransferFailureMessage(), NamedTextColor.RED));
-            }
-        });
     }
 }

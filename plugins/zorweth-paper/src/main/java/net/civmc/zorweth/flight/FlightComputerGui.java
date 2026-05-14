@@ -170,7 +170,7 @@ public final class FlightComputerGui implements Listener {
         summary.set(new DecorationStack(createSummaryItem(matching, total, mismatches.isEmpty())), 5);
 
         summary.set(createCoordinatesButton(computer), 7);
-        summary.set(createLaunchButton(computer), 8);
+        summary.set(createLaunchButton(computer, manifestResult.manifest(), fuelStatus), 8);
 
         inventory.addComponent(summary, SlotPredicates.rows(1));
         inventory.show();
@@ -252,17 +252,23 @@ public final class FlightComputerGui implements Listener {
         };
     }
 
-    private IClickable createLaunchButton(final Block computer) {
+    private IClickable createLaunchButton(final Block computer, final RocketManifest manifest,
+                                         final LaunchHandler.FuelStatus fuelStatus) {
         final ItemStack item = new ItemStack(Material.FIREWORK_ROCKET);
         item.unsetData(DataComponentTypes.FIREWORKS);
         item.editMeta(meta -> {
             meta.displayName(Component.text("Launch", NamedTextColor.DARK_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
+            final Component consumption = manifest == null
+                ? Component.text("Fuel consumption: unavailable", NamedTextColor.GRAY)
+                : Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(manifest, fuelStatus)) + " kg ("
+                    + calculateFuelConsumptionItems(manifest, fuelStatus) + " charcoal)", NamedTextColor.GRAY);
             meta.lore(List.of(
                 Component.text("Conduct pre-flight systems check", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("and start main engine throttle.", NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false)
+                    .decoration(TextDecoration.ITALIC, false),
+                consumption.decoration(TextDecoration.ITALIC, false)
             ));
         });
         return new Clickable(item) {
@@ -357,14 +363,22 @@ public final class FlightComputerGui implements Listener {
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Passengers: " + manifest.passengers().size(), NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("Required fuel: " + roundUpTenths(fuelStatus.requiredFuelKg()) + " kg ("
-                        + fuelStatus.requiredFuelItems() + " charcoal)", NamedTextColor.GRAY)
+                Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(manifest, fuelStatus)) + " kg ("
+                        + calculateFuelConsumptionItems(manifest, fuelStatus) + " charcoal)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Once engines have been started, there is no going back.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
         return item;
+    }
+
+    private double calculateFuelConsumptionKg(final RocketManifest manifest, final LaunchHandler.FuelStatus fuelStatus) {
+        return fuelStatus.currentFuelKg() - manifest.fuelKg();
+    }
+
+    private int calculateFuelConsumptionItems(final RocketManifest manifest, final LaunchHandler.FuelStatus fuelStatus) {
+        return (int) Math.ceil(calculateFuelConsumptionKg(manifest, fuelStatus) / LaunchHandler.FUEL_ITEM_MASS_KG);
     }
 
     private ItemStack createConfirmLaunchItem() {
@@ -388,7 +402,7 @@ public final class FlightComputerGui implements Listener {
             meta.displayName(Component.text("Fuel Status", enoughFuel ? NamedTextColor.GREEN : NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(
-                Component.text("Fuel: " + status.currentFuelKg() + " kg (" + status.fuelItems() + " charcoal)", NamedTextColor.GRAY)
+                Component.text("Fuel: " + roundUpTenths(status.currentFuelKg()) + " kg (" + status.fuelItems() + " charcoal)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Required: " + roundUpTenths(status.requiredFuelKg()) + " kg (" + status.requiredFuelItems() + " charcoal)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
