@@ -36,6 +36,7 @@ public final class RocketTransferDao {
                 insertTransfer(connection, manifest);
                 insertPassengers(connection, passengers);
                 insertChests(connection, chests);
+                upsertRoutes(connection, manifest, passengers);
                 connection.commit();
             } catch (final SQLException exception) {
                 connection.rollback();
@@ -261,6 +262,27 @@ public final class RocketTransferDao {
                 statement.setInt(15, passenger.heldSlot());
                 statement.setString(16, passenger.gameMode().name());
                 statement.setString(17, RocketTransferPlayerState.PENDING.name());
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        }
+    }
+
+    private void upsertRoutes(final Connection connection, final RocketManifest manifest,
+                              final Iterable<RocketPassengerTransfer> passengers) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("""
+            INSERT INTO rocket_player_routes (player_uuid, expected_server, source, transfer_id)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                expected_server = VALUES(expected_server),
+                source = VALUES(source),
+                transfer_id = VALUES(transfer_id)
+            """)) {
+            for (final RocketPassengerTransfer passenger : passengers) {
+                statement.setString(1, passenger.playerUuid().toString());
+                statement.setString(2, manifest.destinationServer());
+                statement.setString(3, "ROCKET");
+                statement.setString(4, manifest.transferId().toString());
                 statement.addBatch();
             }
             statement.executeBatch();

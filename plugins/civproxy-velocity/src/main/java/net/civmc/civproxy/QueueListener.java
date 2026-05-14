@@ -9,17 +9,22 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import net.civmc.zorweth.velocity.ZorwethVelocityPlugin;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.data.TemporaryNodeMergeStrategy;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.types.PermissionNode;
 import us.ajg0702.queue.api.AjQueueAPI;
 import us.ajg0702.queue.api.QueueManager;
+import us.ajg0702.queue.api.events.PreConnectEvent;
+import us.ajg0702.queue.api.events.PreQueueEvent;
 import us.ajg0702.queue.api.players.AdaptedPlayer;
 
 public class QueueListener {
@@ -29,10 +34,12 @@ public class QueueListener {
 
     private final CivProxyPlugin plugin;
     private final ProxyServer server;
+    private final ZorwethVelocityPlugin zorweth;
 
-    public QueueListener(CivProxyPlugin plugin, ProxyServer server) {
+    public QueueListener(CivProxyPlugin plugin, ProxyServer server, ZorwethVelocityPlugin zorweth) {
       this.plugin = plugin;
       this.server = server;
+      this.zorweth = zorweth;
     }
 
     record QueueRecord(Instant instant, String server) {
@@ -45,6 +52,8 @@ public class QueueListener {
 
     public void start() {
         server.getEventManager().register(plugin, this);
+        AjQueueAPI.getInstance().listen(PreQueueEvent.class, this::onPreQueue);
+        AjQueueAPI.getInstance().listen(PreConnectEvent.class, this::onPreQueueConnect);
     }
 
     @Subscribe
@@ -93,22 +102,62 @@ public class QueueListener {
         if (event.getPreviousServer() != null) {
             return;
         }
-        RegisteredServer mainServer = event.getOriginalServer();
-        String name = mainServer.getServerInfo().getName();
+        RegisteredServer requestedServer = event.getOriginalServer();
+        String name = requestedServer.getServerInfo().getName();
         if (name.equals("pvp")) {
             return;
         }
 
-        if (mainServer.getPlayersConnected().size() >= 145 && !event.getPlayer().hasPermission("joinbypass.use")) {
-//            RegisteredServer mini = server.getServer("mini").orElse(null);
-//            if (mini != null && mini.getPlayersConnected().size() < 110) {
-//                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("mini").get()));
-//            } else {
-            event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
-//            }
-
-            players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
+        final RegisteredServer queueTarget;
+        if (this.zorweth.isProtectedServer(name) && !this.zorweth.canBypass(event.getPlayer())) {
+            final String expectedServer = getExpectedServer(event.getPlayer());
+            if (expectedServer == null) {
+                event.getPlayer().disconnect(Component.text("Unable to verify your rocket route. Please reconnect and try again.", NamedTextColor.RED));
+                return;
+            }
+            queueTarget = this.server.getServer(expectedServer).orElse(null);
+            if (queueTarget == null) {
+                this.plugin.getLogger().error("Unable to find expected rocket route server {}", expectedServer);
+                event.getPlayer().disconnect(Component.text("Unable to verify your rocket route. Please reconnect and try again.", NamedTextColor.RED));
+                return;
+            }
+        } else {
+            queueTarget = requestedServer;
         }
+
+        if (queueTarget.getPlayersConnected().size() >= 145 && !event.getPlayer().hasPermission("joinbypass.use")) {
+            event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
+
+            players.put(event.getPlayer(), new QueueRecord(Instant.now(), queueTarget.getServerInfo().getName()));
+        } else if (queueTarget != requestedServer) {
+            event.setResult(ServerPreConnectEvent.ServerResult.allowed(queueTarget));
+        }
+    }
+
+    private void onPreQueue(final PreQueueEvent event) {
+        if (!this.zorweth.isProtectedServer(event.getTarget().getName()) || event.getPlayer().hasPermission("zorweth.admin")) {
+            return;
+        }
+        final String expectedServer = getExpectedServer(event.getPlayer());
+        if (expectedServer != null && event.getTarget().getName().equals(expectedServer)) {
+            return;
+        }
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(Component.text("You cannot queue for that server unless your rocket route allows it.", NamedTextColor.RED));
+    }
+
+    private void onPreQueueConnect(final PreConnectEvent event) {
+        final String targetName = event.getTargetServer().getName();
+        if (!this.zorweth.isProtectedServer(targetName) || event.getPlayer().getPlayer().hasPermission("zorweth.admin")) {
+            return;
+        }
+        final String expectedServer = getExpectedServer(event.getPlayer().getPlayer());
+        if (targetName.equals(expectedServer)) {
+            return;
+        }
+        event.setCancelled(true);
+        event.getPlayer().getPlayer().sendMessage(Component.text("Your rocket route changed. Please queue for "
+            + (expectedServer == null ? "the correct server" : expectedServer) + ".", NamedTextColor.RED));
     }
 
     @Subscribe
@@ -179,5 +228,23 @@ public class QueueListener {
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
             userManager.saveUser(user);
         });
+    }
+
+    private String getExpectedServer(final Player player) {
+        try {
+            return this.zorweth.getExpectedServer(player.getUniqueId());
+        } catch (final SQLException exception) {
+            this.plugin.getLogger().error("Failed to look up rocket route for " + player.getUniqueId(), exception);
+            return null;
+        }
+    }
+
+    private String getExpectedServer(final AdaptedPlayer player) {
+        try {
+            return this.zorweth.getExpectedServer(player.getUniqueId());
+        } catch (final SQLException exception) {
+            this.plugin.getLogger().error("Failed to look up rocket route for " + player.getUniqueId(), exception);
+            return null;
+        }
     }
 }

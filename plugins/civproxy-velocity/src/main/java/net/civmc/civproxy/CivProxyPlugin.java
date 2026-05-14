@@ -5,9 +5,11 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.zaxxer.hikari.HikariConfig;
+import java.util.Optional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -15,11 +17,12 @@ import java.nio.file.Path;
 import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import net.civmc.civproxy.renamer.PlayerRenamer;
+import net.civmc.zorweth.velocity.ZorwethVelocityPlugin;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-@Plugin(id = "civproxy", name = "CivProxy", version = "1.0.0", authors = {"Okx"}, dependencies = {@Dependency(id = "ajqueue"), @Dependency(id = "luckperms")})
+@Plugin(id = "civproxy", name = "CivProxy", version = "1.0.0", authors = {"Okx"}, dependencies = {@Dependency(id = "ajqueue"), @Dependency(id = "luckperms"), @Dependency(id = "zorweth")})
 public class CivProxyPlugin {
 
     private final ProxyServer server;
@@ -46,7 +49,14 @@ public class CivProxyPlugin {
         new PlayerCount(this, server).start();
         new PlayerRenamer(this, server, source).start();
         if (server.getPluginManager().isLoaded("ajqueue")) {
-            new QueueListener(this, server).start();
+            final Optional<ZorwethVelocityPlugin> zorweth = server.getPluginManager().getPlugin("zorweth")
+                .flatMap(PluginContainer::getInstance)
+                .map(ZorwethVelocityPlugin.class::cast);
+            if (zorweth.isPresent()) {
+                new QueueListener(this, server, zorweth.get()).start();
+            } else {
+                this.logger.error("Zorweth is required for queue routing, but its plugin instance was not available");
+            }
         }
     }
 

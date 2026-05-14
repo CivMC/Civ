@@ -10,5 +10,8 @@ database:
   idle_timeout: 600000
   max_lifetime: 7200000
 
-holding-server: ""
+holding-server: "pvp"
 failure-message: "Unable to verify your rocket transfer. Please reconnect and try again."
+main-server: main
+zorweth-server: zorweth
+default-server: main

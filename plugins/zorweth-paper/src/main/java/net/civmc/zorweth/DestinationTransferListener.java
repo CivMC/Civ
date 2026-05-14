@@ -208,6 +208,7 @@ public final class DestinationTransferListener implements Listener {
         });
     }
 
+    // TODO can't land in city/vault bastions
     private RocketBlockPosition findRocketPosition(final DestinationRocketTransfer transfer) {
         int rx = transfer.requestedX() - FlightComputer.RELATIVE_POSITION.getX();
         int rz = transfer.requestedZ() - FlightComputer.RELATIVE_POSITION.getZ();

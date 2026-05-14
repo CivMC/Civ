@@ -168,6 +168,7 @@ public class BuildRocketRecipe extends InputRecipe {
         if (!FactoryMod.getInstance().getManager().isCitadelEnabled()) {
             return;
         }
+        // TODO destroy this and carry it over to the other server when flight is launched
         final Reinforcement furnaceReinforcement = ReinforcementLogic.getReinforcementAt(fccf.getFurnace().getLocation());
         if (furnaceReinforcement == null) {
             return;

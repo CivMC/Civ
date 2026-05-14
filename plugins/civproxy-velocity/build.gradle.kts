@@ -11,4 +11,5 @@ dependencies {
     compileOnly(libs.luckperms.api)
     annotationProcessor(libs.velocity.api)
     api(project(":libraries:name-api"))
+    compileOnly(project(":plugins:zorweth-velocity"))
 }
