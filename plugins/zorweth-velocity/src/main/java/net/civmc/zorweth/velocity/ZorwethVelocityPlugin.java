@@ -126,8 +126,7 @@ public final class ZorwethVelocityPlugin {
     }
 
     public boolean canBypass(final Player player) {
-        final String permission = this.config.node("admin-bypass-permission").getString("zorweth.admin");
-        return !permission.isBlank() && player.hasPermission(permission);
+        return player.hasPermission("zorweth.admin");
     }
 
     public String getExpectedServer(final UUID playerId) throws SQLException {
@@ -220,6 +219,7 @@ public final class ZorwethVelocityPlugin {
     }
 
     private record PlayerRoute(String expectedServer) {
+
     }
 
     private final class RouteCommand implements SimpleCommand {
@@ -285,11 +285,11 @@ public final class ZorwethVelocityPlugin {
 
         private PlayerRoute getPlayerRoute(final UUID playerUuid) throws SQLException {
             try (Connection connection = this.dataSource.getConnection();
-                  PreparedStatement statement = connection.prepareStatement("""
-                      SELECT expected_server
-                      FROM rocket_player_routes
-                      WHERE player_uuid = ?
-                      """)) {
+                 PreparedStatement statement = connection.prepareStatement("""
+                     SELECT expected_server
+                     FROM rocket_player_routes
+                     WHERE player_uuid = ?
+                     """)) {
                 statement.setString(1, playerUuid.toString());
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (!resultSet.next()) {
