@@ -10,6 +10,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 
 // Represents shared logic
 public class FlightComputer {
@@ -78,5 +82,18 @@ public class FlightComputer {
         dispenser.getPersistentDataContainer().set(ROCKET_DESTINATION_X_KEY, PersistentDataType.INTEGER, coordinates.x());
         dispenser.getPersistentDataContainer().set(ROCKET_DESTINATION_Z_KEY, PersistentDataType.INTEGER, coordinates.z());
         dispenser.update(true, false);
+    }
+
+    public static void reinforceFlightComputer(final Block flightComputer, int group) {
+        final ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager()
+            .getByItemStack(new ItemStack(Material.DIAMOND), flightComputer.getWorld().getName());
+        if (type == null || !type.canBeReinforced(flightComputer.getType())
+            || !type.isAllowedInWorld(flightComputer.getWorld().getName())) {
+            return;
+        }
+        final long creationTime = System.currentTimeMillis() - type.getMaturationTime() - 1;
+        final Reinforcement reinforcement = new Reinforcement(flightComputer.getLocation(), type,
+            group, creationTime, type.getHealth(), false, true);
+        ReinforcementLogic.createReinforcement(reinforcement);
     }
 }

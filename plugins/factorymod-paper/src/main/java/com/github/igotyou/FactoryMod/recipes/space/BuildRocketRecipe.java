@@ -29,10 +29,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class BuildRocketRecipe extends InputRecipe {
@@ -168,21 +166,12 @@ public class BuildRocketRecipe extends InputRecipe {
         if (!FactoryMod.getInstance().getManager().isCitadelEnabled()) {
             return;
         }
-        // TODO destroy this and carry it over to the other server when flight is launched
+
         final Reinforcement furnaceReinforcement = ReinforcementLogic.getReinforcementAt(fccf.getFurnace().getLocation());
         if (furnaceReinforcement == null) {
             return;
         }
-        final ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager()
-            .getByItemStack(flightComputerReinforcement, flightComputer.getWorld().getName());
-        if (type == null || !type.canBeReinforced(flightComputer.getType())
-            || !type.isAllowedInWorld(flightComputer.getWorld().getName())) {
-            return;
-        }
-        final long creationTime = System.currentTimeMillis() - type.getMaturationTime() - 1;
-        final Reinforcement reinforcement = new Reinforcement(flightComputer.getLocation(), type,
-            furnaceReinforcement.getGroupId(), creationTime, type.getHealth(), false, true);
-        ReinforcementLogic.createReinforcement(reinforcement);
+        FlightComputer.reinforceFlightComputer(flightComputer, furnaceReinforcement.getGroupId());
     }
 
     private Block getNorthWestOrigin(final FurnCraftChestFactory fccf) {

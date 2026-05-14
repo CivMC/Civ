@@ -34,6 +34,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 
 // Handles launching logic
 public class LaunchHandler {
@@ -309,6 +311,10 @@ public class LaunchHandler {
         for (final BlockVector3 position : region) {
             final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
             final Block actualBlock = origin.getRelative(relative.getX(), relative.getY(), relative.getZ());
+            Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(actualBlock.getLocation());
+            if (reinforcement != null) {
+                reinforcement.setHealth(-1);
+            }
             actualBlock.setType(Material.AIR, false);
         }
     }
