@@ -93,7 +93,7 @@ public class KitPvpPlugin extends ACivMod {
             PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);
             getServer().getPluginManager().registerEvents(privateArenaListener, this);
             getCommand("arena").setExecutor(new ArenaCommand(this, arenaDao, ranked, queueManager, manager, privateArenaListener));
-            getServer().getPluginManager().registerEvents(new RespawnListener(manager), this);
+            getServer().getPluginManager().registerEvents(new RespawnListener(manager, this), this);
             Bukkit.getScheduler().runTaskTimer(this, new ArenaCleaner(manager), 20 * 60, 20 * 60);
         } catch (SQLException e) {
             throw new RuntimeException(e);

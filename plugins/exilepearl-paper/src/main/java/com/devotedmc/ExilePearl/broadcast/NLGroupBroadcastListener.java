@@ -16,12 +16,12 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class NLGroupBroadcastListener implements BroadcastListener {
 
-    private final Group group;
+    private final String groupName;
 
-    public NLGroupBroadcastListener(final Group group) {
-        Preconditions.checkNotNull(group, "group");
+    public NLGroupBroadcastListener(final String groupName) {
+        Preconditions.checkNotNull(groupName, "groupName");
 
-        this.group = group;
+        this.groupName = groupName;
     }
 
     @Override
@@ -29,7 +29,11 @@ public class NLGroupBroadcastListener implements BroadcastListener {
         Location l = pearl.getHolder().getLocation();
         String name = pearl.getHolder().getName();
 
-        String msg = String.format(ChatUtils.parseColor(Lang.groupPearlBroadcast), group.getName(), pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+        Group group = GroupManager.getGroup(groupName);
+        if (group == null) {
+            return;
+        }
+        String msg = String.format(ChatUtils.parseColor(Lang.groupPearlBroadcast), groupName, pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 
         GroupManager gm = NameLayerAPI.getGroupManager();
 
@@ -55,16 +59,16 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 
         NLGroupBroadcastListener other = (NLGroupBroadcastListener) o;
 
-        return group.equals(other.group);
+        return this.groupName.equals(other.groupName);
     }
 
     @Override
     public int hashCode() {
-        return group.hashCode();
+        return groupName.hashCode();
     }
 
     @Override
     public boolean contains(Object o) {
-        return group.equals(o);
+        return groupName.equals(o);
     }
 }

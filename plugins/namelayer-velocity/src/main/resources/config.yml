@@ -1,0 +1,19 @@
+database:
+  driver: mariadb
+  host: localhost
+  port: 3306
+  database: namelayer
+  user: root
+  password: ''
+  poolsize: 10
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+rabbitmq:
+  user: guest
+  password: guest
+  host: localhost
+  port: 5672
+
+server_databases: {}

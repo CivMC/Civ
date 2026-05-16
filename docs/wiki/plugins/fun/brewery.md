@@ -208,6 +208,10 @@ The most simple form of brews, made with either base and/or custom ingredients.
 |         Eggnog          |         8         |       6        |   300110   |
 |        Advocaat         |         5         |       6        |   300111   |
 |       Love Potion       |         3         |       6        |   300112   |
+|       Cigarette         |         4         |       8        |   300113   |
+|       Four Loko         |         5         |       6        |   300114   |
+|       Dirty Soda        |         5         |       6        |   300115   |
+|        Tea Wine         |         2         |       6        |   300116   |
 
 ### Food Brews
 Brews that restore saturation
@@ -242,7 +246,17 @@ Brews that restore saturation
 |     Carrot Cake      |         6         |       6        |     400026 |
 | Valentines Chocolate |         4         |       6        |     400027 |
 |    Dark Chocolate    |         2         |       6        |     400028 |
-
+|     Mac N' Cheese    |         9         |       6        |     400029 |
+| Abnormal Rabbit Feed |         6         |       7        |     400030 |
+|     Cheeseburger     |         7         |       4        |     400031 |       
+|       Solyanka       |         8         |       5        |     400032 |
+|       Burrito        |         8         |       6        |     400033 |
+|       Pizza          |         6         |       6        |     400034 |
+|      Spaghetti       |         9         |       6        |     400035 |
+|     Fried Chicken    |         7         |       6        |     400036 |
+|     Banana Split     |         7         |       6        |     400037 |
+|      Miso Soup       |         8         |       6        |     400020 |
+  
 ### Cocktail Brews
 Brews made from other brews, sometimes with extra ingredients
 |             Name              | Ingredient Amount | Difficulty 1-9 | Texture ID |
@@ -267,28 +281,34 @@ Brews made from other brews, sometimes with extra ingredients
 ### Drug Brews
 Brews that provide unique/useful effects
 
-|     Name      | Ingredient Amount | Difficulty 1-9 | Texture ID |
-|:-------------:|:-----------------:|:--------------:|:----------:|
-|    Cyanide    |         3         |       8        |   600001   |
-|   Cannabis    |         1         |       8        |   600002   |
-|     Meth      |         3         |       8        |   600003   |
-|   Blue Meth   |         3         |       8        |   600004   |
-|    Heroin     |         5         |       8        |   600005   |
-|   Oestrogen   |         4         |       8        |   600006   |
-|   Caffeine    |         5         |       8        |   600007   |
-|  Ivermectin   |         3         |       8        |   600008   |
-|      DMT      |         4         |       8        |   600009   |
-|     Xanax     |         5         |       8        |   600010   |
-|   Steroids    |         1         |       8        |   600011   |
-| Testosterone  |         4         |       8        |   600012   |
-|    Vicodin    |         5         |       8        |   600013   |
-|    Yakult     |         6         |       8        |   600014   |
-|    Cocaine    |         5         |       8        |   600015   |
-|     Speed     |         4         |       8        |   600016   |
-|     NAD+      |         6         |       8        |   600017   |
-|  Epinephrine  |         5         |       8        |   600018   |
-|   Firefoam    |         4         |       8        |   600019   |
-| Nitroglycerin |         5         |       8        |   600020   |
+|     Name       | Ingredient Amount | Difficulty 1-9 | Texture ID |
+|:--------------:|:-----------------:|:--------------:|:----------:|
+|    Cyanide     |         3         |       8        |   600001   |
+|   Cannabis     |         1         |       8        |   600002   |
+|     Meth       |         3         |       8        |   600003   |
+|   Blue Meth    |         3         |       8        |   600004   |
+|    Heroin      |         5         |       8        |   600005   |
+|   Oestrogen    |         4         |       8        |   600006   |
+|   Caffeine     |         5         |       8        |   600007   |
+|  Ivermectin    |         3         |       8        |   600008   |
+|      DMT       |         4         |       8        |   600009   |
+|     Xanax      |         5         |       8        |   600010   |
+|   Steroids     |         1         |       8        |   600011   |
+| Testosterone   |         4         |       8        |   600012   |
+|    Vicodin     |         5         |       8        |   600013   |
+|    Yakult      |         6         |       8        |   600014   |
+|    Cocaine     |         5         |       8        |   600015   |
+|     Speed      |         4         |       8        |   600016   |
+|     NAD+       |         6         |       8        |   600017   |
+|  Epinephrine   |         5         |       8        |   600018   |
+|   Firefoam     |         4         |       8        |   600019   |
+| Nitroglycerin  |         5         |       8        |   600020   |
+|    Ritalin     |         5         |       8        |   600021   |
+| Battery Acid   |         4         |       8        |   600022   |
+| Nitrocellulose |         5         |       9        |   600023   |
+|GLP-1 Antagonist|         5         |       8        |   600024   |
+|      RSO       |         1         |       8        |   600025   |
+|      PCP       |         6         |       8        |   600026   |
 
 ### Nation Brews
 Brews that are part of a nation or group's PR/culture and were submitted by them.
@@ -462,6 +482,68 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |      BEBO Inc       |          Starch Cola          |         2         |       6        |   700165   |
 |      Micronook      |        Mulled Melonade        |         3         |       6        |   700166   |
 | Dr.Urzork Pharmancy |           Snake Oil           |         5         |       6        |   700167   |
+|      Taconia        |    Spicy Taconia Tequila      |         4         |       7        |   700168   |
+|        MTA          |   Marvelous Augustan Vodka    |         3         |       7        |   700169   |
+|                     |          Icy Depths           |         4         |       7        |   700170   |
+|      Melonwood      |      Melon Lychee Chuhai      |         5         |       7        |   700171   |
+|      Melonwood      |       Yuzu Melon Yakult       |         5         |       7        |   700173   |
+|                     |          The Abyss            |         5         |       6        |   700174   |
+|         IF          |       The Imperial Brew       |         4         |       7        |   700175   |
+|                     |       Polychromatic Love      |         9         |       7        |   700176   |
+|                     |       Hyperborean Palmer      |         4         |       7        |   700177   |
+|      SpleefCorp     |      SpleefCorp Nutcracker    |         4         |       7        |   700178   |
+|     Brickstone      |          Brickstoners         |         3         |       6        |   700180   |
+|       TuffCO        |        Strawberry Matcha      |         4         |       7        |   700181   |
+|       Melvera       |          Nectar Tide          |         6         |       7        |   700182   |
+|         IF          |     Secessionist Schnapps     |         4         |       7        |   700183   |
+|         TE          |      Fermented Ice Cream      |         6         |       5        |   700184   |
+|       Melvera       |     Melveran White Whisper    |         5         |       7        |   700185   |
+|      Yumeshima      |   Yumeshima Future, Together  |         4         |       7        |   700186   |
+|   Pink Lotus Co.    |     Pink Lotus Pina Colada    |         7         |       7        |   700187   |
+|   Pink Lotus Co.    |     Pink Lotus Painkiller     |         4         |       8        |   700188   |
+|   Setra Marinese    |    Setra Marinese Root-Beer   |         3         |       7        |   700189   |
+|     Mercutio        |     Spirit of the Mercutie    |         5         |       7        |   700190   |
+|                     |     Thinkertonistic Tequila   |         3         |       7        |   700191   |
+|    Bargain Bin      |         Bargain Bin           |         2         |       5        |   700192   |
+|                     |       Miner’s Margarita       |         4         |       7        |   700193   |
+|      Belgium        |     Belgian Trappist Beer     |         4         |       7        |   700194   |
+|       Selene        |      Selene’s Starlight       |         4         |       7        |   700195   |
+|      Valtoria       |       Valtorian Dunkel        |         4         |       7        |   700196   |
+|      Valtoria       |           Edler Met           |         4         |       7        |   700197   |
+|      Valtoria       |          Kriegergeist         |         2         |       7        |   700198   |
+|     Danzilona       |     Newfriend's Best Friend   |         4         |       8        |   700199   |
+|      Anisso         |        Anisso Amaretto        |         4         |       7        |   700200   |
+|     Kaltsburg       |         Kalts Burger          |         6         |       6        |   700201   |
+|     Ambrosia        |       Ambrose Ambrosia        |         4         |       7        |   700202   |
+|     Mercutio        |         Tomo Tequila          |         4         |       6        |   700203   |
+|     Cascadia        |    Cascadian Mountain Ichor   |         4         |       6        |   700204   |
+|     Potato Bay      |     Potato Bay Potato Brew    |         2         |       6        |   700205   |
+|     Carnage         |          Carni-Cola           |         7         |       6        |   700206   |
+|      Silqui         |       Silqui Pale Tea         |         5         |       6        |   700207   |
+|     Ila'Kyavul      |        Gronrul's Gin          |         4         |       6        |   700208   |
+|      Zirakdum       |     Zirakdum Mythril Mead     |         4         |       6        |   700209   |
+|      Zirakdum       |     Zirakdum Deeprock Grog    |         4         |       6        |   700210   |  
+|                     |  Thieves’ Haven Pirate Grog   |         8         |       6        |   700211   |
+|                     |       Cobblestone Soup        |         4         |       6        |   700212   |
+|                     |     King Barry's Blessing     |         4         |       6        |   700213   |
+|                     |       Stone Confetti          |         5         |       6        |   700214   |
+|                     |      Oriental Naswar Pack     |         4         |       6        |   700215   |
+|      Pavia          |           BOSH.               |         5         |       6        |   700216   |
+|     Toontown        |    Toontown Toon-Up Tonic     |         6         |       6        |   700217`  |
+|     Skandic         |   Skandic Raw n' Cold Beer    |         5         |       6        |   700218   |
+|                     |         Fiji Water            |         2         |       6        |   700219   |
+|     TuffCO          |  TuffCOLand’s Nyquil Chicken  |         3         |       6        |   700220   |
+|                     |         Coca-Tshola           |         5         |       6        |   700221   |
+|    Commonwealth     |    Commonwealth Cool-Aid      |         4         |       6        |   700222   |
+|                     |          Ignatia              |         4         |       6        |   700223   |
+|      SnomCO         |         Snomelonade           |         4         |       6        |   700224   |
+|        ALX          |        ALX Firewater          |         2         |       6        |   700225   |
+|      Volterra       |     Shockton Sweet Pinot      |         4         |       6        |   700226   |
+|      Volterra       |   Lake Mickale Rapid Beaver   |         8         |       6        |   700227   |
+|     Cane Corp       |       Cane Corp Cachaça       |         2         |       6        |   700228   |
+|                     |        Maletian Vodka         |         4         |       6        |   700229   |
+|                     |        Potato Bay Soup        |         5         |       6        |   700230   |
+
 
 ### Player Brews
 Brews specific to individuals either for their contribution to the genre/server
@@ -499,13 +581,15 @@ or by way of donating a high amount to the server via patreon.
 |      Jeremy's Slippy-Sloppy Screwdriver       |         3         |       8        |   800028   |
 |        Trizzzx's Worcestershire sauce         |         4         |       8        |   800029   |
 |               StrawBeary Dreams               |         6         |       8        |   800030   |
-|                  Pisco Sour                   |         3         |       6        |   800031   |
+|            adeadhead's Pisco Sour             |         3         |       6        |   800031   |
 |              OmaKnight's Melomel              |         4         |       7        |   800032   |
 |                 Turtle Tea                    |         4         |       8        |   800033   |
 |            Doktah's Lucky Brew                |         2         |       8        |   800034   |
 |        Lalibo's Volcanic Margarita            |         4         |       7        |   800035   |
 |               Hallucinnefo                    |         5         |       7        |   800036   |
 |             OreSprayer Stubby                 |         4         |       7        |   800037   |
+|        Ceceliarabbit's Puppuccino             |         5         |       7        |   800038   |
+|        Zenron's Zingin' Zinfandel             |         6         |       7        |   800039   | 
  
 ## List of Custom Ingredients
 
@@ -583,6 +667,10 @@ or by way of donating a high amount to the server via patreon.
 | 70  |       Dough        |        200008        |
 | 71  |       Butter       |        200009        |
 | 72  |       Pomace       |        200010        |
+| 73  |       Pasta        |        200011        |
+| 74  |      Soybeans      |        200012        |
+| 75  |      Tortilla      |        200013        |
+| 76  |      Strontium     |        200014        |
     
 ## List of Vanilla Ingredients.
 
@@ -743,3 +831,25 @@ or by way of donating a high amount to the server via patreon.
 | 153 |           Prismarine Shard            |
 | 154 |             Cherry Leaves             |
 | 155 |            Cherry Sapling             |
+| 156 |              Iron Bars                |
+| 157 |             Grass Block               |
+| 158 |             Turtle Scute              |
+| 159 |             Pitcher Plant             |
+| 160 |             End Stone                 |
+| 161 |             Warped Root               |
+| 162 |             Oak Boat                  |
+| 163 |             Pink Petals               |
+| 164 |             Powered Rail              |
+| 165 |             Campfire                  |
+| 166 |             Lectern                   |
+| 167 |             Calcite                   |
+| 168 |             Sandstone                 |
+| 169 |             Cake                      |
+| 170 |             Oak Trapdoor              |
+| 171 |             Ladder                    |
+| 172 |             Granite                   |
+| 173 |             Diorite                   |
+| 174 |             Cobblestone               |
+| 175 |             Bush                      |
+| 176 |             Chicken                   |
+| 177 |             Glow Ink Sac              |

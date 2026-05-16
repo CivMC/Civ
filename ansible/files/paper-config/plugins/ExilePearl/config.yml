@@ -270,7 +270,7 @@ pearls:
   decay_interval_min_human: 1440 #This value is divided by decay_interval_min and repair cost to show essence cost per day (1440 = 1 day in minutes).
   decay_interval_min: 60
   decay_amount: 1
-  decay_timeout_min: 525600 # don't timeout until after a year
+  decay_timeout_min: 131400 # don't timeout until after a year
   start_value: 48 #starting pearl health is 2 days
   max_value: 504 #maximum pearl health is 21 days
   cost_multiplier_days: 73

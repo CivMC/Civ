@@ -91,6 +91,27 @@ public class CitadelConfigManager extends ConfigParser {
         return activityWorlds;
     }
 
+    public boolean hasDatabase() {
+        return database != null;
+    }
+
+    public boolean isMemoryOnlyWorld(final World world) {
+        if (world == null) {
+            return false;
+        }
+        return isMemoryOnlyWorld(world.getName());
+    }
+
+    public boolean isMemoryOnlyWorld(final String worldName) {
+        if (worldName == null) {
+            return false;
+        }
+        if (!hasDatabase()) {
+            return true;
+        }
+        return false;
+    }
+
     public List<Material> getBlacklistedMaterials() {
         return globalBlackList;
     }
@@ -170,7 +191,9 @@ public class CitadelConfigManager extends ConfigParser {
 
     @Override
     protected boolean parseInternal(ConfigurationSection config) {
-        database = ManagedDatasource.construct((ACivMod) plugin, (DatabaseCredentials) config.get("database"));
+        if (config.isSet("database")) {
+            database = ManagedDatasource.construct((ACivMod) plugin, (DatabaseCredentials) config.get("database"));
+        }
         globalBlackList = ConfigHelper.parseMaterialList(config, "non_reinforceables");
         logHostileBreaks = config.getBoolean("logHostileBreaks", true);
         logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);

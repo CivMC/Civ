@@ -20,7 +20,7 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      VELOCITY_VERSION: '3.4.0-SNAPSHOT'
+      VELOCITY_VERSION: '3.5.0-SNAPSHOT'
       TYPE: 'VELOCITY'
 
       REMOVE_OLD_MODS: 'TRUE'
@@ -46,8 +46,11 @@ services:
       CIV_MYSQL_HOST: mariadb
       CIV_MYSQL_USERNAME: mariadb
       CIV_MYSQL_PASSWORD: mariadb
+
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
     ports:
       - "25565:25577"
+      - "5008:5008"
     volumes:
       - ./containers/data/proxy:/server
       - ./ansible/files/proxy-config:/config
@@ -69,7 +72,7 @@ services:
       TYPE: 'paper'
       VERSION: '1.21.11'
       EULA: 'TRUE'
-      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/62/downloads/leaf-1.21.11-62.jar'
+      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/115/downloads/leaf-1.21.11-115.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
@@ -127,7 +130,7 @@ services:
       TYPE: 'paper'
       VERSION: '1.21.11'
       EULA: 'TRUE'
-      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/62/downloads/leaf-1.21.11-62.jar'
+      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.11/builds/115/downloads/leaf-1.21.11-115.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'

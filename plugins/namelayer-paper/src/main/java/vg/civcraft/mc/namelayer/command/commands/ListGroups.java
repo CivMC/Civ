@@ -6,8 +6,11 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
@@ -17,28 +20,36 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class ListGroups extends BaseCommandMiddle {
 
     @CommandAlias("nllg|listgroups|groups")
-    @Syntax("[page]")
+    @Syntax("[player|page]")
     @Description("List groups.")
-    public void execute(CommandSender sender, @Optional String pageNumber) {
-        Player p = null;
-        UUID uuid = null;
+    public void execute(CommandSender sender, @Optional String targetOrPage) {
+        UUID uuid;
         boolean autopages = false;
+        Integer targetPage = null;
+        final boolean isAdmin = sender instanceof ConsoleCommandSender
+            || sender.isOp() || sender.hasPermission("namelayer.admin");
 
-        if ((sender.isOp() || sender.hasPermission("namelayer.admin"))) {
-            if (pageNumber == null) {
-                uuid = NameLayerAPI.getUUID(sender.getName());
-            } else if (pageNumber != null) {
-                uuid = NameLayerAPI.getUUID(sender.getName());
+        if (isAdmin) {
+            uuid = NameLayerAPI.getUUID(sender.getName());
+            if (targetOrPage != null) {
+                try {
+                    targetPage = Integer.parseInt(targetOrPage);
+                } catch (NumberFormatException exception) {
+                    uuid = NameLayerAPI.getUUID(targetOrPage);
+                }
             }
 
             if (uuid == null) {
-                sender.sendMessage(ChatColor.RED + "UUID is NULL, OP Usage is /nllg <playername>");
+                sender.sendMessage(Component.text("Unknown player: " + targetOrPage, NamedTextColor.RED));
                 return;
             }
             autopages = true;
         } else {
-            p = (Player) sender;
-            uuid = NameLayerAPI.getUUID(p.getName());
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage(Component.text("Player only.", NamedTextColor.RED));
+                return;
+            }
+            uuid = NameLayerAPI.getUUID(player.getName());
         }
 
         List<String> groups = gm.getAllGroupNames(uuid);
@@ -53,13 +64,15 @@ public class ListGroups extends BaseCommandMiddle {
         int actualPages = pages;
 
         int target = 1;
-        if (pageNumber != null) {
+        if (!autopages && targetOrPage != null) {
             try {
-                target = Integer.parseInt(pageNumber);
-            } catch (NumberFormatException e) {
-                sender.sendMessage(ChatColor.RED + pageNumber + " is not a number");
+                target = Integer.parseInt(targetOrPage);
+            } catch (NumberFormatException exception) {
+                sender.sendMessage(ChatColor.RED + targetOrPage + " is not a number");
                 return;
             }
+        } else if (targetPage != null) {
+            target = targetPage;
         }
 
         if (target >= pages) {

@@ -85,19 +85,6 @@ public class BastionInteractListener implements Listener {
             TextComponent toSend = blockManager.infoMessageComponent(dev, block.getRelative(event.getBlockFace()), block, player);
 
             player.spigot().sendMessage(toSend);
-        } else if (PlayersStates.playerInMode(player, Mode.DELETE)) {
-            BastionBlock bastionBlock = blockStorage.getBastionBlock(block.getLocation());
-
-            if (bastionBlock == null) {
-                return;
-            }
-
-            if (bastionBlock.canRemove(player)) {
-                TextComponent toSend = blockManager.bastionDeletedMessageComponent(bastionBlock);
-                bastionBlock.destroy();
-                player.spigot().sendMessage(toSend);
-                event.setCancelled(true);
-            }
         } else if (PlayersStates.playerInMode(player, Mode.MATURE)) {
             BastionBlock bastionBlock = blockStorage.getBastionBlock(block.getLocation());
 

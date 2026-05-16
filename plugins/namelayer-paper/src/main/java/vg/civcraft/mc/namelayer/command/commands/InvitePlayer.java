@@ -6,11 +6,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +15,6 @@ import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitePlayer extends BaseCommandMiddle {
@@ -41,7 +35,7 @@ public class InvitePlayer extends BaseCommandMiddle {
             return;
         }
         if (!isAdmin && group.isDisciplined()) {
-            s.sendMessage(ChatColor.RED + "This group is disiplined.");
+            s.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
         final UUID targetAccount = NameLayerAPI.getUUID(targetPlayer);
@@ -103,60 +97,24 @@ public class InvitePlayer extends BaseCommandMiddle {
             s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him with /removeblacklist before inviting him to the group");
             return;
         }
-        if (!isAdmin) {
-            sendInvitation(group, pType, targetAccount, p.getUniqueId(), true);
-        } else {
-            sendInvitation(group, pType, targetAccount, null, true);
-        }
-
-        s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
+        final UUID actorUuid = isPlayer ? p.getUniqueId() : targetAccount;
+        sendInvitation(group, pType, targetAccount, actorUuid, isAdmin, result -> {
+            if (result.success()) {
+                s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
+            } else {
+                s.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 
-    public static void sendInvitation(Group group, PlayerType pType, UUID invitedPlayer, UUID inviter, boolean saveToDB) {
-        Player invitee = Bukkit.getPlayer(invitedPlayer);
-        boolean shouldAutoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(invitedPlayer);
-        if (invitee != null) {
-            // invitee is online
-            if (shouldAutoAccept) {
-                // player auto accepts invite
-                if (saveToDB) {
-                    group.addMember(invitedPlayer, pType);
-                } else {
-                    group.addMember(invitedPlayer, pType, false);
-                }
-                invitee.sendMessage(
-                    ChatColor.GREEN + " You have auto-accepted invite to the group: " + group.getName());
-            } else {
-                group.addInvite(invitedPlayer, pType, saveToDB);
-                PlayerListener.addNotification(invitedPlayer, group);
-                String msg;
-                if (inviter != null) {
-                    String inviterName = NameLayerAPI.getCurrentName(inviter);
-                    msg = "You have been invited to the group " + group.getName()
-                        + " by " + inviterName + ".\n";
-                } else {
-                    msg = "You have been invited to the group " + group.getName() + ".\n";
-                }
-                TextComponent message = new TextComponent(msg + "Click this message to accept. If you wish to toggle invites "
-                    + "so they always are accepted please run /autoaccept");
-                message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/nlag " + group.getName()));
-                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("  ---  Click to accept").create()));
-                invitee.spigot().sendMessage(message);
-            }
-        } else {
-            // invitee is offline or on a different shard
-            if (shouldAutoAccept) {
-                if (saveToDB) {
-                    group.addMember(invitedPlayer, pType);
-                } else {
-                    group.addMember(invitedPlayer, pType, false);
-                }
-            } else {
-                // Player did not auto accept
-                group.addInvite(invitedPlayer, pType, saveToDB);
-            }
-            PlayerListener.addNotification(invitedPlayer, group);
-        }
+    public static void sendInvitation(
+        Group group,
+        PlayerType pType,
+        UUID invitedPlayer,
+        UUID inviter,
+        boolean adminOverride,
+        java.util.function.Consumer<Group.MemberWriteResult> callback
+    ) {
+        group.addInviteAsync(inviter == null ? invitedPlayer : inviter, invitedPlayer, pType, adminOverride, inviter != null, callback);
     }
 }

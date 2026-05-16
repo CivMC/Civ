@@ -16,6 +16,12 @@ subprojects {
         options.release = javaVersion
     }
 
+    tasks.withType<Javadoc> {
+        options {
+            (this as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
+        }
+    }
+
     tasks.withType<ProcessResources> {
         filteringCharset = "UTF-8"
     }

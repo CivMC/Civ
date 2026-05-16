@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,7 +21,6 @@ import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
-import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
@@ -40,47 +40,20 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
     public void showScreen() {
         ClickableInventory ci = new ClickableInventory(27, g.getName());
-        // linking
-        ItemStack linkStack = new ItemStack(Material.GOLD_INGOT);
-        ItemUtils.setDisplayName(linkStack, ChatColor.GOLD + "Link group");
-        Clickable linkClick;
-
-        ItemUtils.addLore(linkStack, ChatColor.RED
-            + "Sorry, group linking is not a currently supported feature.");
-        linkClick = new DecorationStack(linkStack);
-
-//        ci.setSlot(linkClick, 10);
-        // merging
-        ItemStack mergeStack = new ItemStack(Material.SPONGE);
-        ItemUtils.setDisplayName(mergeStack, ChatColor.GOLD + "Merge group");
-        Clickable mergeClick;
-
-        ItemUtils.addLore(mergeStack, ChatColor.RED
-            + "Sorry, group merging is not a currently supported feature.");
-        mergeClick = new DecorationStack(mergeStack);
-
-//		if (gm.hasAccess(g, p.getUniqueId(),
-//				PermissionType.getPermission("MERGE"))) {
-//			mergeClick = new Clickable(mergeStack) {
-//				@Override
-//				public void clicked(Player p) {
-//					showMergingMenu();
-//				}
-//			};
-//		} else {
-//			ItemUtils.addLore(mergeStack, ChatColor.RED
-//					+ "You don't have permission to do this");
-//			mergeClick = new DecorationStack(mergeStack);
-//		}
-//        ci.setSlot(mergeClick, 12);
         ItemStack colorChangeStack = new ItemStack(Material.WHITE_DYE);
         ItemUtils.setComponentDisplayName(colorChangeStack,
-            Component.text("Change group color of ", NamedTextColor.GOLD).append(g.getGroupNameColored()));
+            Component.text("Change group color of ", NamedTextColor.GOLD)
+                .append(g.getGroupNameColored())
+                .decoration(TextDecoration.ITALIC, false)
+        );
         Clickable colorChangeClick;
         if (gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("EDIT_COLOR"))) {
             colorChangeClick = getGroupColorChangeButton();
         } else {
-            ItemUtils.setComponentLore(colorChangeStack, Component.text("You don't have permission to do this", NamedTextColor.RED));
+            ItemUtils.setComponentLore(colorChangeStack,
+                Component.text("You don't have permission to do this", NamedTextColor.RED)
+                .decoration(TextDecoration.ITALIC, false)
+            );
             colorChangeClick = new DecorationStack(colorChangeStack);
         }
         ci.setSlot(colorChangeClick, 11);
@@ -132,16 +105,6 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
             }
         }, 22);
         ci.showInventory(p);
-    }
-
-//	private void showLinkingMenu() {
-//		LinkingGUI lgui = new LinkingGUI(g, p, this);
-//		lgui.showScreen();
-//	}
-
-    private void showMergingMenu() {
-        MergeGUI mGui = new MergeGUI(g, p, this);
-        mGui.showScreen();
     }
 
     private void showTransferingMenu() {
@@ -254,15 +217,17 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                     showScreen();
                     return;
                 }
-                NameLayerPlugin.log(Level.INFO,
-                    p.getName() + " deleted " + g.getName() + " via the gui");
-                if (gm.deleteGroup(g.getName())) {
-                    p.sendMessage(ChatColor.GREEN + g.getName()
-                        + " was successfully deleted.");
-                } else {
-                    p.sendMessage(ChatColor.GREEN + "Group is now disciplined."
-                        + " Check back later to see if group is deleted.");
-                }
+                Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () ->
+                    ClickableInventory.forceCloseInventory(p));
+                gm.deleteGroupAsync(p.getUniqueId(), g, false, result -> {
+                    if (result.success()) {
+                        NameLayerPlugin.log(Level.INFO,
+                            p.getName() + " deleted " + g.getName() + " via the gui");
+                        p.sendMessage(ChatColor.GREEN + g.getName() + " was successfully deleted.");
+                    } else {
+                        p.sendMessage(ChatColor.RED + result.message());
+                    }
+                });
             }
         }, 11);
         confirmInv.setSlot(new Clickable(no) {
@@ -278,7 +243,10 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
     private LClickable getGroupColorChangeButton() {
         return new LClickable(Material.WHITE_DYE,
-            Component.text("Change group color of ", NamedTextColor.GOLD).append(g.getGroupNameColored()), p -> {
+            Component.text("Change group color of ", NamedTextColor.GOLD)
+                .append(g.getGroupNameColored())
+                .decoration(TextDecoration.ITALIC, false)
+            , p -> {
             ClickableInventory.forceCloseInventory(p);
             p.sendMessage(Component.text("Enter the color you wish to change ", NamedTextColor.GREEN).append(g.getGroupNameColored())
                 .append(Component.text(" to or type \"cancel\" to leave this prompt", NamedTextColor.GREEN)));
@@ -319,8 +287,16 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                         DialogManager.forceEndDialog(p.getUniqueId());
                         return;
                     }
-                    g.setGroupColor(color);
-                    p.sendMessage(Component.text("The color of " + g.getName() + " was changed to ", NamedTextColor.GREEN).append(g.getGroupNameColored()));
+                    final TextColor finalColor = color;
+                    g.setGroupColorAsync(p.getUniqueId(), finalColor, true, result -> {
+                        if (result.success()) {
+                            p.sendMessage(Component.text("The color of " + g.getName() + " was changed to ", NamedTextColor.GREEN)
+                                .append(Component.text(g.getName(), finalColor)));
+                            showScreen();
+                        } else {
+                            p.sendMessage(Component.text(result.message(), NamedTextColor.RED));
+                        }
+                    });
                     this.end();
                     DialogManager.forceEndDialog(p.getUniqueId());
                 }

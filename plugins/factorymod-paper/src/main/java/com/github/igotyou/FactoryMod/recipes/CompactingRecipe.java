@@ -2,13 +2,13 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import java.util.*;
-
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
+import java.util.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
@@ -69,6 +69,12 @@ public class CompactingRecipe extends InputRecipe {
             for (ItemStack is : inputInv.getContents()) {
                 if (is != null) {
                     if (compactable(is, im)) {
+                        ItemStack compacted = is.clone();
+                        compactStack(compacted);
+                        if (!InventoryUtils.safelyAddItemsToInventory(
+                            ClonedInventory.cloneInventory(outputInv), new ItemStack[]{compacted})) {
+                            return false; // does not fit in chest
+                        }
                         if (input.removeSafelyFrom(inputInv)) {
                             compact(is, inputInv, outputInv);
                         }

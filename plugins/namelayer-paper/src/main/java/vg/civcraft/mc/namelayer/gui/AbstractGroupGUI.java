@@ -62,6 +62,10 @@ public abstract class AbstractGroupGUI {
         return p;
     }
 
+    protected void closeInventoryNextTick(final Player player) {
+        Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> player.closeInventory());
+    }
+
     public Group getGroup() {
         return g;
     }
@@ -98,11 +102,6 @@ public abstract class AbstractGroupGUI {
 
     public ItemStack permsStack() {
         if (mats != null) return mats.getItemStack(MaterialInterface.Specific.PERMS);
-        return new ItemStack(Material.BARRIER); // common for now
-    }
-
-    public ItemStack mergeStack() {
-        if (mats != null) return mats.getItemStack(MaterialInterface.Specific.MERGE);
         return new ItemStack(Material.BARRIER); // common for now
     }
 
