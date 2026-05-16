@@ -216,6 +216,11 @@ public class LaunchHandler {
     }
 
     public static void commitLaunch(final ZorwethPlugin plugin, final Block computer, final Player clicker) {
+        if (!computer.getWorld().getName().equals(plugin.getSourceWorld())) {
+            clicker.sendMessage(Component.text("Rockets can only launch from the overworld.", NamedTextColor.RED));
+            return;
+        }
+
         final LaunchHandler.RocketManifestResult manifestResult = LaunchHandler.collectLaunchManifest(plugin, computer, clicker, plugin.getRocketClipboard());
         if (manifestResult.failure() != null) {
             clicker.sendMessage(manifestResult.failure());
@@ -350,10 +355,11 @@ public class LaunchHandler {
         for (final RocketManifestPassenger passenger : manifest.passengers()) {
             final Player player = Bukkit.getPlayer(passenger.playerUuid());
             if (player == null) {
-                continue;
+                throw new IllegalStateException("unknown player" + passenger.playerUuid());
             }
             player.getPersistentDataContainer().set(RocketTransferKeys.SOURCE_TRANSFER_ID, PersistentDataType.STRING,
                 manifest.transferId().toString());
+            player.getPersistentDataContainer().set(RocketTransferKeys.PIONEER, PersistentDataType.BOOLEAN, true);
         }
     }
 

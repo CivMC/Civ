@@ -170,9 +170,15 @@ public final class RocketTransferDao {
         }
     }
 
+    public void setPlayerRoute(final UUID playerUuid, final String expectedServer) throws SQLException {
+        try (Connection connection = this.dataSource.getConnection()) {
+            upsertRoute(connection, playerUuid, expectedServer);
+        }
+    }
+
     public List<RocketChestTransfer> getChests(final UUID transferId) throws SQLException {
         try (Connection connection = this.dataSource.getConnection();
-              PreparedStatement statement = connection.prepareStatement("""
+               PreparedStatement statement = connection.prepareStatement("""
                  SELECT transfer_id, relative_x, relative_y, relative_z, inventory
                  FROM rocket_transfer_chests
                  WHERE transfer_id = ?
@@ -276,13 +282,8 @@ public final class RocketTransferDao {
     }
 
     private void upsertRoutes(final Connection connection, final RocketManifest manifest,
-                              final Iterable<RocketPassengerTransfer> passengers) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement("""
-            INSERT INTO rocket_player_routes (player_uuid, expected_server)
-            VALUES (?, ?)
-            ON DUPLICATE KEY UPDATE
-                expected_server = VALUES(expected_server)
-            """)) {
+                               final Iterable<RocketPassengerTransfer> passengers) throws SQLException {
+        try (PreparedStatement statement = createUpsertRouteStatement(connection)) {
             for (final RocketPassengerTransfer passenger : passengers) {
                 statement.setString(1, passenger.playerUuid().toString());
                 statement.setString(2, manifest.destinationServer());
@@ -290,6 +291,24 @@ public final class RocketTransferDao {
             }
             statement.executeBatch();
         }
+    }
+
+    private void upsertRoute(final Connection connection, final UUID playerUuid, final String expectedServer)
+        throws SQLException {
+        try (PreparedStatement statement = createUpsertRouteStatement(connection)) {
+            statement.setString(1, playerUuid.toString());
+            statement.setString(2, expectedServer);
+            statement.executeUpdate();
+        }
+    }
+
+    private PreparedStatement createUpsertRouteStatement(final Connection connection) throws SQLException {
+        return connection.prepareStatement("""
+            INSERT INTO rocket_player_routes (player_uuid, expected_server)
+            VALUES (?, ?)
+            ON DUPLICATE KEY UPDATE
+                expected_server = VALUES(expected_server)
+            """);
     }
 
     private void insertChests(final Connection connection, final Iterable<RocketChestTransfer> chests)

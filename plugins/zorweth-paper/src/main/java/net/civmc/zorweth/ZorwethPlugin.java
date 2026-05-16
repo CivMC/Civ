@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
@@ -26,8 +27,10 @@ public final class ZorwethPlugin extends JavaPlugin {
     private RocketTransferDao rocketTransferDao;
     private String serverName;
     private String destinationServer;
+    private String sourceWorld;
     private String destinationWorld;
     private String transferFailureMessage;
+    private long pioneerEndTimestampMillis;
     private int worldRadius;
     private double deltaVMetersPerSecond;
 
@@ -45,6 +48,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
+        Objects.requireNonNull(getCommand("pioneer")).setExecutor(new PioneerCommand(this));
     }
 
     @Override
@@ -71,12 +75,20 @@ public final class ZorwethPlugin extends JavaPlugin {
         return this.destinationServer;
     }
 
+    public String getSourceWorld() {
+        return this.sourceWorld;
+    }
+
     public String getDestinationWorld() {
         return this.destinationWorld;
     }
 
     public String getTransferFailureMessage() {
         return this.transferFailureMessage;
+    }
+
+    public long getPioneerEndTimestampMillis() {
+        return this.pioneerEndTimestampMillis;
     }
 
     public int getWorldRadius() {
@@ -90,9 +102,11 @@ public final class ZorwethPlugin extends JavaPlugin {
     private void loadConfiguration() {
         this.serverName = getConfig().getString("server-name", "zorweth");
         this.destinationServer = getConfig().getString("destination-server", this.serverName);
+        this.sourceWorld = getConfig().getString("source-world", "world");
         this.destinationWorld = getConfig().getString("destination-world", "world");
         this.transferFailureMessage = getConfig().getString("transfer-failure-message",
             "Unable to complete rocket transfer. Please reconnect and try again.");
+        this.pioneerEndTimestampMillis = getConfig().getLong("pioneer-end-timestamp", 0L);
         this.worldRadius = getConfig().getInt("world-radius", 0);
         this.deltaVMetersPerSecond = getConfig().getDouble("delta-v-meters-per-second", 10_000.0);
     }

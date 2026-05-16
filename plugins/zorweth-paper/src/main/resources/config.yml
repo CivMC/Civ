@@ -1,7 +1,9 @@
 server-name: zorweth
 destination-server: zorweth
+source-world: world
 destination-world: world
 transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
+pioneer-end-timestamp: 0
 
 world-radius: 10000
 delta-v-meters-per-second: 10000
