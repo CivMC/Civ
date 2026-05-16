@@ -31,6 +31,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -123,16 +124,18 @@ public final class DestinationTransferListener implements Listener {
         ));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void on(PlayerJoinEvent event) {
         DestinationRocketTransfer transfer = cachedRockets.remove(event.getPlayer().getUniqueId());
         RocketPassengerTransfer passenger = cachedPlayers.remove(event.getPlayer().getUniqueId());
 
+        final Player player = event.getPlayer();
         if (transfer == null || passenger == null) {
             return;
         }
 
-        final Player player = event.getPlayer();
+        player.getPersistentDataContainer().set(RocketTransferKeys.ROCKET_JOIN, PersistentDataType.BOOLEAN, true);
+
         if (hasAppliedTransferMarker(player, transfer.transferId())) {
             markPassengerApplied(player.getUniqueId(), transfer.transferId());
             return;

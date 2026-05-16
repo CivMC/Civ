@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 /**
  * A simple Newfriend tracker and assist module. Keeps track of newfriends so far.
@@ -31,6 +33,7 @@ import org.bukkit.inventory.ItemStack;
 public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implements Listener, CommandExecutor {
 
     public static final String NAME = "NewfriendAssist";
+    private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "rocket_join");
     private static long newfriendCount = 0l;
     /**
      * We could use the various Bukkit methods every time we want to peak at our data, but the cost of storing it is low
@@ -81,6 +84,8 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
         if (!config.isEnabled()) return;
         Player newfriend = join.getPlayer();
         if (newfriend == null) return;
+
+        if (newfriend.getPersistentDataContainer().has(ZORWETH_ROCKET_JOIN, PersistentDataType.BOOLEAN)) return;
 
         UUID newUUID = newfriend.getUniqueId();
         if (newfriendSessionTime.containsKey(newUUID)) {

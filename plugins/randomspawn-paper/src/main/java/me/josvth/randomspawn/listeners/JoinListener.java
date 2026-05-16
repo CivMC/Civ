@@ -6,6 +6,7 @@ import java.util.Set;
 import me.josvth.randomspawn.RandomSpawn;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -15,11 +16,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 
 /**
  * Handle joins.
  */
 public class JoinListener implements Listener {
+
+    private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "rocket_join");
 
     RandomSpawn plugin;
 
@@ -47,6 +51,8 @@ public class JoinListener implements Listener {
 
         Player player = event.getPlayer();
         String playerName = player.getName();
+
+        if (player.getPersistentDataContainer().has(ZORWETH_ROCKET_JOIN, PersistentDataType.BOOLEAN)) return;
 
         World world = player.getWorld();
         String worldName = world.getName();

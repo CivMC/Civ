@@ -206,6 +206,13 @@ public final class PioneerCommand implements CommandExecutor {
             return;
         }
 
+        player.getInventory().clear();
+        player.setLevel(0);
+        player.setExp(0.0f);
+        player.setFoodLevel(20);
+        player.setSaturation(5.0f);
+        player.setExhaustion(0.0f);
+        player.getInventory().setHeldItemSlot(0);
         player.getPersistentDataContainer().set(RocketTransferKeys.PIONEER, PersistentDataType.BOOLEAN, true);
         this.plugin.getStasisHandler().putInStasis(player);
         connect(player, this.plugin.getDestinationServer());
