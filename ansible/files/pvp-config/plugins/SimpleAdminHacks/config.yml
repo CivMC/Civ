@@ -588,3 +588,7 @@ hacks:
     enabled: true
   BrewIndex:
     enabled: true
+  ServerLinksHack:
+    enabled: true
+    discordUrl: https://discord.gg/civmc
+    patreonUrl: https://patreon.com/Civ_MC

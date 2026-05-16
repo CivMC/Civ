@@ -101,6 +101,10 @@ hacks:
       - SLOW_FALLING
   DebugWand:
     enabled: true
+  ServerLinksHack:
+    enabled: false
+    discordUrl: https://discord.gg/ [...]
+    patreonUrl: https://www.patreon.com/ [...]
   DogFacts:
     enabled: false
     intervalTime: 30m
@@ -453,7 +457,7 @@ hacks:
       enabled: true
       contents:
         - ==: org.bukkit.inventory.ItemStack
-          v: 1
+          v: 3839
           type: COOKIE
           amount: 32
           meta:
@@ -464,7 +468,7 @@ hacks:
               - "Gift from the Admins as you"
               - "begin your journey on Devotion."
         - ==: org.bukkit.inventory.ItemStack
-          v: 1
+          v: 3839
           type: RED_BED
           amount: 1
           meta:

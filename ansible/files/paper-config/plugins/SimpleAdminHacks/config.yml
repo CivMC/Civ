@@ -505,6 +505,7 @@ hacks:
        - ==: org.bukkit.inventory.ItemStack
          type: COOKIE
          amount: 32
+         v: 3839
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -512,8 +513,9 @@ hacks:
             - "Gift from the Admins as you"
             - "begin your journey on CivMC"
        - ==: org.bukkit.inventory.ItemStack
-         type: BED
+         type: RED_BED
          amount: 1
+         v: 3839
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -522,8 +524,9 @@ hacks:
             - "Be sure to get a good night's"
             - "rest soon."
        - ==: org.bukkit.inventory.ItemStack
-         type: BOAT
+         type: OAK_BOAT
          amount: 1
+         v: 3839
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -532,6 +535,7 @@ hacks:
        - ==: org.bukkit.inventory.ItemStack
          type: MINECART
          amount: 1
+         v: 3839
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -639,3 +643,7 @@ hacks:
     enabled: true
   BrewIndex:
     enabled: true
+  ServerLinksHack:
+    enabled: true
+    discordUrl: https://discord.gg/civmc
+    patreonUrl: https://patreon.com/Civ_MC

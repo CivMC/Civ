@@ -142,12 +142,12 @@ public class CitadelUtility {
         return true;
     }
 
-    public static boolean attemptReinforcementCreation(Block block, ReinforcementType type, Group group,
+    public static boolean attemptReinforcementCreation(Block block, ReinforcementType type, Group group, String groupName,
                                                        Player player) {
         // check if group still exists
-        if (!group.isValid()) {
+        if (group == null || !group.isValid()) {
             CitadelUtility.sendAndLog(player, ChatColor.RED,
-                "The group " + group.getName() + " seems to have been deleted in the mean time",
+                "The group " + groupName + " seems to have been deleted in the mean time",
                 block.getLocation());
             Citadel.getInstance().getStateManager().setState(player, null);
             return true;
