@@ -212,6 +212,9 @@ The most simple form of brews, made with either base and/or custom ingredients.
 |       Four Loko         |         5         |       6        |   300114   |
 |       Dirty Soda        |         5         |       6        |   300115   |
 |        Tea Wine         |         2         |       6        |   300116   |
+|        Nuka-Cola        |         5         |       6        |   300117   |
+|     Nuka-Cola Quantum   |         6         |       7        |   300118   |
+|     Pine Needle Soda    |         4         |       6        |   300119   |
 
 ### Food Brews
 Brews that restore saturation
@@ -255,7 +258,8 @@ Brews that restore saturation
 |      Spaghetti       |         9         |       6        |     400035 |
 |     Fried Chicken    |         7         |       6        |     400036 |
 |     Banana Split     |         7         |       6        |     400037 |
-|      Miso Soup       |         8         |       6        |     400020 |
+|      Miso Soup       |         8         |       6        |     400038 |
+|     Stargazy Pie     |         9         |       6        |     400039 |
   
 ### Cocktail Brews
 Brews made from other brews, sometimes with extra ingredients
@@ -309,6 +313,8 @@ Brews that provide unique/useful effects
 |GLP-1 Antagonist|         5         |       8        |   600024   |
 |      RSO       |         1         |       8        |   600025   |
 |      PCP       |         6         |       8        |   600026   |
+|    Salvia      |         2         |       8        |   600027   |
+| Magic Mushrooms|         5         |       8        |   600028   |
 
 ### Nation Brews
 Brews that are part of a nation or group's PR/culture and were submitted by them.
@@ -354,7 +360,7 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |       Valyria       |      Valyrian Dragonwine      |         4         |       4        |   700037   |
 |     Wheatistan      | Wheatistan Whimsical Whiskey  |         3         |       5        |   700038   |
 |     Danzilonia      |       Danzilonian Wine        |         4         |       5        |   700039   |
-|      Butternut      |   Butternut Pumpkin Bourbon   |         6         |       6        |   700040   |
+|      Butternut      |   Butternut Pumpkin Bourbon   |         7         |       6        |   700040   |
 |     New Phoenix     |   New Phoenix Fire Whiskey    |         3         |       4        |   700041   |
 |     Pridelands      |        Pridelands Mead        |         3         |       5        |   700042   |
 |       Acadia        |       Acadian Absinthe        |         4         |       5        |   700043   |
@@ -375,7 +381,7 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |        SPQR         |    Mint Chocolate Martini     |         4         |       5        |   700058   |
 |       Reggio        |          Reggio Rum           |         5         |       5        |   700059   |
 |      Gang Shi       |    The Shitter's Brown Ale    |         3         |       6        |   700060   |
-|   Temporal Isles    |    Temporal Sweet Red Wine    |         4         |       5        |   700061   |
+|   Temporal Empire   |    Temporal Sweet Red Wine    |         4         |       5        |   700061   |
 |      Attoprak       |         Secret Sprite         |         4         |       5        |   700062   |
 |       Icarus        |         Boar Bourbon          |         3         |       5        |   700063   |
 |        Joja         |           Joja Cola           |         4         |       5        |   700064   |
@@ -542,8 +548,23 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |      Volterra       |   Lake Mickale Rapid Beaver   |         8         |       6        |   700227   |
 |     Cane Corp       |       Cane Corp Cachaça       |         2         |       6        |   700228   |
 |                     |        Maletian Vodka         |         4         |       6        |   700229   |
-|                     |        Potato Bay Soup        |         5         |       6        |   700230   |
-
+|      Salerno        |        Potato Bay Soup        |         5         |       6        |   700230   |
+|      Salerno        |     Savannah Melon Martini    |         3         |       6        |   700231   |
+|      SnomCO         |           Snomcone            |         5         |       6        |   700232   |
+|      Salerno        |        Regalo Mud Pie         |         6         |       6        |   700233   |
+|                     |   Frozen Deluvian Daiquiri    |         3         |       6        |   700234   |
+|       Tanuki        |   Tanuki Taproom Melon Drop   |         3         |       6        |   700235   |
+|                     |         Tipsy Turtle          |         3         |       6        |   700236   |
+|       Aspasia       |     Aspasian Sculk Punch      |         5         |       6        |   700237   |
+|       AgoraCO       |     New Agora Select Rum      |         2         |       6        |   700238   |
+|       Icarus        |        Boarlight Brew         |         2         |       6        |   700239   |
+|     LaliBoozeCO     |     Fentanyl-Laced Joint      |         3         |       8        |   700240   |
+|       Hanami        |     Hanami Hibiki Whisky      |         4         |       6        |   700241   |
+|                     |       Deepslate Draught       |         4         |       6        |   700242   |
+|                     |      Crown of the Slate       |         6         |       6        |   700243   |
+|         CW          |          Eon Waster           |         3         |       6        |   700244   |
+|      Lyrean CW      |   Lyrean Rail Steamed Coffee  |         4         |       6        |   700245   |
+|                     |       Starboard Powder        |         3         |       6        |   700246   |
 
 ### Player Brews
 Brews specific to individuals either for their contribution to the genre/server
@@ -658,19 +679,19 @@ or by way of donating a high amount to the server via patreon.
 | 61  |      Mustard       |        100063        |
 | 62  |       Sulfur       |        100064        |
 | 63  |     Strawberry     |        100065        |
-| 64  |       Helium       |        200001        |
-| 65  |       Carbon       |        200002        |
-| 66  |       Oxygen       |        200003        |
-| 67  |      Nitrogen      |        200004        |
-| 68  |     Phosphorus     |        200006        |
-| 69  |      Chlorine      |        200007        |
-| 70  |       Dough        |        200008        |
-| 71  |       Butter       |        200009        |
-| 72  |       Pomace       |        200010        |
-| 73  |       Pasta        |        200011        |
-| 74  |      Soybeans      |        200012        |
-| 75  |      Tortilla      |        200013        |
-| 76  |      Strontium     |        200014        |
+| 64  |       Dough        |        100066        |
+| 65  |       Butter       |        100067        |
+| 66  |       Pomace       |        100068        |
+| 67  |       Pasta        |        100069        |
+| 68  |      Soybeans      |        100070        |
+| 69  |      Tortilla      |        100071        |
+| 70  |       Helium       |        200001        |
+| 71  |       Carbon       |        200002        |
+| 72  |       Oxygen       |        200003        |
+| 73  |      Nitrogen      |        200004        |
+| 74  |     Phosphorus     |        200006        |
+| 75  |      Chlorine      |        200007        |
+| 76  |      Strontium     |        200008        |
     
 ## List of Vanilla Ingredients.
 
@@ -851,5 +872,11 @@ or by way of donating a high amount to the server via patreon.
 | 173 |             Diorite                   |
 | 174 |             Cobblestone               |
 | 175 |             Bush                      |
-| 176 |             Chicken                   |
-| 177 |             Glow Ink Sac              |
+| 176 |             Glow Ink Sac              |
+| 177 |             Golden Hoe                |
+| 178 |             Cobbled Deepslate         |
+| 179 |         Magenta Stained Glass         |
+| 180 |             Sculk                     |
+| 181 |             Packed Mud                |
+| 182 |             Gravel                    |
+| 183 |             Clay                      |
