@@ -152,7 +152,9 @@ public final class PioneerCommand implements CommandExecutor {
             meta.lore(List.of(
                 Component.text("WARNING: THIS IS A ONE WAY TRIP", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("YOU WILL BE UNABLE TO RETURN", NamedTextColor.RED)
+                Component.text("YOU WILL BE UNABLE TO RETURN,", NamedTextColor.RED)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("AND YOUR INVENTORY WILL BE WIPED.", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
@@ -167,7 +169,9 @@ public final class PioneerCommand implements CommandExecutor {
             meta.lore(List.of(
                 Component.text("WARNING: THIS IS A ONE WAY TRIP", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("YOU WILL BE UNABLE TO RETURN", NamedTextColor.RED)
+                Component.text("YOU WILL BE UNABLE TO RETURN,", NamedTextColor.RED)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("AND YOUR INVENTORY WILL BE WIPED.", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });

@@ -24,6 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class JoinListener implements Listener {
 
     private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "rocket_join");
+    private static final NamespacedKey ZORWETH_OTT_JOIN = new NamespacedKey("zorweth", "ott_join");
 
     RandomSpawn plugin;
 
@@ -52,7 +53,8 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
         String playerName = player.getName();
 
-        if (player.getPersistentDataContainer().has(ZORWETH_ROCKET_JOIN, PersistentDataType.BOOLEAN)) return;
+        if (player.getPersistentDataContainer().has(ZORWETH_ROCKET_JOIN, PersistentDataType.BOOLEAN)
+            || player.getPersistentDataContainer().has(ZORWETH_OTT_JOIN, PersistentDataType.BOOLEAN)) return;
 
         World world = player.getWorld();
         String worldName = world.getName();

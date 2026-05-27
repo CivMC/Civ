@@ -9,7 +9,7 @@ services:
 
   proxy:
     image: itzg/mc-proxy:java25
-    restart: on-failure
+    restart: no
     tty: true
     stdin_open: true
     depends_on:

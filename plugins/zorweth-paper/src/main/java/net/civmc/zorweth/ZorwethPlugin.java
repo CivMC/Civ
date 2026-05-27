@@ -25,6 +25,7 @@ public final class ZorwethPlugin extends JavaPlugin {
     private HikariDataSource dataSource;
     private StasisHandler stasisHandler;
     private RocketTransferDao rocketTransferDao;
+    private CrossServerOttManager crossServerOttManager;
     private String serverName;
     private String destinationServer;
     private String sourceWorld;
@@ -45,9 +46,11 @@ public final class ZorwethPlugin extends JavaPlugin {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
         this.stasisHandler = new StasisHandler();
+        this.crossServerOttManager = new CrossServerOttManager(this);
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
+        getServer().getPluginManager().registerEvents(new CrossServerOttArrivalListener(this, this.crossServerOttManager), this);
         Objects.requireNonNull(getCommand("pioneer")).setExecutor(new PioneerCommand(this));
     }
 
@@ -162,5 +165,9 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     public StasisHandler getStasisHandler() {
         return stasisHandler;
+    }
+
+    public CrossServerOttManager getCrossServerOttManager() {
+        return this.crossServerOttManager;
     }
 }

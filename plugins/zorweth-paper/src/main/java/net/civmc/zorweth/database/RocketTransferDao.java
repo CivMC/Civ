@@ -16,6 +16,7 @@ import net.civmc.zorweth.transfer.RocketEntityPosition;
 import net.civmc.zorweth.transfer.RocketManifest;
 import net.civmc.zorweth.transfer.RocketPassengerTransfer;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 
 public final class RocketTransferDao {
 
@@ -176,6 +177,83 @@ public final class RocketTransferDao {
         }
     }
 
+    public void setCrossServerOttArrival(final UUID requesterUuid, final UUID targetUuid, final String targetServer,
+                                         final Location targetLocation,
+                                         final long expiresAtMillis) throws SQLException {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("""
+                 INSERT INTO cross_server_ott_arrivals (
+                     requester_uuid, target_uuid, target_server, target_world,
+                     target_x, target_y, target_z, target_yaw, target_pitch, expires_at
+                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, FROM_UNIXTIME(? / 1000.0))
+                 ON DUPLICATE KEY UPDATE
+                     target_uuid = VALUES(target_uuid),
+                     target_server = VALUES(target_server),
+                     target_world = VALUES(target_world),
+                     target_x = VALUES(target_x),
+                     target_y = VALUES(target_y),
+                     target_z = VALUES(target_z),
+                     target_yaw = VALUES(target_yaw),
+                     target_pitch = VALUES(target_pitch),
+                     expires_at = VALUES(expires_at)
+                 """)) {
+            statement.setString(1, requesterUuid.toString());
+            statement.setString(2, targetUuid.toString());
+            statement.setString(3, targetServer);
+            statement.setString(4, targetLocation.getWorld().getName());
+            statement.setDouble(5, targetLocation.getX());
+            statement.setDouble(6, targetLocation.getY());
+            statement.setDouble(7, targetLocation.getZ());
+            statement.setFloat(8, targetLocation.getYaw());
+            statement.setFloat(9, targetLocation.getPitch());
+            statement.setLong(10, expiresAtMillis);
+            statement.executeUpdate();
+        }
+    }
+
+    public CrossServerOttArrival getCrossServerOttArrival(final UUID requesterUuid, final String targetServer)
+        throws SQLException {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("""
+                 SELECT requester_uuid, target_uuid, target_server, target_world,
+                     target_x, target_y, target_z, target_yaw, target_pitch,
+                     UNIX_TIMESTAMP(expires_at) * 1000 AS expires_at_millis
+                 FROM cross_server_ott_arrivals
+                 WHERE requester_uuid = ? AND target_server = ? AND expires_at > CURRENT_TIMESTAMP(3)
+                 """)) {
+            statement.setString(1, requesterUuid.toString());
+            statement.setString(2, targetServer);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return null;
+                }
+                return new CrossServerOttArrival(
+                    UUID.fromString(resultSet.getString("requester_uuid")),
+                    UUID.fromString(resultSet.getString("target_uuid")),
+                    resultSet.getString("target_server"),
+                    resultSet.getString("target_world"),
+                    resultSet.getDouble("target_x"),
+                    resultSet.getDouble("target_y"),
+                    resultSet.getDouble("target_z"),
+                    resultSet.getFloat("target_yaw"),
+                    resultSet.getFloat("target_pitch"),
+                    resultSet.getLong("expires_at_millis")
+                );
+            }
+        }
+    }
+
+    public void clearCrossServerOttArrival(final UUID requesterUuid) throws SQLException {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("""
+                 DELETE FROM cross_server_ott_arrivals
+                 WHERE requester_uuid = ?
+                 """)) {
+            statement.setString(1, requesterUuid.toString());
+            statement.executeUpdate();
+        }
+    }
+
     public List<RocketChestTransfer> getChests(final UUID transferId) throws SQLException {
         try (Connection connection = this.dataSource.getConnection();
                PreparedStatement statement = connection.prepareStatement("""
@@ -223,6 +301,11 @@ public final class RocketTransferDao {
             resultSet.getInt("held_slot"),
             GameMode.valueOf(resultSet.getString("game_mode"))
         );
+    }
+
+    public record CrossServerOttArrival(UUID requesterUuid, UUID targetUuid, String targetServer, String targetWorld,
+                                        double targetX, double targetY, double targetZ, float targetYaw,
+                                        float targetPitch, long expiresAtMillis) {
     }
 
     private void insertTransfer(final Connection connection, final RocketManifest manifest) throws SQLException {

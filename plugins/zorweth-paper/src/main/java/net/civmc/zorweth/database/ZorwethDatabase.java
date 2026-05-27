@@ -82,6 +82,26 @@ public final class ZorwethDatabase {
                     PRIMARY KEY (player_uuid)
                 )
                 """);
+        migrator.registerMigration("zorweth", 1,
+            """
+                CREATE TABLE IF NOT EXISTS cross_server_ott_arrivals (
+                    requester_uuid VARCHAR(36) NOT NULL,
+                    target_uuid VARCHAR(36) NOT NULL,
+                    target_server VARCHAR(64) NOT NULL,
+                    target_world VARCHAR(64) NOT NULL,
+                    target_x DOUBLE NOT NULL,
+                    target_y DOUBLE NOT NULL,
+                    target_z DOUBLE NOT NULL,
+                    target_yaw FLOAT NOT NULL,
+                    target_pitch FLOAT NOT NULL,
+                    expires_at DATETIME(3) NOT NULL,
+                    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+                    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+                    PRIMARY KEY (requester_uuid),
+                    INDEX idx_cross_server_ott_arrivals_target (target_uuid, target_server),
+                    INDEX idx_cross_server_ott_arrivals_expiry (expires_at)
+                )
+                """);
 
         try (Connection connection = dataSource.getConnection()) {
             migrator.migrate(connection);
