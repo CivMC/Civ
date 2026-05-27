@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -732,5 +733,10 @@ public final class Group {
         if (!(obj instanceof Group g))
             return false;
         return g.getName().equals(this.getName()); // If they have the same name they are equal.
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
