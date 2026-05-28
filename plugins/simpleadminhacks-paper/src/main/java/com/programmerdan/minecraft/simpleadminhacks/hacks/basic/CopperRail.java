@@ -41,9 +41,9 @@ public class CopperRail extends BasicHack {
     }
 
     private enum CopperStage {
-        UNAFFECTED(Material.COPPER_BLOCK, Material.WAXED_COPPER_BLOCK, 1.0f),
+        UNAFFECTED(Material.COPPER_BLOCK, Material.WAXED_COPPER_BLOCK, .75f),
         EXPOSED(Material.EXPOSED_COPPER, Material.WAXED_EXPOSED_COPPER, 1.0f),
-        WEATHERED(Material.WEATHERED_COPPER, Material.WAXED_WEATHERED_COPPER, 0.75f),
+        WEATHERED(Material.WEATHERED_COPPER, Material.WAXED_WEATHERED_COPPER, 1.0f),
         OXIDIZED(Material.OXIDIZED_COPPER, Material.WAXED_OXIDIZED_COPPER, 0.0f);
 
         private final Material unwaxed;
@@ -80,15 +80,15 @@ public class CopperRail extends BasicHack {
         return isWaxed(material) ? nextStage.waxed : nextStage.unwaxed;
     }
 
-    private Material resetStage(Material material) {
+    private Material getPreviousStage(Material material) {
         CopperStage current = CopperStage.from(material);
         if (current == null) return null;
 
-        if (current == CopperStage.UNAFFECTED) {
-            return isWaxed(material) ? current.unwaxed : null;
-        }
+        int prevIndex = current.ordinal() - 1;
+        if (prevIndex < 0) return null;
 
-        return isWaxed(material) ? CopperStage.UNAFFECTED.waxed : CopperStage.UNAFFECTED.unwaxed;
+        CopperStage prevStage = CopperStage.values()[prevIndex];
+        return isWaxed(material) ? prevStage.waxed : prevStage.unwaxed;
     }
 
     @EventHandler
@@ -188,22 +188,24 @@ public class CopperRail extends BasicHack {
 
         // First copper block directly underneath the rail
         Block topCopperBlock = block.getRelative(BlockFace.DOWN);
-        Material previousTop = resetStage(topCopperBlock.getType());
+        Material previousTop = getPreviousStage(topCopperBlock.getType());
 
-        if (previousTop != null) {
+        while (previousTop != null && item.getType() != Material.AIR) {
             topCopperBlock.setType(previousTop);
             damaged = true;
             item.damage(1, player);
+            previousTop = getPreviousStage(topCopperBlock.getType());
         }
 
         // Second copper block two spaces underneath the rail
         Block belowCopperBlock = topCopperBlock.getRelative(BlockFace.DOWN);
-        Material previousBelow = resetStage(belowCopperBlock.getType());
+        Material previousBelow = getPreviousStage(belowCopperBlock.getType());
 
-        if (previousBelow != null && item.getType() != Material.AIR) {
+        while (previousBelow != null && item.getType() != Material.AIR) {
             belowCopperBlock.setType(previousBelow);
             damaged = true;
             item.damage(1, player);
+            previousBelow = getPreviousStage(belowCopperBlock.getType());
         }
 
         if (!damaged) {
@@ -216,6 +218,8 @@ public class CopperRail extends BasicHack {
         event.setCancelled(true);
     }
 
+    // It's not really fair for copper blocks that are below rails to naturally oxidise,
+    // as it is easy to cheese by placing a waxed copper block every 9 blocks
     @EventHandler
     public void on(BlockFormEvent event) {
         if (formingBlock) {
