@@ -17,7 +17,7 @@ hero:
           link: /dev/
         - theme: alt
           text: ModMail Admins
-          link: https://www.reddit.com/message/compose?to=r/CivMC
+          link: https://discord.gg/Jk8ynjGEsX
 
 features:
     - icon: 🛡️
