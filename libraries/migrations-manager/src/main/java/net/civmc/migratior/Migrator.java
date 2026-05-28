@@ -1,4 +1,4 @@
-package net.civmc.nameapi;
+package net.civmc.migratior;
 
 import org.intellij.lang.annotations.Language;
 import java.sql.Connection;

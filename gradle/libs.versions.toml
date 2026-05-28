@@ -56,6 +56,8 @@ rtree2 = { group = "com.github.davidmoten", name = "rtree2", version = "0.9.3" }
 ajQueue-api = { group = "us.ajg0702.queue.api", name = "api", version = "2.8.0" }
 mariadb-client = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version = "3.5.6" }
 
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "26.1.0" }
+
 [bundles]
 junit = ["junit-api", "junit-engine"]
 nuvotifier = ["nuvotifier-api", "nuvotifier-bukkit"]

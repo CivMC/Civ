@@ -10,4 +10,5 @@ dependencies {
     api(libs.configurate.yaml)
     api(libs.mariadb.client)
     implementation(libs.slf4j.api)
+    api(project(":libraries:migrations-manager"))
 }
