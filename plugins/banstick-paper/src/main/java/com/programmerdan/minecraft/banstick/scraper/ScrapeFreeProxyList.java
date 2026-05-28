@@ -29,12 +29,13 @@ public class ScrapeFreeProxyList extends ScraperWorker {
     private long banLength;
 
     private String[] urls = new String[]{
-        "https://free-proxy-list.net",
-        "http://www.sslproxies.org/",
-        "http://www.us-proxy.org/",
-        "http://free-proxy-list.net/uk-proxy.html",
-        "http://www.socks-proxy.net/",
-        "http://free-proxy-list.net/anonymous-proxy.html"
+        "https://free-proxy-list.net/en/",
+        "https://free-proxy-list.net/en/socks-proxy.html",
+        "https://free-proxy-list.net/en/us-proxy.html",
+        "https://free-proxy-list.net/en/uk-proxy.html",
+        "https://free-proxy-list.net/en/ssl-proxy.html",
+        "https://free-proxy-list.net/en/anonymous-proxy.html",
+        "https://free-proxy-list.net/en/google-proxy.html",
     };
 
     public ScrapeFreeProxyList(ConfigurationSection config) {
@@ -66,31 +67,36 @@ public class ScrapeFreeProxyList extends ScraperWorker {
      */
     public void scrapeOne(String url) {
         try {
+            int count = 0;
             BanStick.getPlugin().debug("Scraping {0}", url);
             Document doc = Jsoup.connect(url).userAgent(
                 "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0").get();
-            Elements iptable = doc.select("table#proxylisttable");
 
-            Elements body = iptable.select("tbody");
-            Elements trs = body.select("tr");
-            BanStick.getPlugin().debug("Found {0} proxy IPs to scrape", trs.size());
-            for (Element tr : trs) {
-                Elements tds = tr.select("td");
+            Element table = doc.selectXpath("//*[@id=\"list\"]/div/div[2]/div/table").first();
+            if (table == null) {
+                BanStick.getPlugin().warning("No table found at " + url);
+                return;
+            }
+
+            Elements rows = table.select("tbody > tr");
+            BanStick.getPlugin().debug("Found {0} proxy IPs to scrape", rows.size());
+            for (Element row : rows) {
+                Elements cell = row.select("td");
                 String ip = null;
                 try {
-                    ip = tds.first().text();
+                    ip = cell.first().text();
                 } catch (Exception e) {
                     continue;
                 }
                 String country = null;
                 try {
-                    country = tds.get(3).text();
+                    country = cell.get(3).text();
                 } catch (Exception e) {
                     // intentionally ignore errors.
                 }
                 String port = null;
                 try {
-                    port = tds.get(1).text();
+                    port = cell.get(1).text();
                 } catch (Exception e) {
                     // intentionally ignore errors.
                 }
@@ -136,10 +142,14 @@ public class ScrapeFreeProxyList extends ScraperWorker {
                                 : new Date(System.currentTimeMillis() + this.banLength), false);
                         }
                     }
+
+                    count++;
                 } catch (IPAddressStringException iase) {
                     continue;
                 }
             }
+
+            BanStick.getPlugin().info("Scraped {0} proxy IPs from {1}", count, url);
         } catch (IOException ioe) {
             BanStick.getPlugin().warning("Failure during scrape of " + url, ioe);
             this.registerError();
