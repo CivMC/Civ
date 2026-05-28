@@ -557,6 +557,9 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
+  WitherSkeletonCoalHack:
+    enabled: true
+    coalDropChance: 0.2
   NoOozing:
     enabled: true
   PortalConnect:
