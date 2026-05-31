@@ -27,6 +27,13 @@ public interface IRecipe {
     public int getProductionTime();
 
     /**
+     * @return How long this recipe takes for one run in ticks for a specific factory.
+     */
+    default public int getProductionTime(FurnCraftChestFactory fccf) {
+        return getProductionTime();
+    }
+
+    /**
      * Checks whether enough material is available in the given inventory to run
      * this recipe at least once
      *

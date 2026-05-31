@@ -141,6 +141,11 @@ public class ProductionRecipe extends InputRecipe {
         return this.recipeRepresentation.getType();
     }
 
+    @Override
+    public ItemStack getRecipeRepresentationType() {
+        return new ItemStack(this.recipeRepresentation);
+    }
+
     public ProductionRecipeModifier getModifier() {
         return modifier;
     }

@@ -55,6 +55,10 @@ services:
       - ./containers/data/proxy:/server
       - ./ansible/files/proxy-config:/config
       - ./ansible/build/proxy-plugins:/plugins
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
 
   paper:
     image: itzg/minecraft-server:stable-java25

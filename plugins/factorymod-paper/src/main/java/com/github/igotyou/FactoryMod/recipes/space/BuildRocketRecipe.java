@@ -70,7 +70,13 @@ public class BuildRocketRecipe extends InputRecipe {
 
     @Override
     public List<String> getTextualOutputRepresentation(final Inventory i, final FurnCraftChestFactory fccf) {
-        return List.of();
+        return List.of("Rocket:",
+            "6 uses",
+            "100 kg dry weight",
+            "50 kg per player",
+            "1 kg per stack",
+            "5,000 m/s exhaust velocity",
+            "Requires physical space");
     }
 
     @Override
@@ -80,7 +86,9 @@ public class BuildRocketRecipe extends InputRecipe {
 
     @Override
     public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-        if (!fccf.getFurnace().getWorld().getName().equals(world)) {
+        if (!JavaPlugin.getPlugin(ZorwethPlugin.class).getResearchManager().isResearchComplete()) {
+            return new EffectFeasibility(false, "research is not complete");
+        } else if (!fccf.getFurnace().getWorld().getName().equals(world)) {
             return new EffectFeasibility(false, "wrong world");
         } else if (!isEmpty(fccf)) {
             drawRocketArea(fccf);

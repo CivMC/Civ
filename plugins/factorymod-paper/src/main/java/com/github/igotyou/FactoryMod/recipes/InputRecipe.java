@@ -3,7 +3,6 @@ package com.github.igotyou.FactoryMod.recipes;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -149,7 +147,7 @@ public abstract class InputRecipe implements IRecipe {
      * whole in an item gui
      */
     public ItemStack getRecipeRepresentation() {
-        ItemStack res = new ItemStack(getRecipeRepresentationMaterial());
+        ItemStack res = getRecipeRepresentationType();
         ItemMeta im = res.getItemMeta();
         im.setDisplayName(ChatColor.DARK_GREEN + getName());
         List<String> lore = new ArrayList<>();
@@ -171,6 +169,10 @@ public abstract class InputRecipe implements IRecipe {
     }
 
     public abstract Material getRecipeRepresentationMaterial();
+
+    public ItemStack getRecipeRepresentationType() {
+        return new ItemStack(getRecipeRepresentationMaterial());
+    }
 
     /**
      * Creates a list of ItemStack for a GUI representation. This list contains

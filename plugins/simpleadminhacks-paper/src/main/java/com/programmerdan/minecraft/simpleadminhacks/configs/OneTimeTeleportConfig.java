@@ -20,6 +20,7 @@ public final class OneTimeTeleportConfig extends SimpleHackConfig {
     private List<Material> unsafeMaterials;
     private long timeLimitOnUsage;
     private boolean limitToSameWorld;
+    private boolean canSend;
 
     public OneTimeTeleportConfig(
         final @NotNull SimpleAdminHacks plugin,
@@ -60,6 +61,7 @@ public final class OneTimeTeleportConfig extends SimpleHackConfig {
         this.timeLimitOnUsage = ConfigHelper.parseTime(config.getString("ott_timeout", "2d"));
         // Parse same-world limit
         this.limitToSameWorld = config.getBoolean("limitToSameWorld", false);
+        this.canSend = config.getBoolean("canSend", true);
     }
 
     public @NotNull List<Material> getMaterialBlacklist() {
@@ -76,5 +78,9 @@ public final class OneTimeTeleportConfig extends SimpleHackConfig {
 
     public boolean isLimitingToSameWorld() {
         return this.limitToSameWorld;
+    }
+
+    public boolean isCanSend() {
+        return canSend;
     }
 }

@@ -134,7 +134,8 @@ public final class DestinationTransferListener implements Listener {
             return;
         }
 
-        player.getPersistentDataContainer().set(RocketTransferKeys.ROCKET_JOIN, PersistentDataType.BOOLEAN, true);
+        player.getPersistentDataContainer().set(RocketTransferKeys.NO_OTT, PersistentDataType.BOOLEAN, true);
+        player.getPersistentDataContainer().set(RocketTransferKeys.NO_STARTER_KIT, PersistentDataType.BOOLEAN, true);
 
         if (hasAppliedTransferMarker(player, transfer.transferId())) {
             markPassengerApplied(player.getUniqueId(), transfer.transferId());

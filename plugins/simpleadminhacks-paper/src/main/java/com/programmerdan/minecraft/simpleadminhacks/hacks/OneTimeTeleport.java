@@ -33,6 +33,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import net.civmc.zorweth.CrossServerOttManager;
+import net.civmc.zorweth.RocketTransferKeys;
 import net.civmc.zorweth.ZorwethPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -185,7 +186,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
                 case OK -> {
                 }
                 case FAIL_NO_OTT -> {
-                    sender.sendMessage(Component.text("Your are no longer able to use OTT!"));
+                    sender.sendMessage(Component.text("You are no longer able to use OTT!"));
                     return;
                 }
                 case FAIL_IN_COMBAT -> {
@@ -569,6 +570,13 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
         return null;
     }
 
+    private boolean isEligibleForCrossServerOtt(Player player) {
+        if (Bukkit.getPluginManager().isPluginEnabled("Zorweth")) {
+            return player.getPersistentDataContainer().has(RocketTransferKeys.NO_OTT);
+        }
+        return true;
+    }
+
     private CrossServerOttManager getCrossServerOttManager() {
         final Plugin plugin = Bukkit.getPluginManager().getPlugin("Zorweth");
         if (plugin instanceof ZorwethPlugin zorweth && plugin.isEnabled()) {
@@ -880,6 +888,9 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
         final @NotNull Player destinationPlayer
     ) {
         if (!checkOTT(requestingPlayer.getUniqueId())) {
+            return OttPermissible.FAIL_NO_OTT;
+        }
+        if (!isEligibleForCrossServerOtt(requestingPlayer)) {
             return OttPermissible.FAIL_NO_OTT;
         }
         if (Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus")) {

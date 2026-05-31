@@ -16,6 +16,98 @@ log_inventories: true
 force_include_default: true
 can_upgrade: true
 factories:
+  space_chem:
+    type: FCC
+    name: Space Chemistry Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 512
+      ink_sac:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: INK_SAC
+        amount: 16
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 128
+      brewing_stands:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BREWING_STAND
+        amount: 16
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 32
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - manufacture_advanced_mechanical_components
+      - check_research_progress
+      - research_phase_1
+      - research_phase_2
+      - refine_crude_oil
+      - repair_space_chem_factory
+  crude:
+    type: FCC
+    name: Crude Oil Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      copper_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 128
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 128
+      iron_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 128
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - extract_crude_oil
+      - repair_crude_oil_factory
   kinetics:
     type: FCC
     name: Kinetics Factory
@@ -1349,13 +1441,53 @@ factories:
     name: Space Factory
     citadelBreakReduction: 1.0
     setupcost:
-      daylight_sensor:
+      iron_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: DAYLIGHT_DETECTOR
-        amount: 1
+        type: IRON_BLOCK
+        amount: 32
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 128
+      resin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 32
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 8
+      clay:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 512
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 128
     recipes:
       - build_rocket
+      - repair_space_factory
   bastion_factory:
     type: FCC
     name: Bastion Factory
@@ -1599,8 +1731,8 @@ factories:
         amount: 4
     recipes:
       - wordbank_item
-      - crack_easter_egg
       - fabricate_netherite_upgrade
+      - make_sniffer_egg
       - fabricate_sentry_trim
       - fabricate_vex_trim
       - fabricate_wild_trim
@@ -1830,11 +1962,42 @@ recipes:
     type: BUILD_ROCKET
     world: world
     input:
-      daylight_sensor:
+      iron_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: DAYLIGHT_DETECTOR
-        amount: 1
+        type: IRON_BLOCK
+        amount: 64
+      clay:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CLAY
+        amount: 256
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 20
+      resin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN_CLUMP
+        amount: 96
+      advanced_mechanical_component:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPARATOR
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Advanced Mechanical Component
+          lore:
+            - Key component of rockets created in the Space Chemistry Factory
+      piston:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PISTON
+        amount: 20
   facet_heliodor:
     production_time: 4s
     name: Facet Heliodor Gem
@@ -11911,6 +12074,43 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: FLOW_ARMOR_TRIM_SMITHING_TEMPLATE
         amount: 32
+  make_sniffer_egg:
+    type: PRODUCTION
+    name: Make Sniffer Egg
+    forceInclude: true
+    production_time: 4s
+    input:
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 9
+      short_grass:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SHORT_GRASS
+        amount: 16
+      fern:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: FERN
+        amount: 16
+      armadillo_scute:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ARMADILLO_SCUTE
+        amount: 4
+      sweet_berries:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SWEET_BERRIES
+        amount: 16
+    output:
+      sniffer_egg:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SNIFFER_EGG
+        amount: 1
   wordbank_item:
     type: WORDBANK
     name: Generate item name
@@ -17537,3 +17737,317 @@ recipes:
           lore:
             - Blocks mob spawns in a 96 block radius cylinder
         amount: 4
+  extract_crude_oil:
+    fuel_consumption_intervall: 30m
+    name: Extract Oil
+    type: EXTRACT_OIL
+    input:
+      charcoal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHARCOAL
+        amount: 48
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      crude_oil:
+        custom-key: crude_oil
+        amount: 16
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+  repair_crude_oil_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      copper_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 16
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 16
+      iron_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 16
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  repair_space_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      iron_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_BLOCK
+        amount: 4
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 16
+      resin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 4
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 1
+      clay:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 64
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 16
+    health_gained: 10000
+  repair_space_chem_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 64
+      ink_sac:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: INK_SAC
+        amount: 2
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 16
+      brewing_stands:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BREWING_STAND
+        amount: 2
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 4
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  refine_crude_oil:
+    production_time: 4s
+    name: Refine Crude Oil
+    type: PRODUCTION
+    input:
+      crude_oil:
+        custom-key: crude_oil
+        amount: 64
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 64
+    output:
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 32
+  manufacture_advanced_mechanical_components:
+    production_time: 4s
+    name: Manufacture Advanced Mechanical Components
+    type: PRODUCTION
+    input:
+      copper_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 256
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 256
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 512
+      comparator:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPARATOR
+        amount: 32
+    output:
+      advanced_mechanical_component:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPARATOR
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Advanced Mechanical Component
+          lore:
+            - Key component of rockets created in the Space Chemistry Factory
+  check_research_progress:
+    production_time: 1s
+    name: Check Research Progress
+    type: CHECK_RESEARCH_PROGRESS
+    input:
+      stick:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: STICK
+        amount: 1
+  research_phase_1:
+    production_time: 64s
+    fuel_consumption_intervall: 8s
+    name: Research Phase 1
+    type: RESEARCH
+    phase: 1
+    input:
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 5
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 2
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 4
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 4
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 8
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 16
+  research_phase_2:
+    production_time: 64s
+    fuel_consumption_intervall: 8s
+    name: Research Phase 2
+    type: RESEARCH
+    phase: 2
+    input:
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 5
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 5
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 15
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 30
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 64
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 64
+      ink_sac:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: INK_SAC
+        amount: 4
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 8

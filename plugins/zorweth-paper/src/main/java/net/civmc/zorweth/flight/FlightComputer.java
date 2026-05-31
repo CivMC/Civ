@@ -1,6 +1,7 @@
 package net.civmc.zorweth.flight;
 
 import com.sk89q.worldedit.math.BlockVector3;
+import net.civmc.zorweth.mechanics.Fuel;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -37,7 +38,7 @@ public class FlightComputer {
     }
 
     public static boolean isFuel(final ItemStack item) {
-        return item != null && item.getType() == Material.CHARCOAL;
+        return Fuel.isRocketFuel(item);
     }
 
     public static boolean isSittingWithGSit(final Player player) {

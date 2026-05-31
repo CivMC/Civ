@@ -386,7 +386,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             if (currentRecipe instanceof InputRecipe) {
                 int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0 ? ((InputRecipe) currentRecipe)
                     .getFuelConsumptionIntervall() : pm.getPowerConsumptionIntervall();
-                if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime() / consumptionIntervall)) {
+                if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime(this) / consumptionIntervall)) {
                     p.sendMessage(ChatColor.RED
                         + "You don't have enough fuel, the factory will run out of it before completing");
                 }
@@ -493,7 +493,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             if (hasInputMaterials()) {
                 // if the factory has been working for less than the required
                 // time for the recipe
-                if (currentProductionTimer < currentRecipe.getProductionTime()) {
+                if (currentProductionTimer < currentRecipe.getProductionTime(this)) {
                     int consumptionIntervall;
                     if (currentRecipe instanceof InputRecipe) {
                         consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0

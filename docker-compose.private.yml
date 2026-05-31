@@ -40,6 +40,7 @@ services:
       - ./PrivateConfig/paper/config/EvenMoreFish/config.yml:/privateconfig/plugins/EvenMoreFish/config.yml
       - ./PrivateConfig/paper/config/RandomSpawn/worlds.yml:/privateconfig/plugins/RandomSpawn/worlds.yml
       - ./PrivateConfig/paper/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
+      - ./PrivateConfig/paper/config/Zorweth/mechanics.yml:/privateconfig/plugins/Zorweth/mechanics.yml
 
   gamma:
     environment:

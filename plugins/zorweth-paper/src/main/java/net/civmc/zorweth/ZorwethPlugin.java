@@ -16,6 +16,9 @@ import java.util.logging.Level;
 import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
 import net.civmc.zorweth.flight.FlightComputerGui;
+import net.civmc.zorweth.mechanics.OilMechanics;
+import net.civmc.zorweth.research.ResearchManager;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
@@ -26,6 +29,7 @@ public final class ZorwethPlugin extends JavaPlugin {
     private StasisHandler stasisHandler;
     private RocketTransferDao rocketTransferDao;
     private CrossServerOttManager crossServerOttManager;
+    private ResearchManager researchManager;
     private String serverName;
     private String destinationServer;
     private String sourceWorld;
@@ -34,6 +38,13 @@ public final class ZorwethPlugin extends JavaPlugin {
     private long pioneerEndTimestampMillis;
     private int worldRadius;
     private double deltaVMetersPerSecond;
+    private boolean researchEnabled;
+    private int researchPhaseOneRuns;
+    private int researchPhaseTwoRuns;
+    private String mechanicsWorld;
+    private boolean mechanicsEnabled;
+
+    private OilMechanics mechanics;
 
     @Override
     public void onEnable() {
@@ -47,11 +58,24 @@ public final class ZorwethPlugin extends JavaPlugin {
         this.rocketClipboard = loadRocketClipboard();
         this.stasisHandler = new StasisHandler();
         this.crossServerOttManager = new CrossServerOttManager(this);
+        this.researchManager = new ResearchManager(this, this.researchEnabled, this.researchPhaseOneRuns,
+            this.researchPhaseTwoRuns);
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
         getServer().getPluginManager().registerEvents(new CrossServerOttArrivalListener(this, this.crossServerOttManager), this);
         Objects.requireNonNull(getCommand("pioneer")).setExecutor(new PioneerCommand(this));
+
+        if (mechanicsEnabled) {
+            this.mechanics = new OilMechanics(this, mechanicsWorld);
+        }
+    }
+
+    public int recordOilExtraction(final Location location) {
+        if (mechanics == null) {
+            return 0;
+        }
+        return mechanics.recordOilExtraction(location);
     }
 
     @Override
@@ -68,6 +92,10 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     public RocketTransferDao getRocketTransferDao() {
         return this.rocketTransferDao;
+    }
+
+    public ResearchManager getResearchManager() {
+        return this.researchManager;
     }
 
     public String getServerName() {
@@ -112,6 +140,20 @@ public final class ZorwethPlugin extends JavaPlugin {
         this.pioneerEndTimestampMillis = getConfig().getLong("pioneer-end-timestamp", 0L);
         this.worldRadius = getConfig().getInt("world-radius", 0);
         this.deltaVMetersPerSecond = getConfig().getDouble("delta-v-meters-per-second", 10_000.0);
+        this.researchEnabled = getConfig().getBoolean("research.enabled", true);
+        this.researchPhaseOneRuns = loadPositiveInt("research.phase-one-runs", 1);
+        this.researchPhaseTwoRuns = loadPositiveInt("research.phase-two-runs", 1);
+        this.mechanicsEnabled = getConfig().getBoolean("mechanics.enabled", false);
+        this.mechanicsWorld = getConfig().getString("mechanics.world");
+    }
+
+    private int loadPositiveInt(final String path, final int defaultValue) {
+        final int value = getConfig().getInt(path, defaultValue);
+        if (value < 1) {
+            getLogger().warning(path + " must be at least 1, using " + defaultValue);
+            return defaultValue;
+        }
+        return value;
     }
 
     private boolean initDatabase() {

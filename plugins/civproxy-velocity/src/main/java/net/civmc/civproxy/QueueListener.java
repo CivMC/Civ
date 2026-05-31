@@ -143,7 +143,7 @@ public class QueueListener {
             return;
         }
         event.setCancelled(true);
-        event.getPlayer().sendMessage(Component.text("You cannot queue for that server unless your rocket route allows it.", NamedTextColor.RED));
+        event.getPlayer().sendMessage(Component.text("You are not eligible to join that server at this time.", NamedTextColor.RED));
     }
 
     private void onPreQueueConnect(final PreConnectEvent event) {

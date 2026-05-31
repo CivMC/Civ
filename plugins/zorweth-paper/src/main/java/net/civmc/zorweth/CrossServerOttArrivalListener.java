@@ -55,7 +55,7 @@ public final class CrossServerOttArrivalListener implements Listener {
             return;
         }
 
-        requester.getPersistentDataContainer().set(RocketTransferKeys.OTT_JOIN, PersistentDataType.BOOLEAN, true);
+        requester.getPersistentDataContainer().set(RocketTransferKeys.NO_OTT, PersistentDataType.BOOLEAN, true);
         Bukkit.getScheduler().runTask(this.plugin, () -> completeArrival(requester.getUniqueId(), arrival));
     }
 

@@ -33,7 +33,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implements Listener, CommandExecutor {
 
     public static final String NAME = "NewfriendAssist";
-    private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "rocket_join");
+    private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "no_starter_kit");
     private static long newfriendCount = 0l;
     /**
      * We could use the various Bukkit methods every time we want to peak at our data, but the cost of storing it is low

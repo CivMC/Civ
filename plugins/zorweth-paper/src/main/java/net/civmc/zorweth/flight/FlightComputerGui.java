@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.civmc.zorweth.ZorwethPlugin;
+import net.civmc.zorweth.mechanics.Fuel;
 import static net.civmc.zorweth.flight.FlightComputer.ROCKET_COMPUTER_KEY;
 import static net.civmc.zorweth.flight.LaunchHandler.SITTING_PLAYER_MASS_KG;
 import net.civmc.zorweth.transfer.RocketManifest;
@@ -207,14 +208,14 @@ public final class FlightComputerGui implements Listener {
     }
 
     private IClickable createAddFuelButton(final Block computer) {
-        final ItemStack item = new ItemStack(Material.CHARCOAL);
+        final ItemStack item = Fuel.createRocketFuel();
         item.editMeta(meta -> {
             meta.displayName(Component.text("Add Fuel", NamedTextColor.GREEN)
                 .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(
-                Component.text("Adds charcoal from your hand.", NamedTextColor.GRAY)
+                Component.text("Adds rocket fuel from your hand.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("1 charcoal = 4 kg fuel.", NamedTextColor.GRAY)
+                Component.text("1 rocket fuel = 4 kg fuel.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
@@ -263,7 +264,7 @@ public final class FlightComputerGui implements Listener {
                 Component.text("and start main engine throttle.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(payload.fuelKg(), fuelStatus)) + " kg ("
-                        + calculateFuelConsumptionItems(payload.fuelKg(), fuelStatus) + " charcoal)", NamedTextColor.GRAY)
+                        + calculateFuelConsumptionItems(payload.fuelKg(), fuelStatus) + " rocket fuel)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
@@ -360,7 +361,7 @@ public final class FlightComputerGui implements Listener {
                 Component.text("Passengers: " + manifest.passengers().size(), NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Fuel consumption: " + roundUpTenths(calculateFuelConsumptionKg(manifest.fuelKg(), fuelStatus)) + " kg ("
-                        + calculateFuelConsumptionItems(manifest.fuelKg(), fuelStatus) + " charcoal)", NamedTextColor.GRAY)
+                        + calculateFuelConsumptionItems(manifest.fuelKg(), fuelStatus) + " rocket fuel)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Once engines have been started, there is no going back.", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
@@ -398,9 +399,9 @@ public final class FlightComputerGui implements Listener {
             meta.displayName(Component.text("Fuel Status", enoughFuel ? NamedTextColor.GREEN : NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(
-                Component.text("Fuel: " + roundUpTenths(status.currentFuelKg()) + " kg (" + status.fuelItems() + " charcoal)", NamedTextColor.GRAY)
+                Component.text("Fuel: " + roundUpTenths(status.currentFuelKg()) + " kg (" + status.fuelItems() + " rocket fuel)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("Required: " + roundUpTenths(status.requiredFuelKg()) + " kg (" + status.requiredFuelItems() + " charcoal)", NamedTextColor.GRAY)
+                Component.text("Required: " + roundUpTenths(status.requiredFuelKg()) + " kg (" + status.requiredFuelItems() + " rocket fuel)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Cargo mass: " + roundUpTenths(status.cargoMassKg()) + " kg", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
@@ -414,14 +415,14 @@ public final class FlightComputerGui implements Listener {
     private void addFuel(final Player player, final Block computer) {
         final ItemStack hand = player.getInventory().getItemInMainHand();
         if (!FlightComputer.isFuel(hand)) {
-            player.sendMessage(Component.text("Hold charcoal in your main hand to add fuel.", NamedTextColor.RED));
+            player.sendMessage(Component.text("Hold rocket fuel in your main hand to add fuel.", NamedTextColor.RED));
             return;
         }
 
         final int amount = hand.getAmount();
         FlightComputer.setFuelKg(computer, FlightComputer.getFuelKg(computer) + (amount * LaunchHandler.FUEL_ITEM_MASS_KG));
         player.getInventory().setItemInMainHand(null);
-        player.sendMessage(Component.text("Added " + amount + " charcoal to the rocket.", NamedTextColor.GREEN));
+        player.sendMessage(Component.text("Added " + amount + " rocket fuel to the rocket.", NamedTextColor.GREEN));
     }
 
     private void siphonFuel(final Player player, final Block computer) {
@@ -434,11 +435,11 @@ public final class FlightComputerGui implements Listener {
         final ItemStack hand = player.getInventory().getItemInMainHand();
         final int space;
         if (hand.getType().isAir()) {
-            space = Material.CHARCOAL.getMaxStackSize();
+            space = Fuel.createRocketFuel().getMaxStackSize();
         } else if (FlightComputer.isFuel(hand)) {
             space = hand.getMaxStackSize() - hand.getAmount();
         } else {
-            player.sendMessage(Component.text("Empty your main hand or hold charcoal to siphon fuel.", NamedTextColor.RED));
+            player.sendMessage(Component.text("Empty your main hand or hold rocket fuel to siphon fuel.", NamedTextColor.RED));
             return;
         }
         if (space <= 0) {
@@ -448,12 +449,14 @@ public final class FlightComputerGui implements Listener {
 
         final int removed = Math.min((int) (stored / LaunchHandler.FUEL_ITEM_MASS_KG), space);
         if (hand.getType().isAir()) {
-            player.getInventory().setItemInMainHand(new ItemStack(Material.CHARCOAL, removed));
+            final ItemStack fuel = Fuel.createRocketFuel();
+            fuel.setAmount(removed);
+            player.getInventory().setItemInMainHand(fuel);
         } else {
             hand.setAmount(hand.getAmount() + removed);
         }
         FlightComputer.setFuelKg(computer, stored - (removed * LaunchHandler.FUEL_ITEM_MASS_KG));
-        player.sendMessage(Component.text("Siphoned " + removed + " charcoal from the rocket.", NamedTextColor.GREEN));
+        player.sendMessage(Component.text("Siphoned " + removed + " rocket fuel from the rocket.", NamedTextColor.GREEN));
     }
 
 
