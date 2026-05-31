@@ -36,8 +36,8 @@ public final class CrossServerOttArrivalListener implements Listener {
         try {
             arrival = this.manager.getArrival(event.getUniqueId());
         } catch (final SQLException exception) {
-            this.plugin.getLogger().log(Level.SEVERE, "Failed to look up cross-server OTT arrival", exception);
-            event.kickMessage(Component.text("Unable to process OTT arrival at this time, please try again later"));
+            this.plugin.getLogger().log(Level.SEVERE, "Failed to look up cross-server OTT arrival for " + event.getUniqueId(), exception);
+            event.kickMessage(Component.text("Unable to process OTT arrival at this time, please contact admins"));
             event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
             return;
         }

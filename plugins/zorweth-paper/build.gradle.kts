@@ -10,6 +10,7 @@ dependencies {
     compileOnly(project(":plugins:citadel-paper"))
     compileOnly(project(":plugins:bastion-paper"))
     compileOnly(project(":plugins:namelayer-paper"))
+    compileOnly(project(":plugins:exilepearl-paper"))
     api(project(":libraries:name-api"))
     compileOnly(libs.worldedit)
 

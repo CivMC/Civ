@@ -1,5 +1,6 @@
 package net.civmc.zorweth;
 
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import java.sql.SQLException;
@@ -90,6 +91,11 @@ public final class PioneerCommand implements CommandExecutor {
             return false;
         }
 
+        if (isPearled(player)) {
+            player.sendMessage(Component.text("You cannot pioneer while pearled.", NamedTextColor.RED));
+            return false;
+        }
+
         if (!this.plugin.getServerName().equals("main")) {
             player.sendMessage(Component.text("You can only pioneer from the main server.", NamedTextColor.RED));
             return false;
@@ -111,6 +117,11 @@ public final class PioneerCommand implements CommandExecutor {
 
     private boolean hasPioneered(final Player player) {
         return player.getPersistentDataContainer().has(RocketTransferKeys.PIONEER, PersistentDataType.BOOLEAN);
+    }
+
+    private boolean isPearled(final Player player) {
+        return Bukkit.getPluginManager().isPluginEnabled("ExilePearl")
+            && ExilePearlPlugin.getApi().getPearlManager().getPearl(player.getUniqueId()) != null;
     }
 
     private void openConfirmation(final Player player) {
