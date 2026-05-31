@@ -42,30 +42,6 @@ services:
       - ./PrivateConfig/paper/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
       - ./PrivateConfig/paper/config/Zorweth/mechanics.yml:/privateconfig/plugins/Zorweth/mechanics.yml
 
-  gamma:
-    environment:
-      REMOVE_OLD_MODS_EXCLUDE: "Vulcan.jar,packetevents-spigot-2.10.1.jar"
-      SYNC_SKIP_NEWER_IN_DESTINATION: "true"
-
-      COPY_CONFIG_SRC: /config,/privateconfig
-    volumes:
-      - ./PrivateConfig/gamma/config/RealisticBiomes/config.yml:/privateconfig/plugins/RealisticBiomes/config.yml
-      - ./PrivateConfig/gamma/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
-      - ./PrivateConfig/gamma/config/RandomSpawn/worlds.yml:/privateconfig/plugins/RandomSpawn/worlds.yml
-      - ./PrivateConfig/gamma/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
-      - ./PrivateConfig/paper/plugins/Vulcan.jar:/privateconfig/plugins/Vulcan.jar
-      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.10.1.jar:/privateconfig/plugins/packetevents-spigot-2.10.1.jar
-      - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml
-      - ./PrivateConfig/paper/config/BreweryX/config.yml:/privateconfig/plugins/BreweryX/config.yml
-      - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/privateconfig/plugins/BreweryX/cauldron.yml
-      - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
-      - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/privateconfig/plugins/BreweryX/recipes.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/baits:/privateconfig/plugins/EvenMoreFish/baits
-      - ./PrivateConfig/paper/config/EvenMoreFish/rods:/privateconfig/plugins/EvenMoreFish/rods
-      - ./PrivateConfig/paper/config/EvenMoreFish/rarities:/privateconfig/plugins/EvenMoreFish/rarities
-      - ./PrivateConfig/paper/config/EvenMoreFish/competitions:/privateconfig/plugins/EvenMoreFish/competitions
-      - ./PrivateConfig/paper/config/EvenMoreFish/config.yml:/privateconfig/plugins/EvenMoreFish/config.yml
-
   pvp:
     environment:
       # Any Jars need to be here, comma separated so that they are not removed during sync

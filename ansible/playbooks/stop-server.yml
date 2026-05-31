@@ -6,7 +6,6 @@
     servers:
       - pvp
       - paper
-      - gamma
       - zorweth
       - proxy
 

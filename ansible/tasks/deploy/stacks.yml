@@ -29,7 +29,6 @@
   loop:
       - { path: '/opt/stacks/minecraft/paper-data', enabled: 'setting.minecraft.enabled and "''paper''" in servers' }
       - { path: '/opt/stacks/minecraft/pvp-data', enabled: 'setting.minecraft.enabled and "''pvp''" in servers' }
-      - { path: '/opt/stacks/minecraft/gamma-data', enabled: 'setting.minecraft.enabled and "''gamma''" in servers' }
       - { path: '/opt/stacks/minecraft/zorweth-data', enabled: 'setting.minecraft.enabled and "''zorweth''" in servers' }
       - { path: '/opt/stacks/minecraft/mariadb-data', enabled: setting.minecraft.enabled }
       - { path: '/opt/stacks/minecraft/postgres-data', enabled: setting.minecraft.enabled }
@@ -58,8 +57,6 @@
       - { path: 'minecraft/proxy-plugins', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
       - { path: 'minecraft/pvp-config', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
       - { path: 'minecraft/pvp-plugins', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
-      - { path: 'minecraft/gamma-config', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
-      - { path: 'minecraft/gamma-plugins', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
       - { path: 'minecraft/zorweth-config', enabled: 'setting.minecraft.enabled and ''zorweth'' in servers' }
       - { path: 'minecraft/zorweth-plugins', enabled: 'setting.minecraft.enabled and ''zorweth'' in servers' }
 
@@ -75,13 +72,11 @@
   loop:
     - { file: '../../files/paper-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
     - { file: '../../files/proxy-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
-    - { file: '../../files/gamma-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
     - { file: '../../files/pvp-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
     - { file: '../../files/zorweth-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''zorweth'' in servers' }
     - { file: '../../build/paper-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
     - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
     - { file: '../../build/pvp-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
-    - { file: '../../build/gamma-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
     - { file: '../../build/zorweth-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''zorweth'' in servers' }
 
 - name: Deploy Stacks | Copy Files
@@ -93,12 +88,10 @@
     - { file: 'minecraft/paper-config', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
     - { file: 'minecraft/proxy-config', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
     - { file: 'minecraft/pvp-config', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
-    - { file: 'minecraft/gamma-config', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
     - { file: 'minecraft/zorweth-config', enabled: 'setting.minecraft.enabled and ''zorweth'' in servers' }
     - { file: 'minecraft/paper-plugins', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
     - { file: 'minecraft/proxy-plugins', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
     - { file: 'minecraft/pvp-plugins', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
-    - { file: 'minecraft/gamma-plugins', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
     - { file: 'minecraft/zorweth-plugins', enabled: 'setting.minecraft.enabled and ''zorweth'' in servers' }
 
 - name: Deploy Stacks | Deploy Stacks

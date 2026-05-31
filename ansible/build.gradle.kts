@@ -1,5 +1,4 @@
 val paperPlugin by configurations.creating
-val gammaPlugin by configurations.creating
 val pvpPlugin by configurations.creating
 val proxyPlugin by configurations.creating
 val zorwethPlugin by configurations.creating
@@ -59,32 +58,6 @@ dependencies {
     zorwethPlugin(project(path = ":plugins:secureboot-paper"))
     zorwethPlugin(project(path = ":plugins:zorweth-paper", configuration = "shadow"))
 
-    gammaPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
-    gammaPlugin(project(path = ":plugins:bastion-paper"))
-    gammaPlugin(project(path = ":plugins:castlegates-paper"))
-    gammaPlugin(project(path = ":plugins:citadel-paper"))
-    gammaPlugin(project(path = ":plugins:civchat2-paper"))
-    gammaPlugin(project(path = ":plugins:civduties-paper"))
-    gammaPlugin(project(path = ":plugins:civmodcore-paper", configuration = "shadow"))
-    gammaPlugin(project(path = ":plugins:finale-paper"))
-    gammaPlugin(project(path = ":plugins:combattagplus-paper"))
-    gammaPlugin(project(path = ":plugins:donum-paper"))
-    gammaPlugin(project(path = ":plugins:essenceglue-paper"))
-    gammaPlugin(project(path = ":plugins:exilepearl-paper"))
-    gammaPlugin(project(path = ":plugins:factorymod-paper"))
-    gammaPlugin(project(path = ":plugins:hiddenore-paper"))
-    gammaPlugin(project(path = ":plugins:itemexchange-paper"))
-    gammaPlugin(project(path = ":plugins:jukealert-paper", configuration = "shadow"))
-    gammaPlugin(project(path = ":plugins:namecolors-paper"))
-    gammaPlugin(project(path = ":plugins:namelayer-paper", configuration = "shadow"))
-    gammaPlugin(project(path = ":plugins:railswitch-paper"))
-    gammaPlugin(project(path = ":plugins:randomspawn-paper"))
-    gammaPlugin(project(path = ":plugins:realisticbiomes2-paper"))
-    gammaPlugin(project(path = ":plugins:simpleadminhacks-paper"))
-    gammaPlugin(project(path = ":plugins:heliodor-paper"))
-    gammaPlugin(project(path = ":plugins:secureboot-paper"))
-    gammaPlugin(project(path = ":plugins:kirabukkitgateway-paper", configuration = "shadow"))
-
     pvpPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     pvpPlugin(project(path = ":plugins:civduties-paper"))
     pvpPlugin(project(path = ":plugins:civmodcore-paper", configuration = "shadow"))
@@ -141,18 +114,6 @@ val copyPvpPlugins = tasks.register<Copy>("copyPvpPlugins") {
     into("$projectDir/build/pvp-plugins")
 }
 
-val copyGammaPlugins = tasks.register<Copy>("copyGammaPlugins") {
-    dependsOn(gammaPlugin)
-
-    doFirst {
-        project.delete(files("$projectDir/build/gamma-plugins"))
-    }
-
-    from("$projectDir/src/gamma-plugins")
-    from(gammaPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
-    into("$projectDir/build/gamma-plugins")
-}
-
 val copyProxyPlugins = tasks.register<Copy>("copyProxyPlugins") {
     dependsOn(proxyPlugin)
 
@@ -168,7 +129,6 @@ val copyProxyPlugins = tasks.register<Copy>("copyProxyPlugins") {
 // TODO: Is build the right name?
 tasks.register("build") {
     dependsOn(copyPaperPlugins)
-    dependsOn(copyGammaPlugins)
     dependsOn(copyPvpPlugins)
     dependsOn(copyProxyPlugins)
     dependsOn(copyZorwethPlugins)
