@@ -22,7 +22,7 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 
 public class OxygenDisplay implements Listener {
 
-    private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("##%");
+    private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#");
 
     private final BooleanSetting showOxygen;
     private final DisplayLocationSetting oxygenLocation;
@@ -67,7 +67,7 @@ public class OxygenDisplay implements Listener {
 
     public void updateScoreboardHUD(Player p) {
         double oxygen = oxygenManager.getOxygen(p);
-        if (!showOxygen.hasValue(p.getUniqueId()) || oxygen == 1) {
+        if (!showOxygen.hasValue(p.getUniqueId()) || oxygen >= oxygenManager.getMaxOxygen(p)) {
             oxygenScoreboard.hide(p);
             oxygenBottomLine.removePlayer(p);
             return;
@@ -81,7 +81,7 @@ public class OxygenDisplay implements Listener {
         } else if (oxygen < 0) {
             text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.RED + "LOW";
         } else {
-            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.AQUA + PERCENT_FORMAT.format(oxygen);
+            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.AQUA + PERCENT_FORMAT.format(oxygen * 1000);
         }
         if (oxygenLocation.showOnActionbar(p.getUniqueId())) {
             oxygenBottomLine.updatePlayer(p, text);

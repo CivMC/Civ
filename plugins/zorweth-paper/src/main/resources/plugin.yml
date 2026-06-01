@@ -4,7 +4,7 @@ main: net.civmc.zorweth.ZorwethPlugin
 author: Okx
 api-version: 1.21.11
 depend: [CivModCore, WorldEdit, Citadel, Bastion, NameLayer]
-softdepend: [ExilePearl]
+softdepend: [ExilePearl, BreweryX]
 commands:
   pioneer:
     description: Transfer to Zorweth from the main server

@@ -13,6 +13,7 @@ dependencies {
     compileOnly(project(":plugins:exilepearl-paper"))
     api(project(":libraries:name-api"))
     compileOnly(libs.worldedit)
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.6.3.jar"))
 
     testImplementation(libs.paper.api)
     testImplementation(libs.bundles.junit)

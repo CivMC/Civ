@@ -11,8 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ItemType;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
@@ -25,12 +23,12 @@ public class OxygenBottle {
         ItemStack item = new ItemStack(Material.RECOVERY_COMPASS);
         item.setData(DataComponentTypes.ITEM_MODEL, new NamespacedKey("minecraft", "glass_bottle"));
         item.setData(DataComponentTypes.CONSUMABLE, Consumable.consumable().consumeSeconds(0.4f).animation(ItemUseAnimation.DRINK).hasConsumeParticles(false).sound(NamespacedKey.minecraft("entity.generic.drink")).build());
-        item.setData(DataComponentTypes.MAX_STACK_SIZE, 2);
+        item.setData(DataComponentTypes.MAX_STACK_SIZE, 16);
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Crude Oxygen Bottle", TextColor.color(140, 163, 177)));
         meta.lore(List.of(Component.text("It can keep a traveller going for a little", NamedTextColor.WHITE),
             Component.text("longer on this dastardly planet.", NamedTextColor.WHITE) ,
-            Component.text("Provides +9 oxygen", NamedTextColor.WHITE)));
+            Component.text("Provides +90 oxygen", NamedTextColor.WHITE)));
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         CustomItem.registerCustomItem("crude_oxygen_bottle", item);
@@ -45,7 +43,8 @@ public class OxygenBottle {
     public static CraftingRecipe getRecipe(Plugin plugin) {
         ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(plugin, "crude_oxygen_dry"), OxygenBottle.createCrudeOxygen())
             .addIngredient(Material.GLASS_BOTTLE)
-            .addIngredient(RecipeChoice.itemType(ItemType.CACTUS, ItemType.SEAGRASS));
+            .addIngredient(Material.COAL)
+            .addIngredient(Material.PITCHER_PLANT);
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
         return recipe;
     }

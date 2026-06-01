@@ -1,6 +1,8 @@
 package net.civmc.zorweth.oxygen;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
+import com.dre.brewery.api.events.brew.BrewDrinkEvent;
+import com.dre.brewery.recipe.BRecipe;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -31,11 +34,16 @@ import org.bukkit.potion.PotionEffectType;
 
 public class OxygenManager implements Listener {
 
+    private static final String OXYGEN_BREW_RECIPE_NAME = "Oxygen";
+    private static final double CRUDE_OXYGEN_AMOUNT = 0.09;
+    private static final double OXYGEN_BREW_AMOUNT = 1.8;
+    private static final double DEFAULT_MAX_OXYGEN = 1;
     private static final double REGENERATION_PREVENTION_OXYGEN = -0.15;
     public static final NamespacedKey NO_HEALTH_REGEN = new NamespacedKey("finale", "no_health_regen");
 
     private final NamespacedKey oxygenKey;
     private final Map<Player, Long> lastMessage = new WeakHashMap<>();
+    private final OxygenBladderMechanics oxygenBladderMechanics = new OxygenBladderMechanics();
 
     private final Collection<CraftingRecipe> recipes = new ArrayList<>();
 
@@ -68,15 +76,13 @@ public class OxygenManager implements Listener {
                     continue;
                 }
 
-                oxygen -= loss * baseOxygenConsumptionPerSecond;
-
-                setOxygen(player, oxygen);
-
-                applyOxygenEffects(player, oxygen);
+                drainOxygen(player, loss * baseOxygenConsumptionPerSecond, baseOxygenConsumptionPerSecond / 2);
+                applyOxygenEffects(player, getOxygen(player));
             }
         }, 20, 20);
 
         recipes.add(OxygenBottle.getRecipe(plugin));
+        recipes.add(OxygenBladder.getRecipe(plugin));
         for (CraftingRecipe recipe : recipes) {
             Bukkit.addRecipe(recipe);
         }
@@ -96,7 +102,18 @@ public class OxygenManager implements Listener {
         }
 
         Player player = event.getPlayer();
-        setOxygen(player, getOxygen(player) + 0.09);
+        addOxygen(player, CRUDE_OXYGEN_AMOUNT);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void on(final BrewDrinkEvent event) {
+        final BRecipe recipe = event.getBrew().getCurrentRecipe();
+        if (recipe == null || !OXYGEN_BREW_RECIPE_NAME.equals(recipe.getRecipeName())) {
+            return;
+        }
+
+        final Player player = event.getPlayer();
+        addOxygen(player, OXYGEN_BREW_AMOUNT * (event.getQuality() / 10D));
     }
 
     public static OxygenManager deserialize(ZorwethPlugin plugin, ActivityManager activityManager, ConfigurationSection section) {
@@ -170,8 +187,33 @@ public class OxygenManager implements Listener {
         return Objects.requireNonNullElse(player.getPersistentDataContainer().get(oxygenKey, PersistentDataType.DOUBLE), 1D);
     }
 
+    private void addOxygen(final Player player, final double amount) {
+        setOxygen(player, getOxygen(player) + amount);
+    }
+
+    private void drainOxygen(final Player player, final double amount, final double refillRate) {
+        final double oxygen = getOxygen(player);
+        final double remaining = this.oxygenBladderMechanics.drainOxygen(player, amount, CRUDE_OXYGEN_AMOUNT,
+            oxygen <= OxygenBladderMechanics.CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD);
+        if (remaining > 0) {
+            setOxygen(player, oxygen - remaining);
+        }
+
+        final double updatedOxygen = getOxygen(player);
+        final double refill = this.oxygenBladderMechanics.refillPlayerOxygen(player, refillRate,
+            CRUDE_OXYGEN_AMOUNT, updatedOxygen);
+        if (refill > 0) {
+            setOxygen(player, updatedOxygen + refill);
+        }
+    }
+
     public void setOxygen(final Player player, final double oxygen) {
-        player.getPersistentDataContainer().set(oxygenKey, PersistentDataType.DOUBLE, Math.clamp(oxygen, -1, 1));
+        player.getPersistentDataContainer().set(oxygenKey, PersistentDataType.DOUBLE,
+            Math.clamp(oxygen, -1, this.oxygenBladderMechanics.getMaxOxygen(player, DEFAULT_MAX_OXYGEN)));
+    }
+
+    public double getMaxOxygen(final Player player) {
+        return this.oxygenBladderMechanics.getMaxOxygen(player, DEFAULT_MAX_OXYGEN);
     }
 
     private void sendDebouncedMessage(Player player, Component message) {

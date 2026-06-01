@@ -42,6 +42,15 @@ services:
       - ./PrivateConfig/paper/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
       - ./PrivateConfig/paper/config/Zorweth/mechanics.yml:/privateconfig/plugins/Zorweth/mechanics.yml
 
+  zorweth:
+    environment:
+      COPY_CONFIG_SRC: /config,/privateconfig
+    volumes:
+      - ./PrivateConfig/paper/config/BreweryX/config.yml:/privateconfig/plugins/BreweryX/config.yml
+      - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/privateconfig/plugins/BreweryX/cauldron.yml
+      - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
+      - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/privateconfig/plugins/BreweryX/recipes.yml
+
   pvp:
     environment:
       # Any Jars need to be here, comma separated so that they are not removed during sync
