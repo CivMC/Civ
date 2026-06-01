@@ -25,3 +25,22 @@ mechanics:
 
 research:
   enabled: false
+
+oxygen:
+  enabled: true
+  world: world
+  consumption_per_second: 0.008
+  biomes:
+    "minecraft:end_highlands": 1
+    "minecraft:pale_garden": 2
+    "minecraft:end_midlands": 3
+    "minecraft:end_barrens": 4
+    "minecraft:basalt_deltas": 8
+  activities:
+    idle: 0.5
+    walking: 0.75
+    sprinting: 3
+    swimming: 4
+    regenerating: 5
+    mining: 6
+    combat: 7

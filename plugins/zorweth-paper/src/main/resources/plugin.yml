@@ -9,3 +9,7 @@ commands:
   pioneer:
     description: Transfer to Zorweth from the main server
     usage: /pioneer [clear <player>]
+  oxygen:
+    description: View or set your oxygen level
+    usage: /oxygen [number]
+    permission: zorweth.admin

@@ -17,8 +17,13 @@ import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
 import net.civmc.zorweth.flight.FlightComputerGui;
 import net.civmc.zorweth.mechanics.OilMechanics;
+import net.civmc.zorweth.oxygen.ActivityManager;
+import net.civmc.zorweth.oxygen.OxygenCommand;
+import net.civmc.zorweth.oxygen.OxygenDisplay;
+import net.civmc.zorweth.oxygen.OxygenManager;
 import net.civmc.zorweth.research.ResearchManager;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
@@ -69,6 +74,24 @@ public final class ZorwethPlugin extends JavaPlugin {
         if (mechanicsEnabled) {
             this.mechanics = new OilMechanics(this, mechanicsWorld);
         }
+
+        loadOxygen();
+    }
+
+    private void loadOxygen() {
+        ConfigurationSection oxygenSection = getConfig().getConfigurationSection("oxygen");
+        if (!oxygenSection.getBoolean("enabled")) {
+            return;
+        }
+
+        ActivityManager activityManager = new ActivityManager();
+        getServer().getPluginManager().registerEvents(activityManager, this);
+
+        OxygenManager oxygenManager = OxygenManager.deserialize(this, activityManager, oxygenSection);
+        getServer().getPluginManager().registerEvents(oxygenManager, this);
+        Objects.requireNonNull(getCommand("oxygen")).setExecutor(new OxygenCommand(oxygenManager));
+
+        getServer().getPluginManager().registerEvents(new OxygenDisplay(this, oxygenManager), this);
     }
 
     public int recordOilExtraction(final Location location) {

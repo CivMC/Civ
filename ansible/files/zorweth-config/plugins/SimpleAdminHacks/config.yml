@@ -237,7 +237,7 @@ hacks:
     entityExpDropModifiers:
       ENDER_DRAGON: 0.0
   PhantomMenace:
-    enabled: false
+    enabled: true
     # Players have a statistic called TIME_SINCE_REST. If a player's value is above 72k (3 days minecraft time) then
     # they will start spawning phantoms. Setting the cap to below 72k will effectively disable phantoms. Setting the
     # cap to -1 will disable the cap. Default: 80k (10% chance per two minutes during the night and thunder storms.)
@@ -250,6 +250,13 @@ hacks:
     # Determines the maximum light level at the spawning entity's location that phantoms are allowed to spawn at.
     # Note: 15 will enable spawning at all light levels.
     maximumLightSpawn: 7
+    # Biomes where natural phantom spawns bypass this hack's spawn restrictions. Use Bukkit biome names.
+    biomeWhitelist:
+      - minecraft:basalt_deltas
+      - minecraft:pale_garden
+      - minecraft:end_barrens
+      - minecraft:end_midlands
+      - minecraft:end_highlands
   PlayerRevive:
     enabled: true
   PlayerStatistics:

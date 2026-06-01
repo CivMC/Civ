@@ -5,12 +5,6 @@
     - setting.minecraft.enabled
   command: docker service scale minecraft_paper=1
 
-- name: Start Server | Start Gamma
-  when:
-    - "'swarm_manager' in group_names"
-    - setting.minecraft.enabled
-  command: docker service scale minecraft_gamma=1
-
 - name: Start Server | Start Zorweth
   when:
     - "'swarm_manager' in group_names"

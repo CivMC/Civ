@@ -227,6 +227,8 @@ hacks:
     # Determines the maximum light level at the spawning entity's location that phantoms are allowed to spawn at.
     # Note: 15 will enable spawning at all light levels.
     maximumLightSpawn: 7
+    # Biomes where natural phantom spawns bypass this hack's spawn restrictions. Use Bukkit biome names.
+    biomeWhitelist: []
   PlayerRevive:
     enabled: true
   PlayerStatistics:
