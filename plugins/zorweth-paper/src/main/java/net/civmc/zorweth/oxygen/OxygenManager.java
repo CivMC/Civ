@@ -3,6 +3,8 @@ package net.civmc.zorweth.oxygen;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +22,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -31,6 +36,8 @@ public class OxygenManager implements Listener {
 
     private final NamespacedKey oxygenKey;
     private final Map<Player, Long> lastMessage = new WeakHashMap<>();
+
+    private final Collection<CraftingRecipe> recipes = new ArrayList<>();
 
     public OxygenManager(ZorwethPlugin plugin, String world, ActivityManager activityManager,
                          Map<ActivityManager.Activity, Double> activityMultiplier, Map<Biome, Double> biomeMultipliers, double baseOxygenConsumptionPerSecond) {
@@ -57,19 +64,39 @@ public class OxygenManager implements Listener {
                     } else {
                         oxygen += baseOxygenConsumptionPerSecond / 2;
                     }
-                    oxygen = Math.min(1, oxygen);
-                    player.getPersistentDataContainer().set(oxygenKey, PersistentDataType.DOUBLE, oxygen);
+                    setOxygen(player, oxygen);
                     continue;
                 }
 
                 oxygen -= loss * baseOxygenConsumptionPerSecond;
-                oxygen = Math.max(-1, oxygen);
 
-                player.getPersistentDataContainer().set(oxygenKey, PersistentDataType.DOUBLE, oxygen);
+                setOxygen(player, oxygen);
 
                 applyOxygenEffects(player, oxygen);
             }
         }, 20, 20);
+
+        recipes.add(OxygenBottle.getRecipe(plugin));
+        for (CraftingRecipe recipe : recipes) {
+            Bukkit.addRecipe(recipe);
+        }
+    }
+
+    @EventHandler
+    public void on(PlayerJoinEvent event) {
+        for (CraftingRecipe recipe : recipes) {
+            event.getPlayer().discoverRecipe(recipe.getKey());
+        }
+    }
+
+    @EventHandler
+    public void on(PlayerItemConsumeEvent event) {
+        if (!OxygenBottle.isCrudeOxygen(event.getItem())) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        setOxygen(player, getOxygen(player) + 0.09);
     }
 
     public static OxygenManager deserialize(ZorwethPlugin plugin, ActivityManager activityManager, ConfigurationSection section) {
@@ -144,8 +171,7 @@ public class OxygenManager implements Listener {
     }
 
     public void setOxygen(final Player player, final double oxygen) {
-        player.getPersistentDataContainer().set(oxygenKey, PersistentDataType.DOUBLE, oxygen);
-        applyOxygenEffects(player, oxygen);
+        player.getPersistentDataContainer().set(oxygenKey, PersistentDataType.DOUBLE, Math.clamp(oxygen, -1, 1));
     }
 
     private void sendDebouncedMessage(Player player, Component message) {

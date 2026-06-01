@@ -29,7 +29,7 @@ research:
 oxygen:
   enabled: true
   world: world
-  consumption_per_second: 0.008
+  consumption_per_second: 0.006
   biomes:
     "minecraft:end_highlands": 1
     "minecraft:pale_garden": 2
@@ -37,8 +37,8 @@ oxygen:
     "minecraft:end_barrens": 4
     "minecraft:basalt_deltas": 8
   activities:
-    idle: 0.5
-    walking: 0.75
+    idle: 0.25
+    walking: 0.5
     sprinting: 3
     swimming: 4
     regenerating: 5
