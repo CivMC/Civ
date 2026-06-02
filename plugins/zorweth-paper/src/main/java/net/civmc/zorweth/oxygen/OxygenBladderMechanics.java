@@ -13,51 +13,23 @@ public final class OxygenBladderMechanics {
 
     public static final double CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD = 1;
 
-    public double drainOxygen(final Player player, double amount, final double oxygenPerItem,
-                              final boolean canConsumeItem, ActivityManager.Activity activity) {
+    public double getOxygenDrain(final Player player, double amount, ActivityManager.Activity activity) {
         ItemStack bladder = OxygenBladder.getOxygenBladder(player);
         if (!OxygenBladder.supportsActivity(bladder, activity)) {
             amount *= 2;
         }
-        return amount - drawOxygen(player, amount, oxygenPerItem, canConsumeItem);
+        return amount;
     }
 
-    public double refillPlayerOxygen(final Player player, final double amount, final double oxygenPerItem,
-                                     final double playerOxygen) {
+    public double refillPlayerOxygen(final Player player, final double oxygenPerItem,
+                                      final double playerOxygen) {
         if (playerOxygen > CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD) {
             return 0;
         }
-        return drawOxygen(player, Math.min(amount, CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD - playerOxygen), oxygenPerItem,
-            true);
-    }
-
-    private double drawOxygen(final Player player, final double amount, final double oxygenPerItem,
-                              final boolean canConsumeItem) {
-        double remaining = amount;
-        final ItemStack bladder = OxygenBladder.getOxygenBladder(player);
-        if (bladder == null) {
+        if (OxygenBladder.getOxygenBladder(player) == null) {
             return 0;
         }
-
-        double reserve = OxygenBladder.getReserve(bladder);
-        while (remaining > 0) {
-            if (reserve <= 0 && canConsumeItem) {
-                reserve = consumeOneOxygenItem(player, oxygenPerItem);
-                if (reserve <= 0) {
-                    break;
-                }
-            }
-            if (reserve <= 0) {
-                break;
-            }
-
-            final double reserveLoss = Math.min(remaining, reserve);
-            reserve -= reserveLoss;
-            remaining -= reserveLoss;
-            OxygenBladder.setReserve(bladder, reserve);
-        }
-
-        return amount - remaining;
+        return consumeOneOxygenItem(player, oxygenPerItem);
     }
 
     private double consumeOneOxygenItem(final Player player, final double oxygenPerItem) {

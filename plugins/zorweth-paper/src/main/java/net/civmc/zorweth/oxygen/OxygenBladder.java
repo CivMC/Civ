@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
@@ -23,7 +22,6 @@ public final class OxygenBladder {
 
     private static final String SMALL_OXYGEN_BLADDER = "small_oxygen_bladder";
     private static final String OXYGEN_REBREATHER = "oxygen_rebreather";
-    private static final NamespacedKey RESERVE_KEY = new NamespacedKey("zorweth", "oxygen_bladder_reserve");
 
     private OxygenBladder() {
     }
@@ -113,17 +111,6 @@ public final class OxygenBladder {
         }
 
         return max;
-    }
-
-    public static double getReserve(final ItemStack item) {
-        final ItemMeta meta = item.getItemMeta();
-        return Math.max(0, meta.getPersistentDataContainer().getOrDefault(RESERVE_KEY, PersistentDataType.DOUBLE, 0D));
-    }
-
-    public static void setReserve(final ItemStack item, final double reserve) {
-        final ItemMeta meta = item.getItemMeta();
-        meta.getPersistentDataContainer().set(RESERVE_KEY, PersistentDataType.DOUBLE, Math.max(0, reserve));
-        item.setItemMeta(meta);
     }
 
     public static CraftingRecipe getRecipe(final Plugin plugin) {

@@ -90,7 +90,7 @@ public class OxygenManager implements Listener {
                     continue;
                 }
 
-                drainOxygen(player, loss * baseOxygenConsumptionPerSecond, baseOxygenConsumptionPerSecond / 2, activity);
+                drainOxygen(player, loss * baseOxygenConsumptionPerSecond, activity);
                 applyOxygenEffects(player, getOxygen(player));
             }
         }, 20, 20);
@@ -201,17 +201,16 @@ public class OxygenManager implements Listener {
         setOxygen(player, getOxygen(player) + amount);
     }
 
-    private void drainOxygen(final Player player, final double amount, final double refillRate, Activity activity) {
+    private void drainOxygen(final Player player, final double amount, final Activity activity) {
         final double oxygen = getOxygen(player);
-        final double remaining = this.oxygenBladderMechanics.drainOxygen(player, amount, CRUDE_OXYGEN_AMOUNT,
-            oxygen <= OxygenBladderMechanics.CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD, activity);
+        final double remaining = this.oxygenBladderMechanics.getOxygenDrain(player, amount, activity);
         if (remaining > 0) {
             setOxygen(player, oxygen - remaining);
         }
 
         final double updatedOxygen = getOxygen(player);
-        final double refill = this.oxygenBladderMechanics.refillPlayerOxygen(player, refillRate,
-            CRUDE_OXYGEN_AMOUNT, updatedOxygen);
+        final double refill = this.oxygenBladderMechanics.refillPlayerOxygen(player, CRUDE_OXYGEN_AMOUNT,
+            updatedOxygen);
         if (refill > 0) {
             setOxygen(player, updatedOxygen + refill);
         }
