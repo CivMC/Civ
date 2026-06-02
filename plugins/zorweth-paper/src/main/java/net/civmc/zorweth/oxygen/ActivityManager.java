@@ -24,9 +24,12 @@ public class ActivityManager implements Listener {
 
     public Set<Activity> getActivities(Player player) {
         Set<Activity> playerActivities = new HashSet<>();
-        for (Map.Entry<Activity, Long> entry : activities.get(player).entrySet()) {
-            if (entry.getValue() + ACTIVITY_DURATION_MS > System.currentTimeMillis()) {
-                playerActivities.add(entry.getKey());
+        Map<Activity, Long> actvs = activities.get(player);
+        if (actvs != null) {
+            for (Map.Entry<Activity, Long> entry : actvs.entrySet()) {
+                if (entry.getValue() + ACTIVITY_DURATION_MS > System.currentTimeMillis()) {
+                    playerActivities.add(entry.getKey());
+                }
             }
         }
 

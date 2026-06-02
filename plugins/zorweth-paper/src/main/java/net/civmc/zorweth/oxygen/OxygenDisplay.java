@@ -60,7 +60,7 @@ public class OxygenDisplay implements Listener {
 
     public void updateScoreboardHUD(Player p) {
         double oxygen = oxygenManager.getOxygen(p);
-        if (!showOxygen.hasValue(p.getUniqueId()) || oxygen >= OxygenBladder.getMaxOxygen(p)) {
+        if (!showOxygen.getValue(p.getUniqueId()) || oxygen >= OxygenBladder.getMaxOxygen(p)) {
             oxygenScoreboard.hide(p);
             oxygenBottomLine.removePlayer(p);
             return;

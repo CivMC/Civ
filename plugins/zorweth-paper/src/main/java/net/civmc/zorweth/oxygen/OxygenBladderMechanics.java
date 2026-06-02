@@ -83,6 +83,9 @@ public final class OxygenBladderMechanics {
     }
 
     private double getOxygenBrewAmount(final ItemStack item) {
+        if (item == null || item.isEmpty()) {
+            return 0;
+        }
         if (!Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
             return 0;
         }

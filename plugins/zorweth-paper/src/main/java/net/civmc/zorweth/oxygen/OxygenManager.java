@@ -73,6 +73,12 @@ public class OxygenManager implements Listener {
 
                 double biomeMultiplier = biomeMultipliers.getOrDefault(player.getLocation().getBlock().getBiome(), 0D);
 
+                if (oxygen < REGENERATION_PREVENTION_OXYGEN) {
+                    player.getPersistentDataContainer().set(NO_HEALTH_REGEN, PersistentDataType.BOOLEAN, true);
+                } else {
+                    player.getPersistentDataContainer().remove(NO_HEALTH_REGEN);
+                }
+
                 double loss = playerActivityMultiplier * biomeMultiplier;
                 if (loss == 0) {
                     if (activities.contains(ActivityManager.Activity.IDLE)) {
@@ -147,12 +153,6 @@ public class OxygenManager implements Listener {
     }
 
     private void applyOxygenEffects(Player player, double oxygen) {
-        if (oxygen < REGENERATION_PREVENTION_OXYGEN) {
-            player.getPersistentDataContainer().set(NO_HEALTH_REGEN, PersistentDataType.BOOLEAN, true);
-        } else {
-            player.getPersistentDataContainer().remove(NO_HEALTH_REGEN);
-        }
-
         if (oxygen > 0) {
             return;
         } else if (oxygen > -0.05) {
