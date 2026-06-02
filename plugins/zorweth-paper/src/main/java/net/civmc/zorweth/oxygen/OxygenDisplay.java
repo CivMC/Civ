@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
@@ -52,12 +51,6 @@ public class OxygenDisplay implements Listener {
                 updateScoreboardHUD(player);
             }
         }, 20, 20);
-    }
-
-    @EventHandler
-    public void on(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        player.isSprinting();
     }
 
     @EventHandler

@@ -88,13 +88,7 @@ public class BlockBreakListener implements Listener {
         // someone listening might object to our manipulation here.
         if (bc != null && bc.suppressDrops) {
             debug("Attempting to suppress break of tracked type {0}", blockName);
-            HiddenOreGenerateEvent hoges = new HiddenOreGenerateEvent(p, b, Material.AIR);
-            Bukkit.getPluginManager().callEvent(hoges);
-            if (!hoges.isCancelled()) {
-                b.setType(Material.AIR);
-                event.setCancelled(true);
-            }
-            bc = null;
+            event.setDropItems(false);
         }
 
         // Check with out tracker to see if any more drops are available in this little slice of the world.

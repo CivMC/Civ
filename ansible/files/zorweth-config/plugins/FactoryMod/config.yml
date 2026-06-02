@@ -16,6 +16,134 @@ log_inventories: true
 force_include_default: true
 can_upgrade: true
 factories:
+  oxygen:
+    type: FCC
+    name: Oxygen Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      pitcher_plant:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PITCHER_PLANT
+        amount: 24
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 64
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 32
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - create_basic_oxygen_tank
+      - refill_oxygen_tank
+      - create_oxygen_rebreather
+      - repair_oxygen_factory
+  space_chem:
+    type: FCC
+    name: Space Chemistry Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 512
+      ink_sac:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: INK_SAC
+        amount: 16
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 128
+      brewing_stands:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BREWING_STAND
+        amount: 16
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 32
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - manufacture_advanced_mechanical_components
+      - check_research_progress
+      - research_phase_1
+      - research_phase_2
+      - refine_crude_oil
+      - repair_space_chem_factory
+  crude:
+    type: FCC
+    name: Crude Oil Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      copper_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 128
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 128
+      iron_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 128
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - extract_crude_oil
+      - repair_crude_oil_factory
   kinetics:
     type: FCC
     name: Kinetics Factory
@@ -566,9 +694,14 @@ factories:
     recipes:
       - smelt_coal_ore
       - smelt_raw_copper
+      - smelt_raw_copper_catalyst
+      - smelt_bauxite
       - smelt_raw_iron
+      - smelt_raw_iron_catalyst
       - smelt_diamond_ore
+      - smelt_diamond_ore_catalyst
       - smelt_deepslate_diamond_ore
+      - smelt_deepslate_diamond_ore_catalyst
       - smelt_raw_gold
       - smelt_nether_gold_ore
       - smelt_redstone_ore
@@ -589,9 +722,14 @@ factories:
       - adv_smelt_ancient_debris
       - smelt_coal_ore
       - adv_smelt_raw_copper
+      - adv_smelt_raw_copper_catalyst
+      - adv_smelt_bauxite
       - adv_smelt_raw_iron
+      - adv_smelt_raw_iron_catalyst
       - adv_smelt_diamond_ore
+      - adv_smelt_diamond_ore_catalyst
       - adv_smelt_deepslate_diamond_ore
+      - adv_smelt_deepslate_diamond_ore_catalyst
       - adv_smelt_raw_gold
       - adv_smelt_nether_gold_ore
       - adv_smelt_redstone_ore
@@ -613,9 +751,14 @@ factories:
       - elite_smelt_ancient_debris
       - smelt_coal_ore
       - elite_smelt_raw_copper
+      - elite_smelt_raw_copper_catalyst
+      - elite_smelt_bauxite
       - elite_smelt_raw_iron
+      - elite_smelt_raw_iron_catalyst
       - elite_smelt_diamond_ore
+      - elite_smelt_diamond_ore_catalyst
       - elite_smelt_deepslate_diamond_ore
+      - elite_smelt_deepslate_diamond_ore_catalyst
       - elite_smelt_raw_gold
       - elite_smelt_nether_gold_ore
       - elite_smelt_redstone_ore
@@ -1349,13 +1492,53 @@ factories:
     name: Space Factory
     citadelBreakReduction: 1.0
     setupcost:
-      daylight_sensor:
+      iron_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: DAYLIGHT_DETECTOR
-        amount: 1
+        type: IRON_BLOCK
+        amount: 32
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 128
+      resin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 32
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 8
+      clay:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 512
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 128
     recipes:
       - build_rocket
+      - repair_space_factory
   bastion_factory:
     type: FCC
     name: Bastion Factory
@@ -1599,8 +1782,8 @@ factories:
         amount: 4
     recipes:
       - wordbank_item
-      - crack_easter_egg
       - fabricate_netherite_upgrade
+      - make_sniffer_egg
       - fabricate_sentry_trim
       - fabricate_vex_trim
       - fabricate_wild_trim
@@ -1830,11 +2013,42 @@ recipes:
     type: BUILD_ROCKET
     world: world
     input:
-      daylight_sensor:
+      iron_block:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: DAYLIGHT_DETECTOR
-        amount: 1
+        type: IRON_BLOCK
+        amount: 64
+      clay:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CLAY
+        amount: 256
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 20
+      resin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN_CLUMP
+        amount: 96
+      advanced_mechanical_component:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPARATOR
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Advanced Mechanical Component
+          lore:
+            - Key component of rockets created in the Space Chemistry Factory
+      piston:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PISTON
+        amount: 20
   facet_heliodor:
     production_time: 4s
     name: Facet Heliodor Gem
@@ -2182,6 +2396,54 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
         amount: 16
+  smelt_raw_copper_catalyst:
+    production_time: 4s
+    name: Smelt Copper Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 24
+  smelt_bauxite:
+    production_time: 4s
+    name: Smelt Bauxite
+    type: PRODUCTION
+    input:
+      bauxite:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: COPPER_NUGGET
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Bauxite
+          lore:
+            - Rock found on Zorweth
+            - Can be refined into aluminium
+    output:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 16
   adv_smelt_raw_copper:
     production_time: 4s
     name: Advanced Smelt Copper Ore
@@ -2197,6 +2459,54 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
+        amount: 20
+  adv_smelt_raw_copper_catalyst:
+    production_time: 4s
+    name: Smelt Copper Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 28
+  adv_smelt_bauxite:
+    production_time: 4s
+    name: Advanced Smelt Bauxite
+    type: PRODUCTION
+    input:
+      bauxite:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: COPPER_NUGGET
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Bauxite
+          lore:
+            - Rock found on Zorweth
+            - Can be refined into aluminium
+    output:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
         amount: 20
   elite_smelt_raw_copper:
     production_time: 4s
@@ -2214,6 +2524,54 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
         amount: 22
+  elite_smelt_raw_copper_catalyst:
+    production_time: 4s
+    name: Smelt Copper Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 30
+  elite_smelt_bauxite:
+    production_time: 4s
+    name: Elite Smelt Bauxite
+    type: PRODUCTION
+    input:
+      bauxite:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: COPPER_NUGGET
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Bauxite
+          lore:
+            - Rock found on Zorweth
+            - Can be refined into aluminium
+    output:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 22
   smelt_raw_iron:
     production_time: 4s
     name: Smelt Iron Ore
@@ -2230,6 +2588,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 64
+  smelt_raw_iron_catalyst:
+    production_time: 4s
+    name: Smelt Iron Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 80
   adv_smelt_raw_iron:
     production_time: 4s
     name: Advanced Smelt Iron Ore
@@ -2246,6 +2631,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 80
+  adv_smelt_raw_iron_catalyst:
+    production_time: 4s
+    name: Smelt Iron Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 96
   elite_smelt_raw_iron:
     production_time: 4s
     name: Elite Smelt Iron Ore
@@ -2262,6 +2674,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 88
+  elite_smelt_raw_iron_catalyst:
+    production_time: 4s
+    name: Smelt Iron Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 104
   smelt_diamond_ore:
     production_time: 4s
     name: Smelt Diamond Ore
@@ -2278,6 +2717,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 48
+  smelt_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 52
   smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Smelt Deepslate Diamond Ore
@@ -2294,6 +2760,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 48
+  smelt_deepslate_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Deepslate Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 52
   adv_smelt_diamond_ore:
     production_time: 4s
     name: Advanced Smelt Diamond Ore
@@ -2310,6 +2803,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  adv_smelt_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 60
   elite_smelt_diamond_ore:
     production_time: 4s
     name: Elite Smelt Diamond Ore
@@ -2326,6 +2846,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 60
+  elite_smelt_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 64
   adv_smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Diamond Ore
@@ -2342,6 +2889,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  adv_smelt_deepslate_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Deepslate Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 60
   elite_smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Elite Smelt Deepslate Diamond Ore
@@ -2358,6 +2932,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 60
+  elite_smelt_deepslate_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Deepslate Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 64
   smelt_raw_gold:
     production_time: 4s
     name: Smelt Gold Ore
@@ -11911,6 +12512,43 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: FLOW_ARMOR_TRIM_SMITHING_TEMPLATE
         amount: 32
+  make_sniffer_egg:
+    type: PRODUCTION
+    name: Make Sniffer Egg
+    forceInclude: true
+    production_time: 4s
+    input:
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 9
+      short_grass:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SHORT_GRASS
+        amount: 16
+      fern:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: FERN
+        amount: 16
+      armadillo_scute:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ARMADILLO_SCUTE
+        amount: 4
+      sweet_berries:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SWEET_BERRIES
+        amount: 16
+    output:
+      sniffer_egg:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SNIFFER_EGG
+        amount: 1
   wordbank_item:
     type: WORDBANK
     name: Generate item name
@@ -17537,3 +18175,397 @@ recipes:
           lore:
             - Blocks mob spawns in a 96 block radius cylinder
         amount: 4
+  extract_crude_oil:
+    fuel_consumption_intervall: 30m
+    name: Extract Oil
+    type: EXTRACT_OIL
+    input:
+      charcoal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHARCOAL
+        amount: 48
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      crude_oil:
+        custom-key: crude_oil
+        amount: 16
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+  repair_crude_oil_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      copper_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 16
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 16
+      iron_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 16
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  repair_space_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      iron_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_BLOCK
+        amount: 4
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 16
+      resin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 4
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 1
+      clay:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 64
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 16
+    health_gained: 10000
+  repair_space_chem_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 64
+      ink_sac:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: INK_SAC
+        amount: 2
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 16
+      brewing_stands:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BREWING_STAND
+        amount: 2
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 4
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  repair_oxygen_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      pitcher:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PITCHER_PLANT
+        amount: 8
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  create_basic_oxygen_tank:
+    production_time: 4s
+    name: Create Basic Oxygen Tank
+    type: PRODUCTION
+    input:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 8
+      diamonds:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 12
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL
+        amount: 64
+    output:
+      empty_basic_oxygen_tank:
+        custom-key: empty_basic_oxygen_tank
+        amount: 1
+  refill_oxygen_tank:
+    production_time: 512s
+    fuel_consumption_intervall: 16s
+    name: Refill Oxygen Tank
+    type: OXYGEN_REFILL
+    input:
+      empty_basic_oxygen_tank:
+        custom-key: empty_basic_oxygen_tank
+        amount: 1
+      aluminium:
+        custom-key: aluminium_ingot
+        amount: 1
+    output:
+      filled_basic_oxygen_tank:
+        custom-key: filled_basic_oxygen_tank
+        amount: 1
+  create_oxygen_rebreather:
+    production_time: 4s
+    name: Create Oxygen Rebreather
+    type: PRODUCTION
+    input:
+      small_oxygen_bladder:
+        custom-key: small_oxygen_bladder
+        amount: 1
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 16
+      diamonds:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 16
+    output:
+      oxygen_rebreather:
+        custom-key: oxygen_rebreather
+        amount: 1
+  refine_crude_oil:
+    production_time: 4s
+    name: Refine Crude Oil
+    type: PRODUCTION
+    input:
+      crude_oil:
+        custom-key: crude_oil
+        amount: 64
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 64
+    output:
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 32
+  manufacture_advanced_mechanical_components:
+    production_time: 4s
+    name: Manufacture Advanced Mechanical Components
+    type: PRODUCTION
+    input:
+      copper_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 256
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 256
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 512
+      comparator:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPARATOR
+        amount: 32
+    output:
+      advanced_mechanical_component:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPARATOR
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Advanced Mechanical Component
+          lore:
+            - Key component of rockets created in the Space Chemistry Factory
+  check_research_progress:
+    production_time: 1s
+    name: Check Research Progress
+    type: CHECK_RESEARCH_PROGRESS
+    input:
+      stick:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: STICK
+        amount: 1
+  research_phase_1:
+    production_time: 64s
+    fuel_consumption_intervall: 8s
+    name: Research Phase 1
+    type: RESEARCH
+    phase: 1
+    input:
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 5
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 2
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 4
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 4
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 8
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 16
+  research_phase_2:
+    production_time: 64s
+    fuel_consumption_intervall: 8s
+    name: Research Phase 2
+    type: RESEARCH
+    phase: 2
+    input:
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 5
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 5
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 15
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 30
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 64
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 64
+      ink_sac:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: INK_SAC
+        amount: 4
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 8

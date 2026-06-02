@@ -145,6 +145,7 @@ public class ProductionRecipe extends InputRecipe {
     public ItemStack getRecipeRepresentationType() {
         ItemStack itemStack = new ItemStack(this.recipeRepresentation);
         itemStack.setAmount(1);
+        itemStack.lore(null);
         return itemStack;
     }
 

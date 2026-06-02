@@ -1,5 +1,6 @@
 - name: Preflight Checks | Check for secrets.yml
   connection: local
+  become: false
   stat: path=../variables/secrets.yml
   register: secrets_yml
 
@@ -9,6 +10,7 @@
   when: not secrets_yml.stat.exists
 
 - name: Preflight Checks | Check for build dir
+  become: false
   connection: local
   stat: path=../build/
   register: build_dir

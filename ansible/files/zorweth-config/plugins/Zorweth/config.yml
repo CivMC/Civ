@@ -41,8 +41,8 @@ oxygen:
   activities:
     idle: 0.25
     walking: 0.5
-    sprinting: 3
-    swimming: 4
-    regenerating: 5
-    mining: 6
-    combat: 7
+    sprinting: 2
+    swimming: 2.5
+    regenerating: 3
+    mining: 4
+    combat: 5

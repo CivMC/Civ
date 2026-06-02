@@ -33,6 +33,7 @@ import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorRefillRecipe;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import com.github.igotyou.FactoryMod.recipes.space.BuildRocketRecipe;
 import com.github.igotyou.FactoryMod.recipes.space.CheckResearchProgressRecipe;
+import com.github.igotyou.FactoryMod.recipes.space.OxygenRefillRecipe;
 import com.github.igotyou.FactoryMod.recipes.space.ResearchRecipe;
 import com.github.igotyou.FactoryMod.recipes.upgrade.CharcoalConsumptionUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.upgrade.SpeedUpgradeRecipe;
@@ -604,6 +605,30 @@ public class ConfigParser {
                     oilModi = ((ProductionRecipe) parentRecipe).getModifier().clone();
                 }
                 result = new ExtractOilRecipe(identifier, name, productionTime, input, oilOutput, oilRecipeRepresentation, oilModi);
+                break;
+            case "OXYGEN_REFILL":
+                ConfigurationSection oxygenOutputSection = config.getConfigurationSection("output");
+                ItemMap oxygenOutput;
+                ItemStack oxygenRecipeRepresentation;
+                if (oxygenOutputSection == null) {
+                    if (!(parentRecipe instanceof ProductionRecipe)) {
+                        oxygenOutput = new ItemMap();
+                        oxygenRecipeRepresentation = null;
+                    } else {
+                        oxygenOutput = ((ProductionRecipe) parentRecipe).getOutput();
+                        oxygenRecipeRepresentation = ((ProductionRecipe) parentRecipe).getRecipeRepresentation();
+                    }
+                } else {
+                    oxygenOutput = ConfigHelper.parseItemMap(oxygenOutputSection);
+                    oxygenRecipeRepresentation = parseFirstItem(oxygenOutputSection);
+                }
+                ProductionRecipeModifier oxygenModi = parseProductionRecipeModifier(config.getConfigurationSection("modi"));
+                if (oxygenModi == null && parentRecipe instanceof ProductionRecipe
+                    && ((ProductionRecipe) parentRecipe).getModifier() != null) {
+                    oxygenModi = ((ProductionRecipe) parentRecipe).getModifier().clone();
+                }
+                result = new OxygenRefillRecipe(identifier, name, productionTime, input, oxygenOutput,
+                    oxygenRecipeRepresentation, oxygenModi);
                 break;
             case "COMPACT":
                 String compactedLore = config.getString("compact_lore",

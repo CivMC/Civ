@@ -22,6 +22,8 @@ import net.civmc.zorweth.oxygen.ActivityManager;
 import net.civmc.zorweth.oxygen.OxygenCommand;
 import net.civmc.zorweth.oxygen.OxygenDisplay;
 import net.civmc.zorweth.oxygen.OxygenManager;
+import net.civmc.zorweth.oxygen.OxygenBladder;
+import net.civmc.zorweth.oxygen.OxygenTank;
 import net.civmc.zorweth.research.ResearchManager;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -49,6 +51,7 @@ public final class ZorwethPlugin extends JavaPlugin {
     private int researchPhaseTwoRuns;
     private String mechanicsWorld;
     private boolean mechanicsEnabled;
+    private OxygenManager oxygenManager;
 
     private OilMechanics mechanics;
 
@@ -61,6 +64,8 @@ public final class ZorwethPlugin extends JavaPlugin {
             return;
         }
         Fuel.registerCustomItems();
+        OxygenBladder.registerCustomItems();
+        OxygenTank.registerCustomItems();
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
         this.stasisHandler = new StasisHandler();
@@ -94,11 +99,15 @@ public final class ZorwethPlugin extends JavaPlugin {
         ActivityManager activityManager = new ActivityManager();
         getServer().getPluginManager().registerEvents(activityManager, this);
 
-        OxygenManager oxygenManager = OxygenManager.deserialize(this, activityManager, oxygenSection);
-        getServer().getPluginManager().registerEvents(oxygenManager, this);
-        Objects.requireNonNull(getCommand("oxygen")).setExecutor(new OxygenCommand(oxygenManager));
+        this.oxygenManager = OxygenManager.deserialize(this, activityManager, oxygenSection);
+        getServer().getPluginManager().registerEvents(this.oxygenManager, this);
+        Objects.requireNonNull(getCommand("oxygen")).setExecutor(new OxygenCommand(this.oxygenManager));
 
-        getServer().getPluginManager().registerEvents(new OxygenDisplay(this, oxygenManager), this);
+        getServer().getPluginManager().registerEvents(new OxygenDisplay(this, this.oxygenManager), this);
+    }
+
+    public OxygenManager getOxygenManager() {
+        return this.oxygenManager;
     }
 
     public int recordOilExtraction(final Location location) {

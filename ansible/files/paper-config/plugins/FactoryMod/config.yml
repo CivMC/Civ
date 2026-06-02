@@ -48,6 +48,9 @@ factories:
           lore:
             - Activity reward used to fuel pearls
     recipes:
+      - create_basic_oxygen_tank
+      - refill_oxygen_tank
+      - create_oxygen_rebreather
       - repair_oxygen_factory
   space_chem:
     type: FCC
@@ -18362,6 +18365,64 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
+  create_basic_oxygen_tank:
+    production_time: 4s
+    name: Create Basic Oxygen Tank
+    type: PRODUCTION
+    input:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 8
+      diamonds:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 12
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL
+        amount: 64
+    output:
+      empty_basic_oxygen_tank:
+        custom-key: empty_basic_oxygen_tank
+        amount: 1
+  refill_oxygen_tank:
+    production_time: 512s
+    fuel_consumption_intervall: 16s
+    name: Refill Oxygen Tank
+    type: OXYGEN_REFILL
+    input:
+      empty_basic_oxygen_tank:
+        custom-key: empty_basic_oxygen_tank
+        amount: 1
+      aluminium:
+        custom-key: aluminium_ingot
+        amount: 1
+    output:
+      filled_basic_oxygen_tank:
+        custom-key: filled_basic_oxygen_tank
+        amount: 1
+  create_oxygen_rebreather:
+    production_time: 4s
+    name: Create Oxygen Rebreather
+    type: PRODUCTION
+    input:
+      small_oxygen_bladder:
+        custom-key: small_oxygen_bladder
+        amount: 1
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 16
+      diamonds:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 16
+    output:
+      oxygen_rebreather:
+        custom-key: oxygen_rebreather
+        amount: 1
   refine_crude_oil:
     production_time: 4s
     name: Refine Crude Oil

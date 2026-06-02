@@ -7,12 +7,14 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import net.civmc.zorweth.ZorwethPlugin;
+import net.civmc.zorweth.oxygen.ActivityManager.Activity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -35,22 +37,24 @@ import org.bukkit.potion.PotionEffectType;
 
 public class OxygenManager implements Listener {
 
-    private static final String OXYGEN_BREW_RECIPE_NAME = "Oxygen";
+    static final String OXYGEN_BREW_RECIPE_NAME = "Oxygen";
     private static final double CRUDE_OXYGEN_AMOUNT = 0.09;
-    private static final double OXYGEN_BREW_AMOUNT = 1.6;
+    static final double OXYGEN_BREW_AMOUNT = 1.6;
     public static final double DEFAULT_MAX_OXYGEN = 1;
     private static final double REGENERATION_PREVENTION_OXYGEN = -0.15;
     public static final NamespacedKey NO_HEALTH_REGEN = new NamespacedKey("finale", "no_health_regen");
 
     private final NamespacedKey oxygenKey;
+    private final Map<Biome, Double> biomeMultipliers;
     private final Map<Player, Long> lastMessage = new WeakHashMap<>();
     private final OxygenBladderMechanics oxygenBladderMechanics = new OxygenBladderMechanics();
 
     private final Collection<CraftingRecipe> recipes = new ArrayList<>();
 
     public OxygenManager(ZorwethPlugin plugin, String world, ActivityManager activityManager,
-                         Map<ActivityManager.Activity, Double> activityMultiplier, Map<Biome, Double> biomeMultipliers, double baseOxygenConsumptionPerSecond) {
+                          Map<ActivityManager.Activity, Double> activityMultiplier, Map<Biome, Double> biomeMultipliers, double baseOxygenConsumptionPerSecond) {
         this.oxygenKey = new NamespacedKey(plugin, "oxygen");
+        this.biomeMultipliers = biomeMultipliers;
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -61,11 +65,11 @@ public class OxygenManager implements Listener {
                 double oxygen = getOxygen(player);
 
                 Set<ActivityManager.Activity> activities = activityManager.getActivities(player);
-                double playerActivityMultiplier = activities
+                Activity activity = activities
                     .stream()
-                    .mapToDouble(activityMultiplier::get)
-                    .max()
-                    .orElse(0D);
+                    .max(Comparator.comparingDouble(activityMultiplier::get))
+                    .orElseThrow();
+                double playerActivityMultiplier = activityMultiplier.get(activity);
 
                 double biomeMultiplier = biomeMultipliers.getOrDefault(player.getLocation().getBlock().getBiome(), 0D);
 
@@ -80,7 +84,7 @@ public class OxygenManager implements Listener {
                     continue;
                 }
 
-                drainOxygen(player, loss * baseOxygenConsumptionPerSecond, baseOxygenConsumptionPerSecond / 2);
+                drainOxygen(player, loss * baseOxygenConsumptionPerSecond, baseOxygenConsumptionPerSecond / 2, activity);
                 applyOxygenEffects(player, getOxygen(player));
             }
         }, 20, 20);
@@ -189,14 +193,18 @@ public class OxygenManager implements Listener {
         return Objects.requireNonNullElse(player.getPersistentDataContainer().get(oxygenKey, PersistentDataType.DOUBLE), 1D);
     }
 
+    public boolean hasOxygen(final Biome biome) {
+        return this.biomeMultipliers.getOrDefault(biome, 0D) == 0D;
+    }
+
     private void addOxygen(final Player player, final double amount) {
         setOxygen(player, getOxygen(player) + amount);
     }
 
-    private void drainOxygen(final Player player, final double amount, final double refillRate) {
+    private void drainOxygen(final Player player, final double amount, final double refillRate, Activity activity) {
         final double oxygen = getOxygen(player);
         final double remaining = this.oxygenBladderMechanics.drainOxygen(player, amount, CRUDE_OXYGEN_AMOUNT,
-            oxygen <= OxygenBladderMechanics.CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD);
+            oxygen <= OxygenBladderMechanics.CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD, activity);
         if (remaining > 0) {
             setOxygen(player, oxygen - remaining);
         }
