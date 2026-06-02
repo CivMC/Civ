@@ -16,6 +16,39 @@ log_inventories: true
 force_include_default: true
 can_upgrade: true
 factories:
+  oxygen:
+    type: FCC
+    name: Oxygen Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      pitcher_plant:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PITCHER_PLANT
+        amount: 24
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 64
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 32
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - repair_oxygen_factory
   space_chem:
     type: FCC
     name: Space Chemistry Factory
@@ -658,9 +691,14 @@ factories:
     recipes:
       - smelt_coal_ore
       - smelt_raw_copper
+      - smelt_raw_copper_catalyst
+      - smelt_bauxite
       - smelt_raw_iron
+      - smelt_raw_iron_catalyst
       - smelt_diamond_ore
+      - smelt_diamond_ore_catalyst
       - smelt_deepslate_diamond_ore
+      - smelt_deepslate_diamond_ore_catalyst
       - smelt_raw_gold
       - smelt_nether_gold_ore
       - smelt_redstone_ore
@@ -681,9 +719,14 @@ factories:
       - adv_smelt_ancient_debris
       - smelt_coal_ore
       - adv_smelt_raw_copper
+      - adv_smelt_raw_copper_catalyst
+      - adv_smelt_bauxite
       - adv_smelt_raw_iron
+      - adv_smelt_raw_iron_catalyst
       - adv_smelt_diamond_ore
+      - adv_smelt_diamond_ore_catalyst
       - adv_smelt_deepslate_diamond_ore
+      - adv_smelt_deepslate_diamond_ore_catalyst
       - adv_smelt_raw_gold
       - adv_smelt_nether_gold_ore
       - adv_smelt_redstone_ore
@@ -705,9 +748,14 @@ factories:
       - elite_smelt_ancient_debris
       - smelt_coal_ore
       - elite_smelt_raw_copper
+      - elite_smelt_raw_copper_catalyst
+      - elite_smelt_bauxite
       - elite_smelt_raw_iron
+      - elite_smelt_raw_iron_catalyst
       - elite_smelt_diamond_ore
+      - elite_smelt_diamond_ore_catalyst
       - elite_smelt_deepslate_diamond_ore
+      - elite_smelt_deepslate_diamond_ore_catalyst
       - elite_smelt_raw_gold
       - elite_smelt_nether_gold_ore
       - elite_smelt_redstone_ore
@@ -2345,6 +2393,54 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
         amount: 16
+  smelt_raw_copper_catalyst:
+    production_time: 4s
+    name: Smelt Copper Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 24
+  smelt_bauxite:
+    production_time: 4s
+    name: Smelt Bauxite
+    type: PRODUCTION
+    input:
+      bauxite:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: COPPER_NUGGET
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Bauxite
+          lore:
+            - Rock found on Zorweth
+            - Can be refined into aluminium
+    output:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 16
   adv_smelt_raw_copper:
     production_time: 4s
     name: Advanced Smelt Copper Ore
@@ -2360,6 +2456,54 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
+        amount: 20
+  adv_smelt_raw_copper_catalyst:
+    production_time: 4s
+    name: Smelt Copper Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 28
+  adv_smelt_bauxite:
+    production_time: 4s
+    name: Advanced Smelt Bauxite
+    type: PRODUCTION
+    input:
+      bauxite:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: COPPER_NUGGET
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Bauxite
+          lore:
+            - Rock found on Zorweth
+            - Can be refined into aluminium
+    output:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
         amount: 20
   elite_smelt_raw_copper:
     production_time: 4s
@@ -2377,6 +2521,54 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
         amount: 22
+  elite_smelt_raw_copper_catalyst:
+    production_time: 4s
+    name: Smelt Copper Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 30
+  elite_smelt_bauxite:
+    production_time: 4s
+    name: Elite Smelt Bauxite
+    type: PRODUCTION
+    input:
+      bauxite:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: COPPER_NUGGET
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Bauxite
+          lore:
+            - Rock found on Zorweth
+            - Can be refined into aluminium
+    output:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 22
   smelt_raw_iron:
     production_time: 4s
     name: Smelt Iron Ore
@@ -2393,6 +2585,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 64
+  smelt_raw_iron_catalyst:
+    production_time: 4s
+    name: Smelt Iron Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 80
   adv_smelt_raw_iron:
     production_time: 4s
     name: Advanced Smelt Iron Ore
@@ -2409,6 +2628,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 80
+  adv_smelt_raw_iron_catalyst:
+    production_time: 4s
+    name: Smelt Iron Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 96
   elite_smelt_raw_iron:
     production_time: 4s
     name: Elite Smelt Iron Ore
@@ -2425,6 +2671,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 88
+  elite_smelt_raw_iron_catalyst:
+    production_time: 4s
+    name: Smelt Iron Ore with Catalyst
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 104
   smelt_diamond_ore:
     production_time: 4s
     name: Smelt Diamond Ore
@@ -2441,6 +2714,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 48
+  smelt_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 52
   smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Smelt Deepslate Diamond Ore
@@ -2457,6 +2757,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 48
+  smelt_deepslate_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Deepslate Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 52
   adv_smelt_diamond_ore:
     production_time: 4s
     name: Advanced Smelt Diamond Ore
@@ -2473,6 +2800,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  adv_smelt_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 60
   elite_smelt_diamond_ore:
     production_time: 4s
     name: Elite Smelt Diamond Ore
@@ -2489,6 +2843,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 60
+  elite_smelt_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 64
   adv_smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Diamond Ore
@@ -2505,6 +2886,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  adv_smelt_deepslate_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Deepslate Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 60
   elite_smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Elite Smelt Deepslate Diamond Ore
@@ -2521,6 +2929,33 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 60
+  elite_smelt_deepslate_diamond_ore_catalyst:
+    production_time: 4s
+    name: Smelt Deepslate Diamond Ore with Catalyst
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 64
   smelt_raw_gold:
     production_time: 4s
     name: Smelt Gold Ore
@@ -17893,6 +18328,28 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GLOWSTONE_DUST
         amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  repair_oxygen_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      pitcher:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PITCHER_PLANT
+        amount: 8
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack

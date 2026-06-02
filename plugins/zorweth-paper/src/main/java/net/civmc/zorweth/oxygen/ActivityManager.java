@@ -1,9 +1,9 @@
 package net.civmc.zorweth.oxygen;
 
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -23,14 +22,19 @@ public class ActivityManager implements Listener {
     // last time activity was detected
     private final Map<Player, Map<Activity, Long>> activities = new HashMap<>();
 
-    public Activity getActivity(Player player) {
+    public Set<Activity> getActivities(Player player) {
+        Set<Activity> playerActivities = new HashSet<>();
         for (Map.Entry<Activity, Long> entry : activities.get(player).entrySet()) {
             if (entry.getValue() + ACTIVITY_DURATION_MS > System.currentTimeMillis()) {
-                return entry.getKey();
+                playerActivities.add(entry.getKey());
             }
         }
 
-        return Activity.IDLE;
+        if (playerActivities.isEmpty()) {
+            playerActivities.add(Activity.IDLE);
+        }
+
+        return playerActivities;
     }
 
     @EventHandler
@@ -69,10 +73,6 @@ public class ActivityManager implements Listener {
         if (event.getDamager() instanceof Player player) {
             recordActivity(player, Activity.COMBAT);
         }
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
             recordActivity(player, Activity.COMBAT);
         }
@@ -95,7 +95,7 @@ public class ActivityManager implements Listener {
     }
 
     private void recordActivity(Player player, Activity activity) {
-        activities.computeIfAbsent(player, k -> new TreeMap<>(Comparator.reverseOrder()))
+        activities.computeIfAbsent(player, k -> new HashMap<>())
             .put(activity, System.currentTimeMillis());
     }
 

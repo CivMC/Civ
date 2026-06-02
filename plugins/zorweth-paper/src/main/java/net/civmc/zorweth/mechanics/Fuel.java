@@ -13,6 +13,12 @@ import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public class Fuel {
 
+    public static void registerCustomItems() {
+        createCrudeOil();
+        createRocketFuel();
+        createAluminiumIngot();
+    }
+
     public static ItemStack createCrudeOil() {
         ItemStack item = new ItemStack(Material.RECOVERY_COMPASS);
         item.setData(DataComponentTypes.ITEM_MODEL, new NamespacedKey("minecraft", "charcoal"));
@@ -37,6 +43,17 @@ public class Fuel {
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         CustomItem.registerCustomItem("rocket_fuel", item);
+
+        return item;
+    }
+
+    public static ItemStack createAluminiumIngot() {
+        ItemStack item = new ItemStack(Material.IRON_INGOT);
+        ItemMeta meta = item.getItemMeta();
+        meta.itemName(Component.text("Aluminium Ingot", TextColor.color(211, 131, 59)));
+        meta.setEnchantmentGlintOverride(true);
+        item.setItemMeta(meta);
+        CustomItem.registerCustomItem("aluminium_ingot", item);
 
         return item;
     }

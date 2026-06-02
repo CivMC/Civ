@@ -32,6 +32,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
@@ -44,10 +45,11 @@ public class LaunchHandler {
     public static final double EXHAUST_VELOCITY_METERS_PER_SECOND = 5_000.0;
     public static final double ROCKET_DRY_MASS_KG = 100.0;
     public static final double SITTING_PLAYER_MASS_KG = 50.0;
+    private static final String COMPACTED_LORE = "Compacted Item";
 
     public static FuelStatus calculateFuelStatus(final Block computer, final List<RocketManifestPassenger> passengers,
                                                   final List<RocketManifestChest> chests) {
-        final double cargoMass = calculateCargoMass(chests);
+        final double cargoMass = calculateCargoMass(chests, passengers);
         final int sittingPlayers = Math.max(1, passengers.size());
         final double nonFuelMass = ROCKET_DRY_MASS_KG + cargoMass + sittingPlayers * SITTING_PLAYER_MASS_KG;
         final double requiredFuelKg = nonFuelMass * (Math.exp(getDeltaVMetersPerSecond() / EXHAUST_VELOCITY_METERS_PER_SECOND) - 1.0);
@@ -117,21 +119,60 @@ public class LaunchHandler {
         return new RocketWeightPayload(passengers, chests, getRemainingFuel(chests, passengers, computer));
     }
 
-    private static double calculateCargoMass(final List<RocketManifestChest> chests) {
+    private static double calculateCargoMass(final List<RocketManifestChest> chests,
+                                             final List<RocketManifestPassenger> passengers) {
         double mass = 0.0;
         for (final RocketManifestChest chest : chests) {
-            for (final ItemStack item : chest.contents()) {
-                if (item == null || item.getType().isAir()) {
-                    continue;
-                }
-                double itemMass = item.getAmount() / (double) item.getMaxStackSize();
-                if (FlightComputer.isFuel(item)) {
-                    itemMass *= FUEL_ITEM_MASS_KG * item.getMaxStackSize();
-                }
-                mass += itemMass;
-            }
+            mass += calculateItemMass(chest.contents());
+        }
+        for (final RocketManifestPassenger passenger : passengers) {
+            mass += calculateItemMass(passenger.inventoryContents());
         }
         return mass;
+    }
+
+    private static double calculateItemMass(final ItemStack[] items) {
+        double mass = 0.0;
+        for (final ItemStack item : items) {
+            if (item == null || item.getType().isAir()) {
+                continue;
+            }
+            int itemAmount = item.getAmount();
+            if (isCompacted(item)) {
+                itemAmount *= getCompactStackSize(item.getType());
+            }
+            double itemMass = itemAmount / (double) item.getMaxStackSize();
+            if (FlightComputer.isFuel(item)) {
+                itemMass = itemAmount * FUEL_ITEM_MASS_KG;
+            }
+            mass += itemMass;
+        }
+        return mass;
+    }
+
+    private static int getCompactStackSize(final Material material) {
+        return switch (material.getMaxStackSize()) {
+            case 64 -> 64;
+            case 16 -> 16;
+            case 1 -> 8;
+            default -> 1;
+        };
+    }
+
+    private static boolean isCompacted(final ItemStack item) {
+        if (!item.hasItemMeta()) {
+            return false;
+        }
+        final ItemMeta meta = item.getItemMeta();
+        if (!meta.hasLore()) {
+            return false;
+        }
+        for (final String lore : meta.getLore()) {
+            if (COMPACTED_LORE.equals(lore)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static RocketManifestResult collectLaunchManifest(final ZorwethPlugin plugin, final Block computer, final Player player, Clipboard rocket) {
@@ -196,7 +237,7 @@ public class LaunchHandler {
     private static double getRemainingFuel(final List<RocketManifestChest> chests,
                                            final List<RocketManifestPassenger> passengers,
                                            final Block computer) {
-        final double cargoMass = calculateCargoMass(chests);
+        final double cargoMass = calculateCargoMass(chests, passengers);
         final double dryMass = ROCKET_DRY_MASS_KG + cargoMass + passengers.size() * SITTING_PLAYER_MASS_KG;
         final double wetMass = FlightComputer.getFuelKg(computer) + dryMass;
         return wetMass / (Math.exp(getDeltaVMetersPerSecond() / EXHAUST_VELOCITY_METERS_PER_SECOND)) - dryMass;

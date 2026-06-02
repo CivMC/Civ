@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
 import net.civmc.zorweth.flight.FlightComputerGui;
+import net.civmc.zorweth.mechanics.Fuel;
 import net.civmc.zorweth.mechanics.OilMechanics;
 import net.civmc.zorweth.oxygen.ActivityManager;
 import net.civmc.zorweth.oxygen.OxygenCommand;
@@ -59,6 +60,7 @@ public final class ZorwethPlugin extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        Fuel.registerCustomItems();
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
         this.stasisHandler = new StasisHandler();
@@ -76,11 +78,16 @@ public final class ZorwethPlugin extends JavaPlugin {
         }
 
         loadOxygen();
+
+        double gravity = getConfig().getDouble("gravity");
+        if (gravity != 0) {
+            getServer().getPluginManager().registerEvents(new GravityListener(gravity), this);
+        }
     }
 
     private void loadOxygen() {
         ConfigurationSection oxygenSection = getConfig().getConfigurationSection("oxygen");
-        if (!oxygenSection.getBoolean("enabled")) {
+        if (oxygenSection == null || !oxygenSection.getBoolean("enabled")) {
             return;
         }
 

@@ -26,13 +26,15 @@ mechanics:
 research:
   enabled: false
 
+gravity: 0.04
+
 oxygen:
   enabled: true
   world: world
   consumption_per_second: 0.006
   biomes:
+    "minecraft:pale_garden": 0.5
     "minecraft:end_highlands": 1
-    "minecraft:pale_garden": 2
     "minecraft:end_midlands": 3
     "minecraft:end_barrens": 4
     "minecraft:basalt_deltas": 8

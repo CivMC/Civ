@@ -45,7 +45,7 @@ public class OxygenBottle {
             .addIngredient(Material.GLASS_BOTTLE)
             .addIngredient(Material.COAL)
             .addIngredient(Material.PITCHER_PLANT);
-        recipe.setCategory(CraftingBookCategory.EQUIPMENT);
+        recipe.setCategory(CraftingBookCategory.MISC);
         return recipe;
     }
 }

@@ -1,12 +1,15 @@
 package net.civmc.zorweth.oxygen;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -18,7 +21,8 @@ import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public final class OxygenBladder {
 
-    private static final String CUSTOM_ITEM_KEY = "small_oxygen_bladder";
+    private static final String SMALL_OXYGEN_BLADDER = "small_oxygen_bladder";
+    private static final String OXYGEN_REBREATHER = "oxygen_rebreather";
     private static final NamespacedKey RESERVE_KEY = new NamespacedKey("zorweth", "oxygen_bladder_reserve");
 
     private OxygenBladder() {
@@ -37,36 +41,75 @@ public final class OxygenBladder {
         ));
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
-        CustomItem.registerCustomItem(CUSTOM_ITEM_KEY, item);
+        CustomItem.registerCustomItem(SMALL_OXYGEN_BLADDER, item);
         return item;
     }
 
-    public static boolean isSmallOxygenBladder(final ItemStack item) {
-        if (item == null || item.isEmpty()) {
-            return false;
+    public static ItemStack createOxygenRebreather() {
+        final ItemStack item = new ItemStack(Material.RECOVERY_COMPASS);
+        item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("conduit"));
+        item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
+        final ItemMeta meta = item.getItemMeta();
+        meta.itemName(Component.text("Oxygen Rebreather", TextColor.color(140, 163, 177)));
+        meta.lore(List.of(
+            Component.text("An efficient apparatus for recycling oxygen.", NamedTextColor.WHITE),
+            Component.text("Increases max oxygen to 16000", NamedTextColor.WHITE),
+            Component.text("Automatically consumes oxygen items below 1000 oxygen", NamedTextColor.WHITE)
+        ));
+        meta.setEnchantmentGlintOverride(true);
+        item.setItemMeta(meta);
+        CustomItem.registerCustomItem(OXYGEN_REBREATHER, item);
+        return item;
+    }
+
+    private static final Map<String, Double> BLADDER_MAX = new HashMap<>();
+
+    static {
+        BLADDER_MAX.put(SMALL_OXYGEN_BLADDER, 3D);
+        BLADDER_MAX.put(OXYGEN_REBREATHER, 16D);
+    }
+
+    public static ItemStack getOxygenBladder(Player player) {
+        ItemStack bladder = null;
+        double max = 0;
+
+        for (final ItemStack item : player.getInventory().getContents()) {
+            String key = CustomItem.getCustomItemKey(item);
+            if (BLADDER_MAX.containsKey(key) && BLADDER_MAX.get(key) > max) {
+                max = BLADDER_MAX.get(key);
+                bladder = item;
+            }
         }
-        return CustomItem.isCustomItem(item, CUSTOM_ITEM_KEY);
+
+        return bladder;
+    }
+
+    public static double getMaxOxygen(Player player) {
+        double max = OxygenManager.DEFAULT_MAX_OXYGEN;
+
+        for (final ItemStack item : player.getInventory().getContents()) {
+            String key = CustomItem.getCustomItemKey(item);
+            if (BLADDER_MAX.containsKey(key) && BLADDER_MAX.get(key) > max) {
+                max = BLADDER_MAX.get(key);
+            }
+        }
+
+        return max;
     }
 
     public static double getReserve(final ItemStack item) {
-        if (!isSmallOxygenBladder(item)) {
-            return 0;
-        }
         final ItemMeta meta = item.getItemMeta();
         return Math.max(0, meta.getPersistentDataContainer().getOrDefault(RESERVE_KEY, PersistentDataType.DOUBLE, 0D));
     }
 
     public static void setReserve(final ItemStack item, final double reserve) {
-        if (!isSmallOxygenBladder(item)) {
-            return;
-        }
         final ItemMeta meta = item.getItemMeta();
         meta.getPersistentDataContainer().set(RESERVE_KEY, PersistentDataType.DOUBLE, Math.max(0, reserve));
         item.setItemMeta(meta);
     }
 
     public static CraftingRecipe getRecipe(final Plugin plugin) {
-        final ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(plugin, CUSTOM_ITEM_KEY),
+        final ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(plugin, SMALL_OXYGEN_BLADDER),
             createSmallOxygenBladder())
             .addIngredient(Material.STICK)
             .addIngredient(Material.STRING)

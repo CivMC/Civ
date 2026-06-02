@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.WeakHashMap;
 import net.civmc.zorweth.ZorwethPlugin;
 import net.kyori.adventure.text.Component;
@@ -36,8 +37,8 @@ public class OxygenManager implements Listener {
 
     private static final String OXYGEN_BREW_RECIPE_NAME = "Oxygen";
     private static final double CRUDE_OXYGEN_AMOUNT = 0.09;
-    private static final double OXYGEN_BREW_AMOUNT = 1.8;
-    private static final double DEFAULT_MAX_OXYGEN = 1;
+    private static final double OXYGEN_BREW_AMOUNT = 1.6;
+    public static final double DEFAULT_MAX_OXYGEN = 1;
     private static final double REGENERATION_PREVENTION_OXYGEN = -0.15;
     public static final NamespacedKey NO_HEALTH_REGEN = new NamespacedKey("finale", "no_health_regen");
 
@@ -59,15 +60,18 @@ public class OxygenManager implements Listener {
 
                 double oxygen = getOxygen(player);
 
-                ActivityManager.Activity activity = activityManager.getActivity(player);
-                player.sendMessage("activity -> " + activity);
-                double playerActivityMultiplier = activityMultiplier.getOrDefault(activity, 0D);
+                Set<ActivityManager.Activity> activities = activityManager.getActivities(player);
+                double playerActivityMultiplier = activities
+                    .stream()
+                    .mapToDouble(activityMultiplier::get)
+                    .max()
+                    .orElse(0D);
 
                 double biomeMultiplier = biomeMultipliers.getOrDefault(player.getLocation().getBlock().getBiome(), 0D);
 
                 double loss = playerActivityMultiplier * biomeMultiplier;
                 if (loss == 0) {
-                    if (activity == ActivityManager.Activity.IDLE) {
+                    if (activities.contains(ActivityManager.Activity.IDLE)) {
                         oxygen += baseOxygenConsumptionPerSecond;
                     } else {
                         oxygen += baseOxygenConsumptionPerSecond / 2;
@@ -97,12 +101,10 @@ public class OxygenManager implements Listener {
 
     @EventHandler
     public void on(PlayerItemConsumeEvent event) {
-        if (!OxygenBottle.isCrudeOxygen(event.getItem())) {
-            return;
-        }
-
         Player player = event.getPlayer();
-        addOxygen(player, CRUDE_OXYGEN_AMOUNT);
+        if (OxygenBottle.isCrudeOxygen(event.getItem())) {
+            addOxygen(player, CRUDE_OXYGEN_AMOUNT);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -209,16 +211,12 @@ public class OxygenManager implements Listener {
 
     public void setOxygen(final Player player, final double oxygen) {
         player.getPersistentDataContainer().set(oxygenKey, PersistentDataType.DOUBLE,
-            Math.clamp(oxygen, -1, this.oxygenBladderMechanics.getMaxOxygen(player, DEFAULT_MAX_OXYGEN)));
-    }
-
-    public double getMaxOxygen(final Player player) {
-        return this.oxygenBladderMechanics.getMaxOxygen(player, DEFAULT_MAX_OXYGEN);
+            Math.clamp(oxygen, -1, OxygenBladder.getMaxOxygen(player)));
     }
 
     private void sendDebouncedMessage(Player player, Component message) {
         Long lastMessageTime = lastMessage.get(player);
-        if (lastMessageTime != null && lastMessageTime + 30_000 > System.currentTimeMillis()) {
+        if (lastMessageTime != null && lastMessageTime + 15_000 > System.currentTimeMillis()) {
             return;
         }
 

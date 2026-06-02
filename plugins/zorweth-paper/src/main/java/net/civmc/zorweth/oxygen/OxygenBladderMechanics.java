@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 
 public final class OxygenBladderMechanics {
 
-    public static final double MAX_OXYGEN = 3;
     public static final double CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD = 1;
 
     public double drainOxygen(final Player player, final double amount, final double oxygenPerItem,
@@ -28,7 +27,7 @@ public final class OxygenBladderMechanics {
     private double drawOxygen(final Player player, final double amount, final double oxygenPerItem,
                               final boolean canConsumeItem) {
         double remaining = amount;
-        final ItemStack bladder = getSmallOxygenBladder(player);
+        final ItemStack bladder = OxygenBladder.getOxygenBladder(player);
         if (bladder == null) {
             return 0;
         }
@@ -54,10 +53,6 @@ public final class OxygenBladderMechanics {
         return amount - remaining;
     }
 
-    public double getMaxOxygen(final Player player, final double defaultMaxOxygen) {
-        return getSmallOxygenBladder(player) == null ? defaultMaxOxygen : MAX_OXYGEN;
-    }
-
     private double consumeOneOxygenItem(final Player player, final double oxygenPerItem) {
         for (final ItemStack item : player.getInventory().getContents()) {
             if (!OxygenBottle.isCrudeOxygen(item)) {
@@ -72,14 +67,5 @@ public final class OxygenBladderMechanics {
             return oxygenPerItem;
         }
         return 0;
-    }
-
-    private ItemStack getSmallOxygenBladder(final Player player) {
-        for (final ItemStack item : player.getInventory().getContents()) {
-            if (OxygenBladder.isSmallOxygenBladder(item)) {
-                return item;
-            }
-        }
-        return null;
     }
 }
