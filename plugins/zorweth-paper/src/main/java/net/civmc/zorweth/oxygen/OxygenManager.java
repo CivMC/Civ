@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.CraftingRecipe;
@@ -39,7 +40,7 @@ public class OxygenManager implements Listener {
 
     static final String OXYGEN_BREW_RECIPE_NAME = "Oxygen";
     private static final double CRUDE_OXYGEN_AMOUNT = 0.09;
-    static final double OXYGEN_BREW_AMOUNT = 1.6;
+    static final double OXYGEN_BREW_AMOUNT = 2.2;
     public static final double DEFAULT_MAX_OXYGEN = 1;
     private static final double REGENERATION_PREVENTION_OXYGEN = -0.15;
     public static final NamespacedKey NO_HEALTH_REGEN = new NamespacedKey("finale", "no_health_regen");
@@ -126,6 +127,16 @@ public class OxygenManager implements Listener {
 
         final Player player = event.getPlayer();
         addOxygen(player, OXYGEN_BREW_AMOUNT * (event.getQuality() / 10D));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void on(final PlayerBedEnterEvent event) {
+        if (hasOxygen(event.getBed().getBiome())) {
+            return;
+        }
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(Component.text("You cannot set your bed in a low-oxygen biome.",
+            NamedTextColor.RED));
     }
 
     public static OxygenManager deserialize(ZorwethPlugin plugin, ActivityManager activityManager, ConfigurationSection section) {

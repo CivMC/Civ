@@ -49,7 +49,9 @@ factories:
             - Activity reward used to fuel pearls
     recipes:
       - create_basic_oxygen_tank
+      - create_advanced_oxygen_tank
       - refill_oxygen_tank
+      - advanced_refill_oxygen_tank
       - create_oxygen_rebreather
       - repair_oxygen_factory
   space_chem:
@@ -103,6 +105,7 @@ factories:
       - check_research_progress
       - research_phase_1
       - research_phase_2
+      - make_armour_repair_kit
       - refine_crude_oil
       - repair_space_chem_factory
   crude:
@@ -18306,21 +18309,11 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GLASS_BOTTLE
         amount: 64
-      ink_sac:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: INK_SAC
-        amount: 2
       paper:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
         amount: 16
-      brewing_stands:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BREWING_STAND
-        amount: 2
       wind_charge:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -18372,7 +18365,7 @@ recipes:
     input:
       aluminium_ingot:
         custom-key: aluminium_ingot
-        amount: 8
+        amount: 4
       diamonds:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -18387,18 +18380,93 @@ recipes:
       empty_basic_oxygen_tank:
         custom-key: empty_basic_oxygen_tank
         amount: 1
+  create_advanced_oxygen_tank:
+    production_time: 4s
+    name: Create Advanced Oxygen Tank
+    type: PRODUCTION
+    input:
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 16
+      diamonds:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 12
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 32
+    output:
+      empty_advanced_oxygen_tank:
+        custom-key: empty_advanced_oxygen_tank
+        amount: 1
   refill_oxygen_tank:
     production_time: 512s
     fuel_consumption_intervall: 16s
-    name: Refill Oxygen Tank
+    name: Refill Basic Oxygen Tank
     type: OXYGEN_REFILL
     input:
       empty_basic_oxygen_tank:
         custom-key: empty_basic_oxygen_tank
         amount: 1
-      aluminium:
-        custom-key: aluminium_ingot
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+    output:
+      filled_basic_oxygen_tank:
+        custom-key: filled_basic_oxygen_tank
         amount: 1
+  make_oxygen_filters:
+    production_time: 4s
+    name: Make Oxygen Filters
+    type: PRODUCTION
+    input:
+      phantom_membrane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PHANTOM_MEMBRANE
+        amount: 1
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 1
+      oxygen_filters:
+        custom-key: oxygen_filters
+        amount: 8
+  advanced_refill_oxygen_tank:
+    production_time: 1024s
+    fuel_consumption_intervall: 16s
+    name: Refill Advanced Oxygen Tank
+    type: OXYGEN_REFILL
+    input:
+      empty_advanced_oxygen_tank:
+        custom-key: empty_advanced_oxygen_tank
+        amount: 1
+      oxygen_filters:
+        custom-key: oxygen_filters
+        amount: 1
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
     output:
       filled_basic_oxygen_tank:
         custom-key: filled_basic_oxygen_tank
@@ -18414,6 +18482,17 @@ recipes:
       aluminium_ingot:
         custom-key: aluminium_ingot
         amount: 16
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 64
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
       diamonds:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -18569,3 +18648,20 @@ recipes:
       rocket_fuel:
         custom-key: rocket_fuel
         amount: 8
+  make_armour_repair_kit:
+    production_time: 4s
+    name: Make Armour Repair Kit
+    type: PRODUCTION
+    input:
+      aluminium:
+        custom-key: aluminium_ingot
+        amount: 8
+      phantom_membrane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PHANTOM_MEMBRANE
+        amount: 4
+    output:
+      armor_repair_kit:
+        custom-key: armour_repair_kit
+        amount: 1

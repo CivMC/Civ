@@ -8,7 +8,9 @@ import com.sk89q.worldedit.regions.Region;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.civmc.zorweth.RocketTransferKeys;
@@ -180,6 +182,7 @@ public class LaunchHandler {
         final BlockVector3 schematicNorthWestCorner = region.getMinimumPoint();
         final Block origin = FlightComputer.getRocketOrigin(computer);
         final RocketWeightPayload payload = collectRocketWeightPayload(computer, rocket);
+        final Map<Long, Integer> highestRocketYByColumn = new HashMap<>();
 
         for (final BlockVector3 position : region) {
             final BlockVector3 relative = position.subtract(schematicNorthWestCorner);
@@ -190,6 +193,21 @@ public class LaunchHandler {
             if (actual != expected) {
                 return new RocketManifestResult(null,
                     Component.text("Rocket is not structurally intact", NamedTextColor.RED));
+            }
+            if (!expected.isAir()) {
+                final long column = packColumn(relative.getX(), relative.getZ());
+                highestRocketYByColumn.merge(column, actualBlock.getY(), Math::max);
+            }
+        }
+
+        for (final Map.Entry<Long, Integer> entry : highestRocketYByColumn.entrySet()) {
+            final int x = unpackColumnX(entry.getKey()) + origin.getX();
+            final int z = unpackColumnZ(entry.getKey()) + origin.getZ();
+            for (int y = entry.getValue() + 1; y < origin.getWorld().getMaxHeight(); y++) {
+                if (!origin.getWorld().getBlockAt(x, y, z).getType().isAir()) {
+                    return new RocketManifestResult(null,
+                        Component.text("Rocket launch path is obstructed", NamedTextColor.RED));
+                }
             }
         }
 
@@ -232,6 +250,18 @@ public class LaunchHandler {
             payload.chests(),
             getRemainingFuel(payload.chests(), payload.passengers(), computer)
         ), null);
+    }
+
+    private static long packColumn(final int x, final int z) {
+        return ((long) x << 32) ^ (z & 0xffffffffL);
+    }
+
+    private static int unpackColumnX(final long column) {
+        return (int) (column >> 32);
+    }
+
+    private static int unpackColumnZ(final long column) {
+        return (int) column;
     }
 
     private static double getRemainingFuel(final List<RocketManifestChest> chests,

@@ -25,6 +25,8 @@ import net.civmc.zorweth.oxygen.OxygenManager;
 import net.civmc.zorweth.oxygen.OxygenBladder;
 import net.civmc.zorweth.oxygen.OxygenTank;
 import net.civmc.zorweth.research.ResearchManager;
+import net.civmc.zorweth.repair.ArmourRepairKit;
+import net.civmc.zorweth.repair.ArmourRepairKitListener;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -66,6 +68,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         Fuel.registerCustomItems();
         OxygenBladder.registerCustomItems();
         OxygenTank.registerCustomItems();
+        ArmourRepairKit.createArmourRepairKit();
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
         this.stasisHandler = new StasisHandler();
@@ -74,6 +77,7 @@ public final class ZorwethPlugin extends JavaPlugin {
             this.researchPhaseTwoRuns);
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
+        getServer().getPluginManager().registerEvents(new ArmourRepairKitListener(this), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
         getServer().getPluginManager().registerEvents(new CrossServerOttArrivalListener(this, this.crossServerOttManager), this);
         Objects.requireNonNull(getCommand("pioneer")).setExecutor(new PioneerCommand(this));

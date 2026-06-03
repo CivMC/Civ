@@ -8,6 +8,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class OxygenBladderMechanics {
 
@@ -33,22 +35,29 @@ public final class OxygenBladderMechanics {
     }
 
     private double consumeOneOxygenItem(final Player player, final double oxygenPerItem) {
-        for (final ItemStack item : player.getInventory().getContents()) {
+        @Nullable ItemStack @NotNull [] contents = player.getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
             if (OxygenBottle.isCrudeOxygen(item)) {
+                item.subtract(1);
                 consumeItem(player, item);
                 return oxygenPerItem;
             }
             final double brewOxygen = getOxygenBrewAmount(item);
             if (brewOxygen > 0) {
+                item.subtract(1);
                 consumeItem(player, item);
                 return brewOxygen;
             }
             if (OxygenTank.isFilledBasicOxygenTank(item)) {
                 consumeItem(player, item);
-                for (final ItemStack leftover : player.getInventory().addItem(OxygenTank.createEmptyBasicOxygenTank()).values()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), leftover);
-                }
+                contents[i] = OxygenTank.createEmptyBasicOxygenTank();
                 return OxygenTank.BASIC_OXYGEN_TANK_AMOUNT;
+            }
+            if (OxygenTank.isFilledAdvancedOxygenTank(item)) {
+                consumeItem(player, item);
+                contents[i] = OxygenTank.createEmptyBasicOxygenTank();
+                return OxygenTank.ADVANCED_OXYGEN_TANK_AMOUNT;
             }
         }
         return 0;
@@ -74,7 +83,6 @@ public final class OxygenBladderMechanics {
 
     private void consumeItem(final Player player, final ItemStack item) {
         final Component itemName = item.effectiveName();
-        item.subtract(1);
         player.sendMessage(Component.text("Oxygen bladder consumed ", NamedTextColor.GRAY)
             .append(itemName)
             .decorate(TextDecoration.ITALIC));
