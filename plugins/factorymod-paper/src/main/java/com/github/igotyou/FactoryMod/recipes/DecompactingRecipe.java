@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -154,6 +155,9 @@ public class DecompactingRecipe extends InputRecipe {
     }
 
     private boolean isDecompactable(ItemStack is) {
+        if (Tag.ITEMS_BUNDLES.isTagged(is.getType())) {
+            return false;
+        }
         List<String> lore = is.getItemMeta().getLore();
         if (lore != null) {
             for (String content : lore) {
