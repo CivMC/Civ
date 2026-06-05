@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.HappyGhast;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,7 +54,9 @@ public class ActivityManager implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (player.isSwimming()) {
+        if (player.getVehicle() instanceof Boat || player.getVehicle() instanceof HappyGhast) {
+            recordActivity(player, Activity.BOATING);
+        } else if (player.isSwimming()) {
             recordActivity(player, Activity.SWIMMING);
         } else if (player.isSprinting()) {
             recordActivity(player, Activity.SPRINTING);
@@ -108,6 +112,7 @@ public class ActivityManager implements Listener {
         SPRINTING,
         SWIMMING,
         REGENERATING,
+        BOATING,
         MINING,
         COMBAT
     }

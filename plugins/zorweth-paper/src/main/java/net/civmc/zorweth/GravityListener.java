@@ -18,5 +18,6 @@ public class GravityListener implements Listener {
     public void on(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         player.getAttribute(Attribute.GRAVITY).setBaseValue(gravity);
+        player.getAttribute(Attribute.SAFE_FALL_DISTANCE).setBaseValue(4);
     }
 }

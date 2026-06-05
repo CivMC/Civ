@@ -1,5 +1,6 @@
 package net.civmc.zorweth.flight;
 
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -34,6 +35,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -235,6 +237,11 @@ public class LaunchHandler {
                 Component.text("Destination not set.", NamedTextColor.RED));
         }
 
+        if (containsExilePearl(payload)) {
+            return new RocketManifestResult(null,
+                Component.text("Pearls cannot be transferred on rockets.", NamedTextColor.RED));
+        }
+
         return new RocketManifestResult(new RocketManifest(
             UUID.randomUUID(),
             plugin.getServerName(),
@@ -262,6 +269,41 @@ public class LaunchHandler {
 
     private static int unpackColumnZ(final long column) {
         return (int) column;
+    }
+
+    private static boolean containsExilePearl(final RocketWeightPayload payload) {
+        for (final RocketManifestPassenger passenger : payload.passengers()) {
+            if (containsExilePearl(passenger.inventoryContents())) {
+                return true;
+            }
+        }
+        for (final RocketManifestChest chest : payload.chests()) {
+            if (containsExilePearl(chest.contents())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containsExilePearl(final ItemStack[] contents) {
+        for (final ItemStack item : contents) {
+            if (isExilePearl(item)) {
+                return true;
+            }
+            if (item != null && item.getItemMeta() instanceof BundleMeta bundleMeta
+                && containsExilePearl(bundleMeta.getItems().toArray(ItemStack[]::new))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isExilePearl(final ItemStack item) {
+        return item != null
+            && item.getType() == Material.ENDER_PEARL
+            && Bukkit.getPluginManager().isPluginEnabled("ExilePearl")
+            && ExilePearlPlugin.getApi() != null
+            && ExilePearlPlugin.getApi().getPearlFromItemStack(item) != null;
     }
 
     private static double getRemainingFuel(final List<RocketManifestChest> chests,

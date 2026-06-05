@@ -24,6 +24,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -83,12 +85,17 @@ public class OxygenManager implements Listener {
                 double loss = playerActivityMultiplier * biomeMultiplier;
                 if (loss == 0) {
                     if (activities.contains(ActivityManager.Activity.IDLE)) {
-                        oxygen += baseOxygenConsumptionPerSecond;
+                        oxygen += baseOxygenConsumptionPerSecond * 2;
                     } else {
-                        oxygen += baseOxygenConsumptionPerSecond / 2;
+                        oxygen += baseOxygenConsumptionPerSecond;
                     }
                     setOxygen(player, oxygen);
                     continue;
+                }
+
+                Entity vehicle = player.getVehicle();
+                if (vehicle instanceof AbstractHorse horse) {
+                    horse.damage(1);
                 }
 
                 drainOxygen(player, loss * baseOxygenConsumptionPerSecond, activity);
@@ -110,15 +117,20 @@ public class OxygenManager implements Listener {
         }
     }
 
-    @EventHandler
-    public void on(PlayerItemConsumeEvent event) {
-        Player player = event.getPlayer();
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void on(final PlayerItemConsumeEvent event) {
+        final Player player = event.getPlayer();
         if (OxygenBottle.isCrudeOxygen(event.getItem())) {
+            if (isAtMaxOxygen(player)) {
+                event.setCancelled(true);
+                player.sendMessage(Component.text("Your oxygen is already full.", NamedTextColor.RED));
+                return;
+            }
             addOxygen(player, CRUDE_OXYGEN_AMOUNT);
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void on(final BrewDrinkEvent event) {
         final BRecipe recipe = event.getBrew().getCurrentRecipe();
         if (recipe == null || !OXYGEN_BREW_RECIPE_NAME.equals(recipe.getRecipeName())) {
@@ -126,6 +138,11 @@ public class OxygenManager implements Listener {
         }
 
         final Player player = event.getPlayer();
+        if (isAtMaxOxygen(player)) {
+            event.setCancelled(true);
+            player.sendMessage(Component.text("Your oxygen is already full.", NamedTextColor.RED));
+            return;
+        }
         addOxygen(player, OXYGEN_BREW_AMOUNT * (event.getQuality() / 10D));
     }
 
@@ -210,6 +227,10 @@ public class OxygenManager implements Listener {
 
     private void addOxygen(final Player player, final double amount) {
         setOxygen(player, getOxygen(player) + amount);
+    }
+
+    private boolean isAtMaxOxygen(final Player player) {
+        return getOxygen(player) >= OxygenBladder.getMaxOxygen(player);
     }
 
     private void drainOxygen(final Player player, final double amount, final Activity activity) {

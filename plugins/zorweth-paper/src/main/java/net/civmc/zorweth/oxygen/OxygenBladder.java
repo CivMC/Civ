@@ -4,9 +4,11 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import io.papermc.paper.datacomponent.item.DyedItemColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -15,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
@@ -22,6 +25,8 @@ public final class OxygenBladder {
 
     private static final String SMALL_OXYGEN_BLADDER = "small_oxygen_bladder";
     private static final String OXYGEN_REBREATHER = "oxygen_rebreather";
+    private static final String OXYGEN_SUIT = "oxygen_suit";
+    private static final NamespacedKey HELIODOR_NO_COMBINE = new NamespacedKey("heliodor", "no_combine");
 
     private OxygenBladder() {
     }
@@ -29,10 +34,11 @@ public final class OxygenBladder {
     public static void registerCustomItems() {
         createSmallOxygenBladder();
         createOxygenRebreather();
+        createOxygenSuit();
     }
 
     public static ItemStack createSmallOxygenBladder() {
-        final ItemStack item = new ItemStack(Material.RECOVERY_COMPASS);
+        final ItemStack item = new ItemStack(Material.LEATHER_HELMET);
         item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("rabbit_hide"));
         item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
         final ItemMeta meta = item.getItemMeta();
@@ -40,8 +46,11 @@ public final class OxygenBladder {
         meta.lore(List.of(
             Component.text("A flexible reserve for thin Zorweth air.", NamedTextColor.WHITE),
             Component.text("Increases max oxygen to 4000", NamedTextColor.WHITE),
-            Component.text("Automatically consumes oxygen items below 1000 oxygen", NamedTextColor.WHITE)
+            Component.text("Automatically consumes oxygen items below 1000 oxygen", NamedTextColor.WHITE),
+            Component.text("Place on head to use", NamedTextColor.WHITE)
         ));
+        meta.setUnbreakable(true);
+        meta.getPersistentDataContainer().set(HELIODOR_NO_COMBINE, PersistentDataType.BOOLEAN, true);
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         CustomItem.registerCustomItem(SMALL_OXYGEN_BLADDER, item);
@@ -49,7 +58,8 @@ public final class OxygenBladder {
     }
 
     public static ItemStack createOxygenRebreather() {
-        final ItemStack item = new ItemStack(Material.RECOVERY_COMPASS);
+        final ItemStack item = new ItemStack(Material.LEATHER_HELMET);
+        item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(Color.AQUA));
         item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("conduit"));
         item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
         final ItemMeta meta = item.getItemMeta();
@@ -58,11 +68,36 @@ public final class OxygenBladder {
             Component.text("An efficient apparatus for recycling oxygen.", NamedTextColor.WHITE),
             Component.text("Increases max oxygen to 30000", NamedTextColor.WHITE),
             Component.text("Automatically consumes oxygen items below 1000 oxygen", NamedTextColor.WHITE),
-            Component.text("Reduced oxygen consumption while mining and regenerating", NamedTextColor.WHITE)
+            Component.text("Reduced oxygen consumption while mining and regenerating", NamedTextColor.WHITE),
+            Component.text("Place on head to use", NamedTextColor.WHITE)
         ));
+        meta.setUnbreakable(true);
+        meta.getPersistentDataContainer().set(HELIODOR_NO_COMBINE, PersistentDataType.BOOLEAN, true);
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         CustomItem.registerCustomItem(OXYGEN_REBREATHER, item);
+        return item;
+    }
+
+    public static ItemStack createOxygenSuit() {
+        final ItemStack item = new ItemStack(Material.LEATHER_HELMET);
+        item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(Color.BLUE));
+        item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("dropper"));
+        item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
+        final ItemMeta meta = item.getItemMeta();
+        meta.itemName(Component.text("Oxygen Suit", TextColor.color(140, 163, 177)));
+        meta.lore(List.of(
+            Component.text("An efficient apparatus for recycling oxygen.", NamedTextColor.WHITE),
+            Component.text("Increases max oxygen to 85000", NamedTextColor.WHITE),
+            Component.text("Automatically consumes oxygen items below 1000 oxygen", NamedTextColor.WHITE),
+            Component.text("Reduced oxygen consumption while in combat, mining, or regenerating", NamedTextColor.WHITE),
+            Component.text("Place on head to use", NamedTextColor.WHITE)
+        ));
+        meta.setUnbreakable(true);
+        meta.getPersistentDataContainer().set(HELIODOR_NO_COMBINE, PersistentDataType.BOOLEAN, true);
+        meta.setEnchantmentGlintOverride(true);
+        item.setItemMeta(meta);
+        CustomItem.registerCustomItem(OXYGEN_SUIT, item);
         return item;
     }
 
@@ -71,6 +106,7 @@ public final class OxygenBladder {
     static {
         BLADDER_MAX.put(SMALL_OXYGEN_BLADDER, 4D);
         BLADDER_MAX.put(OXYGEN_REBREATHER, 30D);
+        BLADDER_MAX.put(OXYGEN_SUIT, 85D);
     }
 
     public static boolean supportsActivity(ItemStack bladder, ActivityManager.Activity activity) {
@@ -80,37 +116,26 @@ public final class OxygenBladder {
                 return !(activity == ActivityManager.Activity.COMBAT);
             } else if (SMALL_OXYGEN_BLADDER.equals(key)) {
                 return !(activity == ActivityManager.Activity.COMBAT || activity == ActivityManager.Activity.MINING || activity == ActivityManager.Activity.REGENERATING);
+            } else if (OXYGEN_SUIT.equals(key)) {
+                return true;
             }
         }
         return activity == ActivityManager.Activity.IDLE || activity == ActivityManager.Activity.WALKING;
     }
 
     public static ItemStack getOxygenBladder(Player player) {
-        ItemStack bladder = null;
-        double max = 0;
-
-        for (final ItemStack item : player.getInventory().getContents()) {
-            String key = CustomItem.getCustomItemKey(item);
-            if (BLADDER_MAX.containsKey(key) && BLADDER_MAX.get(key) > max) {
-                max = BLADDER_MAX.get(key);
-                bladder = item;
-            }
+        final ItemStack item = player.getInventory().getHelmet();
+        final String key = CustomItem.getCustomItemKey(item);
+        if (BLADDER_MAX.containsKey(key)) {
+            return item;
         }
-
-        return bladder;
+        return null;
     }
 
     public static double getMaxOxygen(Player player) {
-        double max = OxygenManager.DEFAULT_MAX_OXYGEN;
-
-        for (final ItemStack item : player.getInventory().getContents()) {
-            String key = CustomItem.getCustomItemKey(item);
-            if (BLADDER_MAX.containsKey(key) && BLADDER_MAX.get(key) > max) {
-                max = BLADDER_MAX.get(key);
-            }
-        }
-
-        return max;
+        final ItemStack item = player.getInventory().getHelmet();
+        final String key = CustomItem.getCustomItemKey(item);
+        return BLADDER_MAX.getOrDefault(key, OxygenManager.DEFAULT_MAX_OXYGEN);
     }
 
     public static CraftingRecipe getRecipe(final Plugin plugin) {

@@ -39,10 +39,11 @@ oxygen:
     "minecraft:end_barrens": 4
     "minecraft:basalt_deltas": 8
   activities:
-    idle: 0.25
+    idle: 0.1
     walking: 0.5
     sprinting: 2
-    swimming: 2.5
-    regenerating: 3
+    swimming: 2
+    regenerating: 2.5
+    boating: 3
     mining: 4
     combat: 5

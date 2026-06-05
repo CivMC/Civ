@@ -31,30 +31,25 @@ public final class ArmourRepairKitListener implements Listener {
     public void onPrepareItemCraft(final PrepareItemCraftEvent event) {
         final CraftingInventory inventory = event.getInventory();
         ItemStack armour = null;
-        boolean hasRepairKit = false;
+        int repairKits = 0;
+        int otherItems = 0;
 
         for (final ItemStack item : inventory.getMatrix()) {
             if (item == null || item.isEmpty()) {
                 continue;
             }
             if (CustomItem.isCustomItem(item, ArmourRepairKit.ARMOUR_REPAIR_KIT)) {
-                if (hasRepairKit) {
-                    inventory.setResult(null);
-                    return;
-                }
-                hasRepairKit = true;
-            } else if (armour == null) {
-                armour = item;
+                repairKits++;
             } else {
-                inventory.setResult(null);
-                return;
+                otherItems++;
+                armour = item;
             }
         }
 
-        if (!hasRepairKit) {
+        if (repairKits == 0) {
             return;
         }
-        if (armour == null || !isRepairableArmour(armour)) {
+        if (repairKits != 1 || otherItems != 1 || !isRepairableArmour(armour)) {
             inventory.setResult(null);
             return;
         }

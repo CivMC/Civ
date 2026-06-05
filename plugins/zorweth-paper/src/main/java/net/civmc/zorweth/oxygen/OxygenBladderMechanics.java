@@ -39,14 +39,14 @@ public final class OxygenBladderMechanics {
         for (int i = 0; i < contents.length; i++) {
             ItemStack item = contents[i];
             if (OxygenBottle.isCrudeOxygen(item)) {
-                item.subtract(1);
                 consumeItem(player, item);
+                item.subtract(1);
                 return oxygenPerItem;
             }
             final double brewOxygen = getOxygenBrewAmount(item);
             if (brewOxygen > 0) {
-                item.subtract(1);
                 consumeItem(player, item);
+                item.subtract(1);
                 return brewOxygen;
             }
             if (OxygenTank.isFilledBasicOxygenTank(item)) {
