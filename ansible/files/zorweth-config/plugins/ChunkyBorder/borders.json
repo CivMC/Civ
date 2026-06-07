@@ -2,18 +2,18 @@
   "world": {
     "world": "world",
     "centerX": 0.5,
-    "centerZ": 0.5,
-    "radiusX": 10000.0,
-    "radiusZ": 10000.0,
+    "centerZ": -20000.5,
+    "radiusX": 7000.0,
+    "radiusZ": 7000.0,
     "shape": "circle",
     "wrap": false
   },
   "world_nether": {
     "world": "world_nether",
     "centerX": 0.5,
-    "centerZ": 0.5,
-    "radiusX": 10000.0,
-    "radiusZ": 10000.0,
+    "centerZ": -20000.5,
+    "radiusX": 7000.0,
+    "radiusZ": 7000.0,
     "shape": "circle",
     "wrap": false
   }
