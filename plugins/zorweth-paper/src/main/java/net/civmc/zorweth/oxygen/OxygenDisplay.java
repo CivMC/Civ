@@ -22,6 +22,7 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 public class OxygenDisplay implements Listener {
 
     private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#");
+    private static final DecimalFormat CHANGE_FORMAT = new DecimalFormat("+#;-#");
 
     private final BooleanSetting showOxygen;
     private final DisplayLocationSetting oxygenLocation;
@@ -66,15 +67,17 @@ public class OxygenDisplay implements Listener {
             return;
         }
 
+        final String change = formatChange(oxygenManager.getLastOxygenTickChange(p));
         String text;
         if (oxygen < -0.3) {
-            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.BOLD + ChatColor.DARK_RED + "CRITICAL";
+            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.BOLD + ChatColor.DARK_RED + "CRITICAL " + change;
         } else if (oxygen < -0.05) {
-            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.BOLD + ChatColor.RED + "SUFFOCATING";
+            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.BOLD + ChatColor.RED + "SUFFOCATING " + change;
         } else if (oxygen < 0) {
-            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.RED + "LOW";
+            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.RED + "LOW " + change;
         } else {
-            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.AQUA + PERCENT_FORMAT.format(oxygen * 1000);
+            text = ChatColor.DARK_AQUA + "Oxygen: " + ChatColor.AQUA + PERCENT_FORMAT.format(oxygen * 1000)
+                + " " + change;
         }
         if (oxygenLocation.showOnActionbar(p.getUniqueId())) {
             oxygenBottomLine.updatePlayer(p, text);
@@ -82,5 +85,11 @@ public class OxygenDisplay implements Listener {
         if (oxygenLocation.showOnSidebar(p.getUniqueId())) {
             oxygenScoreboard.set(p, text);
         }
+    }
+
+    private String formatChange(final double change) {
+        final String formattedChange = CHANGE_FORMAT.format(change * 1000);
+        final ChatColor color = change < 0 ? ChatColor.RED : ChatColor.GREEN;
+        return ChatColor.GRAY + "(" + color + formattedChange + ChatColor.GRAY + "/s)";
     }
 }

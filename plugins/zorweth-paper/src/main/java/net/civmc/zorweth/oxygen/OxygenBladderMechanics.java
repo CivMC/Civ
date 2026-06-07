@@ -2,18 +2,27 @@ package net.civmc.zorweth.oxygen;
 
 import com.dre.brewery.Brew;
 import com.dre.brewery.recipe.BRecipe;
+import java.util.concurrent.ThreadLocalRandom;
+import net.civmc.zorweth.ZorwethPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class OxygenBladderMechanics {
 
     public static final double CONSUME_ITEM_PLAYER_OXYGEN_THRESHOLD = 1;
+    private final double tankBreakChance;
+
+    public OxygenBladderMechanics(final double tankBreakChance) {
+        this.tankBreakChance = tankBreakChance;
+    }
 
     public double getOxygenDrain(final Player player, double amount, ActivityManager.Activity activity) {
         ItemStack bladder = OxygenBladder.getOxygenBladder(player);
@@ -51,16 +60,28 @@ public final class OxygenBladderMechanics {
             }
             if (OxygenTank.isFilledBasicOxygenTank(item)) {
                 consumeItem(player, item);
-                contents[i] = OxygenTank.createEmptyBasicOxygenTank();
+                player.getInventory().setItem(i, getConsumedTankResult(player,
+                    OxygenTank.createEmptyBasicOxygenTank(), OxygenTank.createBrokenBasicOxygenTank()));
                 return OxygenTank.BASIC_OXYGEN_TANK_AMOUNT;
             }
             if (OxygenTank.isFilledAdvancedOxygenTank(item)) {
                 consumeItem(player, item);
-                contents[i] = OxygenTank.createEmptyBasicOxygenTank();
+                player.getInventory().setItem(i, getConsumedTankResult(player,
+                    OxygenTank.createEmptyAdvancedOxygenTank(), OxygenTank.createBrokenAdvancedOxygenTank()));
                 return OxygenTank.ADVANCED_OXYGEN_TANK_AMOUNT;
             }
         }
         return 0;
+    }
+
+    private ItemStack getConsumedTankResult(final Player player, final ItemStack emptyTank, final ItemStack brokenTank) {
+        if (ThreadLocalRandom.current().nextDouble() < this.tankBreakChance) {
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(ZorwethPlugin.class), () -> {
+                player.playSound(player, Sound.BLOCK_GLASS_BREAK, 1, 1);
+            }, 8);
+            return brokenTank;
+        }
+        return emptyTank;
     }
 
     private double getOxygenBrewAmount(final ItemStack item) {
@@ -83,6 +104,7 @@ public final class OxygenBladderMechanics {
 
     private void consumeItem(final Player player, final ItemStack item) {
         final Component itemName = item.effectiveName();
+        player.playSound(player, Sound.BLOCK_BREWING_STAND_BREW, 1, 1);
         player.sendMessage(Component.text("Oxygen bladder consumed ", NamedTextColor.GRAY)
             .append(itemName)
             .decorate(TextDecoration.ITALIC));

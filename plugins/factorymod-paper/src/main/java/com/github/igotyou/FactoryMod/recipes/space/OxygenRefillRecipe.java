@@ -10,6 +10,7 @@ import net.civmc.zorweth.ZorwethPlugin;
 import net.civmc.zorweth.oxygen.OxygenManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,6 +34,9 @@ public final class OxygenRefillRecipe extends ProductionRecipe {
         }
 
         final OxygenManager oxygenManager = getOxygenManager();
+        if (fccf.getFurnace().getWorld().getEnvironment() == World.Environment.NETHER) {
+            return new EffectFeasibility(false, "oxygen cannot be refilled in the nether");
+        }
         if (oxygenManager != null && !oxygenManager.hasOxygen(fccf.getFurnace().getBiome())) {
             return new EffectFeasibility(false, "oxygen is required");
         }

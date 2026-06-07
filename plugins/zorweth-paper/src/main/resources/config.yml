@@ -34,3 +34,7 @@ flight_computer_reinforcement:
 mechanics:
   enabled: false
   world: world
+
+oxygen:
+  enabled: false
+  tank_break_chance: 0.05

@@ -52,6 +52,9 @@ factories:
       - create_advanced_oxygen_tank
       - refill_oxygen_tank
       - advanced_refill_oxygen_tank
+      - repair_basic_oxygen_tank
+      - repair_advanced_oxygen_tank
+      - make_oxygen_filters
       - create_oxygen_rebreather
       - repair_oxygen_factory
   space_chem:
@@ -18441,6 +18444,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 1
+    output:
       oxygen_filters:
         custom-key: oxygen_filters
         amount: 8
@@ -18460,7 +18464,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         v: 3839
         type: SUGAR
-        amount: 8
+        amount: 12
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
@@ -18468,8 +18472,38 @@ recipes:
           lore:
             - Gathered from the Zorweth salt flats
     output:
-      filled_basic_oxygen_tank:
-        custom-key: filled_basic_oxygen_tank
+      filled_advanced_oxygen_tank:
+        custom-key: filled_advanced_oxygen_tank
+        amount: 1
+  repair_basic_oxygen_tank:
+    production_time: 4s
+    name: Repair Basic Oxygen Tank
+    type: PRODUCTION
+    input:
+      broken_basic_oxygen_tank:
+        custom-key: broken_basic_oxygen_tank
+        amount: 1
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 2
+    output:
+      empty_basic_oxygen_tank:
+        custom-key: empty_basic_oxygen_tank
+        amount: 1
+  repair_advanced_oxygen_tank:
+    production_time: 4s
+    name: Repair Advanced Oxygen Tank
+    type: PRODUCTION
+    input:
+      broken_advanced_oxygen_tank:
+        custom-key: broken_advanced_oxygen_tank
+        amount: 1
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 2
+    output:
+      empty_advanced_oxygen_tank:
+        custom-key: empty_advanced_oxygen_tank
         amount: 1
   create_oxygen_rebreather:
     production_time: 4s
