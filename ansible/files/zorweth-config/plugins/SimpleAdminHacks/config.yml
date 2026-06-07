@@ -482,10 +482,10 @@ hacks:
     enabled: false
     follow: true
     contents:
-      title: Welcome ${player}!
+      title: Welcome to Zorweth ${player}!
       author: RedDevel
       pages:
-        - "&5    Welcome &2${player}!\n         &5to CivMC!&r\n\nThis book will guide your first steps!\nIf you die or lose it you can open it via the /introbook command\n\nLet's begin your journey!"
+        - "&5    Welcome &2${player}!\n         &5to Zorweth!&r\n\nThis book will guide your first steps!\nIf you die or lose it you can open it via the /introbook command\n\nLet's begin your journey!"
         - "You've just spawned near another player or town, say something in chat!\n\nIf nobody responds try out global chat instead by using the /global command!\n\nMany nations will want a potential new productive member.\nTake your pick!"
         - "Maybe you've joined at a time of lower activity, and nobody is responding.\n\nThen you can join the official discord and take your pick of the nation ads there!\n\n      &9discord.gg/\n      HkD79GfmQQ&r"
         - "Is the nation you want to join far away?\nWell you're in luck!\n\nEvery new player in their first 24 hours on the server gets a singular free tp!\n\nSimply use the command below:\n\n    &c/ott to <player>&r"
