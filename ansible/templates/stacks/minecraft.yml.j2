@@ -147,6 +147,7 @@ services:
             - /opt/PrivateConfig/paper/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
             - /opt/PrivateConfig/paper/config/Heliodor/config.yml:/config/plugins/Heliodor/config.yml
             - /opt/PrivateConfig/paper/config/CivChat2/banned-words.txt:/config/plugins/CivChat2/banned-words.txt
+            - /opt/PrivateConfig/paper/config/Zorweth/mechanics.yml:/config/plugins/Zorweth/mechanics.yml
 
         deploy:
             placement:
@@ -231,6 +232,7 @@ services:
             - /opt/PrivateConfig/paper/config/BreweryX/recipes.yml:/config/plugins/BreweryX/recipes.yml
             - /opt/PrivateConfig/zorweth/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
             - /opt/PrivateConfig/zorweth/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
+            - /opt/PrivateConfig/zorweth/config/Zorweth/mechanics.yml:/config/plugins/Zorweth/mechanics.yml
         deploy:
             placement:
                 constraints: [node.role == manager]
