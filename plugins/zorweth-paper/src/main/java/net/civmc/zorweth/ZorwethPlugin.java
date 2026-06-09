@@ -121,6 +121,10 @@ public final class ZorwethPlugin extends JavaPlugin {
         return mechanics.recordOilExtraction(location);
     }
 
+    public OilMechanics getMechanics() {
+        return mechanics;
+    }
+
     @Override
     public void onDisable() {
         if (this.dataSource != null) {

@@ -5,8 +5,10 @@ import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import java.util.ArrayList;
 import java.util.List;
 import net.civmc.zorweth.ZorwethPlugin;
+import net.civmc.zorweth.mechanics.OilMechanics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +26,18 @@ public class ExtractOilRecipe extends ProductionRecipe {
         ProductionRecipeModifier modifier
     ) {
         super(identifier, name, productionTime, inputs, output, recipeRepresentation, modifier);
+    }
+
+    @Override
+    public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("Zorweth")) {
+            return new EffectFeasibility(false, "there is oil here");
+        }
+        OilMechanics.VeinPing ping = JavaPlugin.getPlugin(ZorwethPlugin.class).getMechanics().ping(fccf.getMultiBlockStructure().getCenter());
+        if (ping != OilMechanics.VeinPing.VEIN) {
+            return new EffectFeasibility(false, "there is no oil here");
+        }
+        return new EffectFeasibility(true, null);
     }
 
     @Override
