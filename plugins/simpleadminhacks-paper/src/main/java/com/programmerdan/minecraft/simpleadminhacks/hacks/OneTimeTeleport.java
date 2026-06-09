@@ -572,7 +572,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 
     private boolean isEligibleForCrossServerOtt(Player player) {
         if (Bukkit.getPluginManager().isPluginEnabled("Zorweth")) {
-            return player.getPersistentDataContainer().has(RocketTransferKeys.NO_OTT);
+            return !player.getPersistentDataContainer().has(RocketTransferKeys.NO_OTT);
         }
         return true;
     }

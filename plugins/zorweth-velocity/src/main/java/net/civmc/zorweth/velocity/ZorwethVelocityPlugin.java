@@ -24,9 +24,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.slf4j.Logger;
@@ -42,6 +44,7 @@ public final class ZorwethVelocityPlugin {
     private CommentedConfigurationNode config;
     private HikariDataSource dataSource;
     private RocketTransferRouter router;
+    private Function<String, UUID> offlinePlayerResolver = ignored -> null;
 
     @Inject
     public ZorwethVelocityPlugin(final ProxyServer server, final Logger logger,
@@ -57,6 +60,10 @@ public final class ZorwethVelocityPlugin {
         this.dataSource = createDataSource();
         this.router = new RocketTransferRouter(this.dataSource);
         registerCommands();
+    }
+
+    public void setOfflinePlayerResolver(final Function<String, UUID> offlinePlayerResolver) {
+        this.offlinePlayerResolver = Objects.requireNonNull(offlinePlayerResolver);
     }
 
     @Subscribe
@@ -75,8 +82,7 @@ public final class ZorwethVelocityPlugin {
 
         final RegisteredServer target = event.getResult().getServer().orElse(event.getOriginalServer());
         final String targetName = target.getServerInfo().getName();
-        final String originalName = event.getOriginalServer().getServerInfo().getName();
-        if (!isProtectedServer(targetName) && !isProtectedServer(originalName)) {
+        if (!isProtectedServer(targetName)) {
             return;
         }
 
@@ -161,7 +167,7 @@ public final class ZorwethVelocityPlugin {
         commandManager.register(routeMeta, new RouteCommand());
     }
 
-    private UUID parsePlayerId(final String input) throws SQLException {
+    private UUID parsePlayerId(final String input) {
         try {
             return UUID.fromString(input);
         } catch (final IllegalArgumentException ignored) {
@@ -169,7 +175,7 @@ public final class ZorwethVelocityPlugin {
             if (onlinePlayer.isPresent()) {
                 return onlinePlayer.get().getUniqueId();
             }
-            return this.router.getPlayerId(input);
+            return this.offlinePlayerResolver.apply(input);
         }
     }
 
@@ -244,15 +250,7 @@ public final class ZorwethVelocityPlugin {
             }
 
             CompletableFuture.runAsync(() -> {
-                final UUID playerId;
-                try {
-                    playerId = parsePlayerId(args[0]);
-                } catch (final SQLException exception) {
-                    source.sendMessage(Component.text("Failed to look up player.", NamedTextColor.RED));
-                    logger.error("Failed to look up player for Zorweth route override", exception);
-                    return;
-                }
-
+                final UUID playerId = parsePlayerId(args[0]);
                 if (playerId == null) {
                     source.sendMessage(Component.text("Unknown player. Use a UUID for offline players not in NameAPI.", NamedTextColor.RED));
                     return;
@@ -296,24 +294,6 @@ public final class ZorwethVelocityPlugin {
                         return null;
                     }
                     return new PlayerRoute(resultSet.getString("expected_server"));
-                }
-            }
-        }
-
-        private UUID getPlayerId(final String playerName) throws SQLException {
-            try (Connection connection = this.dataSource.getConnection();
-                 PreparedStatement statement = connection.prepareStatement("""
-                     SELECT uuid
-                     FROM Name_player
-                     WHERE player = ?
-                     LIMIT 1
-                     """)) {
-                statement.setString(1, playerName);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (!resultSet.next()) {
-                        return null;
-                    }
-                    return UUID.fromString(resultSet.getString("uuid"));
                 }
             }
         }

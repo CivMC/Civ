@@ -34,4 +34,4 @@ console:
     key: ip
     regex: '.*is brand new!.*'
 
-server-name: "main"
+server-name: "zorweth"

@@ -4,7 +4,6 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.GameProfileRequestEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.util.GameProfile;
-import javax.sql.DataSource;
 import net.civmc.civproxy.CivProxyPlugin;
 import net.civmc.nameapi.NameAPI;
 
@@ -15,10 +14,10 @@ public class PlayerRenamer {
 
     private final NameAPI nameAPI;
 
-    public PlayerRenamer(CivProxyPlugin plugin, ProxyServer server, DataSource source) {
+    public PlayerRenamer(CivProxyPlugin plugin, ProxyServer server, NameAPI nameAPI) {
         this.plugin = plugin;
         this.server = server;
-        this.nameAPI = new NameAPI(plugin.getLogger(), source);
+        this.nameAPI = nameAPI;
     }
 
     @Subscribe

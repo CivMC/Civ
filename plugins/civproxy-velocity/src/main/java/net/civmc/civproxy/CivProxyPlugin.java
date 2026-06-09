@@ -9,14 +9,14 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.zaxxer.hikari.HikariConfig;
-import java.util.Optional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.sql.DataSource;
+import java.util.Optional;
 import com.zaxxer.hikari.HikariDataSource;
 import net.civmc.civproxy.renamer.PlayerRenamer;
+import net.civmc.nameapi.NameAPI;
 import net.civmc.zorweth.velocity.ZorwethVelocityPlugin;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -30,7 +30,7 @@ public class CivProxyPlugin {
 
     private CommentedConfigurationNode config;
 
-    private DataSource source;
+    private NameAPI nameAPI;
     @Inject
     public CivProxyPlugin(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
@@ -47,16 +47,17 @@ public class CivProxyPlugin {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         loadNameApiConfig();
         new PlayerCount(this, server).start();
-        new PlayerRenamer(this, server, source).start();
-        if (server.getPluginManager().isLoaded("ajqueue")) {
-            final Optional<ZorwethVelocityPlugin> zorweth = server.getPluginManager().getPlugin("zorweth")
-                .flatMap(PluginContainer::getInstance)
-                .map(ZorwethVelocityPlugin.class::cast);
-            if (zorweth.isPresent()) {
+        new PlayerRenamer(this, server, this.nameAPI).start();
+        final Optional<ZorwethVelocityPlugin> zorweth = server.getPluginManager().getPlugin("zorweth")
+            .flatMap(PluginContainer::getInstance)
+            .map(ZorwethVelocityPlugin.class::cast);
+        if (zorweth.isPresent()) {
+            zorweth.get().setOfflinePlayerResolver(this.nameAPI::getUUID);
+            if (server.getPluginManager().isLoaded("ajqueue")) {
                 new QueueListener(this, server, zorweth.get()).start();
-            } else {
-                this.logger.error("Zorweth is required for queue routing, but its plugin instance was not available");
             }
+        } else {
+            this.logger.error("Zorweth is required for route management, but its plugin instance was not available");
         }
     }
 
@@ -81,7 +82,7 @@ public class CivProxyPlugin {
         if (password != null && !password.isBlank()) {
             config.setPassword(password);
         }
-        this.source = new HikariDataSource(config);
+        this.nameAPI = new NameAPI(this.logger, new HikariDataSource(config));
     }
 
     /**
