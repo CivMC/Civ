@@ -422,6 +422,10 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
             sender.sendMessage(Component.text("Could not find player " + targetPlayerName + "!", NamedTextColor.RED));
             return;
         }
+        if (!config().isCanSend()) {
+            sender.sendMessage(Component.text("You cannot OTT to another server!", NamedTextColor.RED));
+            return;
+        }
         if (config().isLimitingToSameWorld()) {
             sender.sendMessage(Component.text("You cannot OTT to another server!", NamedTextColor.RED));
             return;
