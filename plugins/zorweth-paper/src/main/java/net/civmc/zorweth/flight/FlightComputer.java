@@ -82,7 +82,6 @@ public class FlightComputer {
         final Dispenser dispenser = (Dispenser) computer.getState(false);
         dispenser.getPersistentDataContainer().set(ROCKET_DESTINATION_X_KEY, PersistentDataType.INTEGER, coordinates.x());
         dispenser.getPersistentDataContainer().set(ROCKET_DESTINATION_Z_KEY, PersistentDataType.INTEGER, coordinates.z());
-        dispenser.update(true, false);
     }
 
     public static void reinforceFlightComputer(final Block flightComputer, int group) {
