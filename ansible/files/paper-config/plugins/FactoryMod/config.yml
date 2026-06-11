@@ -1684,9 +1684,21 @@ factories:
       - adv_xp_4
       - wither_skull
       - make_energizer
+      - upgrade_to_elite_cauldron
       - make_advanced_cauldron_kit
       - repair_advanced_cauldron
       - repair_advanced_cauldron_kit
+  elite_cauldron:
+    type: FCCUPGRADE
+    name: Elite Cauldron
+    citadelBreakReduction: 1.0
+    recipes:
+      - elite_xp
+      - wither_skull
+      - make_energizer
+      - make_elite_cauldron_kit
+      - repair_elite_cauldron
+      - repair_elite_cauldron_kit
   compactor:
     type: FCC
     name: Compactor
@@ -1720,6 +1732,13 @@ factories:
     recipes:
       - compact
       - decompact
+      - make_mining_bundle
+      - make_mob_bundle
+      - make_food_bundle
+      - make_plant_bundle
+      - make_sapling_bundle
+      - make_nether_bundle
+      - make_space_bundle
       - make_compact_repair_kit
       - repair_compactor
       - repair_compactor_kit
@@ -11449,6 +11468,110 @@ recipes:
         type: WITHER_SKELETON_SKULL
         amount: 1
     factory: Advanced Cauldron
+  upgrade_to_elite_cauldron:
+    production_time: 4s
+    name: Upgrade to Elite Cauldron
+    type: UPGRADE
+    input:
+      mining bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 3
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Mining Bundle
+          lore:
+            - A bundle of mining resources
+            - Used in the elite cauldron
+      mob bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 2
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Mob Bundle
+          lore:
+            - A bundle of mob drops
+            - Used in the elite cauldron
+      food bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Food Bundle
+          lore:
+            - A bundle of food crops
+            - Used in the elite cauldron
+      plant bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Plant Bundle
+          lore:
+            - A bundle of various plants
+            - Used in the elite cauldron
+      sapling bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Sapling Bundle
+          lore:
+            - A bundle of various saplings
+            - Used in the elite cauldron
+      nether bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Nether Bundle
+          lore:
+            - A bundle of nether plants
+            - Used in the elite cauldron
+      space bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Space Bundle
+          lore:
+            - A bundle of Zorweth Resources
+            - Used in the elite cauldron
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 12
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 96
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    factory: Elite Cauldron
   make_advanced_cauldron_kit:
     production_time: 4s
     name: Make Advanced Cauldron Repair Kit
@@ -11521,6 +11644,178 @@ recipes:
           lore:
             - One kit will repair a Advanced Cauldron to full health.
     health_gained: 10000
+  elite_xp:
+    production_time: 16s
+    name: Make Exp
+    type: PRODUCTION
+    input:
+      mining bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 3
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Mining Bundle
+          lore:
+            - A bundle of mining resources
+            - Used in the elite cauldron
+      mob bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 2
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Mob Bundle
+          lore:
+            - A bundle of mob drops
+            - Used in the elite cauldron
+      food bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Food Bundle
+          lore:
+            - A bundle of food crops
+            - Used in the elite cauldron
+      plant bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Plant Bundle
+          lore:
+            - A bundle of various plants
+            - Used in the elite cauldron
+      sapling bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Sapling Bundle
+          lore:
+            - A bundle of various saplings
+            - Used in the elite cauldron
+      nether bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Nether Bundle
+          lore:
+            - A bundle of nether plants
+            - Used in the elite cauldron
+      space bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Space Bundle
+          lore:
+            - A bundle of Zorweth Resources
+            - Used in the elite cauldron
+    output:
+      exp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 10
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+  make_elite_cauldron_kit:
+    production_time: 4s
+    name: Make Elite Cauldron Repair Kit
+    type: PRODUCTION
+    input:
+      emerald_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 32
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Elite Cauldron Repair Kit
+          lore:
+            - One kit will repair a Elite Cauldron to full health.
+  repair_elite_cauldron:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      emerald_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 32
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  repair_advanced_cauldron_kit:
+    production_time: 4s
+    name: Repair Factory using Repair Kit
+    type: REPAIR
+    input:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Elite Cauldron Repair Kit
+          lore:
+            - One kit will repair a Elite Cauldron to full health.
+    health_gained: 10000
   compact:
     production_time: 1s
     fuel_consumption_intervall: 4s
@@ -11577,6 +11872,499 @@ recipes:
           lore:
             - Crate
     health_gained: 10000
+  make_mining_bundle:
+    production_time: 8s
+    name: Make Mining Bundle
+    type: PRODUCTION
+    input:
+      lapis_lazuli:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_LAZULI
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      raw_Copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      mining bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Mining Bundle
+          lore:
+            - A bundle of mining resources
+            - Used in the elite cauldron
+  make_mob_bundle:
+    production_time: 8s
+    name: Make Mob Bundle
+    type: PRODUCTION
+    input:
+      bone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BONE
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      spider_eye:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SPIDER_EYE
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      gunpowder:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GUNPOWDER
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      rotten_flesh:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ROTTEN_FLESH
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      mob bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Mob Bundle
+          lore:
+            - A bundle of mob drops
+            - Used in the elite cauldron
+  make_food_bundle:
+    production_time: 8s
+    name: Make Food Bundle
+    type: PRODUCTION
+    input:
+      wheat:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WHEAT
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      carrot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CARROT
+        amount: 48
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      potato:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: POTATO
+        amount: 48
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      beetroot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BEETROOT
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      melon:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MELON
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      sweet_berries:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SWEET_BERRIES
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      food bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Food Bundle
+          lore:
+            - A bundle of food crops
+            - Used in the elite cauldron
+  make_plant_bundle:
+    production_time: 8s
+    name: Make Food Bundle
+    type: PRODUCTION
+    input:
+      red_mushroom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RED_MUSHROOM
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      brown_mushroom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BROWN_MUSHROOM
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      kelp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: KELP
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      bamboo:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      vine:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: VINE
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      cocoa_beans:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COCOA_BEANS
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      pumpkin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PUMPKIN
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      sugar_cane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SUGAR_CANE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      cactus:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CACTUS
+        amount: 48
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      plant bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Plant Bundle
+          lore:
+            - A bundle of various plants
+            - Used in the elite cauldron
+  make_sapling_bundle:
+    production_time: 8s
+    name: Make Sapling Bundle
+    type: PRODUCTION
+    input:
+      oak_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OAK_SAPLING
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      birch_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BIRCH_SAPLING
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      spruce_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SPRUCE_SAPLING
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      jungle_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: JUNGLE_SAPLING
+        amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      sapling bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Sapling Bundle
+          lore:
+            - A bundle of various saplings
+            - Used in the elite cauldron
+  make_nether_bundle:
+    production_time: 8s
+    name: Make Mob Bundle
+    type: PRODUCTION
+    input:
+      nether_wart:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: NETHER_WART
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      twisting_vines:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: TWISTING_VINES
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      weeping_vines:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEEPING_VINES
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      crimson_stem:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CRIMSON_STEM
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      warped_stem:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WARPED_STEM
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      nether bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Nether Bundle
+          lore:
+            - A bundle of nether plants
+            - Used in the elite cauldron
+  make_space_bundle:
+    production_time: 8s
+    name: Make Mob Bundle
+    type: PRODUCTION
+    input:
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 3
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
+            - Compacted Item
+      bauxite:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: COPPER_NUGGET
+        amount: 3
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Bauxite
+          lore:
+            - Rock found on Zorweth
+            - Can be refined into aluminium
+            - Compacted Item
+      space kelp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: KELP
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Space Kelp
+          lore:
+            - Kelp from Zorweth
+            - Compacted Item
+      chorus_fruit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHORUS_FRUIT
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      space bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Space Bundle
+          lore:
+            - A bundle of Zorweth Resources
+            - Used in the elite cauldron
   repair_compactor_kit:
     production_time: 4s
     name: Repair Factory using Repair Kit
