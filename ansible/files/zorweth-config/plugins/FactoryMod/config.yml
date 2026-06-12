@@ -12321,7 +12321,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         v: 3839
         type: COPPER_NUGGET
-        amount: 3
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -12347,6 +12347,16 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: CHORUS_FRUIT
         amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      pale_oak_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_SAPLING
+        amount: 16
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
