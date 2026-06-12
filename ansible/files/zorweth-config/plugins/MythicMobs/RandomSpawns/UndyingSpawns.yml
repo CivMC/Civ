@@ -1,0 +1,10 @@
+RandomUndying:
+  Type: The_Undying
+  Worlds: world
+  Chance: 0.005
+  Priority: 1
+  Action: REPLACE
+  Biomes: basalt_deltas
+  Conditions:
+    - outside true
+    - heightabove{h=60} true
