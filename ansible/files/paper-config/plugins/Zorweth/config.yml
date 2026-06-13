@@ -24,6 +24,6 @@ mechanics:
   world: world
 
 research:
-  enabled: true
+  enabled: false
   phase-one-runs: 100
   phase-two-runs: 200
