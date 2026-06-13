@@ -25,6 +25,9 @@ public final class FakePlayer {
     private FakePlayer() {
     }
 
+    public static void warmup() {
+    }
+
     public static Player create(final Location location, final ItemStack itemInHand) {
         final ItemStack heldItem = itemInHand == null ? ItemStack.empty() : itemInHand;
         final Player[] player = new Player[1];

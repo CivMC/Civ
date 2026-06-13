@@ -45,6 +45,7 @@ public class BlockBreakListener implements Listener {
 
     public BlockBreakListener(HiddenOre plugin) {
         this.plugin = plugin;
+        FakePlayer.warmup();
     }
 
     /**
