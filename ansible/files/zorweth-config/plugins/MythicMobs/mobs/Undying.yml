@@ -41,7 +41,7 @@ UndyingMinion:
   Type: WITHER_SKELETON
   Health: 25
   Drops:
-    - gold_nugget{name="&gTotem Fragment"} 0-2 0.5
+    - gold_nugget{name="&eTotem Fragment"} 0-2 0.5
     - coal 0-3
   Skills:
     - skill{s=UndyingMinionAttack} @target 0.2
