@@ -1,10 +1,8 @@
 Vulture:
   Type: PHANTOM
   Display: '&5Vulture'
-
   Health: 40
   Damage: 6
-
   Options:
     FollowRange: 64
     MovementSpeed: 0.35
