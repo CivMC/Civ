@@ -19169,7 +19169,7 @@ recipes:
     input:
       aluminium_ingot:
         custom-key: aluminium_ingot
-        amount: 4
+        amount: 8
       diamonds:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -19191,7 +19191,7 @@ recipes:
     input:
       aluminium_ingot:
         custom-key: aluminium_ingot
-        amount: 16
+        amount: 32
       diamonds:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -19306,7 +19306,7 @@ recipes:
         amount: 1
       aluminium_ingot:
         custom-key: aluminium_ingot
-        amount: 2
+        amount: 4
     output:
       empty_advanced_oxygen_tank:
         custom-key: empty_advanced_oxygen_tank
