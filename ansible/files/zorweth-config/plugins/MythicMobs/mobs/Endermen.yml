@@ -2,7 +2,7 @@ TallEnderman:
   Type: ENDERMAN
   Attributes:
     Scale: 1.6
-    MaxHealth: 60
+    MaxHealth: 80
     Damage: 14
   Options:
     PreventTargetLoss: true
