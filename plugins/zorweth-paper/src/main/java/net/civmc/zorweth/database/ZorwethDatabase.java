@@ -102,6 +102,11 @@ public final class ZorwethDatabase {
                     INDEX idx_cross_server_ott_arrivals_expiry (expires_at)
                 )
                 """);
+        migrator.registerMigration("zorweth", 2,
+            """
+                ALTER TABLE rocket_transfers
+                ADD COLUMN uses_remaining INT NOT NULL DEFAULT 6
+                """);
 
         try (Connection connection = dataSource.getConnection()) {
             migrator.migrate(connection);

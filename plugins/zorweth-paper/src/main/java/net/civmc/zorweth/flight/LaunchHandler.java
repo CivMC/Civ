@@ -255,7 +255,8 @@ public class LaunchHandler {
             getDiamondFlightComputerGroupId(computer),
             payload.passengers(),
             payload.chests(),
-            getRemainingFuel(payload.chests(), payload.passengers(), computer)
+            getRemainingFuel(payload.chests(), payload.passengers(), computer),
+            FlightComputer.getUsesRemaining(computer)
         ), null);
     }
 
@@ -347,6 +348,12 @@ public class LaunchHandler {
             return;
         }
 
+        int uses = FlightComputer.getUsesRemaining(computer);
+        if (uses <= 0) {
+            clicker.sendMessage(Component.text("The rocket is broken beyond repair.", NamedTextColor.RED));
+            return;
+        }
+
         final RocketBlockPosition destinationOrigin = findDestinationOrigin(manifest);
         if (destinationOrigin == null) {
             clicker.sendMessage(Component.text("Destination world is not available for landing calculation.", NamedTextColor.RED));
@@ -364,8 +371,24 @@ public class LaunchHandler {
             return;
         }
 
+        final RocketManifest launchedManifest = new RocketManifest(
+            manifest.transferId(),
+            manifest.sourceServer(),
+            manifest.destinationServer(),
+            manifest.sourceWorld(),
+            manifest.destinationWorld(),
+            manifest.sourceOrigin(),
+            manifest.destinationRequestedX(),
+            manifest.destinationRequestedZ(),
+            manifest.pilotUuid(),
+            manifest.flightComputerGroupId(),
+            manifest.passengers(),
+            manifest.chests(),
+            manifest.fuelKg(),
+            uses - 1
+        );
         clearPassengerState(manifest);
-        setSourceClearedMarkers(manifest);
+        setSourceClearedMarkers(launchedManifest);
         clearRocket(plugin.getRocketClipboard(), computer);
 
         for (RocketPassengerTransfer passenger : passengers) {
@@ -385,7 +408,7 @@ public class LaunchHandler {
                     }
                 }
                 try {
-                    plugin.getRocketTransferDao().insertPreparedTransfer(manifest, passengers, chests);
+                    plugin.getRocketTransferDao().insertPreparedTransfer(launchedManifest, passengers, chests);
                     break;
                 } catch (final Exception exception) {
                     plugin.getLogger().log(Level.SEVERE, "Failed to insert prepared rocket transfer", exception);
@@ -407,7 +430,7 @@ public class LaunchHandler {
 
                     try {
                         plugin.getLogger().log(Level.SEVERE, "Failed to retry launch, writing file..");
-                        File write = RocketManifestFileWriter.write(plugin, manifest);
+                        File write = RocketManifestFileWriter.write(plugin, launchedManifest);
                         plugin.getLogger().log(Level.SEVERE, "Written launch failure to " + write.getName());
                     } catch (final IOException exception) {
                         throw new RuntimeException(exception);
@@ -417,7 +440,7 @@ public class LaunchHandler {
             }
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                LaunchHandler.connectOrKickPassengers(plugin, manifest);
+                LaunchHandler.connectOrKickPassengers(plugin, launchedManifest);
                 clicker.sendMessage(Component.text("Ignition.", NamedTextColor.GREEN));
             });
         });

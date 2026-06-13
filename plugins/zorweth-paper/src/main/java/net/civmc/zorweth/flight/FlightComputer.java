@@ -24,6 +24,8 @@ public class FlightComputer {
     public static final NamespacedKey ROCKET_FUEL_KEY = new NamespacedKey("zorweth", "rocket_fuel");
     public static final NamespacedKey ROCKET_DESTINATION_X_KEY = new NamespacedKey("zorweth", "rocket_destination_x");
     public static final NamespacedKey ROCKET_DESTINATION_Z_KEY = new NamespacedKey("zorweth", "rocket_destination_z");
+    public static final NamespacedKey ROCKET_USES_REMAINING_KEY = new NamespacedKey("zorweth", "rocket_uses_remaining");
+    public static final int MAX_ROCKET_USES = 6;
 
     public static Block getRocketOrigin(final Block computer) {
         return computer.getRelative(
@@ -66,6 +68,12 @@ public class FlightComputer {
             dispenser.getPersistentDataContainer().set(ROCKET_FUEL_KEY, PersistentDataType.DOUBLE, fuelKg);
         }
         dispenser.update(true, false);
+    }
+
+    public static int getUsesRemaining(final Block computer) {
+        final Dispenser dispenser = (Dispenser) computer.getState(false);
+        return Math.max(0, dispenser.getPersistentDataContainer()
+            .getOrDefault(ROCKET_USES_REMAINING_KEY, PersistentDataType.INTEGER, MAX_ROCKET_USES));
     }
 
     public static FlightComputerGui.Coordinates getDestination(final Block computer) {

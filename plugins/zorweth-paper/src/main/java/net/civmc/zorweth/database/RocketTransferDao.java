@@ -52,7 +52,7 @@ public final class RocketTransferDao {
         throws SQLException {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("""
-                 SELECT rt.transfer_id, rt.destination_world, rt.fuel_kg,
+                 SELECT rt.transfer_id, rt.destination_world, rt.fuel_kg, rt.uses_remaining,
                       rt.destination_origin_x, rt.destination_origin_y, rt.destination_origin_z,
                       rt.destination_requested_x, rt.destination_requested_z, rt.pilot_uuid,
                       rt.flight_computer_group_id
@@ -93,7 +93,8 @@ public final class RocketTransferDao {
                     resultSet.getInt("destination_requested_z"),
                     UUID.fromString(pilotUuid == null ? playerUuid.toString() : pilotUuid),
                     nullableFlightComputerGroupId,
-                    resultSet.getDouble("fuel_kg")
+                    resultSet.getDouble("fuel_kg"),
+                    resultSet.getInt("uses_remaining")
                 );
             }
         }
@@ -312,8 +313,9 @@ public final class RocketTransferDao {
         try (PreparedStatement statement = connection.prepareStatement("""
             INSERT INTO rocket_transfers (
                 transfer_id, source_server, destination_server, destination_world,
-                destination_requested_x, destination_requested_z, pilot_uuid, flight_computer_group_id, fuel_kg
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                destination_requested_x, destination_requested_z, pilot_uuid, flight_computer_group_id, fuel_kg,
+                uses_remaining
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """)) {
             statement.setString(1, manifest.transferId().toString());
             statement.setString(2, manifest.sourceServer());
@@ -328,6 +330,7 @@ public final class RocketTransferDao {
                 statement.setInt(8, manifest.flightComputerGroupId());
             }
             statement.setDouble(9, manifest.fuelKg());
+            statement.setInt(10, manifest.usesRemaining());
             statement.executeUpdate();
         }
     }

@@ -11,7 +11,8 @@ public record DestinationRocketTransfer(
     int requestedZ,
     UUID pilotUuid,
     Integer flightComputerGroupId,
-    double fuelKg
+    double fuelKg,
+    int usesRemaining
 ) {
 
     public DestinationRocketTransfer {
@@ -22,6 +23,6 @@ public record DestinationRocketTransfer(
 
     public DestinationRocketTransfer withPosition(final RocketBlockPosition position) {
         return new DestinationRocketTransfer(transferId, destinationWorld, position, requestedX, requestedZ,
-            pilotUuid, flightComputerGroupId, fuelKg);
+            pilotUuid, flightComputerGroupId, fuelKg, usesRemaining);
     }
 }

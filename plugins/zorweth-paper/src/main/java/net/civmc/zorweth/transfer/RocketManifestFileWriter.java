@@ -37,6 +37,7 @@ public final class RocketManifestFileWriter {
         yaml.set("pilot-uuid", manifest.pilotUuid().toString());
         yaml.set("flight-computer-group-id", manifest.flightComputerGroupId());
         yaml.set("fuelKg", manifest.fuelKg());
+        yaml.set("uses-remaining", manifest.usesRemaining());
 
         final ConfigurationSection passengers = yaml.createSection("passengers");
         for (int index = 0; index < manifest.passengers().size(); index++) {

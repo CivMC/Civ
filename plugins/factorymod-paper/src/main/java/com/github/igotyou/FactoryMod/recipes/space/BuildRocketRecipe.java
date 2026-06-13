@@ -164,6 +164,8 @@ public class BuildRocketRecipe extends InputRecipe {
                 if (target.getType() == Material.DISPENSER && FlightComputer.isFlightComputerPosition(relative)) {
                     Dispenser dispenser = (Dispenser) target.getState(false);
                     dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_COMPUTER_KEY, PersistentDataType.BOOLEAN, true);
+                    dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_USES_REMAINING_KEY,
+                        PersistentDataType.INTEGER, FlightComputer.MAX_ROCKET_USES);
                     dispenser.update(false, false);
                     reinforceFlightComputer(fccf, target);
                 }

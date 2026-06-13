@@ -363,6 +363,8 @@ public final class DestinationTransferListener implements Listener {
         final Dispenser dispenser = (Dispenser) computer.getState(false);
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_COMPUTER_KEY, PersistentDataType.BOOLEAN, true);
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_FUEL_KEY, PersistentDataType.DOUBLE, transfer.fuelKg());
+        dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_USES_REMAINING_KEY,
+            PersistentDataType.INTEGER, transfer.usesRemaining());
         if (transfer.flightComputerGroupId() != null) {
             FlightComputer.reinforceFlightComputer(computer, transfer.flightComputerGroupId());
         }

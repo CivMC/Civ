@@ -77,6 +77,10 @@ public final class FlightComputerGui implements Listener {
         }
 
         event.setCancelled(true);
+        if (FlightComputer.getUsesRemaining(block) <= 0) {
+            event.getPlayer().sendMessage(Component.text("The rocket is broken beyond repair.", NamedTextColor.RED));
+            return;
+        }
         open(event.getPlayer(), block);
     }
 
@@ -166,7 +170,7 @@ public final class FlightComputerGui implements Listener {
         summary.set(createSiphonFuelButton(computer), 2);
         summary.set(new DecorationStack(createFuelStatusItem(fuelStatus)), 3);
 
-        summary.set(new DecorationStack(createSummaryItem(matching, total, mismatches.isEmpty())), 5);
+        summary.set(new DecorationStack(createSummaryItem(computer, matching, total, mismatches.isEmpty())), 5);
 
         summary.set(createCoordinatesButton(computer), 7);
         summary.set(createLaunchButton(computer, payload, fuelStatus), 8);
@@ -176,7 +180,7 @@ public final class FlightComputerGui implements Listener {
     }
 
 
-    private ItemStack createSummaryItem(final int matching, final int total, final boolean complete) {
+    private ItemStack createSummaryItem(final Block computer, final int matching, final int total, final boolean complete) {
         final ItemStack item = new ItemStack(complete ? Material.LIME_CONCRETE : Material.RED_CONCRETE);
         item.editMeta(meta -> {
             meta.displayName(Component.text("Rocket Structure", complete ? NamedTextColor.GREEN : NamedTextColor.RED)
@@ -185,6 +189,8 @@ public final class FlightComputerGui implements Listener {
                 Component.text("Matching blocks: " + matching + "/" + total, NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text(complete ? "Rocket is structurally intact." : "Launch not possible due to structural integrity violations.", NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("Uses remaining: " + FlightComputer.getUsesRemaining(computer) + "/" + FlightComputer.MAX_ROCKET_USES, NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });

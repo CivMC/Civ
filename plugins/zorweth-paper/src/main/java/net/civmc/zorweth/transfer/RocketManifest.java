@@ -17,7 +17,8 @@ public record RocketManifest(
     Integer flightComputerGroupId,
     List<RocketManifestPassenger> passengers,
     List<RocketManifestChest> chests,
-    double fuelKg
+    double fuelKg,
+    int usesRemaining
 ) {
 
     public RocketManifest {
