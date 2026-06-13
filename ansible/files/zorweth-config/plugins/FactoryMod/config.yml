@@ -11787,6 +11787,9 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: EMERALD_BLOCK
         amount: 32
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -12068,7 +12071,7 @@ recipes:
             - Used in the elite cauldron
   make_plant_bundle:
     production_time: 8s
-    name: Make Food Bundle
+    name: Make Plant Bundle
     type: PRODUCTION
     input:
       red_mushroom:
@@ -12234,7 +12237,7 @@ recipes:
             - Used in the elite cauldron
   make_nether_bundle:
     production_time: 8s
-    name: Make Mob Bundle
+    name: Make Nether Bundle
     type: PRODUCTION
     input:
       nether_wart:
@@ -12302,7 +12305,7 @@ recipes:
             - Used in the elite cauldron
   make_space_bundle:
     production_time: 8s
-    name: Make Mob Bundle
+    name: Make Space Bundle
     type: PRODUCTION
     input:
       salt:
