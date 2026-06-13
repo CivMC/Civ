@@ -22,6 +22,7 @@ The_Undying:
     Style: SOLID
   Options:
     AlwaysShowName: true
+    Scale: 2
     MaxCombatDistance: 25
     PreventOtherDrops: true
     KnockbackResistance: 0.5
