@@ -42,6 +42,8 @@ import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 public final class DestinationTransferListener implements Listener {
 
     public static final int SPIRAL_ITERATION_DISTANCE = 8;
+    private static final int DESTINATION_CENTER_X = 0;
+    private static final int DESTINATION_CENTER_Z = -20_000;
     private final ZorwethPlugin plugin;
     private final Map<UUID, CompletableFuture<DestinationRocketTransfer>> futures = new ConcurrentHashMap<>();
 
@@ -218,13 +220,13 @@ public final class DestinationTransferListener implements Listener {
         int rx = transfer.requestedX() - FlightComputer.RELATIVE_POSITION.getX();
         int rz = transfer.requestedZ() - FlightComputer.RELATIVE_POSITION.getZ();
 
-        final double distanceSquared = rx * rx + rz * rz;
+        final double distanceSquared = getDistanceSquaredFromCenter(rx, rz);
         final double radiusSquared = plugin.getWorldRadius() * plugin.getWorldRadius();
         if (distanceSquared > radiusSquared) {
             final double distance = Math.sqrt(distanceSquared);
             final double scale = plugin.getWorldRadius() / distance;
-            rx = (int) (rx * scale);
-            rz = (int) (rz * scale);
+            rx = DESTINATION_CENTER_X + (int) ((rx - DESTINATION_CENTER_X) * scale);
+            rz = DESTINATION_CENTER_Z + (int) ((rz - DESTINATION_CENTER_Z) * scale);
         }
 
         final World world = Bukkit.getWorld(transfer.destinationWorld());
@@ -242,7 +244,7 @@ public final class DestinationTransferListener implements Listener {
             final int tx = rx + (int) (distance * Math.cos(angle));
             final int tz = rz + (int) (distance * Math.sin(angle));
 
-            if (tx * tx + tz * tz > radiusSquared) {
+            if (getDistanceSquaredFromCenter(tx, tz) > radiusSquared) {
                 distance += SPIRAL_ITERATION_DISTANCE;
                 continue;
             }
@@ -297,6 +299,12 @@ public final class DestinationTransferListener implements Listener {
 
         plugin.getLogger().warning("Unable to find position for rocket " + transfer.transferId());
         return null;
+    }
+
+    private double getDistanceSquaredFromCenter(final int x, final int z) {
+        final double relativeX = x - DESTINATION_CENTER_X;
+        final double relativeZ = z - DESTINATION_CENTER_Z;
+        return relativeX * relativeX + relativeZ * relativeZ;
     }
 
     private boolean ensureDestinationRocketPasted(final DestinationRocketTransfer transfer, List<RocketChestTransfer> chests) {

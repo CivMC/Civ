@@ -37,8 +37,8 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 public class BuildRocketRecipe extends InputRecipe {
 
     private static final int WIDTH = 11;
-    private static final int HEIGHT = 24;
-    private static final int DEPTH = 12;
+    private static final int HEIGHT = 25;
+    private static final int DEPTH = 13;
     private static final int ROCKET_LAYER_PLACE_INTERVAL_TICKS = 15;
     private static final DustOptions RED_DUST = new DustOptions(Color.RED, 1.0f);
 
@@ -101,9 +101,9 @@ public class BuildRocketRecipe extends InputRecipe {
     private boolean isEmpty(FurnCraftChestFactory fccf) {
         final Block northWestOrigin = getNorthWestOrigin(fccf);
 
-        for (int width = 0; width <= WIDTH; width++) {
-            for (int height = 0; height <= HEIGHT; height++) {
-                for (int depth = 0; depth <= DEPTH; depth++) {
+        for (int width = 0; width < WIDTH; width++) {
+            for (int height = 0; height < HEIGHT; height++) {
+                for (int depth = 0; depth < DEPTH; depth++) {
                     final Location location = northWestOrigin.getLocation().add(width, height, depth);
                     if (!location.getBlock().isEmpty()) {
                         return false;
@@ -194,16 +194,16 @@ public class BuildRocketRecipe extends InputRecipe {
         int z = 0;
 
         if (direction.widthFace().getModX() < 0) {
-            x = -WIDTH;
+            x = -(WIDTH - 1);
         }
         if (direction.widthFace().getModZ() < 0) {
-            z = -DEPTH;
+            z = -(DEPTH - 1);
         }
         if (direction.depthFace().getModX() < 0) {
-            x = -WIDTH;
+            x = -(WIDTH - 1);
         }
         if (direction.depthFace().getModZ() < 0) {
-            z = -DEPTH;
+            z = -(DEPTH - 1);
         }
         return origin.getRelative(x, 0, z);
     }
@@ -238,16 +238,16 @@ public class BuildRocketRecipe extends InputRecipe {
                 task = null;
             }
             final World world = northWestOrigin.getWorld();
-            for (int width = 0; width <= WIDTH; width++) {
-                for (int height = 0; height <= HEIGHT; height++) {
-                    for (int depth = 0; depth <= DEPTH; depth++) {
+            for (int width = 0; width < WIDTH; width++) {
+                for (int height = 0; height < HEIGHT; height++) {
+                    for (int depth = 0; depth < DEPTH; depth++) {
                         if (!isEdge(width, height, depth)) {
                             continue;
                         }
                         final Location location = northWestOrigin.getLocation().add(
-                            getBoundaryOffset(width, WIDTH),
+                            getBoundaryOffset(width, WIDTH - 1),
                             height,
-                            getBoundaryOffset(depth, DEPTH)
+                            getBoundaryOffset(depth, DEPTH - 1)
                         );
                         world.spawnParticle(Particle.DUST, location, 1, RED_DUST);
                     }
@@ -258,13 +258,13 @@ public class BuildRocketRecipe extends InputRecipe {
 
     private boolean isEdge(final int width, final int height, final int depth) {
         int boundaryCount = 0;
-        if (width == 0 || width == WIDTH) {
+        if (width == 0 || width == WIDTH - 1) {
             boundaryCount++;
         }
-        if (height == 0 || height == HEIGHT) {
+        if (height == 0 || height == HEIGHT - 1) {
             boundaryCount++;
         }
-        if (depth == 0 || depth == DEPTH) {
+        if (depth == 0 || depth == DEPTH - 1) {
             boundaryCount++;
         }
         return boundaryCount >= 2;

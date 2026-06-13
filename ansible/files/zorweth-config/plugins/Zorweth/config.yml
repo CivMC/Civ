@@ -4,7 +4,7 @@ destination-world: world
 transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
 source-world: world
 
-world-radius: 6000
+world-radius: 7000
 delta-v-meters-per-second: 6000
 
 database:
