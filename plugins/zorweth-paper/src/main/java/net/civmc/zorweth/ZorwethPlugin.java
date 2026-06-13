@@ -19,11 +19,12 @@ import net.civmc.zorweth.flight.FlightComputerGui;
 import net.civmc.zorweth.mechanics.Fuel;
 import net.civmc.zorweth.mechanics.OilMechanics;
 import net.civmc.zorweth.oxygen.ActivityManager;
+import net.civmc.zorweth.oxygen.OxygenBladder;
 import net.civmc.zorweth.oxygen.OxygenCommand;
 import net.civmc.zorweth.oxygen.OxygenDisplay;
 import net.civmc.zorweth.oxygen.OxygenManager;
-import net.civmc.zorweth.oxygen.OxygenBladder;
 import net.civmc.zorweth.oxygen.OxygenTank;
+import net.civmc.zorweth.oxygen.SpaceKelpListener;
 import net.civmc.zorweth.research.ResearchManager;
 import net.civmc.zorweth.repair.ArmourRepairKit;
 import net.civmc.zorweth.repair.ArmourRepairKitListener;
@@ -78,6 +79,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new ArmourRepairKitListener(this), this);
+        getServer().getPluginManager().registerEvents(new PhantomMembraneLoreListener(), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
         getServer().getPluginManager().registerEvents(new CrossServerOttArrivalListener(this, this.crossServerOttManager), this);
         Objects.requireNonNull(getCommand("pioneer")).setExecutor(new PioneerCommand(this));
@@ -105,6 +107,7 @@ public final class ZorwethPlugin extends JavaPlugin {
 
         this.oxygenManager = OxygenManager.deserialize(this, activityManager, oxygenSection);
         getServer().getPluginManager().registerEvents(this.oxygenManager, this);
+        getServer().getPluginManager().registerEvents(new SpaceKelpListener(), this);
         Objects.requireNonNull(getCommand("oxygen")).setExecutor(new OxygenCommand(this.oxygenManager));
 
         getServer().getPluginManager().registerEvents(new OxygenDisplay(this, this.oxygenManager), this);

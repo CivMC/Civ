@@ -353,7 +353,7 @@ services:
     postgres:
         image: timescale/timescaledb:2.10.3-pg14
         restart: unless-stopped
-        command: postgres -c 'max_connections=500'
+        command: postgres -c 'max_connections=1500'
         networks:
             - monitoring
             - minecraft_default

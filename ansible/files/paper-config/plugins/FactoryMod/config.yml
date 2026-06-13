@@ -19237,6 +19237,11 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: PHANTOM_MEMBRANE
         amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          lore:
+            - Found on Zorweth
       wind_charge:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -19493,6 +19498,11 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: PHANTOM_MEMBRANE
         amount: 4
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          lore:
+            - Found on Zorweth
     output:
       armor_repair_kit:
         custom-key: armour_repair_kit
