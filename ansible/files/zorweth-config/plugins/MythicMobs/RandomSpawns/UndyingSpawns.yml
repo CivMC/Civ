@@ -1,7 +1,7 @@
 RandomUndying:
   Type: The_Undying
   Worlds: world
-  Chance: 0.5
+  Chance: 0.1
   Priority: 10
   Action: REPLACE
   Biomes: BASALT_DELTAS
