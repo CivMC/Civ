@@ -3,7 +3,8 @@ RandomUndying:
   Worlds: world
   Chance: 0.005
   Priority: 1
-  Action: REPLACE
+  Action: ADD
+  Worlds: world
   Biomes: basalt_deltas
   Conditions:
     - outside true
