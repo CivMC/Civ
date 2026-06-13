@@ -1,0 +1,14 @@
+PhantomSpawn:
+  MobType: Vulture
+  Worlds:
+    - world
+
+  Chance: 0.15
+  Priority: 1
+
+  Biomes:
+    - END_HIGHLANDS
+    - END_MIDLANDS
+    - SMALL_END_ISLANDS
+    - END_BARRENS
+    - THE_END
