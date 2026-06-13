@@ -4,8 +4,8 @@ The_Undying:
   Health: 100
   Damage: 15
   Drops:
-    - light_weighted_pressure_plate{name="&gTotem Shard"} 1 0.05
-    - gold_nugget{name="&gTotem Fragment"} 3-5
+    - light_weighted_pressure_plate{name="&eTotem Shard"} 1 0.05
+    - gold_nugget{name="&eTotem Fragment"} 3-5
   Skills:
     - setvariable{var=caster.minions;type=INTEGER;val=0} @self ~onSpawn
     - skill{s=UndyingFear} @PlayersInRadius{r=25} 0.3
