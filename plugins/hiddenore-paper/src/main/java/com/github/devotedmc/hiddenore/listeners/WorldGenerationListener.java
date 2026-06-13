@@ -98,15 +98,19 @@ public class WorldGenerationListener implements Listener {
         return worldName;
     }
 
-    public void clearManually(CommandSender sender, int radius) {
+    public void clearManually(CommandSender sender, int radius, int centerX, int centerZ) {
         Deque<IntIntPair> chunks = new ArrayDeque<>();
         World world = HiddenOre.getPlugin().getServer().getWorld(worldName);
-        for (int cx = -radius; cx <= radius; cx += 16) {
-            for (int cz = -radius; cz <= radius; cz += 16) {
-                chunks.add(new IntIntImmutablePair(cx >> 4, cz >> 4));
+        int minChunkX = Math.floorDiv(centerX - radius, 16);
+        int maxChunkX = Math.floorDiv(centerX + radius, 16);
+        int minChunkZ = Math.floorDiv(centerZ - radius, 16);
+        int maxChunkZ = Math.floorDiv(centerZ + radius, 16);
+        for (int cx = minChunkX; cx <= maxChunkX; cx++) {
+            for (int cz = minChunkZ; cz <= maxChunkZ; cz++) {
+                chunks.add(new IntIntImmutablePair(cx, cz));
             }
         }
-        sender.sendMessage("Clearing " + chunks.size() + " chunks...");
+        sender.sendMessage("Clearing " + chunks.size() + " chunks around " + centerX + ", " + centerZ + "...");
         Bukkit.getScheduler().runTaskAsynchronously(HiddenOre.getPlugin(), () -> {
             int total = chunks.size();
             int processed = 0;

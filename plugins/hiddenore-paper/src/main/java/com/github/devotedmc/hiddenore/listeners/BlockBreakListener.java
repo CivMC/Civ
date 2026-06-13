@@ -8,6 +8,7 @@ import com.github.devotedmc.hiddenore.ToolConfig;
 import com.github.devotedmc.hiddenore.VeinConfig;
 import com.github.devotedmc.hiddenore.events.HiddenOreEvent;
 import com.github.devotedmc.hiddenore.events.HiddenOreGenerateEvent;
+import com.github.devotedmc.hiddenore.util.FakePlayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -61,9 +62,9 @@ public class BlockBreakListener implements Listener {
     }
 
     public static void spoofBlockBreak(Location playerLoc, Block block, ItemStack inHand) {
-//        HiddenOre.getPlugin().getBreakListener().doBlockBreak(
-//            new BlockBreakEvent(block, new FakePlayer(playerLoc, inHand))
-//        );
+        HiddenOre.getPlugin().getBreakListener().doBlockBreak(
+            new BlockBreakEvent(block, FakePlayer.create(playerLoc, inHand))
+        );
     }
 
     /**
