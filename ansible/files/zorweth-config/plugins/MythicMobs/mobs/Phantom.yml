@@ -6,8 +6,6 @@ Vulture:
   Damage: 6
 
   Options:
-    FollowRange: 64
-    MovementSpeed: 0.35
+    MaxCombatDistance: 64
     PreventSunburn: true
-    PreventOtherDrops: true
     DigOutOfGround: true
