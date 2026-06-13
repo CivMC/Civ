@@ -52,11 +52,20 @@ public final class ZorwethPlugin extends JavaPlugin {
     private boolean researchEnabled;
     private int researchPhaseOneRuns;
     private int researchPhaseTwoRuns;
+    private long researchDisableProgressUntil;
     private String mechanicsWorld;
     private boolean mechanicsEnabled;
     private OxygenManager oxygenManager;
 
     private OilMechanics mechanics;
+
+    @Override
+    public void onLoad() {
+        Fuel.registerCustomItems();
+        OxygenBladder.registerCustomItems();
+        OxygenTank.registerCustomItems();
+        ArmourRepairKit.createArmourRepairKit();
+    }
 
     @Override
     public void onEnable() {
@@ -66,16 +75,12 @@ public final class ZorwethPlugin extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Fuel.registerCustomItems();
-        OxygenBladder.registerCustomItems();
-        OxygenTank.registerCustomItems();
-        ArmourRepairKit.createArmourRepairKit();
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.rocketClipboard = loadRocketClipboard();
         this.stasisHandler = new StasisHandler();
         this.crossServerOttManager = new CrossServerOttManager(this);
         this.researchManager = new ResearchManager(this, this.researchEnabled, this.researchPhaseOneRuns,
-            this.researchPhaseTwoRuns);
+            this.researchPhaseTwoRuns, this.researchDisableProgressUntil);
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new ArmourRepairKitListener(this), this);
@@ -193,6 +198,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         this.researchEnabled = getConfig().getBoolean("research.enabled", true);
         this.researchPhaseOneRuns = loadPositiveInt("research.phase-one-runs", 1);
         this.researchPhaseTwoRuns = loadPositiveInt("research.phase-two-runs", 1);
+        this.researchDisableProgressUntil = getConfig().getLong("research.disable-progress-until", 0L);
         this.mechanicsEnabled = getConfig().getBoolean("mechanics.enabled", false);
         this.mechanicsWorld = getConfig().getString("mechanics.world");
     }

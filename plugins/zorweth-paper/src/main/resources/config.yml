@@ -10,6 +10,7 @@ delta-v-meters-per-second: 10000
 
 research:
   enabled: false
+  disable-progress-until: 0
   phase-one-runs: 100
   phase-two-runs: 200
 

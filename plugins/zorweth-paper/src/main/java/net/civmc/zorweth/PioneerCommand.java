@@ -7,10 +7,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.minelink.ctplus.CombatTagPlus;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.HeightMap;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -107,6 +109,16 @@ public final class PioneerCommand implements CommandExecutor {
             return false;
         }
 
+        if (isCombatTagged(player)) {
+            player.sendMessage(Component.text("You cannot pioneer while combat tagged.", NamedTextColor.RED));
+            return false;
+        }
+
+        if (!isOnSurface(player)) {
+            player.sendMessage(Component.text("You can only pioneer from the surface.", NamedTextColor.RED));
+            return false;
+        }
+
         if (hasPioneerEnded()) {
             player.sendMessage(Component.text("Pioneer transfers to Zorweth have ended.", NamedTextColor.RED));
             return false;
@@ -122,6 +134,16 @@ public final class PioneerCommand implements CommandExecutor {
     private boolean isPearled(final Player player) {
         return Bukkit.getPluginManager().isPluginEnabled("ExilePearl")
             && ExilePearlPlugin.getApi().getPearlManager().getPearl(player.getUniqueId()) != null;
+    }
+
+    private boolean isCombatTagged(final Player player) {
+        return ((CombatTagPlus) Bukkit.getPluginManager().getPlugin("CombatTagPlus"))
+            .getTagManager().isTagged(player.getUniqueId());
+    }
+
+    private boolean isOnSurface(final Player player) {
+        final int surfaceY = player.getWorld().getHighestBlockYAt(player.getLocation(), HeightMap.WORLD_SURFACE);
+        return player.getLocation().getBlockY() >= surfaceY;
     }
 
     private void openConfirmation(final Player player) {

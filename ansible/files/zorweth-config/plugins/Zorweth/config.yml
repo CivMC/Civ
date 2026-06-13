@@ -25,6 +25,7 @@ mechanics:
 
 research:
   enabled: false
+  disable-progress-until: 0
 
 gravity: 0.04
 

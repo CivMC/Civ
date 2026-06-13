@@ -17,13 +17,15 @@ public final class ResearchManager {
     private final boolean enabled;
     private final int phaseOneRequiredRuns;
     private final int phaseTwoRequiredRuns;
+    private final long disableProgressUntil;
 
     public ResearchManager(final ZorwethPlugin plugin, final boolean enabled, final int phaseOneRequiredRuns,
-                           final int phaseTwoRequiredRuns) {
+                           final int phaseTwoRequiredRuns, final long disableProgressUntil) {
         this.plugin = Objects.requireNonNull(plugin);
         this.enabled = enabled;
         this.phaseOneRequiredRuns = phaseOneRequiredRuns;
         this.phaseTwoRequiredRuns = phaseTwoRequiredRuns;
+        this.disableProgressUntil = disableProgressUntil;
     }
 
     public boolean isEnabled() {
@@ -35,7 +37,7 @@ public final class ResearchManager {
     }
 
     public boolean canRunResearch(final World world, final int phase) {
-        if (!this.enabled || !isResearchWorld(world)) {
+        if (!this.enabled || System.currentTimeMillis() < this.disableProgressUntil || !isResearchWorld(world)) {
             return false;
         }
         final PersistentDataContainer data = world.getPersistentDataContainer();
