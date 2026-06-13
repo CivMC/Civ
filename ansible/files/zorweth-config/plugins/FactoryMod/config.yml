@@ -19233,7 +19233,8 @@ recipes:
         custom-key: oxygen_rebreather
         amount: 1
   refine_crude_oil:
-    production_time: 4s
+    production_time: 64s
+    fuel_consumption_intervall: 16s
     name: Refine Crude Oil
     type: PRODUCTION
     input:
@@ -19244,11 +19245,11 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GLOWSTONE_DUST
-        amount: 64
+        amount: 128
     output:
       rocket_fuel:
         custom-key: rocket_fuel
-        amount: 32
+        amount: 8
   manufacture_advanced_mechanical_components:
     production_time: 4s
     name: Manufacture Advanced Mechanical Components

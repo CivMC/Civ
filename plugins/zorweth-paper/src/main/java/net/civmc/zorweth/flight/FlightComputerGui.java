@@ -11,6 +11,7 @@ import java.util.Map;
 import net.civmc.zorweth.ZorwethPlugin;
 import net.civmc.zorweth.mechanics.Fuel;
 import static net.civmc.zorweth.flight.FlightComputer.ROCKET_COMPUTER_KEY;
+import static net.civmc.zorweth.flight.LaunchHandler.ROCKET_DRY_MASS_KG;
 import static net.civmc.zorweth.flight.LaunchHandler.SITTING_PLAYER_MASS_KG;
 import net.civmc.zorweth.transfer.RocketManifest;
 import net.kyori.adventure.text.Component;
@@ -410,6 +411,8 @@ public final class FlightComputerGui implements Listener {
                 Component.text("Required: " + roundUpTenths(status.requiredFuelKg()) + " kg (" + status.requiredFuelItems() + " rocket fuel)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Cargo mass: " + roundUpTenths(status.cargoMassKg()) + " kg", NamedTextColor.GRAY)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("Dry mass: " + roundUpTenths(ROCKET_DRY_MASS_KG) + " kg", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Players sitting: " + roundUpTenths(status.sittingPlayers() * SITTING_PLAYER_MASS_KG) + " kg (" + status.sittingPlayers() + " × " + roundUpTenths(SITTING_PLAYER_MASS_KG) + " kg)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
