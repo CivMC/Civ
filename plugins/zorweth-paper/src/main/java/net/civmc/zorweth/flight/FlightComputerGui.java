@@ -412,7 +412,7 @@ public final class FlightComputerGui implements Listener {
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Cargo mass: " + roundUpTenths(status.cargoMassKg()) + " kg", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
-                Component.text("Dry mass: " + roundUpTenths(ROCKET_DRY_MASS_KG) + " kg", NamedTextColor.GRAY)
+                Component.text("Structural mass: " + roundUpTenths(ROCKET_DRY_MASS_KG) + " kg", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("Players sitting: " + roundUpTenths(status.sittingPlayers() * SITTING_PLAYER_MASS_KG) + " kg (" + status.sittingPlayers() + " × " + roundUpTenths(SITTING_PLAYER_MASS_KG) + " kg)", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false)
