@@ -223,7 +223,7 @@ public class CitadelConfigManager extends ConfigParser {
     }
 
     private ReinforcementType parseReinforcementType(ConfigurationSection config) {
-        ItemStack item = parseReinforcementItem(config.getConfigurationSection("item"));
+        ItemStack item = parseReinforcementItem(config);
         if (item == null) {
             logger.warning(
                 "Reinforcement config at " + config.getCurrentPath() + " had no valid item entry, it was ignored");
@@ -277,20 +277,24 @@ public class CitadelConfigManager extends ConfigParser {
         if (config == null) {
             return null;
         }
-        String customKey = config.getString("custom-key");
+        if (config.isItemStack("item")) {
+            return config.getItemStack("item");
+        }
+        ConfigurationSection itemSection = config.getConfigurationSection("item");
+        if (itemSection == null) {
+            return null;
+        }
+        String customKey = itemSection.getString("custom-key");
         if (customKey != null) {
             ItemStack item = CustomItem.getCustomItem(customKey);
             if (item == null) {
-                logger.warning("Unknown custom item key " + customKey + " at " + config.getCurrentPath());
+                logger.warning("Unknown custom item key " + customKey + " at " + itemSection.getCurrentPath());
                 return null;
             }
             item.setAmount(1);
             return item;
         }
-        if (!config.getParent().isItemStack("item")) {
-            return null;
-        }
-        return config.getParent().getItemStack("item");
+        return null;
     }
 
     private void parseReinforcementTypes(ConfigurationSection config) {
