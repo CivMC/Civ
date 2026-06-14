@@ -47,7 +47,7 @@ public class LaunchHandler {
 
     public static final double FUEL_ITEM_MASS_KG = 4.0;
     public static final double EXHAUST_VELOCITY_METERS_PER_SECOND = 5_000.0;
-    public static final double ROCKET_DRY_MASS_KG = 100.0;
+    public static final double ROCKET_DRY_MASS_KG = 200.0;
     public static final double SITTING_PLAYER_MASS_KG = 50.0;
     private static final String COMPACTED_LORE = "Compacted Item";
 
