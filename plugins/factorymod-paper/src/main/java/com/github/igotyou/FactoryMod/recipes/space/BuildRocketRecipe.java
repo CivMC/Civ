@@ -81,7 +81,7 @@ public class BuildRocketRecipe extends InputRecipe {
 
     @Override
     public Material getRecipeRepresentationMaterial() {
-        return Material.DAYLIGHT_DETECTOR;
+        return Material.LIGHTNING_ROD;
     }
 
     @Override
