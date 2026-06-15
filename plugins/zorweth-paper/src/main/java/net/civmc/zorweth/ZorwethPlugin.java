@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.logging.Level;
 import net.civmc.zorweth.database.RocketTransferDao;
 import net.civmc.zorweth.database.ZorwethDatabase;
@@ -25,9 +24,9 @@ import net.civmc.zorweth.oxygen.OxygenDisplay;
 import net.civmc.zorweth.oxygen.OxygenManager;
 import net.civmc.zorweth.oxygen.OxygenTank;
 import net.civmc.zorweth.oxygen.SpaceKelpListener;
-import net.civmc.zorweth.research.ResearchManager;
 import net.civmc.zorweth.repair.ArmourRepairKit;
 import net.civmc.zorweth.repair.ArmourRepairKitListener;
+import net.civmc.zorweth.research.ResearchManager;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -87,7 +86,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PhantomMembraneLoreListener(), this);
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
         getServer().getPluginManager().registerEvents(new CrossServerOttArrivalListener(this, this.crossServerOttManager), this);
-        Objects.requireNonNull(getCommand("pioneer")).setExecutor(new PioneerCommand(this));
+        getCommand("pioneer").setExecutor(new PioneerCommand(this));
 
         if (mechanicsEnabled) {
             this.mechanics = new OilMechanics(this, mechanicsWorld);
@@ -113,7 +112,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         this.oxygenManager = OxygenManager.deserialize(this, activityManager, oxygenSection);
         getServer().getPluginManager().registerEvents(this.oxygenManager, this);
         getServer().getPluginManager().registerEvents(new SpaceKelpListener(), this);
-        Objects.requireNonNull(getCommand("oxygen")).setExecutor(new OxygenCommand(this.oxygenManager));
+        getCommand("oxygen").setExecutor(new OxygenCommand(this.oxygenManager));
 
         getServer().getPluginManager().registerEvents(new OxygenDisplay(this, this.oxygenManager), this);
     }

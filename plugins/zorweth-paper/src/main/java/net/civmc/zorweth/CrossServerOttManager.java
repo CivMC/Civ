@@ -12,6 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.persistence.PersistentDataType;
 
 public final class CrossServerOttManager {
@@ -82,6 +83,9 @@ public final class CrossServerOttManager {
 
     private void completeTransfer(final Player player, final String destinationServer) {
         player.getInventory().clear();
+        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory inventory) {
+            inventory.clear();
+        }
         player.setLevel(0);
         player.setExp(0.0f);
         player.setFoodLevel(20);

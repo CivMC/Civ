@@ -18,6 +18,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -244,6 +245,9 @@ public final class PioneerCommand implements CommandExecutor {
         }
 
         player.getInventory().clear();
+        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory inventory) {
+            inventory.clear();
+        }
         player.setLevel(0);
         player.setExp(0.0f);
         player.setFoodLevel(20);

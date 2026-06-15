@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,6 +30,7 @@ private final Set<Player> playersInStasis = ConcurrentHashMap.newKeySet();
         if (!player.isConnected()) {
             throw new IllegalArgumentException("player is not connected");
         }
+        player.closeInventory();
         this.playersInStasis.add(player);
     }
 
@@ -123,6 +125,16 @@ private final Set<Player> playersInStasis = ConcurrentHashMap.newKeySet();
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(final InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player) || !isInStasis(player)) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onInventoryClick(final PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        if (!isInStasis(player)) {
             return;
         }
 

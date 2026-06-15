@@ -11,6 +11,7 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
@@ -60,6 +61,7 @@ public final class OxygenBladder {
     public static ItemStack createOxygenRebreather() {
         final ItemStack item = new ItemStack(Material.LEATHER_HELMET);
         item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(Color.AQUA));
+        item.addUnsafeEnchantment(Enchantment.PROTECTION, 2);
         item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("conduit"));
         item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
         final ItemMeta meta = item.getItemMeta();
@@ -82,7 +84,8 @@ public final class OxygenBladder {
     public static ItemStack createOxygenSuit() {
         final ItemStack item = new ItemStack(Material.LEATHER_HELMET);
         item.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(Color.BLUE));
-        item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("dropper"));
+        item.addUnsafeEnchantment(Enchantment.PROTECTION, 5);
+        item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("end_crystal"));
         item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
         final ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Oxygen Suit", TextColor.color(140, 163, 177)));
