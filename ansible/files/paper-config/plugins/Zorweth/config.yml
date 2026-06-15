@@ -28,5 +28,5 @@ mechanics:
 research:
   enabled: false
   disable-progress-until: 0
-  phase-one-runs: 40000
+  phase-one-runs: 30000
   phase-two-runs: 20000
