@@ -36,6 +36,8 @@ oxygen:
   tank_break_chance: 0.05
   biomes:
     "minecraft:pale_garden": 0.5
+    "minecraft:jagged_peaks": 0.75
+    "minecraft:frozen_peaks": 0.75
     "minecraft:end_highlands": 1
     "minecraft:end_midlands": 3
     "minecraft:end_barrens": 4
