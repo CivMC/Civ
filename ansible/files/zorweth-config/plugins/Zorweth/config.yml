@@ -5,6 +5,8 @@ transfer-failure-message: Unable to complete rocket transfer. Please reconnect a
 source-world: world
 
 world-radius: 7000
+rocket-centre-x: 0
+rocket-centre-z: -20000
 delta-v-meters-per-second: 6000
 
 database:

@@ -42,8 +42,6 @@ import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 public final class DestinationTransferListener implements Listener {
 
     public static final int SPIRAL_ITERATION_DISTANCE = 8;
-    private static final int DESTINATION_CENTER_X = 0;
-    private static final int DESTINATION_CENTER_Z = -20_000;
     private final ZorwethPlugin plugin;
     private final Map<UUID, CompletableFuture<DestinationRocketTransfer>> futures = new ConcurrentHashMap<>();
 
@@ -225,8 +223,8 @@ public final class DestinationTransferListener implements Listener {
         if (distanceSquared > radiusSquared) {
             final double distance = Math.sqrt(distanceSquared);
             final double scale = plugin.getWorldRadius() / distance;
-            rx = DESTINATION_CENTER_X + (int) ((rx - DESTINATION_CENTER_X) * scale);
-            rz = DESTINATION_CENTER_Z + (int) ((rz - DESTINATION_CENTER_Z) * scale);
+            rx = plugin.getRocketCentreX() + (int) ((rx - plugin.getRocketCentreX()) * scale);
+            rz = plugin.getRocketCentreZ() + (int) ((rz - plugin.getRocketCentreZ()) * scale);
         }
 
         final World world = Bukkit.getWorld(transfer.destinationWorld());
@@ -302,8 +300,8 @@ public final class DestinationTransferListener implements Listener {
     }
 
     private double getDistanceSquaredFromCenter(final int x, final int z) {
-        final double relativeX = x - DESTINATION_CENTER_X;
-        final double relativeZ = z - DESTINATION_CENTER_Z;
+        final double relativeX = x - plugin.getRocketCentreX();
+        final double relativeZ = z - plugin.getRocketCentreZ();
         return relativeX * relativeX + relativeZ * relativeZ;
     }
 

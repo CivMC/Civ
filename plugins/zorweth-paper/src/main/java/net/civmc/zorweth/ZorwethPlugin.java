@@ -47,6 +47,8 @@ public final class ZorwethPlugin extends JavaPlugin {
     private String transferFailureMessage;
     private long pioneerEndTimestampMillis;
     private int worldRadius;
+    private int rocketCentreX;
+    private int rocketCentreZ;
     private double deltaVMetersPerSecond;
     private boolean researchEnabled;
     private int researchPhaseOneRuns;
@@ -180,6 +182,14 @@ public final class ZorwethPlugin extends JavaPlugin {
         return this.worldRadius;
     }
 
+    public int getRocketCentreX() {
+        return rocketCentreX;
+    }
+
+    public int getRocketCentreZ() {
+        return rocketCentreZ;
+    }
+
     public double getDeltaVMetersPerSecond() {
         return this.deltaVMetersPerSecond;
     }
@@ -193,6 +203,8 @@ public final class ZorwethPlugin extends JavaPlugin {
             "Unable to complete rocket transfer. Please reconnect and try again.");
         this.pioneerEndTimestampMillis = getConfig().getLong("pioneer-end-timestamp", 0L);
         this.worldRadius = getConfig().getInt("world-radius", 0);
+        this.rocketCentreX = getConfig().getInt("world-centre-x", 0);
+        this.rocketCentreZ = getConfig().getInt("world-centre-z", 0);
         this.deltaVMetersPerSecond = getConfig().getDouble("delta-v-meters-per-second", 10_000.0);
         this.researchEnabled = getConfig().getBoolean("research.enabled", true);
         this.researchPhaseOneRuns = loadPositiveInt("research.phase-one-runs", 1);
