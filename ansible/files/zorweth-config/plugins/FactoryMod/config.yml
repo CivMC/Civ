@@ -19378,7 +19378,7 @@ recipes:
         amount: 3
       rocket_fuel:
         custom-key: rocket_fuel
-        amount: 8
+        amount: 6
   make_armour_repair_kit:
     production_time: 4s
     name: Make Armour Repair Kit
