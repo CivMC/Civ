@@ -19298,7 +19298,7 @@ recipes:
         type: STICK
         amount: 1
   research_phase_1:
-    production_time: 64s
+    production_time: 128s
     fuel_consumption_intervall: 8s
     name: Research Phase 1
     type: RESEARCH
@@ -19335,7 +19335,7 @@ recipes:
         type: REDSTONE
         amount: 16
   research_phase_2:
-    production_time: 64s
+    production_time: 128s
     fuel_consumption_intervall: 8s
     name: Research Phase 2
     type: RESEARCH
