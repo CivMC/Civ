@@ -19223,11 +19223,11 @@ recipes:
           display-name: Salt
           lore:
             - Gathered from the Zorweth salt flats
-      diamonds:
+      redstone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: DIAMOND
-        amount: 16
+        type: REDSTONE_BLOCK
+        amount: 32
     output:
       oxygen_rebreather:
         custom-key: oxygen_rebreather
