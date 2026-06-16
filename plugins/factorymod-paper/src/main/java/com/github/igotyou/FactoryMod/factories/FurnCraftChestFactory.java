@@ -824,6 +824,9 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 
     @Override
     public int getUpdateTime() {
+        if (!currentRecipe.canApplySpeed()) {
+            return updateTime;
+        }
         return switch (speedLevel) {
             case 0 -> updateTime;
             case 1 -> Math.ceilDiv(updateTime, 2);

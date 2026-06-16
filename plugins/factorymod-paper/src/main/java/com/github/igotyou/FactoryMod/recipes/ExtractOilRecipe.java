@@ -67,6 +67,7 @@ public class ExtractOilRecipe extends ProductionRecipe {
         lore.add(ChatColor.DARK_AQUA + "Requires crude oil deposit nearby.");
         lore.add(ChatColor.DARK_AQUA + "Duration is variable based on yield.");
         lore.add(ChatColor.DARK_AQUA + "Multiple factories near a deposit will split the yield.");
+        lore.add(ChatColor.DARK_AQUA + "Immune to factory speed upgrade.");
         im.setLore(lore);
         res.setItemMeta(im);
         return res;
@@ -75,5 +76,10 @@ public class ExtractOilRecipe extends ProductionRecipe {
     @Override
     public String getTypeIdentifier() {
         return "EXTRACT_OIL";
+    }
+
+    @Override
+    public boolean canApplySpeed() {
+        return false;
     }
 }

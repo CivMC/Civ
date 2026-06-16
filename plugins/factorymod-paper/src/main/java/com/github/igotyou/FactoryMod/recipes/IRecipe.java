@@ -68,4 +68,8 @@ public interface IRecipe {
      * @return Unique identifier for the implementation
      */
     public String getTypeIdentifier();
+
+    default boolean canApplySpeed() {
+        return true;
+    }
 }

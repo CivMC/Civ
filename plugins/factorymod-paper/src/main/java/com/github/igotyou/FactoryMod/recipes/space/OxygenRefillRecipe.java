@@ -49,6 +49,7 @@ public final class OxygenRefillRecipe extends ProductionRecipe {
         final ItemMeta meta = result.getItemMeta();
         final List<String> lore = new ArrayList<>(meta.getLore());
         lore.add(ChatColor.DARK_AQUA + "Requires oxygen in the local biome.");
+        lore.add(ChatColor.DARK_AQUA + "Immune to factory speed upgrade.");
         meta.setLore(lore);
         result.setItemMeta(meta);
         return result;
@@ -64,5 +65,10 @@ public final class OxygenRefillRecipe extends ProductionRecipe {
             return null;
         }
         return JavaPlugin.getPlugin(ZorwethPlugin.class).getOxygenManager();
+    }
+
+    @Override
+    public boolean canApplySpeed() {
+        return false;
     }
 }
