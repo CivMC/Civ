@@ -19375,7 +19375,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: INK_SAC
-        amount: 4
+        amount: 3
       rocket_fuel:
         custom-key: rocket_fuel
         amount: 8
