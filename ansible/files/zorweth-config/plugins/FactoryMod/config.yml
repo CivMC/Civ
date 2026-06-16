@@ -96,7 +96,7 @@ factories:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ENDER_EYE
-        amount: 32
+        amount: 64
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
