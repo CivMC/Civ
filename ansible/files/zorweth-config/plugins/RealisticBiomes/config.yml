@@ -894,7 +894,7 @@ plants:
       freshwater: 1.0
 
   CHORUS_FLOWER:
-    persistent_growth_period: 12h
+    persistent_growth_period: 0.1h
     name: Chorus Flower
     id: 33
     grower:
