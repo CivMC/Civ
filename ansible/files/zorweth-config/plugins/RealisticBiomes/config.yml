@@ -898,9 +898,11 @@ plants:
     name: Chorus Flower
     id: 33
     grower:
-      type: bamboo
+      type: tip
       material: CHORUS_FLOWER
-      max_height: 10
+      stem_material: CHORUS_PLANT
+      growth_direction: UP
+      max_height: 20
     vanilla_materials:
     - CHORUS_FLOWER
     item:
