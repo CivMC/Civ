@@ -151,7 +151,7 @@ plants:
 
 # formerly inheriting CROP properties
   WHEAT:
-    persistent_growth_period: 16h
+    persistent_growth_period: 8h
     name: Wheat
     id: 1
     item:
@@ -178,7 +178,7 @@ plants:
 
 
   CARROT:
-    persistent_growth_period: 16h
+    persistent_growth_period: 8h
     name: Carrots
     id: 2
     item:
@@ -204,7 +204,7 @@ plants:
       birch_forests: 0.5
 
   POTATO:
-    persistent_growth_period: 16h
+    persistent_growth_period: 8h
     name: Potatoes
     id: 3
     item:
@@ -230,7 +230,7 @@ plants:
       cold_mountain: 0.5
 
   BEETROOT:
-    persistent_growth_period: 16h
+    persistent_growth_period: 8h
     name: Beetroots
     id: 4
     item:
@@ -256,7 +256,7 @@ plants:
       cold_mountain: 0.5
 
   NETHER_WART:
-    persistent_growth_period: 16h
+    persistent_growth_period: 8h
     name: Nether wart
     id: 5
     item:
@@ -281,10 +281,9 @@ plants:
       WARPED_FOREST: 0.5
       NETHER_WASTES: 1.0
       SOUL_SAND_VALLEY: 0.5
-      BASALT_DELTAS: 0.5
 
   COCOA:
-    persistent_growth_period: 24h
+    persistent_growth_period: 12h
     name: Cocoa
     id: 6
     item:
@@ -311,7 +310,7 @@ plants:
       mushroom: 0.25
 
   MELON:
-    persistent_growth_period: 16h
+    persistent_growth_period: 8h
     name: Melon
     id: 7
     item:
@@ -361,7 +360,7 @@ plants:
       desert: 0.4
 
   PUMPKIN:
-    persistent_growth_period: 16h
+    persistent_growth_period: 8h
     name: Pumpkin
     id: 9
     can_be_planted: false
@@ -415,7 +414,7 @@ plants:
 # formerly inheriting Column properties
 
   CACTUS:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Cactus
     grower:
       type: column
@@ -435,7 +434,7 @@ plants:
       savannas: 0.0
 
   SUGAR_CANE:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Sugar cane
     id: 12
     grower:
@@ -457,7 +456,7 @@ plants:
 # formerly inheriting "basetree" properties
 
   OAK_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Oak Tree
     id: 13
     grower:
@@ -481,7 +480,7 @@ plants:
       swamp: 0.5
 
   BIRCH_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Birch Tree
     id: 14
     grower:
@@ -502,7 +501,7 @@ plants:
       meadows: 0.25
 
   SPRUCE_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Spruce Tree
     id: 15
     grower:
@@ -523,7 +522,7 @@ plants:
       cold_mountain: 0.25
 
   JUNGLE_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Jungle Tree
     id: 16
     grower:
@@ -545,7 +544,7 @@ plants:
       dark_forest: 0.6
 
   ACACIA_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Acacia Tree
     grower:
       type: tree
@@ -565,7 +564,7 @@ plants:
       mesa: 0.6
 
   DARK_OAK_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Dark Oak Tree
     grower:
       type: tree
@@ -589,7 +588,7 @@ plants:
       meadows: 0.5
 
   PALE_OAK_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Pale Oak Tree
     grower:
       type: tree
@@ -604,13 +603,10 @@ plants:
     greenhouse_rates:
       GLOWSTONE: 0.5
     biomes:
-      cold_taiga: 1.0
-      tundra: 1.5
-      cold_mountain: 0.25
       pale_garden: 2.0
 
   CHERRY_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Cherry Tree
     grower:
       type: tree
@@ -639,7 +635,7 @@ plants:
       flatlands: 0.5
 
   MANGROVE_PROPAGULE:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Mangrove Tree
     grower:
       type: tree
@@ -659,7 +655,7 @@ plants:
       swamp: 1.0
 
   GLOW_BERRIES:
-    persistent_growth_period: 8h
+    persistent_growth_period: 4h
     name: Glow Berries
     grower:
       type: tip
@@ -678,7 +674,7 @@ plants:
       LUSH_CAVES: 1.0
 
   TWISTING_VINES:
-    persistent_growth_period: 6h
+    persistent_growth_period: 3h
     name: Twisting Vines
     grower:
       type: tip
@@ -697,7 +693,7 @@ plants:
       WARPED_FOREST: 1.0
 
   WEEPING_VINES:
-    persistent_growth_period: 6h
+    persistent_growth_period: 3h
     name: Weeping Vines
     grower:
       type: tip
@@ -716,7 +712,7 @@ plants:
       CRIMSON_FOREST: 1.0
 
   KELP:
-    persistent_growth_period: 8h
+    persistent_growth_period: 4h
     name: Kelp
     grower:
       type: kelp
@@ -794,7 +790,7 @@ plants:
       dark_forest: 0.6
 
   CRIMSON_FUNGUS:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Crimson Fungus
     grower:
       type: fungus
@@ -813,7 +809,7 @@ plants:
       SOUL_SAND_VALLEY: 0.3
 
   WARPED_FUNGUS:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Warped Fungus
     grower:
       type: fungus
@@ -832,7 +828,7 @@ plants:
       SOUL_SAND_VALLEY: 0.3
 
   BAMBOO:
-    persistent_growth_period: 24h
+    persistent_growth_period: 12h
     name: Bamboo
     grower:
       type: bamboo
@@ -852,7 +848,7 @@ plants:
       dark_forest: 0.25
 
   SWEET_BERRY:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Sweet Berry
     id: 31
     item:
@@ -875,7 +871,7 @@ plants:
       cold_mountain: 1.0
 
   BIG_DRIPLEAF:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Big Dripleaf
     grower:
       type: tip
