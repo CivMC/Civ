@@ -889,22 +889,21 @@ plants:
     biomes:
       freshwater: 1.0
 
-  CHORUS_FLOWER:
-    persistent_growth_period: 1h
-    name: Chorus Flower
-    id: 33
+  CHORUS_FRUIT:
+    persistent_growth_period: 12h
+    name: Chorus Plant
     grower:
-      type: tip
-      material: CHORUS_FLOWER
-      stem_material: CHORUS_PLANT
-      growth_direction: UP
-      max_height: 20
+      type: tree
+      material: CHORUS_FRUIT
     vanilla_materials:
-    - CHORUS_FLOWER
+    - CHORUS_FRUIT
+    id: 33
     item:
       ==: org.bukkit.inventory.ItemStack
-      type: CHORUS_FLOWER
+      type: CHORUS_FRUIT
       v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
     biomes:
       end_highlands: 1.0
 
