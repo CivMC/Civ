@@ -19340,7 +19340,7 @@ recipes:
     output:
       oxygen_filters:
         custom-key: oxygen_filters
-        amount: 8
+        amount: 4
   advanced_refill_oxygen_tank:
     production_time: 1024s
     fuel_consumption_intervall: 16s

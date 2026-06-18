@@ -110,7 +110,9 @@ factories:
       - research_phase_2
       - make_armour_repair_kit
       - refine_crude_oil
+      - make_space_chem_factory_kit
       - repair_space_chem_factory
+      - repair_space_chem_factory_kit
   crude:
     type: FCC
     name: Crude Oil Factory
@@ -149,7 +151,9 @@ factories:
             - Activity reward used to fuel pearls
     recipes:
       - extract_crude_oil
+      - make_crude_oil_factory_kit
       - repair_crude_oil_factory
+      - repair_crude_oil_factory_kit
   kinetics:
     type: FCC
     name: Kinetics Factory
@@ -1519,7 +1523,7 @@ factories:
       clay:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: RESIN
+        type: CLAY
         amount: 128
       essence:
         v: 3839
@@ -1544,7 +1548,9 @@ factories:
         amount: 128
     recipes:
       - build_rocket
+      - make_space_factory_kit
       - repair_space_factory
+      - repair_space_factory_kit
   bastion_factory:
     type: FCC
     name: Bastion Factory
@@ -11797,23 +11803,6 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
-  repair_advanced_cauldron_kit:
-    production_time: 4s
-    name: Repair Factory using Repair Kit
-    type: REPAIR
-    input:
-      kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
-        amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Elite Cauldron Repair Kit
-          lore:
-            - One kit will repair a Elite Cauldron to full health.
-    health_gained: 10000
   compact:
     production_time: 1s
     fuel_consumption_intervall: 4s
@@ -18906,6 +18895,54 @@ recipes:
           ==: ItemMeta
           lore:
             - Compacted Item
+  make_crude_oil_factory_kit:
+    production_time: 4s
+    name: Make Crude Oil Factory Repair Kit
+    type: PRODUCTION
+    input:
+      copper_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 16
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 16
+      iron_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 16
+      amethyst:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Crude Oil Factory Repair Kit
+          lore:
+            - One kit will repair a Crude Oil Factory to full health.
   repair_crude_oil_factory:
     production_time: 4s
     name: Repair Factory
@@ -18943,6 +18980,84 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
+  repair_crude_oil_factory_kit:
+    production_time: 4s
+    name: Repair Factory using Repair Kit
+    type: REPAIR
+    input:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Crude Oil Factory Repair Kit
+          lore:
+            - One kit will repair a Crude Oil Factory to full health.
+    health_gained: 10000
+  make_space_factory_kit:
+    production_time: 4s
+    name: Make Space Factory Repair Kit
+    type: PRODUCTION
+    input:
+      iron_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_BLOCK
+        amount: 4
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 16
+      resin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN
+        amount: 4
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 1
+      clay:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CLAY
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      quartz:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: QUARTZ
+        amount: 64
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE
+        amount: 16
+    output:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Space Factory Repair Kit
+          lore:
+            - One kit will repair a Space Factory to full health.
   repair_space_factory:
     production_time: 4s
     name: Repair Factory
@@ -18969,7 +19084,7 @@ recipes:
       clay:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: RESIN
+        type: CLAY
         amount: 16
       essence:
         v: 3839
@@ -18993,6 +19108,71 @@ recipes:
         type: REDSTONE
         amount: 16
     health_gained: 10000
+  repair_space_factory_kit:
+    production_time: 4s
+    name: Repair Factory using Repair Kit
+    type: REPAIR
+    input:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Space Factory Repair Kit
+          lore:
+            - One kit will repair a Space Factory to full health.
+    health_gained: 10000
+  make_space_chem_factory_kit:
+    production_time: 4s
+    name: Make Space Chemistry Factory Repair Kit
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 64
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 16
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 4
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Space Chemistry Factory Repair Kit
+          lore:
+            - One kit will repair a Space Chemistry Factory to full health.
   repair_space_chem_factory:
     production_time: 4s
     name: Repair Factory
@@ -19029,6 +19209,23 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+    health_gained: 10000
+  repair_space_chem_factory_kit:
+    production_time: 4s
+    name: Repair Factory using Repair Kit
+    type: REPAIR
+    input:
+      kit:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Space Chemistry Factory Repair Kit
+          lore:
+            - One kit will repair a Space Chemistry Factory to full health.
     health_gained: 10000
   repair_oxygen_factory:
     production_time: 4s
@@ -19143,7 +19340,7 @@ recipes:
     output:
       oxygen_filters:
         custom-key: oxygen_filters
-        amount: 8
+        amount: 4
   advanced_refill_oxygen_tank:
     production_time: 1024s
     fuel_consumption_intervall: 16s
