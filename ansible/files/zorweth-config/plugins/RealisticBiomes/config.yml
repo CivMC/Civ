@@ -894,9 +894,9 @@ plants:
     name: Chorus Plant
     grower:
       type: tree
-      material: CHORUS_FRUIT
+      material: CHORUS_FLOWER
     vanilla_materials:
-    - CHORUS_FRUIT
+    - CHORUS_FLOWER
     id: 33
     item:
       ==: org.bukkit.inventory.ItemStack
