@@ -16,7 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
