@@ -203,6 +203,10 @@ export default defineConfig({
                                             link: "wiki//plugins/unique/Transport",
                                         },
                                         {
+                                            text: "Bleeze",
+                                            link: "wiki/plugins/unique/bleeze",
+                                        },
+                                        {
                                             text: "Chunk Limits",
                                             link: "wiki/plugins/unique/chunklimits",
                                         },
