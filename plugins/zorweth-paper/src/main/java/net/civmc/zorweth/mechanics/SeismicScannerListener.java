@@ -1,5 +1,6 @@
 package net.civmc.zorweth.mechanics;
 
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,17 +16,19 @@ import org.bukkit.inventory.CraftingRecipe;
 
 public class SeismicScannerListener implements Listener {
 
-    private final CraftingRecipe recipe;
+    private final List<CraftingRecipe> recipes;
     private final OilMechanics mechanics;
 
-    public SeismicScannerListener(CraftingRecipe recipe, OilMechanics mechanics) {
-        this.recipe = recipe;
+    public SeismicScannerListener(List<CraftingRecipe> recipes, OilMechanics mechanics) {
+        this.recipes = recipes;
         this.mechanics = mechanics;
     }
 
     @EventHandler
     public void on(PlayerJoinEvent event) {
-        event.getPlayer().discoverRecipe(recipe.getKey());
+        for (CraftingRecipe recipe : recipes) {
+            event.getPlayer().discoverRecipe(recipe.getKey());
+        }
     }
 
     @EventHandler

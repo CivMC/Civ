@@ -35,9 +35,12 @@ public class OilMechanics {
         this.activeExtractorWindowMillis = ConfigHelper.parseTime(mechanics.getString("active-extractor-window", "30s"));
         this.activeExtractors = new HashMap<>();
 
-        CraftingRecipe recipe = SeismicScanner.getRecipe(plugin);
-        Bukkit.addRecipe(recipe);
-        plugin.getServer().getPluginManager().registerEvents(new SeismicScannerListener(recipe, this), plugin);
+        List<CraftingRecipe> recipes = new ArrayList<>(TotemRecipes.getRecipes());
+        recipes.add(SeismicScanner.getRecipe(plugin));
+        for (CraftingRecipe recipe : recipes) {
+            Bukkit.addRecipe(recipe);
+        }
+        plugin.getServer().getPluginManager().registerEvents(new SeismicScannerListener(recipes, this), plugin);
 
         Fuel.createCrudeOil();
         Fuel.createRocketFuel();
