@@ -101,7 +101,9 @@ public class WorldGenerationListener implements Listener {
         int maxChunkZ = Math.floorDiv(centerZ + radius, 16);
         for (int cx = minChunkX; cx <= maxChunkX; cx++) {
             for (int cz = minChunkZ; cz <= maxChunkZ; cz++) {
-                chunks.add(new IntIntImmutablePair(cx, cz));
+                if (chunkIntersectsCircle(cx, cz, centerX, centerZ, radius)) {
+                    chunks.add(new IntIntImmutablePair(cx, cz));
+                }
             }
         }
         sender.sendMessage("Clearing " + chunks.size() + " chunks around " + centerX + ", " + centerZ + "...");
@@ -164,6 +166,19 @@ public class WorldGenerationListener implements Listener {
             sender.sendMessage(message);
             Bukkit.getConsoleSender().sendMessage(message);
         });
+    }
+
+    private boolean chunkIntersectsCircle(int chunkX, int chunkZ, int centerX, int centerZ, int radius) {
+        int minX = chunkX * 16;
+        int maxX = minX + 16;
+        int minZ = chunkZ * 16;
+        int maxZ = minZ + 16;
+        int closestX = Math.clamp(centerX, minX, maxX);
+        int closestZ = Math.clamp(centerZ, minZ, maxZ);
+        long distanceX = closestX - centerX;
+        long distanceZ = closestZ - centerZ;
+        long radiusSquared = (long) radius * radius;
+        return distanceX * distanceX + distanceZ * distanceZ <= radiusSquared;
     }
 
     /**
