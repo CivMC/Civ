@@ -39,3 +39,4 @@ mechanics:
 oxygen:
   enabled: false
   tank_break_chance: 0.05
+  offline_consumption_seconds: 300

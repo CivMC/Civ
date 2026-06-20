@@ -36,6 +36,7 @@ oxygen:
   world: world
   consumption_per_second: 0.006
   tank_break_chance: 0.05
+  offline_consumption_seconds: 300
   biomes:
     "minecraft:pale_garden": 0.5
     "minecraft:jagged_peaks": 0.75
