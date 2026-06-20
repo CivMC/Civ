@@ -5,9 +5,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.WeatheringCopper;
-import net.minecraft.world.level.block.state.BlockState;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,10 +13,6 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -30,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CopperRail extends BasicHack {
@@ -45,6 +38,57 @@ public class CopperRail extends BasicHack {
 
     public CopperRail(SimpleAdminHacks plugin, BasicHackConfig config) {
         super(plugin, config);
+    }
+
+    private enum CopperStage {
+        UNAFFECTED(Material.COPPER_BLOCK, Material.WAXED_COPPER_BLOCK, .75f),
+        EXPOSED(Material.EXPOSED_COPPER, Material.WAXED_EXPOSED_COPPER, 1.0f),
+        WEATHERED(Material.WEATHERED_COPPER, Material.WAXED_WEATHERED_COPPER, 1.0f),
+        OXIDIZED(Material.OXIDIZED_COPPER, Material.WAXED_OXIDIZED_COPPER, 0.0f);
+
+        private final Material unwaxed;
+        private final Material waxed;
+        private final float chance;
+
+        CopperStage(Material unwaxed, Material waxed, float chance) {
+            this.unwaxed = unwaxed;
+            this.waxed = waxed;
+            this.chance = chance;
+        }
+
+        public static CopperStage from(Material mat) {
+            for (CopperStage stage : values()) {
+                if (stage.unwaxed == mat || stage.waxed == mat) return stage;
+            }
+            return null;
+        }
+    }
+
+    private boolean isWaxed(Material material) {
+        CopperStage stage = CopperStage.from(material);
+        return stage != null && stage.waxed == material;
+    }
+
+    private Material getNextStage(Material material) {
+        CopperStage current = CopperStage.from(material);
+        if (current == null) return null;
+        
+        int nextIndex = current.ordinal() + 1;
+        if (nextIndex >= CopperStage.values().length) return null;
+        
+        CopperStage nextStage = CopperStage.values()[nextIndex];
+        return isWaxed(material) ? nextStage.waxed : nextStage.unwaxed;
+    }
+
+    private Material getPreviousStage(Material material) {
+        CopperStage current = CopperStage.from(material);
+        if (current == null) return null;
+
+        int prevIndex = current.ordinal() - 1;
+        if (prevIndex < 0) return null;
+
+        CopperStage prevStage = CopperStage.values()[prevIndex];
+        return isWaxed(material) ? prevStage.waxed : prevStage.unwaxed;
     }
 
     @EventHandler
@@ -84,35 +128,41 @@ public class CopperRail extends BasicHack {
                 }
                 Location location = new Location(minecart.getWorld(), x, from.getY(), z);
                 Block topCopperBlock = location.getBlock().getRelative(BlockFace.DOWN);
-                Optional<net.minecraft.world.level.block.Block> next = WeatheringCopper.getNext(((CraftBlock) topCopperBlock).getNMS().getBlock());
-                if (next.isPresent()) {
+                if (getNextStage(topCopperBlock.getType()) != null) {
                     copperBlocks.add(topCopperBlock);
                 }
                 Block belowCopperBlock = topCopperBlock.getRelative(BlockFace.DOWN);
-                next = WeatheringCopper.getNext(((CraftBlock) belowCopperBlock).getNMS().getBlock());
-                if (next.isPresent()) {
+                if (getNextStage(belowCopperBlock.getType()) != null) {
                     copperBlocks.add(belowCopperBlock);
                 }
             }
         }
 
         for (Block copperBlock : copperBlocks) {
-            CraftBlock craftBlock = (CraftBlock) copperBlock;
-            BlockState state = craftBlock.getNMS();
-            ServerLevel level = ((CraftWorld) copperBlock.getWorld()).getHandle();
-            // We damage the copper directly instead of using random ticking, as random ticking is easy to cheese
-            // by placing waxed copper next to the rail, entirely preventing the rest of the rail from oxidising.
-            WeatheringCopper copper = (WeatheringCopper) state.getBlock();
-            float chanceModifier = copper.getChanceModifier();
+            Material currentMaterial = copperBlock.getType();
+            Material nextMaterial = getNextStage(currentMaterial);
+
+            if (nextMaterial == null) {
+                continue;
+            }
+
+            CopperStage stage = CopperStage.from(currentMaterial);
+            float chanceModifier = (stage != null) ? stage.chance : 0.0f;
+
             if (this.damage * chanceModifier > ThreadLocalRandom.current().nextFloat()) {
-                copper.getNext(state).ifPresent((iblockdata2) -> {
-                    try {
-                        formingBlock = true;
-                        CraftEventFactory.handleBlockFormEvent(level, craftBlock.getPosition(), iblockdata2, 3);
-                    } finally {
-                        formingBlock = false;
+                org.bukkit.block.BlockState newState = copperBlock.getState();
+                newState.setType(nextMaterial);
+                BlockFormEvent formEvent = new BlockFormEvent(copperBlock, newState);
+
+                try {
+                    formingBlock = true;
+                    Bukkit.getPluginManager().callEvent(formEvent);
+                    if (!formEvent.isCancelled()) {
+                        newState.update(true);
                     }
-                });
+                } finally {
+                    formingBlock = false;
+                }
             }
         }
     }
@@ -133,29 +183,29 @@ public class CopperRail extends BasicHack {
             return;
         }
 
-        Block copperBlock = block.getRelative(BlockFace.DOWN);
-        Optional<BlockState> previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
-
         boolean damaged = false;
-        CraftPlayer player = (CraftPlayer) event.getPlayer();
+        Player player = event.getPlayer();
 
-        while (previous.isPresent() && event.getItem().getType() != Material.AIR) {
-            copperBlock.setType(previous.get().getBukkitMaterial());
+        // First copper block directly underneath the rail
+        Block topCopperBlock = block.getRelative(BlockFace.DOWN);
+        Material previousTop = getPreviousStage(topCopperBlock.getType());
+
+        while (previousTop != null && item.getType() != Material.AIR) {
+            topCopperBlock.setType(previousTop);
             damaged = true;
-
             item.damage(1, player);
-            previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
+            previousTop = getPreviousStage(topCopperBlock.getType());
         }
 
-        copperBlock = copperBlock.getRelative(BlockFace.DOWN);
-        previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
+        // Second copper block two spaces underneath the rail
+        Block belowCopperBlock = topCopperBlock.getRelative(BlockFace.DOWN);
+        Material previousBelow = getPreviousStage(belowCopperBlock.getType());
 
-        while (previous.isPresent() && event.getItem().getType() != Material.AIR) {
-            copperBlock.setType(previous.get().getBukkitMaterial());
+        while (previousBelow != null && item.getType() != Material.AIR) {
+            belowCopperBlock.setType(previousBelow);
             damaged = true;
-
             item.damage(1, player);
-            previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
+            previousBelow = getPreviousStage(belowCopperBlock.getType());
         }
 
         if (!damaged) {
@@ -177,9 +227,7 @@ public class CopperRail extends BasicHack {
         }
 
         Block block = event.getBlock();
-
-        Optional<net.minecraft.world.level.block.Block> next = WeatheringCopper.getNext(((CraftBlock) block).getNMS().getBlock());
-        if (next.isEmpty()) {
+        if (getNextStage(block.getType()) == null) {
             return;
         }
 

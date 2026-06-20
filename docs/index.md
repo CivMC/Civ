@@ -4,7 +4,7 @@ layout: home
 
 hero:
     name: "CivMC"
-    tagline: "A Minecraft server focused on civilization building \n1.21.8 Play.CivMC.net"
+    tagline: "A Minecraft server focused on civilization building \n1.21.11 Play.CivMC.net"
     image:
         src: /logo.png
         alt: CivMC Logo
@@ -34,6 +34,6 @@ features:
       link: /wiki/plugins/essential/exilepearl
     - icon: ⚔️
       title: Fight Your Enemies
-      details: Engage in combat with other players with a unique PvP experiance
+      details: Engage in combat with other players with a unique PvP experience
       link: /wiki/plugins/unique/finale
 ---

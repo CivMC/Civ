@@ -96,7 +96,7 @@ public class ListGroups extends BaseCommandMiddle {
             for (int x = first; x < first + 10 && x < groups.size(); x++) {
                 Group g = GroupManager.getGroup(groups.get(x));
                 sb.append(String.format("%s : (%s)\n",
-                    g.getName(), g.getPlayerType(uuid).toString()));
+                    g.getName(), g.isOwner(uuid) ? "PRIMARY_OWNER" : g.getPlayerType(uuid).toString()));
             }
         }
         sender.sendMessage(sb.toString());
