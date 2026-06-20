@@ -2,8 +2,7 @@ RandomZorslug:
   Type: Zorslug
   Worlds: world
   Chance: 0.2
-  Priority: 10
-  Action: REPLACE
+  Priority: 8
   Biomes: END_HIGHLANDS, END_MIDLANDS, SMALL_END_ISLANDS, END_BARRENS, THE_END
   Conditions:
     - outside true
