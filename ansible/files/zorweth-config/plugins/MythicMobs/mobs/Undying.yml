@@ -1,8 +1,8 @@
 The_Undying:
   Type: WITHER_SKELETON
   Display: '&5&lThe Undying'
-  Health: 100
-  Damage: 15
+  Health: 200
+  Damage: 12
   Drops:
     - light_weighted_pressure_plate{name="&eTotem Shard"} 1 0.05
     - gold_nugget{name="&eTotem Fragment"} 3-5
