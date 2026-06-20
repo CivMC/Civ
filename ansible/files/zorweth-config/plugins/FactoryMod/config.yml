@@ -56,6 +56,7 @@ factories:
       - repair_advanced_oxygen_tank
       - make_oxygen_filters
       - create_oxygen_rebreather
+      - create_oxygen_suit
       - repair_oxygen_factory
   space_chem:
     type: FCC
@@ -19428,6 +19429,37 @@ recipes:
     output:
       oxygen_rebreather:
         custom-key: oxygen_rebreather
+        amount: 1
+  create_oxygen_suit:
+    production_time: 4s
+    name: Create Oxygen Rebreather
+    type: PRODUCTION
+    input:
+      oxygen_rebreather:
+        custom-key: oxygen_rebreather
+        amount: 1
+      aluminium_ingot:
+        custom-key: aluminium_ingot
+        amount: 24
+      netherite_ingot:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: NETHERITE_INGOT
+        amount: 2
+      crude_oil:
+        custom-key: crude_oil
+        amount: 56
+      filters:
+        custom-key: oxygen_filters
+        amount: 12
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_BLOCK
+        amount: 32
+    output:
+      oxygen_suit:
+        custom-key: oxygen_suit
         amount: 1
   refine_crude_oil:
     production_time: 64s
