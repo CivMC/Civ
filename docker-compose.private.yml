@@ -60,6 +60,7 @@ services:
       - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/privateconfig/plugins/BreweryX/recipes.yml
       - ./PrivateConfig/zorweth/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
       - ./PrivateConfig/zorweth/config/RandomSpawn/worlds.yml:/privateconfig/plugins/RandomSpawn/worlds.yml
+      - ./PrivateConfig/zorweth/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
 
   pvp:
     environment:

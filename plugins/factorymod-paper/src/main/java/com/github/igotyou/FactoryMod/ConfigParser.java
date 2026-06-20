@@ -30,6 +30,7 @@ import com.github.igotyou.FactoryMod.recipes.WordBankRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorCreateRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorFinishRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorRefillRecipe;
+import com.github.igotyou.FactoryMod.recipes.heliodor.MeteorForecastRecipe;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import com.github.igotyou.FactoryMod.recipes.space.BuildRocketRecipe;
 import com.github.igotyou.FactoryMod.recipes.space.CheckResearchProgressRecipe;
@@ -1023,6 +1024,9 @@ public class ConfigParser {
                 break;
             case "CHECK_RESEARCH_PROGRESS":
                 result = new CheckResearchProgressRecipe(identifier, name, productionTime, input);
+                break;
+            case "METEOR_FORECAST":
+                result = new MeteorForecastRecipe(identifier, name, productionTime, input);
                 break;
             default:
                 plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");

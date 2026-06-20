@@ -51,6 +51,7 @@ CREATE DATABASE zorweth_essenceglue;
 CREATE DATABASE zorweth_jukealert;
 CREATE DATABASE zorweth_realisticbiomes;
 CREATE DATABASE zorweth_exilepearl;
+CREATE DATABASE zorweth_heliodor;
 
 GRANT ALL PRIVILEGES ON `zorweth_bastion`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `zorweth_castlegates`.* TO 'mariadb'@'%';
@@ -63,6 +64,7 @@ GRANT ALL PRIVILEGES ON `zorweth_essenceglue`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `zorweth_jukealert`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `zorweth_realisticbiomes`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `zorweth_exilepearl`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `zorweth_heliodor`.* TO 'mariadb'@'%';
 
 CREATE DATABASE zorweth;
 GRANT ALL PRIVILEGES ON `zorweth`.* TO 'mariadb'@'%';

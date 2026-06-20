@@ -106,6 +106,7 @@ factories:
             - Activity reward used to fuel pearls
     recipes:
       - manufacture_advanced_mechanical_components
+      - meteor_forecast
       - check_research_progress
       - research_phase_1
       - research_phase_2
@@ -19526,6 +19527,27 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: STICK
         amount: 1
+  meteor_forecast:
+    production_time: 1s
+    name: Forecast Meteor
+    type: METEOR_FORECAST
+    input:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 32
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
   research_phase_1:
     production_time: 128s
     fuel_consumption_intervall: 8s

@@ -63,9 +63,6 @@ public final class ResearchRecipe extends InputRecipe {
         if (!researchManager.isEnabled()) {
             return new EffectFeasibility(false, "research is disabled");
         }
-        if (fccf.getActivator() == null) {
-            return new EffectFeasibility(false, "research must be activated by a player");
-        }
         final World world = fccf.getFurnace().getWorld();
         if (!researchManager.isResearchWorld(world)) {
             return new EffectFeasibility(false, "wrong world");
