@@ -479,7 +479,7 @@ hacks:
       - org.bukkit.event.weather
       - org.bukkit.event.world
   Introbook:
-    enabled: false
+    enabled: true
     follow: true
     contents:
       title: Welcome to Zorweth ${player}!
