@@ -120,9 +120,10 @@ performance:
   only-tick-items-in-hand: false
   optimize-mob-despawn: true
   optimize-block-entities: true
+  optimize-mob-spawning: true
   cache-biome:
-    enabled: false
-    mob-spawning: false
+    enabled: true
+    mob-spawning: true
     advancements: false
   # May cause the inconsistent order of future compose tasks.
   faster-structure-gen-future-sequencing: true
@@ -210,6 +211,7 @@ fixes:
 #  GAMEPLAY  #
 ##############
 gameplay-mechanisms:
+  ice-and-snow-chance: 96
   use-spigot-item-merging-mechanism: false
   # This section contains settings for mob spawner blocks.
   spawner-settings:
