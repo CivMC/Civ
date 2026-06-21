@@ -7,3 +7,4 @@ RandomUndying:
   Biomes: BASALT_DELTAS
   Conditions:
     - outside
+    - mobsinradius{t=MyCustomMob;a=<1;r=128} true
