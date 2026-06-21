@@ -2,9 +2,9 @@ PhantomSpawn:
   MobType: Vulture
   Worlds: world
   Action: REPLACE
-  Chance: 0.15
-  Priority: 8
-  Biomes: END_HIGHLANDS, END_MIDLANDS, SMALL_END_ISLANDS, END_BARRENS, THE_END
+  Chance: 0.90
+  Priority: 9
+  Biomes: END_HIGHLANDS, END_MIDLANDS, END_BARRENS
   Conditions:
     - outside true
     - heightabove{h=60} true
