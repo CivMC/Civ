@@ -1,10 +1,9 @@
 RandomUndying:
   Type: The_Undying
   Worlds: world
-  Chance: 0.1
-  Priority: 10
-  Action: REPLACE
+  Chance: 0.9
+  Priority: 130
+  Action: ADD
   Biomes: BASALT_DELTAS
   Conditions:
-    - outside true
-    - heightabove{h=60} true
+    - outside
