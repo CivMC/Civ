@@ -73,8 +73,8 @@ Configuration:
   RandomSpawning:
     DisableVanillaSpawns: false
     GenerateSpawnPoints: true
-    MaxMobsPerChunk: 2
-    SpawnRadiusPerPlayer: 64
+    MaxMobsPerChunk: 1
+    SpawnRadiusPerPlayer: 32
     SpawnRadiusPerPlayerY: 32
     DespawnLazyRandomMobs: true
     MaxGenerationTime: 20

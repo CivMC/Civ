@@ -2,8 +2,8 @@ PhantomSpawn:
   Type: Vulture
   Worlds: world
   Action: ADD
-  Chance: 0.01
-  Priority: 129
+  Chance: 0.005
+  Priority: 9
   Biomes: END_HIGHLANDS, END_MIDLANDS, END_BARRENS
   Conditions:
     - outside
