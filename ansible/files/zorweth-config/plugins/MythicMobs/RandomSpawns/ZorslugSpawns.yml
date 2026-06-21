@@ -1,7 +1,7 @@
 RandomZorslug:
   Type: Zorslug
   Worlds: world
-  Chance: 0.8
+  Chance: 0.025
   Priority: 128
   Action: ADD
   Biomes: END_BARRENS
