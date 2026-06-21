@@ -7,4 +7,4 @@ RandomZorslug:
   Biomes: END_BARRENS
   Conditions:
     - outside
-    - mobsinradius{t=MyCustomMob;a=<1;r=48} true
+    - mobsinradius{t=Zorlsug;a=<1;r=48} true

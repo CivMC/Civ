@@ -7,4 +7,4 @@ PhantomSpawn:
   Biomes: END_HIGHLANDS, END_MIDLANDS, END_BARRENS
   Conditions:
     - outside
-    - mobsinradius{t=MyCustomMob;a=<3;r=64} true
+    - mobsinradius{t=Vulture;a=<3;r=64} true
