@@ -150,9 +150,12 @@ entities:
       items:
         ancient_debris: 12000
         cactus: 1200
-        cobbled_deepslate: 3000
-        cobblestone: 3000
-        deepslate: 3000
+        cobbled_deepslate: 1200
+        cobblestone: 1200
+        deepslate: 1200
+        diorite: 1200
+        granite: 1200
+        andesite: 1200
         deepslate_diamond_ore: 12000
         diamond: 12000
         diamond_axe: 12000
