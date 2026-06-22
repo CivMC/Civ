@@ -235,6 +235,7 @@ services:
             - /opt/PrivateConfig/zorweth/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
             - /opt/PrivateConfig/zorweth/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
             - /opt/PrivateConfig/zorweth/config/Zorweth/mechanics.yml:/config/plugins/Zorweth/mechanics.yml
+            - /opt/PrivateConfig/zorweth/config/Heliodor/config.yml:/config/plugins/Heliodor/config.yml
         deploy:
             placement:
                 constraints: [node.role == manager]
