@@ -184,13 +184,13 @@ public class VeinCache {
         return null;
     }
 
-    public void expireVein(int id) {
+    public boolean expireVein(int id) {
         Vein vein = getVeinById(id);
         if (vein == null || vein.oresRemaining() <= 0) {
-            return;
+            return true;
         }
         if (!dao.updateVein(id, null, vein.oresRemaining(), true)) {
-            return;
+            return false;
         }
         Bukkit.getScheduler().runTask(plugin, () -> {
             this.additionalVeinBlocksMined.remove(id);
@@ -219,6 +219,7 @@ public class VeinCache {
                 }
             }
         });
+        return true;
     }
 
     public Vein addVein(Vein vein) {

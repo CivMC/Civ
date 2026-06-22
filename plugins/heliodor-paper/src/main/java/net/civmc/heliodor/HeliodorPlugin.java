@@ -144,7 +144,9 @@ public class HeliodorPlugin extends ACivMod {
             meteoricIronConfigSection.getBoolean("override-ender-eyes"),
             meteoricIronConfigSection.getBoolean("public_announcement.enabled"),
             meteoricIronConfigSection.getInt("public_announcement.max_delay_minutes"),
-            meteoricIronConfigSection.getInt("public_announcement.forecast_window_minutes")
+            meteoricIronConfigSection.getInt("public_announcement.forecast_window_minutes"),
+            meteoricIronConfigSection.getLong("public_announcement.spawn_time_salt"),
+            meteoricIronConfigSection.getLong("public_announcement.forecast_window_salt")
         );
 
         SqlVeinDao veinDao = new SqlVeinDao(database);

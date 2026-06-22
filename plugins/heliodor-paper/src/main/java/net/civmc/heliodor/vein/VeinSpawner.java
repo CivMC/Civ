@@ -3,6 +3,7 @@ package net.civmc.heliodor.vein;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,13 +19,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.NumberConversions;
 
@@ -36,9 +34,6 @@ public class VeinSpawner {
     private final VeinCache cache;
 
     private final MeteoricIronVeinConfig meteoriteVeinConfig;
-    private final NamespacedKey nextMeteorSpawnAtKey;
-    private final NamespacedKey nextMeteorForecastStartKey;
-    private final NamespacedKey announcedMeteorVeinIdKey;
     private boolean publicSpawnInProgress;
 
     public VeinSpawner(Plugin plugin, VeinDao dao, VeinCache cache, MeteoricIronVeinConfig meteoriteVeinConfig) {
@@ -47,9 +42,6 @@ public class VeinSpawner {
         this.dao = dao;
         this.cache = cache;
         this.meteoriteVeinConfig = meteoriteVeinConfig;
-        this.nextMeteorSpawnAtKey = new NamespacedKey(plugin, "next_meteor_spawn_at");
-        this.nextMeteorForecastStartKey = new NamespacedKey(plugin, "next_meteor_forecast_start");
-        this.announcedMeteorVeinIdKey = new NamespacedKey(plugin, "announced_meteor_vein_id");
     }
 
     public void start() {
@@ -166,11 +158,7 @@ public class VeinSpawner {
         if (world == null) {
             return MeteorStatus.noSignal();
         }
-        Integer veinId = world.getPersistentDataContainer().get(announcedMeteorVeinIdKey, PersistentDataType.INTEGER);
-        if (veinId == null) {
-            return MeteorStatus.noSignal();
-        }
-        Vein vein = cache.getVeinById(veinId);
+        Vein vein = getLatestMeteoricIronVein(world);
         if (vein == null || vein.oresRemaining() < vein.ores() * 0.5) {
             return MeteorStatus.noSignal();
         }
@@ -186,15 +174,13 @@ public class VeinSpawner {
         if (world == null) {
             return null;
         }
-        Long spawnAt = world.getPersistentDataContainer().get(nextMeteorSpawnAtKey, PersistentDataType.LONG);
-        if (spawnAt == null) {
-            spawnAt = scheduleNextPublicSpawn(world);
+        Vein vein = getLatestMeteoricIronVein(world);
+        if (vein == null) {
+            return null;
         }
+        long spawnAt = getNextPublicSpawnAt(vein);
         long windowMillis = Math.max(1L, meteoriteVeinConfig.forecastWindowMinutes()) * 60_000L;
-        Long forecastStart = world.getPersistentDataContainer().get(nextMeteorForecastStartKey, PersistentDataType.LONG);
-        if (forecastStart == null) {
-            forecastStart = chooseForecastStart(world, spawnAt, windowMillis);
-        }
+        long forecastStart = getForecastStart(vein, spawnAt, windowMillis);
         return new ForecastWindow(forecastStart, forecastStart + windowMillis);
     }
 
@@ -206,11 +192,8 @@ public class VeinSpawner {
         if (world == null) {
             return null;
         }
-        Long spawnAt = world.getPersistentDataContainer().get(nextMeteorSpawnAtKey, PersistentDataType.LONG);
-        if (spawnAt == null) {
-            spawnAt = scheduleNextPublicSpawn(world);
-        }
-        return spawnAt;
+        Vein vein = getLatestMeteoricIronVein(world);
+        return vein == null ? null : getNextPublicSpawnAt(vein);
     }
 
     public void forcePublicSpawn(Consumer<Vein> callback) {
@@ -228,16 +211,11 @@ public class VeinSpawner {
         if (world == null || !canStartPublicSpawn()) {
             return;
         }
-        PersistentDataContainer pdc = world.getPersistentDataContainer();
-        Long spawnAt = pdc.get(nextMeteorSpawnAtKey, PersistentDataType.LONG);
-        if (spawnAt == null) {
-            scheduleNextPublicSpawn(world);
+        Vein vein = getLatestMeteoricIronVein(world);
+        if (vein != null && getNextPublicSpawnAt(vein) > System.currentTimeMillis()) {
             return;
         }
-        if (spawnAt > System.currentTimeMillis()) {
-            return;
-        }
-        startPublicSpawn(world, vein -> {
+        startPublicSpawn(world, ignored -> {
         });
     }
 
@@ -247,44 +225,53 @@ public class VeinSpawner {
 
     private void startPublicSpawn(World world, Consumer<Vein> callback) {
         publicSpawnInProgress = true;
-        Integer previousVeinId = world.getPersistentDataContainer().get(announcedMeteorVeinIdKey,
-            PersistentDataType.INTEGER);
+        Vein previousVein = getLatestMeteoricIronVein(world);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            Vein spawnedVein = trySpawnMeteoricIron();
-            if (spawnedVein != null && previousVeinId != null) {
-                cache.expireVein(previousVeinId);
-            }
+            final boolean expiredPrevious = previousVein == null || cache.expireVein(previousVein.id());
+            final Vein spawnedVein = expiredPrevious ? trySpawnMeteoricIron() : null;
             Bukkit.getScheduler().runTask(plugin, () -> {
                 publicSpawnInProgress = false;
-                if (spawnedVein == null) {
+                if (spawnedVein == null || !expiredPrevious) {
                     callback.accept(null);
                     return;
                 }
-                world.getPersistentDataContainer().set(announcedMeteorVeinIdKey, PersistentDataType.INTEGER,
-                    spawnedVein.id());
                 announceMeteor(spawnedVein);
-                scheduleNextPublicSpawn(world);
                 callback.accept(spawnedVein);
             });
         });
     }
 
-    private long scheduleNextPublicSpawn(World world) {
+    private Vein getLatestMeteoricIronVein(World world) {
+        Vein latest = null;
+        for (Vein vein : cache.getVeins()) {
+            if (!MeteoricIronVeinConfig.TYPE_NAME.equals(vein.type()) || !world.getName().equals(vein.world())) {
+                continue;
+            }
+            if (latest == null || vein.spawnedAt() > latest.spawnedAt()) {
+                latest = vein;
+            }
+        }
+        return latest;
+    }
+
+    private long getNextPublicSpawnAt(Vein vein) {
         long minDelayMillis = 60 * 60_000L;
         long maxDelayMillis = Math.max(minDelayMillis,
             Math.max(1L, meteoriteVeinConfig.maxPublicDelayMinutes()) * 60_000L);
-        long spawnAt = System.currentTimeMillis()
-            + ThreadLocalRandom.current().nextLong(minDelayMillis, maxDelayMillis + 1L);
-        world.getPersistentDataContainer().set(nextMeteorSpawnAtKey, PersistentDataType.LONG, spawnAt);
-        chooseForecastStart(world, spawnAt, Math.max(1L, meteoriteVeinConfig.forecastWindowMinutes()) * 60_000L);
-        return spawnAt;
+        long delayMillis = minDelayMillis + new Random(getPublicMeteorSeed(vein,
+            meteoriteVeinConfig.spawnTimeSalt()))
+            .nextLong(maxDelayMillis - minDelayMillis + 1L);
+        return vein.spawnedAt() + delayMillis;
     }
 
-    private long chooseForecastStart(World world, long spawnAt, long windowMillis) {
-        long offsetMillis = ThreadLocalRandom.current().nextLong(windowMillis + 1L);
-        long forecastStart = spawnAt - offsetMillis;
-        world.getPersistentDataContainer().set(nextMeteorForecastStartKey, PersistentDataType.LONG, forecastStart);
-        return forecastStart;
+    private long getForecastStart(Vein vein, long spawnAt, long windowMillis) {
+        long offsetMillis = new Random(getPublicMeteorSeed(vein,
+            meteoriteVeinConfig.forecastWindowSalt())).nextLong(windowMillis + 1L);
+        return spawnAt - offsetMillis;
+    }
+
+    private long getPublicMeteorSeed(Vein vein, long salt) {
+        return vein.spawnedAt() ^ ((long) vein.id() << 32) ^ salt;
     }
 
     private void announceMeteor(Vein vein) {

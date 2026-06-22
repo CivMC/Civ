@@ -58,3 +58,6 @@ meteoric_iron_vein:
     max_delay_minutes: 1440
     # forecast recipes reveal a window centred on the scheduled spawn time
     forecast_window_minutes: 60
+    # salts used to derive deterministic spawn/forecast times from the announced vein
+    spawn_time_salt: 1
+    forecast_window_salt: 2
