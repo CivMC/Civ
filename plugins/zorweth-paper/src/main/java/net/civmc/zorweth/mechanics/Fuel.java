@@ -48,7 +48,8 @@ public class Fuel {
     }
 
     public static ItemStack createAluminiumIngot() {
-        ItemStack item = new ItemStack(Material.IRON_INGOT);
+        ItemStack item = new ItemStack(Material.RECOVERY_COMPASS);
+        item.setData(DataComponentTypes.ITEM_MODEL, new NamespacedKey("minecraft", "iron_ingot"));
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Aluminium Ingot", TextColor.color(211, 131, 59)));
         meta.setEnchantmentGlintOverride(true);
