@@ -231,7 +231,7 @@ public class VeinSpawner {
             final Vein spawnedVein = expiredPrevious ? trySpawnMeteoricIron() : null;
             Bukkit.getScheduler().runTask(plugin, () -> {
                 publicSpawnInProgress = false;
-                if (spawnedVein == null || !expiredPrevious) {
+                if (spawnedVein == null) {
                     callback.accept(null);
                     return;
                 }
