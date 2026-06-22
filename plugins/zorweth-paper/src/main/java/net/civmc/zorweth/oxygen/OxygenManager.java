@@ -28,6 +28,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HappyGhast;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -123,8 +125,8 @@ public class OxygenManager implements Listener {
                 }
 
                 Entity vehicle = player.getVehicle();
-                if (vehicle instanceof AbstractHorse horse) {
-                    horse.damage(2);
+                if (vehicle instanceof AbstractHorse || vehicle instanceof HappyGhast) {
+                    ((LivingEntity) vehicle).damage(2);
                 }
 
                 this.lastOxygenTickChange.put(player, drainOxygen(player, loss * baseOxygenConsumptionPerSecond,
