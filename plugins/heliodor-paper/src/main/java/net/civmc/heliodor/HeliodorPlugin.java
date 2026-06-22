@@ -142,6 +142,7 @@ public class HeliodorPlugin extends ACivMod {
             meteoricIronConfigSection.getInt("max_position_radius"),
             meteoricIronConfigSection.getInt("max_bury"),
             meteoricIronConfigSection.getBoolean("override-ender-eyes"),
+            meteoricIronConfigSection.getString("biome"),
             meteoricIronConfigSection.getBoolean("public_announcement.enabled"),
             meteoricIronConfigSection.getInt("public_announcement.max_delay_minutes"),
             meteoricIronConfigSection.getInt("public_announcement.forecast_window_minutes"),

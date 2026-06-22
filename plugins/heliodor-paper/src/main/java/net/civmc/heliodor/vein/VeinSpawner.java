@@ -314,6 +314,10 @@ public class VeinSpawner {
                     logger.log(Level.INFO, "Failed spawn attempt at x = " + x + ", z = " + z);
                     return;
                 }
+                if (meteoriteVeinConfig.biome() != null && !meteoriteVeinConfig.biome().equals(spawnBlock.getBiome().getKey().asString())) {
+                    logger.log(Level.INFO, "Failed spawn attempt at x = " + x + ", z = " + z);
+                    return;
+                }
                 while (!Tag.BASE_STONE_OVERWORLD.isTagged(spawnBlock.getType())) {
                     spawnBlock = spawnBlock.getRelative(BlockFace.DOWN);
                     if (spawnBlock.getY() <= world.getMinHeight()) {
