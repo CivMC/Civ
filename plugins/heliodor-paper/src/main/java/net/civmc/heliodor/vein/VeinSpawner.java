@@ -270,7 +270,7 @@ public class VeinSpawner {
     private void playGlobalSound(Sound sound, float volume, float pitch) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(
-                player.getLocation(),
+                player,
                 sound,
                 SoundCategory.MASTER,
                 volume,
