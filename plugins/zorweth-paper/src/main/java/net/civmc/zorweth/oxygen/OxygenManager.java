@@ -127,8 +127,10 @@ public class OxygenManager implements Listener {
                     living.damage(2);
                 }
 
-                this.lastOxygenTickChange.put(player, drainOxygen(player, loss * baseOxygenConsumptionPerSecond,
-                    activity));
+                double amount = loss * baseOxygenConsumptionPerSecond;
+                double change = this.oxygenBladderMechanics.getOxygenDrain(player, amount, activity);
+                drainOxygen(player, amount, activity);
+                this.lastOxygenTickChange.put(player, change);
                 applyOxygenEffects(player, getOxygen(player));
             }
         }, 20, 20);
@@ -262,7 +264,8 @@ public class OxygenManager implements Listener {
         if (elapsedSeconds <= 0D) {
             return;
         }
-        final double consumed = -drainOxygen(player, elapsedSeconds * drainPerSecond, Activity.IDLE);
+        double biomeMultiplier = getBiomeMultiplier(player);
+        final double consumed = -drainOxygen(player, elapsedSeconds * drainPerSecond * biomeMultiplier, Activity.IDLE);
         if (consumed > 0D) {
             player.sendMessage(Component.text("You consumed ", NamedTextColor.GRAY)
                 .append(Component.text(OFFLINE_OXYGEN_FORMAT.format(consumed * 1000), NamedTextColor.AQUA))
