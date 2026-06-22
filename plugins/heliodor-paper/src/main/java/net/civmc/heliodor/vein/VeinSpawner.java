@@ -228,15 +228,24 @@ public class VeinSpawner {
         Vein previousVein = getLatestMeteoricIronVein(world);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             final boolean expiredPrevious = previousVein == null || cache.expireVein(previousVein.id());
-            final Vein spawnedVein = expiredPrevious ? trySpawnMeteoricIron() : null;
+            Vein spawnedVein = null;
+            if (expiredPrevious) {
+                for (int i = 0; i < 10; i++) {
+                    spawnedVein = trySpawnMeteoricIron();
+                    if (spawnedVein != null) {
+                        break;
+                    }
+                }
+            }
+            Vein finalSpawnedVein = spawnedVein;
             Bukkit.getScheduler().runTask(plugin, () -> {
                 publicSpawnInProgress = false;
-                if (spawnedVein == null) {
+                if (finalSpawnedVein == null) {
                     callback.accept(null);
                     return;
                 }
-                announceMeteor(spawnedVein);
-                callback.accept(spawnedVein);
+                announceMeteor(finalSpawnedVein);
+                callback.accept(finalSpawnedVein);
             });
         });
     }
