@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.civmc.heliodor.ChunkPos;
 import net.civmc.heliodor.vein.data.MeteoricIronVeinConfig;
 import net.civmc.heliodor.vein.data.Vein;
@@ -19,10 +18,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.NumberConversions;
 
@@ -250,6 +252,33 @@ public class VeinSpawner {
         });
     }
 
+    public void playMeteorCrashGlobal() {
+        // 1) Incoming shockwave / bass hit
+        playGlobalSound(Sound.ENTITY_WARDEN_SONIC_BOOM, 4.0f, 0.60f);
+
+        // 2) Main impact, 6 ticks later
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            playGlobalSound(Sound.ENTITY_GENERIC_EXPLODE, 10.0f, 0.50f);
+        }, 6L);
+
+        // 3) Rolling thunder aftermath, 14 ticks later
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            playGlobalSound(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 5.0f, 0.65f);
+        }, 14L);
+    }
+
+    private void playGlobalSound(Sound sound, float volume, float pitch) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.playSound(
+                player.getLocation(),
+                sound,
+                SoundCategory.MASTER,
+                volume,
+                pitch
+            );
+        }
+    }
+
     private Vein getLatestMeteoricIronVein(World world) {
         Vein latest = null;
         for (Vein vein : cache.getVeins()) {
@@ -287,6 +316,7 @@ public class VeinSpawner {
         Bukkit.broadcast(Component.text("A bright flash in the sky appears near " + (vein.x() + vein.offsetX())
             + " " + (vein.y() + vein.offsetY()) + " " + (vein.z() + vein.offsetZ())
             + "...", NamedTextColor.GOLD).hoverEvent(Component.text("Use /meteor to check this later")));
+        playMeteorCrashGlobal();
     }
 
     private MeteoritePos getMeteoricVeinPositionAndBlocks(World world, int x, int z, int bury, int radius) {
