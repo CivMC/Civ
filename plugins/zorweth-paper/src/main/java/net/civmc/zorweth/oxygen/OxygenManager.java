@@ -265,6 +265,9 @@ public class OxygenManager implements Listener {
             return;
         }
         double biomeMultiplier = getBiomeMultiplier(player);
+        if (biomeMultiplier <= 0D) {
+            return;
+        }
         final double consumed = -drainOxygen(player, elapsedSeconds * drainPerSecond * biomeMultiplier, Activity.IDLE);
         if (consumed > 0D) {
             player.sendMessage(Component.text("You consumed ", NamedTextColor.GRAY)
