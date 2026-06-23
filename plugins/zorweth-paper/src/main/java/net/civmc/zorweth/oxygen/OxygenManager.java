@@ -128,7 +128,7 @@ public class OxygenManager implements Listener {
                 }
 
                 double amount = loss * baseOxygenConsumptionPerSecond;
-                double change = this.oxygenBladderMechanics.getOxygenDrain(player, amount, activity);
+                double change = -this.oxygenBladderMechanics.getOxygenDrain(player, amount, activity);
                 drainOxygen(player, amount, activity);
                 this.lastOxygenTickChange.put(player, change);
                 applyOxygenEffects(player, getOxygen(player));
