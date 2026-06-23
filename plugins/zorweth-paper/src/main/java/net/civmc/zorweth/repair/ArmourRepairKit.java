@@ -17,7 +17,7 @@ public class ArmourRepairKit {
     public static ItemStack createArmourRepairKit() {
         final ItemStack item = new ItemStack(Material.RECOVERY_COMPASS);
         item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("netherite_nautilus_armor"));
-        item.setData(DataComponentTypes.MAX_STACK_SIZE, 1);
+        item.setData(DataComponentTypes.MAX_STACK_SIZE, 2);
         final ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Armour Repair Kit", TextColor.color(153, 39, 84)));
         meta.lore(List.of(
