@@ -18,8 +18,8 @@ settings:
         memory_limit: 48G
         pvp_memory: 11G
         pvp_memory_limit: 14G
-        zorweth_memory: 16G
-        zorweth_memory_limit: 20G
+        zorweth_memory: 20G
+        zorweth_memory_limit: 24G
     # Optional Stacks
     auth:
       enabled: false
@@ -47,12 +47,12 @@ settings:
       resources:
         <<: *default_minecraft_resources
         soft_max_memory: 2G
-        memory: 3G
-        memory_limit: 5G
+        memory: 4G
+        memory_limit: 6G
         pvp_memory: 3G
         pvp_memory_limit: 5G
-        zorweth_memory: 3G
-        zorweth_memory_limit: 5G
+        zorweth_memory: 4G
+        zorweth_memory_limit: 6G
     auth:
       enabled: true # TODO: MOVE
     maven:
