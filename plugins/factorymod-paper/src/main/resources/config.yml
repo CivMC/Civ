@@ -1,7 +1,7 @@
 #FactoryMod configuration file
 
 #FactoryMod is a Spigot plugin, which allows players to setup predefined factories for an item cost. There are various
-#factories with different purposes and pretty much everything about them is configurable. Their configuration is 
+#factories with different purposes and pretty much everything about them is configurable. Their configuration is
 #handled within this file. Take great care to ensure that your configurations follow exactly the documentation provided
 #here, otherwise unwanted effects/crashes and run time exceptions may occur.
 
@@ -9,7 +9,7 @@
 
 #Specifying items:
 
-#Very often in this config you will have to specify items for a configuration. All item specifications are lists of 
+#Very often in this config you will have to specify items for a configuration. All item specifications are lists of
 #configurations, which contain information about the actual item, like this:
 
 #inputmaterials:
@@ -54,7 +54,7 @@
 #wool is actually just white wool with a durability of 1. If this option is not specified it will default to 0, which is also
 #minecraft's default durability for items. If you don't want to limit an item to a specific durability, but for example want to
 #require any type of wool as an input, use -1 as durability. Make sure to only use this for inputs though, if you let a factory
-#output an itemstack for players with a durability of -1, the item will be glitched. For a full list of all items and their 
+#output an itemstack for players with a durability of -1, the item will be glitched. For a full list of all items and their
 #durabilities use this site: http://minecraft-ids.grahamedgecombe.com/
 
 #amount allows you to specify the amount of the item, this isn't limited to 64 or whatever the maximum stack size of that
@@ -76,7 +76,7 @@
 #You can also create items with specific meta data, currently supported are anything storing potion data, dyed leather armour
 #and custom nbt tags
 
-#For potion data (so for potions, splash potions, linering potions and tipped arrows) you can specify an additional section 
+#For potion data (so for potions, splash potions, linering potions and tipped arrows) you can specify an additional section
 #like this:
 
 #examplePot:
@@ -94,7 +94,7 @@
 #Each potion always has one default effect and as many additional custom effects as desired
 
 #type specifies the look of the potion and the base type of effect that will be applied by the potion. Not all possible status
-#effects can be used here, but only the ones that have PotionData, as listed here: 
+#effects can be used here, but only the ones that have PotionData, as listed here:
 #https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html
 #If not specified the type will default to AWKWARD
 
@@ -102,7 +102,7 @@
 
 #extended specifies whether the default potion effect on this item is extended or not, per default this is false
 
-#custom_effects allows you to list other potion effects that are tied to this item, but don't affect it's item model, which is 
+#custom_effects allows you to list other potion effects that are tied to this item, but don't affect it's item model, which is
 #determined by the primary potion effect
 
 #To make dyed leather armour, two different formats are supported. The first one looks like this:
@@ -128,10 +128,10 @@
 #----------------------------------------------------------------------------------------------------------------------
 #General
 
-#This section allows you to define global default values and some general stuff. 
+#This section allows you to define global default values and some general stuff.
 
 #Additionally you can specify default options here, which are applied to all factories which use this option, unless
-#you chose to overwrite the default for a specific factory, in that case the option specified in the factories config 
+#you chose to overwrite the default for a specific factory, in that case the option specified in the factories config
 #will apply to it.
 
 #The first option here is default_update_time. The update time describes how often a factory is ticked, ergo how often
@@ -155,7 +155,7 @@ default_fuel:
     durability: 1
 
 
-#default_fuel_consumption_intervall specifies a default for how often factories consume fuel. Basically every time a 
+#default_fuel_consumption_intervall specifies a default for how often factories consume fuel. Basically every time a
 #factory which consumes fuel has run for the time specified here, one fuel unit will be consumed. This value should
 #always be a multiple of the updatetime and a factory may chose to specify it's own value and not use the default value
 
@@ -165,11 +165,11 @@ default_fuel_consumption_intervall: 2s
 #to be repaired before they can be used again, once they are at 0 health
 default_health: 10000
 
-#default_menu_factory allows you to specify the menu for which factory will be opened when a player runs /fm without 
+#default_menu_factory allows you to specify the menu for which factory will be opened when a player runs /fm without
 #specifying a factory. If this is not specified and the player runs "/fm" one will be picked randomly.
 default_menu_factory:
 
-#As a debug mode or to prevent additional information when tracking down bugs this plugin can log all of its inventory 
+#As a debug mode or to prevent additional information when tracking down bugs this plugin can log all of its inventory
 #interactions and the full inventories at that point, if desired. If this option is not specified it will default to true
 
 log_inventories: true
@@ -219,11 +219,11 @@ max_iof_chests: 15
 #       type: PIPE
 #       name: Pipinator
 
-#All factories have in common that they require you to define a type and a name. The type must be one of the predefined 
+#All factories have in common that they require you to define a type and a name. The type must be one of the predefined
 #options explained further below to specify the physical appearance and the broad functionality of the factory.
 #The name can be any string, which will be used to identify this factory at a later point. There may be many different
 #factories of the same type with different names with completly different configurations, but ingame factories with
-#the same name are guaranteed to have the same functionality. Because of that NEVER EVER duplicate factory names, not 
+#the same name are guaranteed to have the same functionality. Because of that NEVER EVER duplicate factory names, not
 #even if their type is different.
 
 #Currently there are three different types of factories:
@@ -284,7 +284,7 @@ max_iof_chests: 15
 #sub identifer here, because it's techincally part of a list of items. If this option is not set, the default fuel specified
 #above will be used.
 
-#fuel_consumption_intervall describes how often fuel is consumed if the factory is running with any recipe. If it is not set,   
+#fuel_consumption_intervall describes how often fuel is consumed if the factory is running with any recipe. If it is not set,
 #the default fuel consumption intervall specified above will be used.
 
 #setupcost are the materials the player will need to create this factory. Two factories may not have the exact same setupcost,
@@ -319,7 +319,7 @@ max_iof_chests: 15
 
 #Pipes allow players to transport items over longer distances. This is meant to replace hopper chains, which can have heavy
 #impact on the server performance. The pipes themselves consist of a dropper, which represents the start point of the pipe
-#and it's pumper, a furnace to consume fuel while transporting, the actual pipe consisting of stained glass blocks and a target 
+#and it's pumper, a furnace to consume fuel while transporting, the actual pipe consisting of stained glass blocks and a target
 #block with an inventory.
 
 #An example config for a pipe:
@@ -357,7 +357,7 @@ max_iof_chests: 15
 #glass blocks) results in the total transportation time per batch. For example if you set this value to one second, a pipe
 #which is 10 blocks long will take 10 seconds to transport a batch of items.
 
-#transferamount is the total amount of items transferred per batch. 
+#transferamount is the total amount of items transferred per batch.
 
 #pipe_block is the block you use to define a pipe.
 
@@ -368,7 +368,7 @@ max_iof_chests: 15
 #3. Sorter
 
 #Sorters allow players to sort item from a single dispenser into different other containers. What gets sorted where is
-#completly up to the player, the factory itself only consists of a dispenser and a furnace. The dispenser is the main block of 
+#completly up to the player, the factory itself only consists of a dispenser and a furnace. The dispenser is the main block of
 #the factory which contains the items which will be sorted and the blocks in which will be sorted have to be adjacent to it.
 #The furnace simply consumes fuel to power the factory, like it's done for other factories as well. An example config:
 
@@ -459,8 +459,8 @@ factories:
 # For a particular item you can now specify custom NBT data to be attached. This should only be used for output (currently) as it is not checked when comparing item stacks on input.
 
 #forceInclude allows you to indicate that whereever it is used, to force a _new_ recipe to be added to existing factories.
-# this is recipe wide, and can't be changed factory to factory. 
-# This might be replaced by something else later on. 
+# this is recipe wide, and can't be changed factory to factory.
+# This might be replaced by something else later on.
 
 #2. Compactionrecipe
 
@@ -509,7 +509,7 @@ factories:
 #   compact_lore: Compact Item
 
 
-#type always has to be DECOMPACT here. 
+#type always has to be DECOMPACT here.
 
 #input is a list of items that get consumed as decompaction cost
 
@@ -570,7 +570,7 @@ factories:
 
 #Enchanting recipes allow factories to apply enchants to items. Instead of just consuming a blank tool to produce an enchanted
 #one the way it would be possible with enchanted tools, this actually applies the enchant. This can also be used to increase the
-#level of an already existing enchant 
+#level of an already existing enchant
 
 #Example:
 
@@ -698,14 +698,14 @@ factories:
 # Every recipe type can include at the same level as "name: " the following, although only FCC's will respect it currently:
 
 #forceInclude allows you to indicate that whereever it is used, to force a _new_ recipe to be added to existing factories.
-# this is recipe wide, and can't be changed factory to factory. 
-# This might be replaced by something else later on. 
+# this is recipe wide, and can't be changed factory to factory.
+# This might be replaced by something else later on.
 
 recipes:
 
 
 
-#Sometimes you will want to rename existing factories. Just changing the name in the config and restarting the server will delete all existing 
+#Sometimes you will want to rename existing factories. Just changing the name in the config and restarting the server will delete all existing
 #factories of this type though, so instead you can here specify factories, which you on startup want to rename/convert into a different one
 
 #Example format:
@@ -718,7 +718,7 @@ recipes:
 #    oldName: tempName
 #    newName: Emerald Extractor
 
-#oldName is the previous name and newName is the one the factory will be converted to. The configuration for the factory with the oldName has to be 
+#oldName is the previous name and newName is the one the factory will be converted to. The configuration for the factory with the oldName has to be
 #removed from the config already, otherwise the name won't be changed and the old configuration for the factory will be loaded. The renaming feature
 #will work for all types of factories, not only FCCs
 
@@ -762,7 +762,7 @@ CivMenu:
 
     #Called when someone attempts to interact with any type of factory, but doesnt have the correct permissions
     FactoryNoPermission:
-        
-        
-        
-        
+
+
+
+

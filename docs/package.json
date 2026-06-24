@@ -9,10 +9,10 @@
         "preview": "vitepress preview ."
     },
     "devDependencies": {
-        "@types/node": "^20.2.5",
-        "eslint": "^8.41.0",
-        "eslint-plugin-vue": "^9.14.1",
-        "vite": "6.0.11",
+        "@types/node": "^24.12.2",
+        "eslint": "^10.2.0",
+        "eslint-plugin-vue": "^10.8.0",
+        "vite": "8.0.8",
         "vitepress": "1.6.3"
     },
     "dependencies": {

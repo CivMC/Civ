@@ -43,12 +43,13 @@ public class CivScoreBoard {
                     Entry<UUID, String> entry = iter.next();
                     Player player = Bukkit.getPlayer(entry.getKey());
                     if (player != null) {
-                        String newText = updateFunction.apply(player, entry.getValue());
-                        if (newText == null) {
+                        String rawNewText = updateFunction.apply(player, entry.getValue());
+                        if (rawNewText == null) {
                             hideForPlayer(player);
                             iter.remove();
                             continue;
                         }
+                        String newText = CivScoreBoard.normalizeScoreText(rawNewText);
                         if (!newText.equals(entry.getValue())) {
                             internalUpdate(player, entry.getValue(), newText);
                             entry.setValue(newText);
@@ -60,12 +61,13 @@ public class CivScoreBoard {
         updater.runTaskTimer(CivModCorePlugin.getInstance(), delay, delay);
     }
 
-    public void set(Player p, String newText) {
-        if (newText == null) {
+    public void set(Player p, String rawNewText) {
+        if (rawNewText == null) {
             hide(p);
             return;
         }
         String oldText = get(p);
+        String newText = CivScoreBoard.normalizeScoreText(rawNewText);
         internalUpdate(p, oldText, newText);
         currentScoreText.put(p.getUniqueId(), newText);
     }
@@ -75,9 +77,6 @@ public class CivScoreBoard {
             p.getScoreboard().resetScores(oldText);
         } else {
             ScoreBoardAPI.adjustScore(p.getUniqueId(), 1);
-        }
-        if (newText.length() > 40) {
-            newText = newText.substring(0, 40);
         }
         Score score = getObjective(p).getScore(newText);
         score.setScore(0);
@@ -114,6 +113,18 @@ public class CivScoreBoard {
 
     void purge(Player p) {
         currentScoreText.remove(p.getUniqueId());
+    }
+
+    /**
+     * Trims provided text so user's screen isn't consumed in text
+     * @param text Text to trim
+     * @return normalized text
+     */
+    private static String normalizeScoreText(String text) {
+        if (text.length() > 40) {
+            return text.substring(0, 40);
+        }
+        return text;
     }
 
     private static Objective getObjective(Player p) {

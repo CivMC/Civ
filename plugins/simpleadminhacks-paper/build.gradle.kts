@@ -21,4 +21,6 @@ dependencies {
     compileOnly(libs.packetevents.spigot)
 
     compileOnly(libs.protocollib)
+
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.6.3.jar"))
 }

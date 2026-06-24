@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 public class PlayersStates {
 
     static public enum Mode {
-        NORMAL, INFO, DELETE, OFF, BASTION, MATURE
+        NORMAL, INFO, OFF, BASTION, MATURE
     }
 
     static private Map<UUID, Mode> playersModes = new HashMap<>();

@@ -5,7 +5,6 @@ import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -36,8 +35,6 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
@@ -49,8 +46,6 @@ import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
 public class EntityListener implements Listener {
 
@@ -191,26 +186,6 @@ public class EntityListener implements Listener {
             blocks.add(base);
         }
         return blocks;
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void playerJoinEvent(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        final UUID uuid = p.getUniqueId();
-
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
-                for (String groupName : db.getGroupNames(uuid)) {
-                    if (NameLayerAPI.getGroupManager().hasAccess(groupName, uuid,
-                        CitadelPermissionHandler.getBypass())) {
-                        GroupManager.getGroup(groupName).updateActivityTimeStamp();
-                    }
-                }
-            }
-        }.runTaskAsynchronously(Citadel.getInstance());
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

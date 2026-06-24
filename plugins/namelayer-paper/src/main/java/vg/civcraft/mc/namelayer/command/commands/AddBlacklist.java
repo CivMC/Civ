@@ -48,7 +48,18 @@ public class AddBlacklist extends BaseCommandMiddle {
             p.sendMessage(ChatColor.RED + "This player is already blacklisted");
             return;
         }
-        bl.addBlacklistMember(g, targetUUID, true);
-        p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
+        bl.addBlacklistMemberAsync(
+            p.getUniqueId(),
+            g,
+            targetUUID,
+            p.isOp() || p.hasPermission("namelayer.admin"),
+            result -> {
+                if (result.success()) {
+                    p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
+                } else {
+                    p.sendMessage(ChatColor.RED + result.message());
+                }
+            }
+        );
     }
 }

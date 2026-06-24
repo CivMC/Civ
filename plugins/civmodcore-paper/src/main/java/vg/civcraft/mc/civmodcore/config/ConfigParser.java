@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.config;
 
 import java.util.logging.Logger;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -30,7 +29,7 @@ public abstract class ConfigParser {
      * @return Returns true if the config was successfully parsed.
      */
     public final boolean parse() {
-        this.logger.info(ChatColor.BLUE + "Parsing config.");
+        this.logger.info("Parsing config.");
         this.plugin.saveDefaultConfig();
         FileConfiguration config = this.plugin.getConfig();
         // Parse debug value
@@ -42,7 +41,7 @@ public abstract class ConfigParser {
         // Allow child class parsing
         final boolean worked = parseInternal(config);
         if (worked) {
-            this.logger.info(ChatColor.BLUE + "Config parsed.");
+            this.logger.info("Config parsed.");
         } else {
             this.logger.warning("Failed to parse config!");
         }

@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
-import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 
 public class NameLayerListener implements Listener {
 
@@ -18,14 +17,6 @@ public class NameLayerListener implements Listener {
 
     public NameLayerListener(BastionBlockStorage storage) {
         this.storage = storage;
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onGroupMergeEvent(GroupMergeEvent event) {
-        int toGroupId = event.getMergingInto().getGroupId();
-        List<Integer> fromGroupIds = event.getToBeMerged().getGroupIds();
-
-        this.storage.mergeGroups(toGroupId, fromGroupIds);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
