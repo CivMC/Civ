@@ -29,6 +29,12 @@ public class OilMechanics {
             oilPos.add(new OilVein((int) position.get("x"), (int) position.get("z"), (int) position.get("yield")));
         }
 
+        List<PortalPosition> portals = new ArrayList<>();
+        List<Map<?, ?>> portalPositions = mechanics.getMapList("portals");
+        for (Map<?, ?> position : portalPositions) {
+            portals.add(new PortalPosition((int) position.get("x"), (int) position.get("z")));
+        }
+
         this.oilPos = oilPos;
         this.world = mechanicsWorld;
         this.radius = mechanics.getInt("radius");
@@ -41,6 +47,9 @@ public class OilMechanics {
             Bukkit.addRecipe(recipe);
         }
         plugin.getServer().getPluginManager().registerEvents(new SeismicScannerListener(recipes, this), plugin);
+        if (!portals.isEmpty()) {
+            plugin.getServer().getPluginManager().registerEvents(new EnderEyeListener(mechanicsWorld, portals), plugin);
+        }
 
         Fuel.createCrudeOil();
         Fuel.createRocketFuel();
