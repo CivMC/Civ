@@ -23,8 +23,8 @@ import org.bukkit.persistence.PersistentDataType;
  */
 public class JoinListener implements Listener {
 
-    private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "rocket_join");
-    private static final NamespacedKey ZORWETH_OTT_JOIN = new NamespacedKey("zorweth", "ott_join");
+    private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "no_starter_kit");
+    private static final NamespacedKey ZORWETH_OTT_JOIN = new NamespacedKey("zorweth", "no_ott");
 
     RandomSpawn plugin;
 

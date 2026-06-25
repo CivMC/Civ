@@ -28,6 +28,7 @@ import net.civmc.zorweth.transfer.RocketPassengerTransfer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -89,6 +90,9 @@ public class LaunchHandler {
         final List<RocketManifestPassenger> passengers = new ArrayList<>();
         for (final Player seated : Bukkit.getOnlinePlayers()) {
             if (!seated.getWorld().equals(origin.getWorld())) {
+                continue;
+            }
+            if (seated.getGameMode() == GameMode.SPECTATOR) {
                 continue;
             }
             final Location location = seated.getLocation();
@@ -216,6 +220,9 @@ public class LaunchHandler {
 
         for (final Player seated : Bukkit.getOnlinePlayers()) {
             if (!seated.getWorld().equals(origin.getWorld())) {
+                continue;
+            }
+            if (seated.getGameMode() == GameMode.SPECTATOR) {
                 continue;
             }
             final Location location = seated.getLocation();

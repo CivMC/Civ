@@ -5,6 +5,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.block.BlockState;
 import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
+import isaac.bastion.Bastion;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
-import isaac.bastion.Bastion;
 import net.civmc.zorweth.flight.FlightComputer;
 import net.civmc.zorweth.transfer.DestinationRocketTransfer;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
@@ -77,8 +77,11 @@ public final class DestinationTransferListener implements Listener {
         if (rocketBlockPosition == null) {
             CompletableFuture<DestinationRocketTransfer> existing = futures.putIfAbsent(transfer.transferId(), success);
             if (existing != null) {
-                success.complete(existing.join());
+                DestinationRocketTransfer join = existing.join();
+                plugin.getLogger().log(Level.INFO, "Routing player  " + event.getName() + " to existing transfer #" + join.transferId() + ": " + join.destinationOrigin());
+                success.complete(join);
             } else {
+                plugin.getLogger().log(Level.INFO, "Determining rocket position for player  " + event.getName() + " for transfer #" + transfer.transferId() + ": " + transfer.requestedX() + " " + transfer.requestedZ());
                 Bukkit.getScheduler().runTask(plugin, () -> updateRocketPosition(transfer, success));
             }
         } else {
