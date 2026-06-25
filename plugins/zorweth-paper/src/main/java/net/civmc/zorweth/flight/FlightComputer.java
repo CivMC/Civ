@@ -92,15 +92,15 @@ public class FlightComputer {
         dispenser.getPersistentDataContainer().set(ROCKET_DESTINATION_Z_KEY, PersistentDataType.INTEGER, coordinates.z());
     }
 
-    public static void reinforceFlightComputer(final Block flightComputer, int group) {
+    public static void reinforceBlock(final Block block, final int group, final Material reinforcementMaterial) {
         final ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager()
-            .getByItemStack(new ItemStack(Material.DIAMOND), flightComputer.getWorld().getName());
-        if (type == null || !type.canBeReinforced(flightComputer.getType())
-            || !type.isAllowedInWorld(flightComputer.getWorld().getName())) {
+            .getByItemStack(new ItemStack(reinforcementMaterial), block.getWorld().getName());
+        if (type == null || !type.canBeReinforced(block.getType())
+            || !type.isAllowedInWorld(block.getWorld().getName())) {
             return;
         }
         final long creationTime = System.currentTimeMillis() - type.getMaturationTime() - 1;
-        final Reinforcement reinforcement = new Reinforcement(flightComputer.getLocation(), type,
+        final Reinforcement reinforcement = new Reinforcement(block.getLocation(), type,
             group, creationTime, type.getHealth(), false, true);
         ReinforcementLogic.createReinforcement(reinforcement);
     }

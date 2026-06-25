@@ -313,12 +313,13 @@ public final class DestinationTransferListener implements Listener {
         }
 
         pasteRocket(world, transfer.destinationOrigin());
-        pasteChests(world, transfer.destinationOrigin(), chests);
+        pasteChests(world, transfer.destinationOrigin(), chests, transfer.flightComputerGroupId());
         markDestinationComputer(getDestinationComputerBlock(world, transfer.destinationOrigin()), transfer);
         return true;
     }
 
-    private void pasteChests(World world, RocketBlockPosition origin, List<RocketChestTransfer> chests) {
+    private void pasteChests(final World world, final RocketBlockPosition origin, final List<RocketChestTransfer> chests,
+                             final Integer groupId) {
         for (RocketChestTransfer chest : chests) {
             RocketBlockPosition chestPos = chest.relativePosition();
             Block block = world.getBlockAt(
@@ -334,6 +335,9 @@ public final class DestinationTransferListener implements Listener {
             }
 
             chestState.getBlockInventory().setContents(contents);
+            if (groupId != null) {
+                FlightComputer.reinforceBlock(block, groupId, Material.STONE);
+            }
         }
     }
 
@@ -364,7 +368,7 @@ public final class DestinationTransferListener implements Listener {
         dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_USES_REMAINING_KEY,
             PersistentDataType.INTEGER, transfer.usesRemaining());
         if (transfer.flightComputerGroupId() != null) {
-            FlightComputer.reinforceFlightComputer(computer, transfer.flightComputerGroupId());
+            FlightComputer.reinforceBlock(computer, transfer.flightComputerGroupId(), Material.DIAMOND);
         }
     }
 

@@ -185,7 +185,7 @@ public class BuildRocketRecipe extends InputRecipe {
         if (furnaceReinforcement == null) {
             return;
         }
-        FlightComputer.reinforceFlightComputer(flightComputer, furnaceReinforcement.getGroupId());
+        FlightComputer.reinforceBlock(flightComputer, furnaceReinforcement.getGroupId(), Material.DIAMOND);
     }
 
     private Block getNorthWestOrigin(final FurnCraftChestFactory fccf) {
