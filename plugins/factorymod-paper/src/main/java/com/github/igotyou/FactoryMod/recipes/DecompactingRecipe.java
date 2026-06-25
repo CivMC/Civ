@@ -55,7 +55,7 @@ public class DecompactingRecipe extends InputRecipe {
                     removeClone.setAmount(1);
                     removeCompactLore(removeClone);
                     ItemMap toAdd = new ItemMap();
-                    toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
+                    toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone));
                     if (!InventoryUtils.safelyAddItemsToInventory(
                         ClonedInventory.cloneInventory(outputInv), toAdd.getItemStackRepresentation().toArray(new ItemStack[0]))) {
                         isFeasible = false;
@@ -83,7 +83,7 @@ public class DecompactingRecipe extends InputRecipe {
                         ItemMap toRemove = new ItemMap(removeClone);
                         ItemMap toAdd = new ItemMap();
                         removeCompactLore(removeClone);
-                        toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
+                        toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone));
                         ItemStack[] itemsToAdd = toAdd.getItemStackRepresentation().toArray(new ItemStack[0]);
                         if (!InventoryUtils.safelyAddItemsToInventory(
                             ClonedInventory.cloneInventory(outputInv), itemsToAdd)) {
@@ -146,7 +146,7 @@ public class DecompactingRecipe extends InputRecipe {
                     ItemStack copy = is.clone();
                     removeCompactLore(copy);
                     ItemMap output = new ItemMap();
-                    output.addItemAmount(copy, CompactingRecipe.getCompactStackSize(copy.getType()));
+                    output.addItemAmount(copy, CompactingRecipe.getCompactStackSize(copy));
                     result.addAll(output.getItemStackRepresentation());
                 }
             }

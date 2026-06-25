@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -167,7 +168,13 @@ public class BuildRocketRecipe extends InputRecipe {
                     dispenser.getPersistentDataContainer().set(FlightComputer.ROCKET_USES_REMAINING_KEY,
                         PersistentDataType.INTEGER, FlightComputer.MAX_ROCKET_USES);
                     dispenser.update(false, false);
-                    reinforceFlightComputer(fccf, target);
+                    reinforce(fccf, target, Material.DIAMOND);
+                } else if (Tag.COPPER_CHESTS.isTagged(target.getType())) {
+                    final Reinforcement furnaceReinforcement = ReinforcementLogic.getReinforcementAt(fccf.getFurnace().getLocation());
+                    if (furnaceReinforcement == null) {
+                        return;
+                    }
+                    reinforce(fccf, target, Material.STONE);
                 }
             }
             currentLayer[0]++;
@@ -176,7 +183,7 @@ public class BuildRocketRecipe extends InputRecipe {
         return true;
     }
 
-    private void reinforceFlightComputer(final FurnCraftChestFactory fccf, final Block flightComputer) {
+    private void reinforce(final FurnCraftChestFactory fccf, final Block flightComputer, Material material) {
         if (!FactoryMod.getInstance().getManager().isCitadelEnabled()) {
             return;
         }
@@ -185,7 +192,7 @@ public class BuildRocketRecipe extends InputRecipe {
         if (furnaceReinforcement == null) {
             return;
         }
-        FlightComputer.reinforceBlock(flightComputer, furnaceReinforcement.getGroupId(), Material.DIAMOND);
+        FlightComputer.reinforceBlock(flightComputer, furnaceReinforcement.getGroupId(), material);
     }
 
     private Block getNorthWestOrigin(final FurnCraftChestFactory fccf) {
