@@ -156,7 +156,7 @@ reinforcements:
     acid_time: 8h
     acid_priority: 7
     name: Aluminium
-    hit_points: 1200
+    hit_points: 900
     allowed_worlds:
       - world
   diamond:
