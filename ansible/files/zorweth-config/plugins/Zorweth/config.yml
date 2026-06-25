@@ -35,7 +35,7 @@ oxygen:
   enabled: true
   world: world
   consumption_per_second: 0.006
-  tank_break_chance: 0.05
+  tank_break_chance: 0.1
   offline_consumption_seconds: 300
   biomes:
     "minecraft:pale_garden": 0.5
