@@ -19611,7 +19611,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: AMETHYST_SHARD
-        amount: 30
+        amount: 12
       redstone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
