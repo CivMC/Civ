@@ -132,7 +132,7 @@ Research Phase 2 requires the following resources:
 * 64 Redstone Dust
 * 3 Ink Sacs
 * 64 Paper
-* 30 Amethyst Shards
+* 12 Amethyst Shards
 * 6 kg Rocket fuel
 
 This recipe must be run 20,000 times. Upon completion, space travel is unlocked and rockets will be able to launch to and from Zorweth. Each run of the recipes also outputs a piece of paper called "Research Notes" with the player's name on it, as proof of your contribution. 
@@ -148,7 +148,7 @@ The first step to making a rocket is building the Space Factory, this requires t
 
 Before building the Space Factory, be aware that the orientation matters! The rocket is built at the back of the factory, offset towards the right. Make sure to study the image below.
 
-(image of space required) 13 Length x 11 Width
+![SpaceFactory](media/Rocket.png) 13 Length x 11 Width
 
 This image shows the space required to build the rocket (the floor can be any block. Blocks used in the image are for clarity). The black and yellow outline represents the total space required, which needs to be empty. As seen, this is at the back of the Space Factory.
 The red outlines is where the actual rocket is built by the factory, for aesthetic purposes, this would be taken as the center point.
