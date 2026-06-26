@@ -35,7 +35,7 @@ After mining, the bauxite is refined in any of the ore smelter factories for the
 
 Aluminium is used to:
 * Create and repair oxygen tanks.
-* Reinforce blocks for 1200 health. 
+* Reinforce blocks for 1000 health. 
 * Create armor repair kits.
 
 Armor repair kits are used to repair any piece of armor. Each one applied repairs 5% less than before, going from 20% to 15% to 10% to 5%. Applying a repair kit requires no XP, making them ideal for quick field repair.
