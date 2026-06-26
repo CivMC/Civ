@@ -21,7 +21,7 @@ public final class PhantomMembraneLoreListener implements Listener {
         for (final ItemStack drop : event.getDrops()) {
             if (drop.getType() == Material.PHANTOM_MEMBRANE) {
                 drop.editMeta(meta -> meta.lore(List.of(
-                    Component.text("Found on Zorweth")
+                    Component.empty().append(Component.text("Found on Zorweth"))
                 )));
             }
         }

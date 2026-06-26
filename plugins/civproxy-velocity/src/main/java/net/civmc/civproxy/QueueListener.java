@@ -12,6 +12,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.civmc.zorweth.velocity.ZorwethVelocityPlugin;
@@ -29,17 +30,18 @@ import us.ajg0702.queue.api.players.AdaptedPlayer;
 
 public class QueueListener {
 
-    private final Map<Player, QueueRecord> players = new ConcurrentHashMap<>();
-    private final Map<Player, KickRecord> kickReasons = new ConcurrentHashMap<>();
+    private final Map<UUID, QueueRecord> players = new ConcurrentHashMap<>();
+    private final Map<UUID, KickRecord> kickReasons = new ConcurrentHashMap<>();
+    private final Map<UUID, QueueRecord> queueConnects = new ConcurrentHashMap<>();
 
     private final CivProxyPlugin plugin;
     private final ProxyServer server;
     private final ZorwethVelocityPlugin zorweth;
 
-    public QueueListener(CivProxyPlugin plugin, ProxyServer server, ZorwethVelocityPlugin zorweth) {
-      this.plugin = plugin;
-      this.server = server;
-      this.zorweth = zorweth;
+    public QueueListener(final CivProxyPlugin plugin, final ProxyServer server, final ZorwethVelocityPlugin zorweth) {
+        this.plugin = plugin;
+        this.server = server;
+        this.zorweth = zorweth;
     }
 
     record QueueRecord(Instant instant, String server) {
@@ -67,10 +69,12 @@ public class QueueListener {
         if (event.getPlayer().getCurrentServer().isPresent()) {
             return;
         }
+        final String queueTarget = getKickQueueTarget(event.getPlayer(), name);
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
-        event.getServerKickReason().ifPresent(reason -> kickReasons.put(event.getPlayer(), new KickRecord(Instant.now(), reason)));
+        event.getServerKickReason().ifPresent(reason -> kickReasons.put(
+            event.getPlayer().getUniqueId(), new KickRecord(Instant.now(), reason)));
 
-        players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
+        players.put(event.getPlayer().getUniqueId(), new QueueRecord(Instant.now(), queueTarget));
     }
 
     @Subscribe
@@ -84,7 +88,7 @@ public class QueueListener {
             return;
         }
 
-        KickRecord record = kickReasons.remove(event.getPlayer());
+        KickRecord record = kickReasons.remove(event.getPlayer().getUniqueId());
         Component defaultReason;
         if (record != null && record.instant().isAfter(Instant.now().minusSeconds(60))) {
             defaultReason = record.reason();
@@ -99,7 +103,8 @@ public class QueueListener {
         // If we are close to the cap, don't allow direct connections to the server and force them to go to the queue
         // This prevents players being able to snipe positions and bypass the queue
 
-        if (event.getPreviousServer() != null) {
+        final RegisteredServer previousServer = event.getPreviousServer();
+        if (previousServer != null && !previousServer.getServerInfo().getName().equals("pvp")) {
             return;
         }
         RegisteredServer requestedServer = event.getOriginalServer();
@@ -125,10 +130,29 @@ public class QueueListener {
             queueTarget = requestedServer;
         }
 
+        final String queueTargetName = queueTarget.getServerInfo().getName();
+        final boolean queueConnect = previousServer != null && isQueueConnect(event.getPlayer(), queueTargetName);
         if (queueTarget.getPlayersConnected().size() >= 145 && !event.getPlayer().hasPermission("joinbypass.use")) {
-            event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
+            if (previousServer != null) {
+                if (queueConnect) {
+                    this.plugin.getLogger().info("Allowing queued player {} from pvp to {}",
+                        event.getPlayer().getUniqueId(), queueTargetName);
+                    return;
+                }
+                final RegisteredServer pvpServer = server.getServer("pvp").get();
+                event.setResult(ServerPreConnectEvent.ServerResult.allowed(pvpServer));
+                this.plugin.getLogger().info("Keeping player {} on pvp and adding them to {} queue because {} has {} players",
+                    event.getPlayer().getUniqueId(), queueTargetName, queueTargetName, queueTarget.getPlayersConnected().size());
+                addToQueue(event.getPlayer(), queueTargetName);
+                return;
+            }
 
-            players.put(event.getPlayer(), new QueueRecord(Instant.now(), queueTarget.getServerInfo().getName()));
+            final RegisteredServer pvpServer = server.getServer("pvp").get();
+            event.setResult(ServerPreConnectEvent.ServerResult.allowed(pvpServer));
+            this.plugin.getLogger().info("Redirecting player {} to pvp and adding them to {} queue because {} has {} players",
+                event.getPlayer().getUniqueId(), queueTargetName, queueTargetName, queueTarget.getPlayersConnected().size());
+
+            players.put(event.getPlayer().getUniqueId(), new QueueRecord(Instant.now(), queueTargetName));
         } else if (queueTarget != requestedServer) {
             event.setResult(ServerPreConnectEvent.ServerResult.allowed(queueTarget));
         }
@@ -149,10 +173,16 @@ public class QueueListener {
     private void onPreQueueConnect(final PreConnectEvent event) {
         final String targetName = event.getTargetServer().getName();
         if (!this.zorweth.isProtectedServer(targetName) || event.getPlayer().getPlayer().hasPermission("zorweth.admin")) {
+            this.queueConnects.put(event.getPlayer().getUniqueId(), new QueueRecord(Instant.now(), targetName));
+            this.plugin.getLogger().info("AjQueue is sending player {} to {}; allowing queue connection",
+                event.getPlayer().getUniqueId(), targetName);
             return;
         }
         final String expectedServer = getExpectedServer(event.getPlayer().getPlayer());
         if (targetName.equals(expectedServer)) {
+            this.queueConnects.put(event.getPlayer().getUniqueId(), new QueueRecord(Instant.now(), targetName));
+            this.plugin.getLogger().info("AjQueue is sending player {} to expected server {}; allowing queue connection",
+                event.getPlayer().getUniqueId(), targetName);
             return;
         }
         event.setCancelled(true);
@@ -164,11 +194,11 @@ public class QueueListener {
     public void onConnect(ServerPostConnectEvent event) {
         // Add players coming from the main server to the queue
 
-        QueueRecord record = players.remove(event.getPlayer());
+        QueueRecord record = players.remove(event.getPlayer().getUniqueId());
         if (record != null && record.instant().isAfter(Instant.now().minusSeconds(60))) {
-            QueueManager queueManager = AjQueueAPI.getInstance().getQueueManager();
-            AdaptedPlayer player = AjQueueAPI.getInstance().getPlatformMethods().getPlayer(event.getPlayer().getUniqueId());
-            queueManager.addToQueue(player, record.server());
+            this.plugin.getLogger().info("Player {} reached pvp after redirect; adding them to {} queue",
+                event.getPlayer().getUniqueId(), record.server());
+            addToQueue(event.getPlayer(), record.server());
         }
     }
 
@@ -228,6 +258,44 @@ public class QueueListener {
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
             userManager.saveUser(user);
         });
+    }
+
+    private void addToQueue(final Player player, final String server) {
+        final QueueManager queueManager = AjQueueAPI.getInstance().getQueueManager();
+        final AdaptedPlayer adaptedPlayer = AjQueueAPI.getInstance().getPlatformMethods()
+            .getPlayer(player.getUniqueId());
+        if (adaptedPlayer == null) {
+            this.plugin.getLogger().warn("Unable to add {} to {} queue: player was not known to AjQueue",
+                player.getUniqueId(), server);
+            return;
+        }
+        if (!queueManager.addToQueue(adaptedPlayer, server)) {
+            this.plugin.getLogger().warn("AjQueue rejected adding {} to {} queue", player.getUniqueId(), server);
+            return;
+        }
+        this.plugin.getLogger().info("Added player {} to {} queue", player.getUniqueId(), server);
+    }
+
+    private boolean isQueueConnect(final Player player, final String server) {
+        final QueueRecord record = this.queueConnects.remove(player.getUniqueId());
+        return record != null
+            && record.instant().isAfter(Instant.now().minusSeconds(10))
+            && record.server().equals(server);
+    }
+
+    private String getKickQueueTarget(final Player player, final String kickedServer) {
+        if (!this.zorweth.isProtectedServer(kickedServer) || this.zorweth.canBypass(player)) {
+            return kickedServer;
+        }
+        final String expectedServer = getExpectedServer(player);
+        if (expectedServer == null) {
+            return kickedServer;
+        }
+        if (!expectedServer.equals(kickedServer)) {
+            this.plugin.getLogger().info("Player {} was kicked while connecting to {}, but their expected route is {}; queueing expected route",
+                player.getUniqueId(), kickedServer, expectedServer);
+        }
+        return expectedServer;
     }
 
     private String getExpectedServer(final Player player) {
