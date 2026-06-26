@@ -222,9 +222,9 @@ public final class PioneerCommand implements CommandExecutor {
     private void prepareTransfer(final UUID playerId) {
         try {
             this.plugin.getRocketTransferDao().setPlayerRoute(playerId, this.plugin.getDestinationServer());
-            this.plugin.getLogger().log(Level.SEVERE, playerId + " has been routed to Zorweth");
+            this.plugin.getLogger().log(Level.INFO, playerId + " has been routed to Zorweth");
         } catch (final SQLException exception) {
-            this.plugin.getLogger().log(Level.SEVERE, "Failed to set pioneer route override", exception);
+            this.plugin.getLogger().log(Level.INFO, "Failed to set pioneer route override", exception);
             Bukkit.getScheduler().runTask(this.plugin, () -> {
                 final Player player = Bukkit.getPlayer(playerId);
                 if (player != null) {
