@@ -77,7 +77,7 @@ public final class CheckResearchProgressRecipe extends InputRecipe {
             return false;
         }
         sendProgressMessage(fccf, researchManager.getResearchProgress());
-        return true;
+        return false;
     }
 
     @Override
