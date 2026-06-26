@@ -14,6 +14,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.HeightMap;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -242,6 +244,16 @@ public final class PioneerCommand implements CommandExecutor {
         final Player player = Bukkit.getPlayer(id);
         if (player == null) {
             return;
+        }
+
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            online.playSound(
+                online,
+                Sound.BLOCK_BEACON_ACTIVATE,
+                SoundCategory.MASTER,
+                1,
+                1
+            );
         }
 
         player.getInventory().clear();
