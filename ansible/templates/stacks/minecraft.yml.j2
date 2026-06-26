@@ -236,6 +236,7 @@ services:
             - /opt/PrivateConfig/zorweth/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
             - /opt/PrivateConfig/zorweth/config/Zorweth/mechanics.yml:/config/plugins/Zorweth/mechanics.yml
             - /opt/PrivateConfig/zorweth/config/Heliodor/config.yml:/config/plugins/Heliodor/config.yml
+            - /opt/PrivateConfig/zorweth/config/KiraBukkitGateway/config.yml:/config/plugins/KiraBukkitGateway/config.yml
         deploy:
             placement:
                 constraints: [node.role == manager]
