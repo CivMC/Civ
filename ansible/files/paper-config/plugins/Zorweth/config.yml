@@ -26,7 +26,7 @@ mechanics:
   world: world
 
 research:
-  enabled: false
+  enabled: true
   disable-progress-until: 0
   phase-one-runs: 30000
   phase-two-runs: 20000
