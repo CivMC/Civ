@@ -18,8 +18,8 @@ settings:
         memory_limit: 48G
         pvp_memory: 11G
         pvp_memory_limit: 14G
-        zorweth_memory: 20G
-        zorweth_memory_limit: 24G
+        zorweth_memory: 24G
+        zorweth_memory_limit: 28G
     # Optional Stacks
     auth:
       enabled: false
