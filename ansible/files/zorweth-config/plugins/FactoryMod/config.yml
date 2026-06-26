@@ -1704,9 +1704,7 @@ factories:
       - elite_xp
       - wither_skull
       - make_energizer
-      - make_elite_cauldron_kit
       - repair_elite_cauldron
-      - repair_elite_cauldron_kit
   compactor:
     type: FCC
     name: Compactor
@@ -11747,39 +11745,6 @@ recipes:
           ==: ItemMeta
           lore:
             - Compacted Item
-  make_elite_cauldron_kit:
-    production_time: 4s
-    name: Make Elite Cauldron Repair Kit
-    type: PRODUCTION
-    input:
-      emerald_block:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: EMERALD_BLOCK
-        amount: 32
-      essence:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: ENDER_EYE
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Player Essence
-          lore:
-            - Activity reward used to fuel pearls
-    output:
-      kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
-        amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Elite Cauldron Repair Kit
-          lore:
-            - One kit will repair a Elite Cauldron to full health.
   repair_elite_cauldron:
     production_time: 4s
     name: Repair Factory
