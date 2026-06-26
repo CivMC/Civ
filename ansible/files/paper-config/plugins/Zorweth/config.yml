@@ -25,6 +25,8 @@ mechanics:
   enabled: true
   world: world
 
+pioneer-end-timestamp: 1783116000000
+
 research:
   enabled: true
   disable-progress-until: 0
