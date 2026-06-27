@@ -131,44 +131,6 @@ public class RabbitCommands {
         sendInternal("sendsnitchhit", json);
     }
 
-    /*
-    private JsonObject itemStackJson(ItemStack item) {
-        JsonObject json = new JsonObject();
-        json.addProperty("amount", item.getAmount());
-        json.addProperty("item", ChatUtils.stringify(Component.translatable(item)));
-        JsonArray enchantmentsFull = new JsonArray();
-        JsonArray enchantmentsAbbreviated = new JsonArray();
-        Map<Enchantment, Integer> enchantmentsAndLevels = item.getEnchantments();
-        for (Enchantment enchantment : enchantmentsAndLevels.keySet()) {
-            String enchantmentFullString = ChatUtils.stringify(Component.translatable(enchantment));
-            String enchantmentAbbreviatedString = EnchantUtils.getEnchantAbbreviation(enchantment);
-            Integer level = enchantmentsAndLevels.get(enchantment);
-            if (enchantment.getStartLevel() == enchantment.getMaxLevel())
-                level = null;
-            enchantmentFullString += " " + level;
-            enchantmentAbbreviatedString += " " + level;
-            enchantmentsFull.add(enchantmentFullString);
-            enchantmentsAbbreviated.add(enchantmentAbbreviatedString);
-        }
-        json.add("enchantments", enchantmentsFull);
-        json.add("enchantmentsAbbreviated", enchantmentsAbbreviated);
-        ItemMeta itemMeta = item.getItemMeta();
-        if (itemMeta == null)
-            return json;
-        if (itemMeta.hasItemName())
-            json.addProperty("displayName", itemMeta.getItemName());
-        if (itemMeta.hasLore()) {
-            JsonArray loreList = new JsonArray();
-            List<String> lores = itemMeta.getLore();
-            for (String lore : lores) {
-                loreList.add(lore);
-            }
-            json.add("lore", loreList);
-        }
-        return json;
-    }
-    */
-
     public JsonObject serializeItemToJson(ItemStack itemStack) {
         if (itemStack == null || itemStack.getType().isAir()) {
             return null;
