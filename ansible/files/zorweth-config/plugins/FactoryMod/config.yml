@@ -19393,7 +19393,7 @@ recipes:
         amount: 1
   create_oxygen_suit:
     production_time: 4s
-    name: Create Oxygen Rebreather
+    name: Create Oxygen Suit
     type: PRODUCTION
     input:
       oxygen_rebreather:
