@@ -257,7 +257,7 @@ public final class ZorwethVelocityPlugin {
         @Override
         public void execute(final Invocation invocation) {
             final CommandSource source = invocation.source();
-            if (!source.hasPermission("zorweth.admin")) {
+            if (!source.hasPermission("zorweth.route")) {
                 source.sendMessage(Component.text("You do not have permission to use this command.", NamedTextColor.RED));
                 return;
             }
