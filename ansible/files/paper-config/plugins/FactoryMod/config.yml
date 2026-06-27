@@ -18856,12 +18856,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BUCKET
-        amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
+        amount: 8
   make_crude_oil_factory_kit:
     production_time: 4s
     name: Make Crude Oil Factory Repair Kit
