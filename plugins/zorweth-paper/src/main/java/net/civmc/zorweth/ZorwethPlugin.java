@@ -66,6 +66,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         OxygenBladder.registerCustomItems();
         OxygenTank.registerCustomItems();
         ArmourRepairKit.createArmourRepairKit();
+        RainbowArmour.registerCustomItems();
     }
 
     @Override
@@ -95,6 +96,7 @@ public final class ZorwethPlugin extends JavaPlugin {
         }
 
         loadOxygen();
+        RainbowArmour.startTask(this);
 
         double gravity = getConfig().getDouble("gravity");
         if (gravity != 0) {

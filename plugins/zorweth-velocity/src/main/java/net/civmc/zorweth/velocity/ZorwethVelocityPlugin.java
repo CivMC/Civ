@@ -6,6 +6,7 @@ import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
@@ -72,6 +73,29 @@ public final class ZorwethVelocityPlugin {
             this.dataSource.close();
             this.dataSource = null;
         }
+    }
+
+    @Subscribe
+    public void onInitial(final PlayerChooseInitialServerEvent event) {
+        if (!event.getInitialServer().isEmpty()) {
+            return;
+        }
+
+        final String expectedServer;
+        try {
+            expectedServer = getExpectedServer(event.getPlayer().getUniqueId());
+        } catch (final SQLException exception) {
+            this.logger.error("Failed to look up rocket player route", exception);
+            event.getPlayer().disconnect(Component.text( "An error occurred, please try again later", NamedTextColor.RED));
+            return;
+        }
+
+        final Optional<RegisteredServer> expected = this.server.getServer(expectedServer);
+        if (expected.isEmpty()) {
+            this.server.getServer(getDefaultServer()).ifPresent(event::setInitialServer);
+            return;
+        }
+        event.setInitialServer(expected.get());
     }
 
     @Subscribe(priority = -1)

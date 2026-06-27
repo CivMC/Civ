@@ -70,6 +70,7 @@ public class CommandManager extends BukkitCommandManager {
         CommandHelpers.registerMaterialsCompletion(completions);
         CommandHelpers.registerItemMaterialsCompletion(completions);
         CommandHelpers.registerKnownPlayersCompletion(completions);
+        CommandHelpers.registerCustomItemsCompletion(completions);
     }
 
     /**

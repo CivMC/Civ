@@ -77,7 +77,7 @@ pvp = "pvp:25565"
 zorweth = "zorweth:25565"
 
 # In what order we should try servers when a player logs in or is kicked from a server.
-try = ["main"]
+try = []
 
 [forced-hosts]
 # Configure your forced hosts here.
