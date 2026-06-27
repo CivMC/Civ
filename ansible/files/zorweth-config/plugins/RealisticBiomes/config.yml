@@ -122,7 +122,7 @@ biome_aliases:
     - PALE_GARDEN
   mushroom:
     - MUSHROOM_FIELDS
-  swamp:
+  swamps:
     - SWAMP
     - MANGROVE_SWAMP
 
@@ -305,7 +305,7 @@ plants:
     biomes:
       jungles: 1.0
       bamboo_jungle: 0.6
-      swamp: 0.4
+      swamps: 0.4
       dark_forest: 0.25
       mushroom: 0.25
 
@@ -450,7 +450,7 @@ plants:
     biomes:
       jungles: 1.0
       bamboo: 1.0
-      swamp: 0.5
+      swamps: 0.5
       mushroom: 1.0
       dark_forest: 0.25
 # formerly inheriting "basetree" properties
@@ -477,7 +477,7 @@ plants:
       meadows: 0.25
       savannas: 0.5
       mesa: 0.25
-      swamp: 0.5
+      swamps: 0.5
 
   BIRCH_SAPLING:
     persistent_growth_period: 6h
@@ -540,7 +540,7 @@ plants:
       jungles: 1.0
       bamboo: 0.8
       mushroom: 0.25
-      swamp: 0.25
+      swamps: 0.25
       dark_forest: 0.6
 
   ACACIA_SAPLING:
@@ -584,7 +584,7 @@ plants:
       taigas: 0.6
       birch_forests: 0.6
       dark_forest: 1.0
-      swamp: 0.8
+      swamps: 0.8
       meadows: 0.5
 
   PALE_OAK_SAPLING:
@@ -626,7 +626,7 @@ plants:
       taigas: 0.8
       birch_forests: 0.5
       dark_forest: 0.25
-      swamp: 0.25
+      swamps: 0.25
       meadows: 1.0
       taigas: 0.25
       cold_taiga: 0.1
@@ -652,7 +652,7 @@ plants:
     biomes:
       jungles: 0.25
       dark_forest: 0.25
-      swamp: 1.0
+      swamps: 1.0
 
   GLOW_BERRIES:
     persistent_growth_period: 4h
@@ -753,7 +753,7 @@ plants:
       v: 2730
     needs_sun_light: false
     biomes:
-      swamp: 0.6
+      swamps: 0.6
       jungles: 0.25
       bamboo: 0.25
       mushroom: 1.0
@@ -783,7 +783,7 @@ plants:
       v: 2730
     needs_sun_light: false
     biomes:
-      swamp: 0.6
+      swamps: 0.6
       jungles: 0.25
       bamboo: 0.25
       mushroom: 1.0
@@ -841,7 +841,7 @@ plants:
     greenhouse_rates:
       GLOWSTONE: 0.5
     biomes:
-      swamp: 0.25
+      swamps: 0.25
       jungles: 0.5
       bamboo: 1.0
       mushroom: 0.25
