@@ -52,3 +52,12 @@ meteoric_iron_vein:
   max_bury: 1
   # if there are less than this many stone blocks at a prospective vein spawn location, the location will be skipped
   min_blocks: 1
+  public_announcement:
+    enabled: false
+    # when enabled, the next public meteor is scheduled randomly this many minutes after each spawn
+    max_delay_minutes: 1440
+    # forecast recipes reveal a window centred on the scheduled spawn time
+    forecast_window_minutes: 60
+    # salts used to derive deterministic spawn/forecast times from the announced vein
+    spawn_time_salt: 1
+    forecast_window_salt: 2

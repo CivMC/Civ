@@ -9,7 +9,7 @@ services:
 
   proxy:
     image: itzg/mc-proxy:java25
-    restart: on-failure
+    restart: no
     tty: true
     stdin_open: true
     depends_on:
@@ -38,7 +38,6 @@ services:
 
       CIV_TIMEOUT_TIME: 3000000
       CIV_PVP_HOSTNAME: 'pvp.localhost'
-      CIV_GAMMA_HOSTNAME: 'mini.localhost'
       CIV_HOSTNAME: 'main.localhost'
 
       CIV_FORWARDING_SECRET: '1234'
@@ -55,6 +54,10 @@ services:
       - ./containers/data/proxy:/server
       - ./ansible/files/proxy-config:/config
       - ./ansible/build/proxy-plugins:/plugins
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
 
   paper:
     image: itzg/minecraft-server:stable-java25
@@ -114,7 +117,7 @@ services:
       - ./ansible/files/paper-config:/config
       - ./ansible/build/paper-plugins:/plugins
 
-  gamma:
+  zorweth:
     image: itzg/minecraft-server:stable-java25
     restart: on-failure
     tty: true
@@ -154,21 +157,21 @@ services:
       CIV_POSTGRES_USERNAME: postgres
       CIV_POSTGRES_PASSWORD: postgres
 
-      CIV_DATABASE_PREFIX: 'gamma_'
+      CIV_DATABASE_PREFIX: 'zorweth_'
 
       CIV_RABBITMQ_HOST: rabbitmq
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: rabbitmq
 
-      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5009
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
     ports:
-      - "5007:5007"
+      - "5009:5009"
     volumes:
-      - ./containers/data/gamma:/data
-      - ./ansible/files/gamma-config:/config
-      - ./ansible/build/gamma-plugins:/plugins
+      - ./containers/data/zorweth:/data
+      - ./ansible/files/zorweth-config:/config
+      - ./ansible/build/zorweth-plugins:/plugins
 
   pvp:
     image: itzg/minecraft-server:stable-java25

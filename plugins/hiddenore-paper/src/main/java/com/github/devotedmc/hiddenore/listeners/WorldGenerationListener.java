@@ -1,10 +1,10 @@
 package com.github.devotedmc.hiddenore.listeners;
 
-import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.github.devotedmc.hiddenore.BlockConfig;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.HiddenOre;
-import java.lang.ref.PhantomReference;
+import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -15,9 +15,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -33,9 +30,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitTask;
-import org.checkerframework.checker.units.qual.C;
-import org.spigotmc.AsyncCatcher;
 
 /**
  * Populator to strip out blocks selectively from a world during generation.
@@ -98,15 +92,21 @@ public class WorldGenerationListener implements Listener {
         return worldName;
     }
 
-    public void clearManually(CommandSender sender, int radius) {
+    public void clearManually(CommandSender sender, int radius, int centerX, int centerZ) {
         Deque<IntIntPair> chunks = new ArrayDeque<>();
         World world = HiddenOre.getPlugin().getServer().getWorld(worldName);
-        for (int cx = -radius; cx <= radius; cx += 16) {
-            for (int cz = -radius; cz <= radius; cz += 16) {
-                chunks.add(new IntIntImmutablePair(cx >> 4, cz >> 4));
+        int minChunkX = Math.floorDiv(centerX - radius, 16);
+        int maxChunkX = Math.floorDiv(centerX + radius, 16);
+        int minChunkZ = Math.floorDiv(centerZ - radius, 16);
+        int maxChunkZ = Math.floorDiv(centerZ + radius, 16);
+        for (int cx = minChunkX; cx <= maxChunkX; cx++) {
+            for (int cz = minChunkZ; cz <= maxChunkZ; cz++) {
+                if (chunkIntersectsCircle(cx, cz, centerX, centerZ, radius)) {
+                    chunks.add(new IntIntImmutablePair(cx, cz));
+                }
             }
         }
-        sender.sendMessage("Clearing " + chunks.size() + " chunks...");
+        sender.sendMessage("Clearing " + chunks.size() + " chunks around " + centerX + ", " + centerZ + "...");
         Bukkit.getScheduler().runTaskAsynchronously(HiddenOre.getPlugin(), () -> {
             int total = chunks.size();
             int processed = 0;
@@ -166,6 +166,19 @@ public class WorldGenerationListener implements Listener {
             sender.sendMessage(message);
             Bukkit.getConsoleSender().sendMessage(message);
         });
+    }
+
+    private boolean chunkIntersectsCircle(int chunkX, int chunkZ, int centerX, int centerZ, int radius) {
+        int minX = chunkX * 16;
+        int maxX = minX + 16;
+        int minZ = chunkZ * 16;
+        int maxZ = minZ + 16;
+        int closestX = Math.clamp(centerX, minX, maxX);
+        int closestZ = Math.clamp(centerZ, minZ, maxZ);
+        long distanceX = closestX - centerX;
+        long distanceZ = closestZ - centerZ;
+        long radiusSquared = (long) radius * radius;
+        return distanceX * distanceX + distanceZ * distanceZ <= radiusSquared;
     }
 
     /**

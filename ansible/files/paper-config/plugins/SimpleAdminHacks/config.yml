@@ -250,6 +250,8 @@ hacks:
     # Determines the maximum light level at the spawning entity's location that phantoms are allowed to spawn at.
     # Note: 15 will enable spawning at all light levels.
     maximumLightSpawn: 7
+    # Biomes where natural phantom spawns bypass this hack's spawn restrictions. Use Bukkit biome names.
+    biomeWhitelist: []
   PlayerRevive:
     enabled: true
   PlayerStatistics:
@@ -582,16 +584,24 @@ hacks:
     materials:
       COBBLESTONE: 8
       COPPER_BLOCK: 29
+      WAXED_COPPER_BLOCK: 29
       EXPOSED_COPPER: 23
+      WAXED_EXPOSED_COPPER: 23
       WEATHERED_COPPER: 18
+      WAXED_WEATHERED_COPPER: 18
       OXIDIZED_COPPER: 14
+      WAXED_OXIDIZED_COPPER: 14
     skyBase: 10
     skyMaterials:
       COBBLESTONE: 8
       COPPER_BLOCK: 30
+      WAXED_COPPER_BLOCK: 30
       EXPOSED_COPPER: 24
+      WAXED_EXPOSED_COPPER: 24
       WEATHERED_COPPER: 19
+      WAXED_WEATHERED_COPPER: 19
       OXIDIZED_COPPER: 15
+      WAXED_OXIDIZED_COPPER: 15
   CopperRail:
     enabled: true
     deoxidise: true
@@ -607,6 +617,9 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
+  WitherSkeletonCoalHack:
+    enabled: true
+    coalDropChance: 0.2
   NoOozing:
     enabled: true
   BuildLimits:

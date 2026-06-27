@@ -152,6 +152,7 @@ public class FactoryModListener implements Listener {
                         if (player.getInventory().getItemInMainHand().getType() == manager
                             .getFactoryInteractionMaterial()) {
                             manager.attemptCreation(block, player);
+                            evt.setCancelled(true);
                         }
                     } else {
                         // check if chest is other half of double chest

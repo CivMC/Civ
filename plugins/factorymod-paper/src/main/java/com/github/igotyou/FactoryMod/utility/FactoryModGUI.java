@@ -95,7 +95,7 @@ public class FactoryModGUI {
             }
             FurnCraftChestEgg fccEgg = (FurnCraftChestEgg) egg;
             InputRecipe firstRec = (InputRecipe) fccEgg.getRecipes().get(0);
-            ItemStack is = new ItemStack(firstRec.getRecipeRepresentationMaterial());
+            ItemStack is = firstRec.getRecipeRepresentationType();
             ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemUtils.getItemName(fccEgg.getFuel().getType()));

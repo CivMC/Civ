@@ -175,10 +175,57 @@ public class VeinCache {
         return veins;
     }
 
-    public boolean addVein(Vein vein) {
+    public Vein getVeinById(int id) {
+        for (Vein vein : veins) {
+            if (vein.id() == id) {
+                return vein;
+            }
+        }
+        return null;
+    }
+
+    public boolean expireVein(int id) {
+        Vein vein = getVeinById(id);
+        if (vein == null || vein.oresRemaining() <= 0) {
+            return true;
+        }
+        if (!dao.updateVein(id, null, vein.oresRemaining(), true)) {
+            return false;
+        }
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            this.additionalVeinBlocksMined.remove(id);
+            this.veinOresMined.remove(id);
+            for (int i = 0; i < this.veins.size(); i++) {
+                Vein cachedVein = this.veins.get(i);
+                if (cachedVein.id() == id) {
+                    this.veins.set(i, new Vein(
+                        cachedVein.id(),
+                        cachedVein.type(),
+                        cachedVein.spawnedAt(),
+                        cachedVein.world(),
+                        cachedVein.radius(),
+                        cachedVein.x(),
+                        cachedVein.y(),
+                        cachedVein.z(),
+                        cachedVein.offsetX(),
+                        cachedVein.offsetY(),
+                        cachedVein.offsetZ(),
+                        cachedVein.blocksAvailable(),
+                        true,
+                        cachedVein.ores(),
+                        0
+                    ));
+                    return;
+                }
+            }
+        });
+        return true;
+    }
+
+    public Vein addVein(Vein vein) {
         int id = this.dao.addVein(vein);
         if (id != -1) {
-            Bukkit.getScheduler().runTask(plugin, () -> this.veins.add(new Vein(
+            Vein savedVein = new Vein(
                 id,
                 vein.type(),
                 vein.spawnedAt(),
@@ -194,10 +241,11 @@ public class VeinCache {
                 vein.discovered(),
                 vein.ores(),
                 vein.oresRemaining()
-            )));
-            return true;
+            );
+            Bukkit.getScheduler().runTask(plugin, () -> this.veins.add(savedVein));
+            return savedVein;
         } else {
-            return false;
+            return null;
         }
     }
 }

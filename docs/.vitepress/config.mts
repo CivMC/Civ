@@ -135,8 +135,8 @@ export default defineConfig({
                             link: "/wiki/new-player-guide",
                         },
                         {
-                            text: "CivMini",
-                            link: "/wiki/CivMini",
+                            text: "Zorweth",
+                            link: "/wiki/Zorweth",
                         },
                         { text: "Change Log", link: "/wiki/changelog" },
                         {

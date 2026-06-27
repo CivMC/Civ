@@ -18,4 +18,4 @@ rabbitmq:
 server_databases:
   main: namelayer
   pvp: namelayer
-  mini: gamma_namelayer
+  zorweth: namelayer

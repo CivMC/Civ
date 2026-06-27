@@ -29,6 +29,7 @@ import com.github.maxopoly.finale.listeners.VelocityFixListener;
 import com.github.maxopoly.finale.listeners.WarpFruitListener;
 import com.github.maxopoly.finale.listeners.WeaponModificationListener;
 import com.github.maxopoly.finale.mob.BleezeAI;
+import com.github.maxopoly.finale.mob.BleezeDamageListener;
 import com.github.maxopoly.finale.overlay.ScoreboardHUD;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
@@ -136,6 +137,7 @@ public class Finale extends ACivMod {
         getServer().getPluginManager().registerEvents(new MaceListener(config.getMaceCooldown(), config.getMaceMaxDamage(), config.getWindCooldown()), this);
 
         if (getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+            Bukkit.getPluginManager().registerEvents(new BleezeDamageListener(), this);
             new BleezeAI().start();
         }
     }

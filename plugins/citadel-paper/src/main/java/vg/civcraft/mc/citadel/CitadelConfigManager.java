@@ -26,6 +26,7 @@ import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 public class CitadelConfigManager extends ConfigParser {
@@ -222,12 +223,12 @@ public class CitadelConfigManager extends ConfigParser {
     }
 
     private ReinforcementType parseReinforcementType(ConfigurationSection config) {
-        if (!config.isItemStack("item")) {
+        ItemStack item = parseReinforcementItem(config);
+        if (item == null) {
             logger.warning(
                 "Reinforcement config at " + config.getCurrentPath() + " had no valid item entry, it was ignored");
             return null;
         }
-        ItemStack item = config.getItemStack("item");
         ReinforcementEffect creationEffect = getReinforcementEffect(config.getConfigurationSection("creation_effect"));
         ReinforcementEffect damageEffect = getReinforcementEffect(config.getConfigurationSection("damage_effect"));
         ReinforcementEffect destructionEffect = getReinforcementEffect(
@@ -270,6 +271,30 @@ public class CitadelConfigManager extends ConfigParser {
         return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, acidPriority, maturationScale, gracePeriod,
             creationEffect, damageEffect, destructionEffect, reinforceables, nonReinforceables, id, name,
             globalBlackList, decayTimer, decayMultiplier, multiplerOnDeletedGroup, legacyId, allowedWorlds);
+    }
+
+    private ItemStack parseReinforcementItem(ConfigurationSection config) {
+        if (config == null) {
+            return null;
+        }
+        if (config.isItemStack("item")) {
+            return config.getItemStack("item");
+        }
+        ConfigurationSection itemSection = config.getConfigurationSection("item");
+        if (itemSection == null) {
+            return null;
+        }
+        String customKey = itemSection.getString("custom-key");
+        if (customKey != null) {
+            ItemStack item = CustomItem.getCustomItem(customKey);
+            if (item == null) {
+                logger.warning("Unknown custom item key " + customKey + " at " + itemSection.getCurrentPath());
+                return null;
+            }
+            item.setAmount(1);
+            return item;
+        }
+        return null;
     }
 
     private void parseReinforcementTypes(ConfigurationSection config) {

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.civmc.heliodor.backpack.BackpackListener;
 import net.civmc.heliodor.command.HeliodorDebugCommand;
+import net.civmc.heliodor.command.MeteorCommand;
 import net.civmc.heliodor.farmbeacon.FarmBeaconListener;
 import net.civmc.heliodor.heliodor.PickaxeBreakListener;
 import net.civmc.heliodor.heliodor.VeinDetectListener;
@@ -74,7 +75,9 @@ public class HeliodorPlugin extends ACivMod {
             if (!database.updateDatabase()) {
                 Bukkit.shutdown();
             }
-            this.veinCache.load();
+            if (this.veinCache != null) {
+                this.veinCache.load();
+            }
 
             Supplier<CauldronInfuseData> newData = () -> new CauldronInfuseData(false, dao, infusionManager);
             this.chunkMetaView = ChunkMetaAPI.registerBlockBasedPlugin(this, newData, dao, true);
@@ -90,6 +93,7 @@ public class HeliodorPlugin extends ACivMod {
         Bukkit.getScheduler().runTaskTimer(this, this.recipes, 15 * 20, 15 * 20);
 
         getCommand("heliodor").setExecutor(new HeliodorDebugCommand(veinCache, veinSpawner, oreLocationsKey));
+        getCommand("meteor").setExecutor(new MeteorCommand(veinSpawner));
 
         getServer().getPluginManager().registerEvents(new AnvilRepairListener(), this);
 
@@ -102,6 +106,10 @@ public class HeliodorPlugin extends ACivMod {
 
     public HeliodorRecipeGiver getRecipes() {
         return recipes;
+    }
+
+    public VeinSpawner getVeinSpawner() {
+        return veinSpawner;
     }
 
     private void initVeins() {
@@ -133,7 +141,13 @@ public class HeliodorPlugin extends ACivMod {
             meteoricIronConfigSection.getInt("min_position_radius"),
             meteoricIronConfigSection.getInt("max_position_radius"),
             meteoricIronConfigSection.getInt("max_bury"),
-            meteoricIronConfigSection.getBoolean("override-ender-eyes")
+            meteoricIronConfigSection.getBoolean("override-ender-eyes"),
+            meteoricIronConfigSection.getString("biome"),
+            meteoricIronConfigSection.getBoolean("public_announcement.enabled"),
+            meteoricIronConfigSection.getInt("public_announcement.max_delay_minutes"),
+            meteoricIronConfigSection.getInt("public_announcement.forecast_window_minutes"),
+            meteoricIronConfigSection.getLong("public_announcement.spawn_time_salt"),
+            meteoricIronConfigSection.getLong("public_announcement.forecast_window_salt")
         );
 
         SqlVeinDao veinDao = new SqlVeinDao(database);

@@ -133,6 +133,32 @@ reinforcements:
     hit_points: 300
     allowed_worlds:
       - world_nether
+  aluminium:
+    id: 7
+    item:
+      custom-key: aluminium_ingot
+    creation_effect:
+      type: ENCHANTMENT_TABLE
+      speed: 1
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: END_ROD
+      speed: 0.045
+      particleCount: 15
+      offset: 0.0
+    destruction_effect:
+      type: END_ROD
+      speed: 0.13
+      particleCount: 200
+      offset: 0
+    mature_time: 6h
+    acid_time: 8h
+    acid_priority: 7
+    name: Aluminium
+    hit_points: 1000
+    allowed_worlds:
+      - world
   diamond:
     id: 3
     item:

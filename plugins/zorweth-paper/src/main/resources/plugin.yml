@@ -1,0 +1,15 @@
+name: Zorweth
+version: 1.0.0
+main: net.civmc.zorweth.ZorwethPlugin
+author: Okx
+api-version: 1.21.11
+depend: [CivModCore, WorldEdit, Citadel, Bastion, NameLayer]
+softdepend: [ExilePearl, BreweryX]
+commands:
+  pioneer:
+    description: Transfer to Zorweth from the main server
+    usage: /pioneer [clear <player>]
+  oxygen:
+    description: View or set your oxygen level
+    usage: /oxygen [number]
+    permission: zorweth.admin

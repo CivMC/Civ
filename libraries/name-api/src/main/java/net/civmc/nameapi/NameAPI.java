@@ -91,8 +91,8 @@ public class NameAPI {
             "ALTER TABLE Name_player DROP INDEX IF EXISTS `uuid_player_combo`",
             "ALTER TABLE Name_player ADD UNIQUE INDEX IF NOT EXISTS on_uuid(uuid)");
 
-        try {
-            migrator.migrate(db.getConnection());
+        try(Connection connection = db.getConnection()) {
+            migrator.migrate(connection);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

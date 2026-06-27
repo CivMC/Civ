@@ -27,6 +27,13 @@ public interface IRecipe {
     public int getProductionTime();
 
     /**
+     * @return How long this recipe takes for one run in ticks for a specific factory.
+     */
+    default public int getProductionTime(FurnCraftChestFactory fccf) {
+        return getProductionTime();
+    }
+
+    /**
      * Checks whether enough material is available in the given inventory to run
      * this recipe at least once
      *
@@ -40,7 +47,7 @@ public interface IRecipe {
      * input/output inventories, or other custom recipe logic.
      * By default, this method returns a result indicating that the effect is always feasible to be applied.
      */
-    default public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+    default public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
         return new EffectFeasibility(true, null);
     }
 
@@ -61,4 +68,8 @@ public interface IRecipe {
      * @return Unique identifier for the implementation
      */
     public String getTypeIdentifier();
+
+    default boolean canApplySpeed() {
+        return true;
+    }
 }

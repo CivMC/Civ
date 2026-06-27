@@ -30,15 +30,14 @@ services:
             REPLACE_ENV_VARIABLES: 'true'
             REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
-            INIT_MEMORY: 2G
-            MAX_MEMORY: 3G
+            INIT_MEMORY: 3G
+            MAX_MEMORY: 4G
             CIV_POSTGRES_HOST: minecraft_postgres
             CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
             CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
             CIV_TIMEOUT_TIME: 30000
             CIV_PVP_HOSTNAME: '{{setting.minecraft.pvp_hostname}}'
-            CIV_GAMMA_HOSTNAME: '{{setting.minecraft.gamma_hostname}}'
             CIV_HOSTNAME: '{{setting.minecraft.hostname}}'
 
             CIV_RABBITMQ_HOST: minecraft_rabbitmq
@@ -101,6 +100,8 @@ services:
 
             CIV_WORLD_GENERATOR: Terra:CIVMC
             CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
+            CIV_HIDDENORE_DENSITY_SEED: '{{ secret.minecraft.zorweth_hiddenore_density_seed }}'
+            CIV_HIDDENORE_HEIGHT_SEED: '{{ secret.minecraft.zorweth_hiddenore_height_seed }}'
 
             CIV_MYSQL_HOST: minecraft_mariadb
             CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
@@ -148,6 +149,7 @@ services:
             - /opt/PrivateConfig/paper/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
             - /opt/PrivateConfig/paper/config/Heliodor/config.yml:/config/plugins/Heliodor/config.yml
             - /opt/PrivateConfig/paper/config/CivChat2/banned-words.txt:/config/plugins/CivChat2/banned-words.txt
+            - /opt/PrivateConfig/paper/config/Zorweth/mechanics.yml:/config/plugins/Zorweth/mechanics.yml
 
         deploy:
             placement:
@@ -156,7 +158,7 @@ services:
                 limits:
                     memory: '{{setting.minecraft.resources.memory_limit}}'
 
-    gamma:
+    zorweth:
         image: itzg/minecraft-server:stable-java25
         restart: unless-stopped
         tty: true
@@ -164,15 +166,6 @@ services:
         stop_grace_period: 60m
         networks:
             - minecraft_default
-        ports:
-            - target: 8194
-              published: 8194
-              protocol: tcp
-              mode: host
-            - target: 5003
-              published: 5003
-              protocol: tcp
-              mode: host
         environment:
             TYPE: 'paper'
             VERSION: '1.21.11'
@@ -185,14 +178,14 @@ services:
             REPLACE_ENV_DURING_SYNC: 'TRUE'
             REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
-            INIT_MEMORY: '{{setting.minecraft.resources.gamma_memory}}'
-            MAX_MEMORY: '{{setting.minecraft.resources.gamma_memory}}'
+            INIT_MEMORY: '{{setting.minecraft.resources.zorweth_memory}}'
+            MAX_MEMORY: '{{setting.minecraft.resources.zorweth_memory}}'
             USE_MEOWICE_FLAGS: 'TRUE'
             STOP_DURATION: 3600
 
             CIV_SECUREBOOT_ENABLE: 'true'
             CIV_SERVER_NAME: prod-server
-{% if setting.minecraft.gamma_whitelist %}
+{% if setting.minecraft.zorweth_whitelist %}
             ENABLE_WHITELIST: 'true'
             CIV_WHITELIST: 'true'
 {% else %}
@@ -200,9 +193,7 @@ services:
             CIV_WHITELIST: 'false'
 {% endif %}
 
-            CIV_WORDBANK_SEED: '{{secret.minecraft.gamma_wordbank_seed}}'
-            CIV_HIDDENORE_DENSITY_SEED: '{{ secret.minecraft.gamma_hiddenore_density_seed }}'
-            CIV_HIDDENORE_HEIGHT_SEED: '{{ secret.minecraft.gamma_hiddenore_height_seed }}'
+            CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
 
             CIV_MYSQL_HOST: minecraft_mariadb
             CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
@@ -212,7 +203,7 @@ services:
             CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
             CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
 
-            CIV_DATABASE_PREFIX: 'gamma_'
+            CIV_DATABASE_PREFIX: 'zorweth_'
 
             CIV_RABBITMQ_HOST: minecraft_rabbitmq
             CIV_RABBITMQ_USERNAME: rabbitmq
@@ -224,33 +215,34 @@ services:
             JVM_OPTS: '-agentpath:./libti.so'
         volumes:
             # Persistence
-            - /opt/stacks/minecraft/gamma-data:/data
+            - /opt/stacks/minecraft/zorweth-data:/data
             # Config & Plugins
-            - /opt/stacks/minecraft/gamma-config:/config
-            - /opt/stacks/minecraft/gamma-plugins:/plugins
+            - /opt/stacks/minecraft/zorweth-config:/config
+            - /opt/stacks/minecraft/zorweth-plugins:/plugins
             # Private Config & Plugins
-            - /opt/PrivateConfig/gamma/config/RealisticBiomes/config.yml:/config/plugins/RealisticBiomes/config.yml
-            - /opt/PrivateConfig/gamma/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
-            - /opt/PrivateConfig/gamma/config/Heliodor/config.yml:/config/plugins/Heliodor/config.yml
-            - /opt/PrivateConfig/gamma/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
             - /opt/PrivateConfig/paper/plugins/Vulcan.jar:/config/plugins/Vulcan.jar
             - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
-            - /opt/PrivateConfig/gamma/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
-            - /opt/PrivateConfig/gamma/config/BreweryX/cauldron.yml:/config/plugins/BreweryX/cauldron.yml
-            - /opt/PrivateConfig/gamma/config/BreweryX/custom-items.yml:/config/plugins/BreweryX/custom-items.yml
-            - /opt/PrivateConfig/gamma/config/BreweryX/recipes.yml:/config/plugins/BreweryX/recipes.yml
             - /opt/PrivateConfig/paper/config/CivChat2/banned-words.txt:/config/plugins/CivChat2/banned-words.txt
             - /opt/PrivateConfig/paper/config/EvenMoreFish/baits:/config/plugins/EvenMoreFish/baits
             - /opt/PrivateConfig/paper/config/EvenMoreFish/rods:/config/plugins/EvenMoreFish/rods
             - /opt/PrivateConfig/paper/config/EvenMoreFish/rarities:/config/plugins/EvenMoreFish/rarities
             - /opt/PrivateConfig/paper/config/EvenMoreFish/competitions:/config/plugins/EvenMoreFish/competitions
             - /opt/PrivateConfig/paper/config/EvenMoreFish/config.yml:/config/plugins/EvenMoreFish/config.yml
+            - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
+            - /opt/PrivateConfig/paper/config/BreweryX/cauldron.yml:/config/plugins/BreweryX/cauldron.yml
+            - /opt/PrivateConfig/paper/config/BreweryX/custom-items.yml:/config/plugins/BreweryX/custom-items.yml
+            - /opt/PrivateConfig/paper/config/BreweryX/recipes.yml:/config/plugins/BreweryX/recipes.yml
+            - /opt/PrivateConfig/zorweth/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
+            - /opt/PrivateConfig/zorweth/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
+            - /opt/PrivateConfig/zorweth/config/Zorweth/mechanics.yml:/config/plugins/Zorweth/mechanics.yml
+            - /opt/PrivateConfig/zorweth/config/Heliodor/config.yml:/config/plugins/Heliodor/config.yml
+            - /opt/PrivateConfig/zorweth/config/KiraBukkitGateway/config.yml:/config/plugins/KiraBukkitGateway/config.yml
         deploy:
             placement:
                 constraints: [node.role == manager]
             resources:
                 limits:
-                    memory: '{{setting.minecraft.resources.gamma_memory_limit}}'
+                    memory: '{{setting.minecraft.resources.zorweth_memory_limit}}'
 
     pvp:
         image: itzg/minecraft-server:stable-java25
@@ -348,7 +340,7 @@ services:
     mariadb:
         image: mariadb:10.7.1
         restart: unless-stopped
-        command: --max-connections 1000 --max-allowed-packet 1073741824
+        command: --max-connections 1500 --max-allowed-packet 1073741824
         networks:
             - monitoring
             - minecraft_default
@@ -365,7 +357,7 @@ services:
     postgres:
         image: timescale/timescaledb:2.10.3-pg14
         restart: unless-stopped
-        command: postgres -c 'max_connections=500'
+        command: postgres -c 'max_connections=1500'
         networks:
             - monitoring
             - minecraft_default

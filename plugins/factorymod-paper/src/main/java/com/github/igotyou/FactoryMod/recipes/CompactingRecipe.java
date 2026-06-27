@@ -147,7 +147,7 @@ public class CompactingRecipe extends InputRecipe {
      */
     private void compact(ItemStack is, Inventory inputInv, Inventory outputInv) {
         ItemStack copy = is.clone();
-        copy.setAmount(getCompactStackSize(copy.getType()));
+        copy.setAmount(getCompactStackSize(copy));
         ItemMap toRemove = new ItemMap(copy);
         if (toRemove.removeSafelyFrom(inputInv)) {
             compactStack(copy);
@@ -163,11 +163,11 @@ public class CompactingRecipe extends InputRecipe {
         is.setAmount(1);
     }
 
-    public static int getCompactStackSize(Material m) {
+    public static int getCompactStackSize(ItemStack m) {
         switch (m.getMaxStackSize()) {
             case 64:
                 return 64;
-            case 16:
+            case 16, 2:
                 return 16;
             case 1:
                 return 8;
@@ -192,7 +192,7 @@ public class CompactingRecipe extends InputRecipe {
         if (Tag.ITEMS_BUNDLES.isTagged(is.getType())) {
             return false;
         }
-        return im.getAmount(is) >= getCompactStackSize(is.getType());
+        return im.getAmount(is) >= getCompactStackSize(is);
     }
 
     @Override

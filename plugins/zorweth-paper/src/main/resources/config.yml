@@ -1,0 +1,42 @@
+server-name: zorweth
+destination-server: zorweth
+source-world: world
+destination-world: world
+transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
+pioneer-end-timestamp: 0
+
+world-radius: 10000
+delta-v-meters-per-second: 10000
+
+research:
+  enabled: false
+  disable-progress-until: 0
+  phase-one-runs: 100
+  phase-two-runs: 200
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  user: root
+  password: root
+  host: localhost
+  port: 3306
+  driver: mariadb
+  database: database
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+flight_computer_reinforcement:
+  ==: org.bukkit.inventory.ItemStack
+  v: 3839
+  type: DIAMOND
+
+mechanics:
+  enabled: false
+  world: world
+
+oxygen:
+  enabled: false
+  tank_break_chance: 0.05
+  offline_consumption_seconds: 300

@@ -1,0 +1,56 @@
+server-name: zorweth
+destination-server: main
+destination-world: world
+transfer-failure-message: Unable to complete rocket transfer. Please reconnect and try again.
+source-world: world
+
+world-radius: 6850
+rocket-centre-x: 0
+rocket-centre-z: -20000
+delta-v-meters-per-second: 6000
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  hostname: ${CIV_MYSQL_HOST}
+  dbname: zorweth
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  poolsize: 10
+  port: 3306
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+mechanics:
+  enabled: true
+  world: world
+
+research:
+  enabled: false
+  disable-progress-until: 0
+
+gravity: 0.04
+
+oxygen:
+  enabled: true
+  world: world
+  consumption_per_second: 0.006
+  tank_break_chance: 0.1
+  offline_consumption_seconds: 300
+  biomes:
+    "minecraft:pale_garden": 0.5
+    "minecraft:stony_peaks": 0.75
+    "minecraft:frozen_peaks": 0.75
+    "minecraft:end_highlands": 1
+    "minecraft:end_midlands": 3
+    "minecraft:end_barrens": 4
+    "minecraft:basalt_deltas": 8
+  activities:
+    idle: 0.1
+    walking: 0.5
+    sprinting: 2
+    swimming: 2
+    regenerating: 2.5
+    boating: 3
+    mining: 4
+    combat: 5

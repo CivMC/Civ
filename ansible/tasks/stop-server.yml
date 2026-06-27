@@ -13,13 +13,13 @@
     - setting.minecraft.enabled
   command: docker service scale minecraft_paper=0
 
-- name: Stop Server | Stop Gamma
+- name: Stop Server | Stop Zorweth
   when:
     - "'swarm_manager' in group_names"
-    - "'gamma' in servers"
+    - "'zorweth' in servers"
     - setting.minecraft.enabled
   ignore_errors: true
-  command: docker service scale minecraft_gamma=0
+  command: docker service scale minecraft_zorweth=0
 
 - name: Stop Server | Stop PvP
   when:

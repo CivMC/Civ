@@ -1,0 +1,10 @@
+PhantomSpawn:
+  Type: Vulture
+  Worlds: world
+  Action: ADD
+  Chance: 0.005
+  Priority: 9
+  Biomes: END_HIGHLANDS, END_MIDLANDS, END_BARRENS
+  Conditions:
+    - outside
+    - mobsinradius{t=Vulture;a=<3;r=64} true

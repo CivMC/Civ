@@ -115,7 +115,6 @@ hacks:
     intervalTime: 5m
     announcements:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/zp63BaX3Uf","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Stuck in queue? Type /server mini to go to CivMC Mini (and you''ll remain in the queue!)","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the ranked PvP queue with /ranked!","color":"green"}]'
 
   ElytraFeatures:
@@ -228,6 +227,8 @@ hacks:
     # Determines the maximum light level at the spawning entity's location that phantoms are allowed to spawn at.
     # Note: 15 will enable spawning at all light levels.
     maximumLightSpawn: 7
+    # Biomes where natural phantom spawns bypass this hack's spawn restrictions. Use Bukkit biome names.
+    biomeWhitelist: []
   PlayerRevive:
     enabled: true
   PlayerStatistics:

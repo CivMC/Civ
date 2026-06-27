@@ -164,7 +164,7 @@ public class TreeGrower extends AgeableGrower {
         }
         Block block = plant.getLocation().getBlock();
         // Re-Read the block data to make sure it is up to date
-        if (!(block.getBlockData() instanceof Sapling)) {
+        if (!(block.getBlockData() instanceof Sapling) && block.getType() != Material.CHORUS_FLOWER) {
             return true;
         }
         Material mat = block.getType();

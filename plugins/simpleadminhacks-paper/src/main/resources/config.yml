@@ -202,6 +202,8 @@ hacks:
     stormSpawn: true
     # Determines what the maximum light level is that phantoms can spawn to.
     maximumLightSpawn: 7
+    # Biomes where natural phantom spawns bypass this hack's spawn restrictions. Use Bukkit biome names.
+    biomeWhitelist: []
   PlayerRevive:
     enabled: true
   PlayerStatistics:
@@ -557,6 +559,9 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
+  WitherSkeletonCoalHack:
+    enabled: true
+    coalDropChance: 0.2
   NoOozing:
     enabled: true
   PortalConnect:

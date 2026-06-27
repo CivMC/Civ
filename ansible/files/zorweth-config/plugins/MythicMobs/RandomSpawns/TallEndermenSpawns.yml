@@ -1,0 +1,7 @@
+TallEnderman:
+  Type: TallEnderman
+  Action: REPLACE
+  Chance: 0.1
+  Priority: 10
+  Worlds: world
+  Mobs: ENDERMAN
