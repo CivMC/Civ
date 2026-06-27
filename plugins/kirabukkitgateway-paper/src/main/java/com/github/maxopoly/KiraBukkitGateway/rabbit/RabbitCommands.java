@@ -5,10 +5,16 @@ import com.github.maxopoly.KiraBukkitGateway.listener.SnitchHitType;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.util.Collection;
 import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.UnsafeValues;
 import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+
 
 public class RabbitCommands {
 
@@ -125,6 +131,84 @@ public class RabbitCommands {
         sendInternal("sendsnitchhit", json);
     }
 
+    /*
+    private JsonObject itemStackJson(ItemStack item) {
+        JsonObject json = new JsonObject();
+        json.addProperty("amount", item.getAmount());
+        json.addProperty("item", ChatUtils.stringify(Component.translatable(item)));
+        JsonArray enchantmentsFull = new JsonArray();
+        JsonArray enchantmentsAbbreviated = new JsonArray();
+        Map<Enchantment, Integer> enchantmentsAndLevels = item.getEnchantments();
+        for (Enchantment enchantment : enchantmentsAndLevels.keySet()) {
+            String enchantmentFullString = ChatUtils.stringify(Component.translatable(enchantment));
+            String enchantmentAbbreviatedString = EnchantUtils.getEnchantAbbreviation(enchantment);
+            Integer level = enchantmentsAndLevels.get(enchantment);
+            if (enchantment.getStartLevel() == enchantment.getMaxLevel())
+                level = null;
+            enchantmentFullString += " " + level;
+            enchantmentAbbreviatedString += " " + level;
+            enchantmentsFull.add(enchantmentFullString);
+            enchantmentsAbbreviated.add(enchantmentAbbreviatedString);
+        }
+        json.add("enchantments", enchantmentsFull);
+        json.add("enchantmentsAbbreviated", enchantmentsAbbreviated);
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null)
+            return json;
+        if (itemMeta.hasItemName())
+            json.addProperty("displayName", itemMeta.getItemName());
+        if (itemMeta.hasLore()) {
+            JsonArray loreList = new JsonArray();
+            List<String> lores = itemMeta.getLore();
+            for (String lore : lores) {
+                loreList.add(lore);
+            }
+            json.add("lore", loreList);
+        }
+        return json;
+    }
+    */
+
+    public JsonObject serializeItemToJson(ItemStack itemStack) {
+        if (itemStack == null || itemStack.getType().isAir()) {
+            return null;
+        }
+        UnsafeValues unsafeValues = Bukkit.getUnsafe();
+        return unsafeValues.serializeItemAsJson(itemStack);
+    }
+
+    public void sendSuccessfulPurchase(String groupName, Player purchaser, Location location, 
+            String tradeName, ItemStack[] input, ItemStack[] output) {
+        nonNullArgs(groupName, purchaser, location);
+        if (tradeName == null) {
+            tradeName = "";
+        }
+        JsonObject json = new JsonObject();
+        json.addProperty("purchaserUUID", purchaser.getUniqueId().toString());
+        json.addProperty("purchaserName", purchaser.getName());
+        json.addProperty("world", location.getWorld().getName());
+        json.addProperty("x", location.getBlockX());
+        json.addProperty("y", location.getBlockY());
+        json.addProperty("z", location.getBlockZ());
+        json.addProperty("groupName", groupName);
+        json.addProperty("trade", tradeName);
+        JsonArray inputArray = new JsonArray();
+        for (ItemStack in : input) {
+            JsonObject jsonIn = serializeItemToJson(in);
+            if (jsonIn != null)
+                inputArray.add(jsonIn);
+        }
+        json.add("input", inputArray);
+        JsonArray outputArray = new JsonArray();
+        for (ItemStack out : output) {
+            JsonObject jsonOut = serializeItemToJson(out);
+            if (jsonOut != null)
+                outputArray.add(jsonOut);
+        }
+        json.add("output", outputArray);
+        sendInternal("sendsuccessfulpurchase", json);
+    }
+
     private void sendInternal(String id, JsonObject json) {
         json.addProperty("timestamp", System.currentTimeMillis());
         json.addProperty("packettype", id);
@@ -141,5 +225,4 @@ public class RabbitCommands {
             }
         }
     }
-
 }
