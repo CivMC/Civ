@@ -107,9 +107,9 @@ After finding and extracting oil, construct a "Space Chemistry Factory" using th
 
 | Construction cost                                            | List: |
 | ------------------------------------------------------------ | ----- |
-| ![SpaceChemistry](media/SpaceChemistry.png) | <li>512 Bottles</li><li>128 Paper</li><li>128 Glowstone</li><li>32 Windcharge</li><li>32 Player Essence</li><li>16 Ink sac</li><li>16 brewing stand</li> |
+| ![SpaceChemistry](media/SpaceChemistry.png) | <li>512 Bottles</li><li>128 Paper</li><li>128 Glowstone</li><li>32 Windcharge</li><li>64 Player Essence</li><li>16 Ink sac</li><li>16 brewing stand</li> |
 
-Then run the "Refine Crude Oil" recipe using 64 crude oil and 128 glowstone. This outputs 8 rocket fuel (64 kg). 
+Then run the "Refine Crude Oil" recipe using 64 crude oil and 128 glowstone. This outputs 8 rocket fuel (32 kg). 
 
 ## Research
 Before travel between Zorweth and Main via rocket is unlocked, 2 research projects have to be completed in sequence on Main.
