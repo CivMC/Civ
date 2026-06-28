@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ActivityManager implements Listener {
 
-    private static final long ACTIVITY_DURATION_MS = 10_000;
+    private static final long ACTIVITY_DURATION_MS = 8_000;
 
     // last time activity was detected
     private final Map<Player, Map<Activity, Long>> activities = new HashMap<>();
