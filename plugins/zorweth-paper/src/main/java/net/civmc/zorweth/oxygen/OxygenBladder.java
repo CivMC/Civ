@@ -66,7 +66,7 @@ public final class OxygenBladder {
         meta.itemName(Component.text("Oxygen Rebreather", TextColor.color(140, 163, 177)));
         meta.lore(List.of(
             Component.text("An efficient apparatus for recycling oxygen.", NamedTextColor.WHITE),
-            Component.text("Increases max oxygen to 30000", NamedTextColor.WHITE),
+            Component.text("Increases max oxygen to 25000", NamedTextColor.WHITE),
             Component.text("Automatically consumes oxygen items below 1000 oxygen", NamedTextColor.WHITE),
             Component.text("Reduced oxygen consumption while mining and regenerating", NamedTextColor.WHITE),
             Component.text("Place on head to use", NamedTextColor.WHITE)
@@ -88,7 +88,7 @@ public final class OxygenBladder {
         meta.itemName(Component.text("Oxygen Suit", TextColor.color(140, 163, 177)));
         meta.lore(List.of(
             Component.text("An efficient apparatus for recycling oxygen.", NamedTextColor.WHITE),
-            Component.text("Increases max oxygen to 85000", NamedTextColor.WHITE),
+            Component.text("Increases max oxygen to 75000", NamedTextColor.WHITE),
             Component.text("Automatically consumes oxygen items below 1000 oxygen", NamedTextColor.WHITE),
             Component.text("Reduced oxygen consumption while in combat, mining, or regenerating", NamedTextColor.WHITE),
             Component.text("Place on head to use", NamedTextColor.WHITE)
@@ -105,8 +105,8 @@ public final class OxygenBladder {
 
     static {
         BLADDER_MAX.put(SMALL_OXYGEN_BLADDER, 4D);
-        BLADDER_MAX.put(OXYGEN_REBREATHER, 30D);
-        BLADDER_MAX.put(OXYGEN_SUIT, 85D);
+        BLADDER_MAX.put(OXYGEN_REBREATHER, 25D);
+        BLADDER_MAX.put(OXYGEN_SUIT, 75D);
     }
 
     public static boolean supportsActivity(ItemStack bladder, ActivityManager.Activity activity) {
