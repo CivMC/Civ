@@ -81,9 +81,6 @@ try = []
 
 [forced-hosts]
 # Configure your forced hosts here.
-"${CIV_HOSTNAME}" = [
-    "main"
-]
 "${CIV_PVP_HOSTNAME}" = [
     "pvp"
 ]
