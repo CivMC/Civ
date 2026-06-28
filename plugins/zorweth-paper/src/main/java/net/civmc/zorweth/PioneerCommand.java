@@ -191,6 +191,8 @@ public final class PioneerCommand implements CommandExecutor {
                 Component.text("YOU WILL BE UNABLE TO RETURN,", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("AND YOUR INVENTORY WILL BE WIPED.", NamedTextColor.RED)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("THIS IS NOT A NEWFRIEND FRIENDLY ENVIRONMENT.", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
@@ -208,6 +210,8 @@ public final class PioneerCommand implements CommandExecutor {
                 Component.text("YOU WILL BE UNABLE TO RETURN,", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.text("AND YOUR INVENTORY WILL BE WIPED.", NamedTextColor.RED)
+                    .decoration(TextDecoration.ITALIC, false),
+                Component.text("THIS IS NOT A NEWFRIEND FRIENDLY ENVIRONMENT.", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false)
             ));
         });
