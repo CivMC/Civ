@@ -15,7 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 /**
  * Allows the storage and comparison of item stacks while ignoring their maximum possible stack sizes. This offers
@@ -36,7 +35,6 @@ import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 public class ItemMap {
 
     private final Object2IntMap<ItemStack> items;
-    private final Object2IntOpenHashMap<String> customItems;
 	private int totalItems;
 
     /**
@@ -45,8 +43,6 @@ public class ItemMap {
     public ItemMap() {
         this.items = new Object2IntOpenHashMap<>(0);
         this.items.defaultReturnValue(0);
-        this.customItems = new Object2IntOpenHashMap<>();
-        this.customItems.defaultReturnValue(0);
         this.totalItems = 0;
     }
 
@@ -58,8 +54,6 @@ public class ItemMap {
     public ItemMap(final ItemStack item) {
         this.items = new Object2IntOpenHashMap<>(1);
         this.items.defaultReturnValue(0);
-        this.customItems = new Object2IntOpenHashMap<>();
-        this.customItems.defaultReturnValue(0);
         this.totalItems = 0;
         addItemStack(item);
     }
@@ -72,8 +66,6 @@ public class ItemMap {
     public ItemMap(final Collection<ItemStack> stacks) {
         this.items = new Object2IntOpenHashMap<>(stacks.size());
         this.items.defaultReturnValue(0);
-        this.customItems = new Object2IntOpenHashMap<>();
-        this.customItems.defaultReturnValue(0);
         addAll(stacks);
     }
 
@@ -86,8 +78,6 @@ public class ItemMap {
     public ItemMap(final Inventory inventory) {
         this.items = new Object2IntOpenHashMap<>(inventory.getSize());
         this.items.defaultReturnValue(0);
-        this.customItems = new Object2IntOpenHashMap<>();
-        this.customItems.defaultReturnValue(0);
         this.totalItems = 0;
         update(inventory);
     }
@@ -106,15 +96,10 @@ public class ItemMap {
 	public void addItemStack(final ItemStack input) {
 		if (!ItemUtils.isValidItemIgnoringAmount(input)) {
 			return;
-		}
+        }
         BiFunction<Object, Integer, Integer> addFn = (key, amount) ->
             amount == null ? input.getAmount() : amount + input.getAmount();
-        String customItemKey = CustomItem.getCustomItemKey(input);
-        if (customItemKey != null) {
-            this.customItems.computeInt(customItemKey, addFn);
-        } else {
-            this.items.computeInt(INTERNAL_createKey(input), addFn);
-        }
+        this.items.computeInt(INTERNAL_createKey(input), addFn);
 		this.totalItems += input.getAmount();
 	}
 
@@ -145,12 +130,7 @@ public class ItemMap {
             return;
         }
         BiFunction<Object, Integer, Integer> subFun = (_key, amount) -> (amount -= input.getAmount()) <= 0 ? null : amount;
-        String customItemKey = CustomItem.getCustomItemKey(input);
-        if (customItemKey != null) {
-            this.customItems.computeIntIfPresent(customItemKey, subFun);
-        } else {
-            this.items.computeIntIfPresent(key, subFun);
-        }
+        this.items.computeIntIfPresent(key, subFun);
     }
 
     /**
@@ -167,7 +147,7 @@ public class ItemMap {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.items.hashCode(), this.customItems.hashCode());
+        return Objects.hash(this.items.hashCode());
     }
 
     /**
@@ -192,14 +172,10 @@ public class ItemMap {
         for (Entry<ItemStack, Integer> entry : im.items.object2IntEntrySet()) {
             addItemAmount(entry.getKey(), entry.getValue());
         }
-        for (Entry<String, Integer> entry : im.customItems.object2IntEntrySet()) {
-            addItemAmount(CustomItem.getCustomItem(entry.getKey()), entry.getValue());
-        }
     }
 
     public void update(final Inventory inventory) {
         this.items.clear();
-        this.customItems.clear();
         this.totalItems = 0;
         for (int i = 0; i < inventory.getSize(); i++) {
             final ItemStack item = inventory.getItem(i);
@@ -239,12 +215,6 @@ public class ItemMap {
                 result.addItemAmount(is.clone(), items.get(is));
             }
         }
-        for (String is : customItems.keySet()) {
-            ItemStack item = CustomItem.getCustomItem(is);
-            if (item != null && item.getType() == m) {
-                result.addItemAmount(item, customItems.get(is));
-            }
-        }
         return result;
     }
 
@@ -269,11 +239,6 @@ public class ItemMap {
                 amount += entry.getValue();
             }
         }
-        for (Entry<String, Integer> entry : matSubMap.customItems.object2IntEntrySet()) {
-            if (entry.getKey().equals(CustomItem.getCustomItemKey(is))) {
-                amount += entry.getValue();
-            }
-        }
         return amount;
     }
 
@@ -288,23 +253,15 @@ public class ItemMap {
      * @return How many unique items are stored in this map
      */
     public int getTotalUniqueItemAmount() {
-        return items.keySet().size() + customItems.keySet().size();
+        return items.keySet().size();
     }
 
     public Map<ItemStack, Integer> getAllItems() {
-        Object2IntOpenHashMap<ItemStack> map = new Object2IntOpenHashMap<>(this.items);
-        for (Object2IntMap.Entry<String> entry : this.customItems.object2IntEntrySet()) {
-            map.put(CustomItem.getCustomItem(entry.getKey()), entry.getIntValue());
-        }
-        return map;
+        return new Object2IntOpenHashMap<>(this.items);
     }
 
     public Object2IntMap<ItemStack> getItems() {
         return items;
-    }
-
-    public Object2IntOpenHashMap<String> getCustomItems() {
-        return customItems;
     }
 
     /**
@@ -385,10 +342,6 @@ public class ItemMap {
         totalItems = 0;
         for (Entry<ItemStack, Integer> entry : this.items.object2IntEntrySet()) {
             items.put(entry.getKey(), (int) (entry.getValue() * multiplier));
-            totalItems += (int) (entry.getValue() * multiplier);
-        }
-        for (Entry<String, Integer> entry : this.customItems.object2IntEntrySet()) {
-            customItems.put(entry.getKey(), (int) (entry.getValue() * multiplier));
             totalItems += (int) (entry.getValue() * multiplier);
         }
     }
@@ -543,7 +496,7 @@ public class ItemMap {
 	public boolean equals(Object o) {
 		if (o instanceof ItemMap im) {
 			if (im.getTotalItemAmount() == getTotalItemAmount()) {
-				return im.items.equals(items) && im.customItems.equals(customItems);
+				return im.items.equals(items);
 			}
 		}
 		return false;

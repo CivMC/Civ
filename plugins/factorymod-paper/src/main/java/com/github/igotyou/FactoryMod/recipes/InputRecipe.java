@@ -218,33 +218,28 @@ public abstract class InputRecipe implements IRecipe {
 
     protected List<String> formatLore(ItemMap ingredients) {
         List<String> result = new ArrayList<>();
-        for (Entry<ItemStack, Integer> entry : ingredients.getItems().entrySet()) {
+        for (Entry<ItemStack, Integer> entry : ingredients.getAllItems().entrySet()) {
             if (entry.getValue() > 0) {
-                if (!entry.getKey().hasItemMeta()) {
-                    result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
-                } else {
-                    String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(entry.getKey()));
-                    if (entry.getKey().getItemMeta().hasDisplayName()) {
-                        lore += String.format("%s [%s%1$s]", ChatColor.DARK_AQUA, StringUtils.abbreviate(entry.getKey().getItemMeta().getDisplayName(), 20));
+                ItemStack item = entry.getKey();
+                String customItemKey = CustomItem.getCustomItemKey(item);
+                if (customItemKey != null) {
+                    ItemStack customItem = CustomItem.getCustomItem(customItemKey);
+                    if (customItem != null && customItem.hasItemMeta() && customItem.getItemMeta().hasDisplayName()) {
+                        result.add(String.format("%s %s", entry.getValue(),
+                            StringUtils.abbreviate(customItem.getItemMeta().getDisplayName(), 35)));
+                    } else if (customItem != null && customItem.hasItemMeta() && customItem.getItemMeta().hasItemName()) {
+                        result.add(String.format("%s %s", entry.getValue(),
+                            StringUtils.abbreviate(customItem.getItemMeta().getItemName(), 35)));
+                    } else {
+                        result.add(String.format("%s %s", entry.getValue(), customItemKey));
                     }
-                    result.add(lore);
-                }
-            }
-        }
-        // Custom items should have their custom name displayed more prominently, their actual item type is irrelevant
-        for (Entry<String, Integer> entry : ingredients.getCustomItems().entrySet()) {
-            if (entry.getValue() > 0) {
-                ItemStack item = CustomItem.getCustomItem(entry.getKey());
-                if (!item.hasItemMeta()) {
+                } else if (!item.hasItemMeta()) {
                     result.add(entry.getValue() + " " + ItemUtils.getItemName(item));
                 } else {
-                    String lore;
+                    String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(item));
                     if (item.getItemMeta().hasDisplayName()) {
-                        lore = String.format("%s %s", entry.getValue(), StringUtils.abbreviate(item.getItemMeta().getDisplayName(), 35));
-                    } else if (item.getItemMeta().hasItemName()) {
-                        lore = String.format("%s %s", entry.getValue(), StringUtils.abbreviate(item.getItemMeta().getItemName(), 35));
-                    } else {
-                        lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(item));
+                        lore += String.format("%s [%s%1$s]", ChatColor.DARK_AQUA,
+                            StringUtils.abbreviate(item.getItemMeta().getDisplayName(), 20));
                     }
                     result.add(lore);
                 }
