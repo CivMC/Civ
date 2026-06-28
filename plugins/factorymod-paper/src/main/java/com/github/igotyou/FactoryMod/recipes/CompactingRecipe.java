@@ -3,8 +3,8 @@ package com.github.igotyou.FactoryMod.recipes;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
@@ -161,7 +161,7 @@ public class CompactingRecipe extends InputRecipe {
      */
     private void compactStack(ItemStack is) {
         is.editMeta(meta -> {
-            List<Component> lore = meta.hasLore() ? Collections.emptyList() : meta.lore();
+            List<Component> lore = meta.hasLore() ? new ArrayList<>() : meta.lore();
             lore.add(Component.empty().append(Component.text(compactedLore)));
             meta.lore(lore);
         });
