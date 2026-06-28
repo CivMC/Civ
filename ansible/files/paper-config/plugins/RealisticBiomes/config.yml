@@ -589,7 +589,7 @@ plants:
       meadows: 0.5
 
   PALE_OAK_SAPLING:
-    persistent_growth_period: 12h
+    persistent_growth_period: 6h
     name: Pale Oak Tree
     grower:
       type: tree
@@ -604,9 +604,6 @@ plants:
     greenhouse_rates:
       GLOWSTONE: 0.5
     biomes:
-      cold_taiga: 1.0
-      tundra: 1.5
-      cold_mountain: 0.25
       pale_garden: 2.0
 
   CHERRY_SAPLING:

@@ -11734,6 +11734,27 @@ recipes:
           lore:
             - A bundle of Zorweth Resources
             - Used in the elite cauldron
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 512
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
     output:
       exp:
         v: 3839
@@ -11903,12 +11924,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPIDER_EYE
-        amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
+        amount: 32
       gunpowder:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -11929,6 +11945,11 @@ recipes:
           ==: ItemMeta
           lore:
             - Compacted Item
+      wind_charge:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WIND_CHARGE
+        amount: 1
     output:
       mob bundle:
         v: 3839
@@ -12167,7 +12188,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_SAPLING
-        amount: 2
+        amount: 4
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
