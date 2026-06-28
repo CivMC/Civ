@@ -171,9 +171,6 @@ public class DecompactingRecipe extends InputRecipe {
 
     private void removeCompactLore(ItemStack is) {
         is.editMeta(meta -> {
-            if (!meta.hasLore()) {
-                return;
-            }
             List<Component> lore = meta.lore();
             lore.remove(Component.empty().append(Component.text(compactedLore)));
             meta.lore(lore);
