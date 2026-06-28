@@ -21,7 +21,7 @@ public class ArmourRepairKit {
         final ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Armour Repair Kit", TextColor.color(153, 39, 84)));
         meta.lore(List.of(
-            Component.text("Repairs +20% / +15% / +10% / +5%", NamedTextColor.WHITE),
+            Component.text("Repairs +100 / +75 / +50 / +25 durability", NamedTextColor.WHITE),
             Component.text("Less effective each time.", NamedTextColor.WHITE),
             Component.text("Craft with any piece of armour. One time use.", NamedTextColor.WHITE)
         ));

@@ -18,7 +18,7 @@ import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public final class ArmourRepairKitListener implements Listener {
 
-    private static final double[] REPAIR_PERCENTAGES = {0.20D, 0.15D, 0.10D, 0.05D};
+    private static final int[] REPAIR_AMOUNTS = {100, 75, 50, 25};
 
     private final NamespacedKey repairKitUsesKey;
 
@@ -62,7 +62,7 @@ public final class ArmourRepairKitListener implements Listener {
         result.editMeta(Damageable.class, meta -> {
             final PersistentDataContainer container = meta.getPersistentDataContainer();
             final int uses = container.getOrDefault(this.repairKitUsesKey, PersistentDataType.INTEGER, 0);
-            final int repairAmount = (int) Math.ceil(result.getType().getMaxDurability() * REPAIR_PERCENTAGES[uses]);
+            final int repairAmount = REPAIR_AMOUNTS[uses];
             meta.setDamage(Math.max(0, meta.getDamage() - repairAmount));
             container.set(this.repairKitUsesKey, PersistentDataType.INTEGER, uses + 1);
         });
@@ -78,7 +78,7 @@ public final class ArmourRepairKitListener implements Listener {
             return false;
         }
         final PersistentDataContainer container = meta.getPersistentDataContainer();
-        return container.getOrDefault(this.repairKitUsesKey, PersistentDataType.INTEGER, 0) < REPAIR_PERCENTAGES.length;
+        return container.getOrDefault(this.repairKitUsesKey, PersistentDataType.INTEGER, 0) < REPAIR_AMOUNTS.length;
     }
 
     private boolean isArmour(final Material material) {
