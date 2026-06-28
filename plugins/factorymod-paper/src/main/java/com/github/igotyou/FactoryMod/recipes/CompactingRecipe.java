@@ -160,9 +160,6 @@ public class CompactingRecipe extends InputRecipe {
      */
     private void compactStack(ItemStack is) {
         is.editMeta(meta -> {
-            if (!meta.hasLore()) {
-                return;
-            }
             List<Component> lore = meta.lore();
             lore.add(Component.empty().append(Component.text(compactedLore)));
             meta.lore(lore);
