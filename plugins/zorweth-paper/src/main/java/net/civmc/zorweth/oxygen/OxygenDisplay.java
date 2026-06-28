@@ -14,7 +14,6 @@ import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
-import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
@@ -34,15 +33,14 @@ public class OxygenDisplay implements Listener {
 
     public OxygenDisplay(ZorwethPlugin plugin, OxygenManager oxygenManager) {
         this.oxygenManager = oxygenManager;
-        MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("Zorweth",
-            "Oxygen & related mechanics.", new ItemStack(Material.GLASS_BOTTLE));
+        MenuSection menu = plugin.getSettingsMenu();
 
         showOxygen = new BooleanSetting(plugin, true, "Show current oxygen level", "showOxygen",
             "Should oxygen be shown?");
-        PlayerSettingAPI.registerSetting(showOxygen, menu);
+        menu.registerSetting(showOxygen);
         oxygenLocation = new DisplayLocationSetting(plugin, DisplayLocationSetting.DisplayLocation.SIDEBAR,
             "Oxygen Location", "oxygenLocation", new ItemStack(Material.ARROW), "oxygen location");
-        PlayerSettingAPI.registerSetting(oxygenLocation, menu);
+        menu.registerSetting(oxygenLocation);
 
         oxygenScoreboard = ScoreBoardAPI.createBoard("ZorwethOxygenDisplay");
         oxygenBottomLine = BottomLineAPI.createBottomLine("ZorwethOxygenDisplay", 5);

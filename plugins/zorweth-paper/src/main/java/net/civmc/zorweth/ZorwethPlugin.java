@@ -26,11 +26,16 @@ import net.civmc.zorweth.oxygen.OxygenTank;
 import net.civmc.zorweth.oxygen.SpaceKelpListener;
 import net.civmc.zorweth.repair.ArmourRepairKit;
 import net.civmc.zorweth.repair.ArmourRepairKitListener;
+import net.civmc.zorweth.research.ResearchDisplay;
 import net.civmc.zorweth.research.ResearchManager;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 
 public final class ZorwethPlugin extends JavaPlugin {
 
@@ -54,9 +59,11 @@ public final class ZorwethPlugin extends JavaPlugin {
     private int researchPhaseOneRuns;
     private int researchPhaseTwoRuns;
     private long researchDisableProgressUntil;
+    private ResearchDisplay researchDisplay;
     private String mechanicsWorld;
     private boolean mechanicsEnabled;
     private OxygenManager oxygenManager;
+    private MenuSection settingsMenu;
 
     private OilMechanics mechanics;
 
@@ -83,6 +90,10 @@ public final class ZorwethPlugin extends JavaPlugin {
         this.crossServerOttManager = new CrossServerOttManager(this);
         this.researchManager = new ResearchManager(this, this.researchEnabled, this.researchPhaseOneRuns,
             this.researchPhaseTwoRuns, this.researchDisableProgressUntil);
+        if (this.researchManager.isEnabled()) {
+            this.researchDisplay = new ResearchDisplay(this, this.researchManager);
+            getServer().getPluginManager().registerEvents(this.researchDisplay, this);
+        }
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new ArmourRepairKitListener(this), this);
@@ -125,6 +136,14 @@ public final class ZorwethPlugin extends JavaPlugin {
         return this.oxygenManager;
     }
 
+    public MenuSection getSettingsMenu() {
+        if (this.settingsMenu == null) {
+            this.settingsMenu = PlayerSettingAPI.getMainMenu().createMenuSection("Zorweth",
+                "Zorweth mechanics and progression.", new ItemStack(Material.GLASS_BOTTLE));
+        }
+        return this.settingsMenu;
+    }
+
     public int recordOilExtraction(final Location location) {
         if (mechanics == null) {
             return 0;
@@ -138,6 +157,10 @@ public final class ZorwethPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (this.researchDisplay != null) {
+            this.researchDisplay.disable();
+            this.researchDisplay = null;
+        }
         if (this.dataSource != null) {
             this.dataSource.close();
             this.dataSource = null;
