@@ -161,7 +161,7 @@ public class CompactingRecipe extends InputRecipe {
      */
     private void compactStack(ItemStack is) {
         is.editMeta(meta -> {
-            List<Component> lore = meta.hasLore() ? new ArrayList<>() : meta.lore();
+            List<Component> lore = !meta.hasLore() ? new ArrayList<>() : meta.lore();
             lore.add(Component.empty().append(Component.text(compactedLore)));
             meta.lore(lore);
         });
