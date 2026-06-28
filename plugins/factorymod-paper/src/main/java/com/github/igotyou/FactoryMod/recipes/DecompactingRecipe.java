@@ -5,11 +5,11 @@ import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
@@ -170,13 +170,14 @@ public class DecompactingRecipe extends InputRecipe {
     }
 
     private void removeCompactLore(ItemStack is) {
-        List<String> lore = is.getItemMeta().getLore();
-        if (lore != null) {
-            lore.remove(compactedLore);
-        }
-        ItemMeta im = is.getItemMeta();
-        im.setLore(lore);
-        is.setItemMeta(im);
+        is.editMeta(meta -> {
+            if (!meta.hasLore()) {
+                return;
+            }
+            List<Component> lore = meta.lore();
+            lore.remove(Component.empty().append(Component.text(compactedLore)));
+            meta.lore(lore);
+        });
     }
 
     @Override

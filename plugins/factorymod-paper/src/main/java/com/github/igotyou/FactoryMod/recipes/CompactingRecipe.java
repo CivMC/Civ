@@ -6,6 +6,7 @@ import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.Inventory;
@@ -13,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /**
  * Used to compact items, which means whole or multiple stacks of an item are reduced to a single lored item, which is stackable to the same stacksize
@@ -159,7 +159,14 @@ public class CompactingRecipe extends InputRecipe {
      * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
      */
     private void compactStack(ItemStack is) {
-        ItemUtils.addLore(is, compactedLore);
+        is.editMeta(meta -> {
+            if (!meta.hasLore()) {
+                return;
+            }
+            List<Component> lore = meta.lore();
+            lore.add(Component.empty().append(Component.text(compactedLore)));
+            meta.lore(lore);
+        });
         is.setAmount(1);
     }
 
