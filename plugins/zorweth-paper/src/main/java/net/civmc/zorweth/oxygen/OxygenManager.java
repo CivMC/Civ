@@ -21,6 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.World;
@@ -328,6 +329,14 @@ public class OxygenManager implements Listener {
 
     public boolean hasOxygen(final Biome biome) {
         return this.biomeMultipliers.getOrDefault(biome, 0D) == 0D;
+    }
+
+    public boolean hasOxygen(final Location location) {
+        final World locationWorld = location.getWorld();
+        return locationWorld != null
+            && locationWorld.getName().equals(this.world)
+            && locationWorld.getEnvironment() != World.Environment.NETHER
+            && hasOxygen(location.getBlock().getBiome());
     }
 
     private void addOxygen(final Player player, final double amount) {

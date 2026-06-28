@@ -18,6 +18,7 @@ import net.civmc.zorweth.flight.FlightComputerGui;
 import net.civmc.zorweth.mechanics.Fuel;
 import net.civmc.zorweth.mechanics.OilMechanics;
 import net.civmc.zorweth.oxygen.ActivityManager;
+import net.civmc.zorweth.oxygen.BreweryOxygenListener;
 import net.civmc.zorweth.oxygen.OxygenBladder;
 import net.civmc.zorweth.oxygen.OxygenCommand;
 import net.civmc.zorweth.oxygen.OxygenDisplay;
@@ -126,6 +127,9 @@ public final class ZorwethPlugin extends JavaPlugin {
 
         this.oxygenManager = OxygenManager.deserialize(this, activityManager, oxygenSection);
         getServer().getPluginManager().registerEvents(this.oxygenManager, this);
+        if (getServer().getPluginManager().isPluginEnabled("BreweryX")) {
+            getServer().getPluginManager().registerEvents(new BreweryOxygenListener(this.oxygenManager), this);
+        }
         getServer().getPluginManager().registerEvents(new SpaceKelpListener(), this);
         getCommand("oxygen").setExecutor(new OxygenCommand(this.oxygenManager));
 
