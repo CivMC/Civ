@@ -24,7 +24,7 @@ The following rates apply for each ore smelter factory when a salt catalyst is u
 | Diamond |     16 Ore, 16 Salt     |   52 Diamonds    |   60 Diamonds    |   64 Diamonds    |
 
 ### Aluminium
-Aluminium is a common mineable that spawns as bauxite like any ore through hiddenore, except it is only found outside the habitable zones. Mining consumes a lot of oxygen, making the proper preparations are thus necessary to survive.
+Aluminium is a rare mineable that spawns as bauxite through hiddenore and drops as nuggets from stone types. It is only found outside the habitable zones above a certain Y level. Mining consumes a lot of oxygen, making the proper preparations are thus necessary to survive.
 
 After mining, the bauxite is refined in any of the ore smelter factories for the following rates, where input is bauxite and output is aluminium ingots:
 | Factory              | Input | Output |
