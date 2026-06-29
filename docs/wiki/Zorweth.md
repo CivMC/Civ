@@ -38,7 +38,7 @@ Aluminium is used to:
 * Reinforce blocks for 1000 health. 
 * Create armor repair kits.
 
-Armor repair kits are used to repair any piece of armor. Each one applied repairs 5% less than before, going from 20% to 15% to 10% to 5%. Applying a repair kit requires no XP, making them ideal for quick field repair.
+Armor repair kits are used to repair any piece of armor. Each one applied repairs less than before, going from 100 durability to 75 to 50 to 25. Applying a repair kit requires no XP, making them ideal for quick field repair.
 Armor repair kits are made in the Space Chemistry Factory with 4 Phantom membranes and 8 aluminium ingots. This makes 1 repair kit. 
 
 ### Meteoric Iron
