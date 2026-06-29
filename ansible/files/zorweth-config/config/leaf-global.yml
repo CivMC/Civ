@@ -318,7 +318,7 @@ network:
   # 'secure chat', such as offline-mode servers.
   chat-message-signature: true
   # Async switch connection state.
-  async-switch-state: false
+  async-switch-state: true
 
 ##########
 #  MISC  #
