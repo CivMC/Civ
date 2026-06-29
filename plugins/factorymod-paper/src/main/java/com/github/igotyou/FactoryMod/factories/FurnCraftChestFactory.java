@@ -488,11 +488,6 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
     @Override
     public void run() {
         if (active && mbs.isComplete()) {
-            if (!getFurnace().getChunk().isLoaded()) {
-                sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because the chunk was unloaded");
-                deactivate();
-                return;
-            }
             // if the materials required to produce the current recipe are in
             // the factory inventory
             if (hasInputMaterials()) {
