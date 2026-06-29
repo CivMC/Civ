@@ -4,6 +4,7 @@ echo "$(date) Stopping services for backup..."
 docker service scale minecraft_waterfall=0
 sleep 30s
 docker service scale minecraft_paper=0
+docker service scale minecraft_zorweth=0
 docker service scale minecraft_pvp=0
 sleep 5m
 
@@ -17,6 +18,7 @@ backupname="/opt/backups/compressed/$(date +"%Y_%m_%d_%H")-backup.tar.zstd"
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
 docker service scale minecraft_pvp=1
+docker service scale minecraft_zorweth=1
 docker service scale minecraft_waterfall=1
 
 echo "$(date) Creating achive..."
