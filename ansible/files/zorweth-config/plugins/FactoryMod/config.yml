@@ -1687,9 +1687,11 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
       - adv_xp_1
+      - adv_xp_1_zorweth
       - adv_xp_2
       - adv_xp_3
       - adv_xp_4
+      - adv_xp_4_zorweth
       - wither_skull
       - make_energizer
       - upgrade_to_elite_cauldron
@@ -10908,6 +10910,155 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Compacted Item
+      red_mushroom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RED_MUSHROOM
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      twitsing_vines:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: TWISTING_VINES
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      nether_wart:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: NETHER_WART
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL
+        amount: 3
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      oak_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OAK_SAPLING
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      bone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BONE
+        amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      exp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+  adv_xp_1_zorweth:
+    production_time: 4s
+    name: Make Exp 1 Zorweth
+    type: PRODUCTION
+    input:
+      potato:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: POTATO
+        amount: 256
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      carrot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CARROT
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      melon:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MELON
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      cocoa_beans:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COCOA_BEANS
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      space_kelp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: KELP
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Space Kelp
+          lore:
+            - Kelp from Zorweth
             - Compacted Item
       red_mushroom:
         v: 3839
