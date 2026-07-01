@@ -1690,7 +1690,6 @@ factories:
       - adv_xp_2
       - adv_xp_3
       - adv_xp_4
-      - convert_space_kelp
       - wither_skull
       - make_energizer
       - upgrade_to_elite_cauldron
@@ -11438,34 +11437,6 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: EMERALD_BLOCK
         amount: 2
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-  convert_space_kelp:
-    production_time: 4s
-    name: Convert Space Kelp
-    type: PRODUCTION
-    input:
-      space_kelp:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: KELP
-        amount: 64
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Space Kelp
-          lore:
-            - Kelp from Zorweth
-            - Compacted Item
-    output:
-      kelp:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: KELP
-        amount: 64
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
