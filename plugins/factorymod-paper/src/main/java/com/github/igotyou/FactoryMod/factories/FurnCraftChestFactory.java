@@ -489,7 +489,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
     public void run() {
         if (active && mbs.isComplete()) {
             Block f = getFurnace();
-            if (!f.getWorld().isChunkLoaded(f.getLocation().getBlockX() >> 4, f.getLocation().getBlockZ() >> 4)) {
+            if (currentRecipe.mustBeLoaded() && !f.getWorld().isChunkLoaded(f.getLocation().getBlockX() >> 4, f.getLocation().getBlockZ() >> 4)) {
                 sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because the chunk was unloaded");
                 deactivate();
                 return;

@@ -72,4 +72,8 @@ public interface IRecipe {
     default boolean canApplySpeed() {
         return true;
     }
+
+    default boolean mustBeLoaded() {
+        return false;
+    }
 }

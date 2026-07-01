@@ -82,4 +82,9 @@ public class ExtractOilRecipe extends ProductionRecipe {
     public boolean canApplySpeed() {
         return false;
     }
+
+    @Override
+    public boolean mustBeLoaded() {
+        return true;
+    }
 }
