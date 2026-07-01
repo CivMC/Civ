@@ -11593,6 +11593,155 @@ recipes:
           ==: ItemMeta
           lore:
             - Compacted Item
+  adv_xp_4_zorweth:
+    production_time: 4s
+    name: Make Exp 4 Zorweth
+    type: PRODUCTION
+    input:
+      sugar_cane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SUGAR_CANE
+        amount: 256
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      cactus:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CACTUS
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      wheat:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WHEAT
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      potato:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: POTATO
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      sweet_berries:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SWEET_BERRIES
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      space_kelp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: KELP
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Space Kelp
+          lore:
+            - Kelp from Zorweth
+            - Compacted Item
+      weeping_vines:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEEPING_VINES
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      warped_stem:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WARPED_STEM
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_lazuli:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_LAZULI
+        amount: 3
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      jungle_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: JUNGLE_SAPLING
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      rotten_flesh:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ROTTEN_FLESH
+        amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      exp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
   upgrade_to_advanced_cauldron:
     production_time: 4s
     name: Upgrade to Advanced Cauldron
