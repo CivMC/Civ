@@ -65,12 +65,12 @@ public class ActivityManager implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         recordActivity(event.getPlayer(), Activity.MINING);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on(BlockPlaceEvent event) {
         recordActivity(event.getPlayer(), Activity.MINING);
     }
