@@ -27,6 +27,7 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
     private static ItemExchangeConfig config;
     private static CommandManager commands;
     private static ModifierRegistrar modifiers;
+    private static ItemExchangeListener listener;
 
     private final List<DependencyGlue> glues = List.of(
         new NameLayerGlue(this),
@@ -52,13 +53,15 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
         modifiers.registerModifier(DamageableModifier.TEMPLATE); // 500
         modifiers.registerModifier(RepairModifier.TEMPLATE); // 600
         modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
-        registerListener(new ItemExchangeListener());
+        listener = new ItemExchangeListener();
+        registerListener(listener);
         this.glues.forEach(DependencyGlue::registerGlue);
     }
 
     @Override
     public void onDisable() {
         this.glues.forEach(DependencyGlue::resetGlue);
+        listener = null;
         if (modifiers != null) {
             modifiers.reset();
             modifiers = null;
@@ -81,6 +84,10 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 
     public static ItemExchangeConfig config() {
         return config;
+    }
+
+    public static ItemExchangeListener listener() {
+        return listener;
     }
 
     public static CommandManager commandManager() {
