@@ -13,8 +13,8 @@ public final class SpaceKelp {
     public static ItemStack create(final int amount) {
         final ItemStack item = new ItemStack(Material.KELP, amount);
         item.editMeta(meta -> {
-            meta.displayName(Component.text("Space Kelp"));
-            meta.lore(List.of(Component.text("Kelp from Zorweth")));
+            meta.displayName(Component.empty().append(Component.text("Space Kelp")));
+            meta.lore(List.of(Component.empty().append(Component.text("Kelp from Zorweth"))));
         });
         return item;
     }
