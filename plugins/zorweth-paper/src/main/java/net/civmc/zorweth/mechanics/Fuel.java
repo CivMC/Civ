@@ -13,6 +13,8 @@ import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public class Fuel {
 
+    public static final double CRUDE_OIL_ITEM_MASS_KG = 0.5;
+
     public static void registerCustomItems() {
         createCrudeOil();
         createRocketFuel();
@@ -25,7 +27,8 @@ public class Fuel {
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Crude Oil", TextColor.color(64, 52, 40)));
         meta.lore(List.of(Component.text("It smells pretty noxious.", NamedTextColor.WHITE),
-            Component.text("Can be refined to rocket fuel.", NamedTextColor.WHITE)));
+            Component.text("Can be refined to rocket fuel.", NamedTextColor.WHITE),
+            Component.text("Each item weighs 0.5 kg in rockets.", NamedTextColor.WHITE)));
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         CustomItem.registerCustomItem("crude_oil", item);
@@ -61,5 +64,9 @@ public class Fuel {
 
     public static boolean isRocketFuel(final ItemStack item) {
         return CustomItem.isCustomItem(item, "rocket_fuel");
+    }
+
+    public static boolean isCrudeOil(final ItemStack item) {
+        return CustomItem.isCustomItem(item, "crude_oil");
     }
 }

@@ -16,6 +16,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import net.civmc.zorweth.RocketTransferKeys;
 import net.civmc.zorweth.ZorwethPlugin;
+import net.civmc.zorweth.mechanics.Fuel;
 import net.civmc.zorweth.transfer.RocketBlockPosition;
 import net.civmc.zorweth.transfer.RocketChestTransfer;
 import net.civmc.zorweth.transfer.RocketEntityPosition;
@@ -153,6 +154,8 @@ public class LaunchHandler {
             double itemMass = itemAmount / (double) item.getMaxStackSize();
             if (FlightComputer.isFuel(item)) {
                 itemMass = itemAmount * FUEL_ITEM_MASS_KG;
+            } else if (Fuel.isCrudeOil(item)) {
+                itemMass = itemAmount * Fuel.CRUDE_OIL_ITEM_MASS_KG;
             }
             mass += itemMass;
         }
