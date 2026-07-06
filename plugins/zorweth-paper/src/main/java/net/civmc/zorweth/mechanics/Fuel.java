@@ -27,8 +27,7 @@ public class Fuel {
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Crude Oil", TextColor.color(64, 52, 40)));
         meta.lore(List.of(Component.text("It smells pretty noxious.", NamedTextColor.WHITE),
-            Component.text("Can be refined to rocket fuel.", NamedTextColor.WHITE),
-            Component.text("Each item weighs 0.5 kg in rockets.", NamedTextColor.WHITE)));
+            Component.text("Can be refined to rocket fuel.", NamedTextColor.WHITE)));
         meta.setEnchantmentGlintOverride(true);
         item.setItemMeta(meta);
         CustomItem.registerCustomItem("crude_oil", item);
