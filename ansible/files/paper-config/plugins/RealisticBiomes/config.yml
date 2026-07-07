@@ -624,7 +624,6 @@ plants:
     biomes:
       jungles: 0.25
       forests: 0.6
-      taigas: 0.8
       birch_forests: 0.5
       dark_forest: 0.25
       swamp: 0.25
