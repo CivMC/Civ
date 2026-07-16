@@ -115,13 +115,13 @@ public class StarManager {
             && CivChat2.getInstance().getCivChat2SettingsManager().isShowPatreonPrefix(player.getUniqueId())) {
             rendered.append(ChatColor.GREEN).append(STAR.repeat(greenStars));
         }
-        if (player.hasPermission(MOON_PREFIX_PERMISSION)
-            && CivChat2.getInstance().getCivChat2SettingsManager().isShowCustomPrefixes(player.getUniqueId())) {
-            rendered.append(ChatColor.GOLD).append(MOON);
-        }
         if (!staff && purpleStars > 0
             && CivChat2.getInstance().getCivChat2SettingsManager().isShowPvpStarPrefix(player.getUniqueId())) {
             rendered.append(ChatColor.LIGHT_PURPLE).append(STAR.repeat(purpleStars));
+        }
+        if (player.hasPermission(MOON_PREFIX_PERMISSION)
+            && CivChat2.getInstance().getCivChat2SettingsManager().isShowCustomPrefixes(player.getUniqueId())) {
+            rendered.append(ChatColor.GOLD).append(MOON);
         }
 
         return rendered.toString();
