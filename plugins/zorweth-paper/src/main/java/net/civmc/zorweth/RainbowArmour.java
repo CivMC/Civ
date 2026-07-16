@@ -8,11 +8,13 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
@@ -50,6 +52,8 @@ private RainbowArmour() {
             meta.itemName(MiniMessage.miniMessage().deserialize("<rainbow>" + name));
             meta.setColor(Color.RED);
             meta.setEnchantmentGlintOverride(true);
+            meta.setUnbreakable(true);
+            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "no_combine"), PersistentDataType.BOOLEAN, true);
         });
         CustomItem.registerCustomItem(key, item);
         return item;
