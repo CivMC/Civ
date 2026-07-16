@@ -26,6 +26,8 @@ import net.civmc.zorweth.oxygen.OxygenTank;
 import net.civmc.zorweth.oxygen.SpaceKelpListener;
 import net.civmc.zorweth.repair.ArmourRepairKit;
 import net.civmc.zorweth.repair.ArmourRepairKitListener;
+import net.civmc.zorweth.research.ResearchCommand;
+import net.civmc.zorweth.research.ResearchCurrency;
 import net.civmc.zorweth.research.ResearchDisplay;
 import net.civmc.zorweth.research.ResearchManager;
 import org.bukkit.Location;
@@ -101,6 +103,9 @@ public final class ZorwethPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DestinationTransferListener(this), this);
         getServer().getPluginManager().registerEvents(new CrossServerOttArrivalListener(this, this.crossServerOttManager), this);
         getCommand("pioneer").setExecutor(new PioneerCommand(this));
+        final ResearchCommand researchCommand = new ResearchCommand(this, new ResearchCurrency(this),
+            getConfig().getBoolean("research.shop-enabled", true));
+        getCommand("research").setExecutor(researchCommand);
 
         if (mechanicsEnabled) {
             this.mechanics = new OilMechanics(this, mechanicsWorld);

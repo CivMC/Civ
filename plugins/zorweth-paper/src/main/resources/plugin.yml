@@ -3,7 +3,7 @@ version: 1.0.0
 main: net.civmc.zorweth.ZorwethPlugin
 author: Okx
 api-version: 1.21.11
-depend: [CivModCore, WorldEdit, Citadel, Bastion, NameLayer]
+depend: [CivModCore, WorldEdit, Citadel, Bastion, NameLayer, LuckPerms]
 softdepend: [ExilePearl, BreweryX]
 commands:
   pioneer:
@@ -13,3 +13,6 @@ commands:
     description: View or set your oxygen level
     usage: /oxygen [number]
     permission: zorweth.admin
+  research:
+    description: Deposit research tokens and purchase research rewards
+    usage: /research [deposit]

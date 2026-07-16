@@ -17,6 +17,8 @@ import vg.civcraft.mc.civchat2.CivChat2;
 public class StarManager {
 
     private static final String STAR = "⋆";
+    private static final String MOON = "☾";
+    private static final String MOON_PREFIX_PERMISSION = "civchat.prefix.moon";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("d MMM uuuu");
 
     private final boolean playtimeStars;
@@ -73,15 +75,19 @@ public class StarManager {
             return "";
         }
 
+        final String prefix;
         if (player.hasPermission("civchat.admin")) {
             return ChatColor.DARK_RED + STAR;
         } else if (player.hasPermission("civchat.superfriend")) {
-            return ChatColor.RED + STAR + STAR;
+            prefix = ChatColor.RED + STAR.repeat(2);
         } else if (player.hasPermission("civchat.mod")) {
-            return ChatColor.RED + STAR;
+            prefix = ChatColor.RED + STAR;
+        } else {
+            prefix = "";
         }
 
-        int purpleStars = player.hasPermission("rankedpvpstar") ? 1 : 0;
+        final boolean staff = player.hasPermission("civchat.superfriend") || player.hasPermission("civchat.mod");
+        final int purpleStars = player.hasPermission("rankedpvpstar") ? 1 : 0;
 
         int greenStars = 0;
         if (player.hasPermission("civchat.powerplayer")) {
@@ -94,24 +100,30 @@ public class StarManager {
             greenStars = 1;
         }
 
-        StringBuilder stars = new StringBuilder();
+        final StringBuilder rendered = new StringBuilder(prefix);
 
-        if (playtimeStars) {
+        if (!staff && playtimeStars
+            && CivChat2.getInstance().getCivChat2SettingsManager().isShowStars(player.getUniqueId())) {
             long firstPlayed = getJoined(player);
             int yellowStars = firstPlayed == 0 ? 0 : (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()).until(LocalDateTime.now(), ChronoUnit.YEARS);
             yellowStars = Math.max(0, yellowStars - greenStars - purpleStars);
             if (yellowStars > 0) {
-                stars.append(ChatColor.YELLOW);
-                stars.append(STAR.repeat(yellowStars));
+                rendered.append(ChatColor.YELLOW).append(STAR.repeat(yellowStars));
             }
         }
-        if (greenStars > 0) {
-            stars.append(ChatColor.GREEN).append(STAR.repeat(greenStars));
+        if (!staff && greenStars > 0
+            && CivChat2.getInstance().getCivChat2SettingsManager().isShowPatreonPrefix(player.getUniqueId())) {
+            rendered.append(ChatColor.GREEN).append(STAR.repeat(greenStars));
         }
-        if (purpleStars > 0) {
-            stars.append(ChatColor.LIGHT_PURPLE).append(STAR.repeat(purpleStars));
+        if (player.hasPermission(MOON_PREFIX_PERMISSION)
+            && CivChat2.getInstance().getCivChat2SettingsManager().isShowCustomPrefixes(player.getUniqueId())) {
+            rendered.append(ChatColor.GOLD).append(MOON);
+        }
+        if (!staff && purpleStars > 0
+            && CivChat2.getInstance().getCivChat2SettingsManager().isShowPvpStarPrefix(player.getUniqueId())) {
+            rendered.append(ChatColor.LIGHT_PURPLE).append(STAR.repeat(purpleStars));
         }
 
-        return stars.toString();
+        return rendered.toString();
     }
 }

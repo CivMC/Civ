@@ -24,6 +24,10 @@ public class CivChat2SettingsManager {
     private EnumSetting<KillMessageFormat> killMessageFormat;
     private BooleanSetting showAFKStatus;
     private BooleanSetting showPrefix;
+    private BooleanSetting showStars;
+    private BooleanSetting showCustomPrefixes;
+    private BooleanSetting showPatreonPrefix;
+    private BooleanSetting showPvpStarPrefix;
     private DisplayLocationSetting afkStatusLocation;
     private BooleanSetting showGroupColors;
 
@@ -75,8 +79,20 @@ public class CivChat2SettingsManager {
         PlayerSettingAPI.registerSetting(afkStatusLocation, menu);
 
         showPrefix = new BooleanSetting(CivChat2.getInstance(), true, "Show vanity prefix", "showPrefix",
-            "Should the star prefix be shown?");
+            "Should the vanity prefix be shown?");
         PlayerSettingAPI.registerSetting(showPrefix, menu);
+        showStars = new BooleanSetting(CivChat2.getInstance(), true, "Show playtime stars", "showStars",
+            "Should yellow playtime stars be shown?");
+        PlayerSettingAPI.registerSetting(showStars, menu);
+        showCustomPrefixes = new BooleanSetting(CivChat2.getInstance(), true, "Show custom prefixes",
+            "showCustomPrefixes", "Should purchased prefixes such as moons be shown?");
+        PlayerSettingAPI.registerSetting(showCustomPrefixes, menu);
+        showPatreonPrefix = new BooleanSetting(CivChat2.getInstance(), true, "Show Patreon prefix",
+            "showPatreonPrefix", "Should green Patreon stars be shown?");
+        PlayerSettingAPI.registerSetting(showPatreonPrefix, menu);
+        showPvpStarPrefix = new BooleanSetting(CivChat2.getInstance(), true, "Show PvP star prefix",
+            "showPvpStarPrefix", "Should the ranked PvP star be shown?");
+        PlayerSettingAPI.registerSetting(showPvpStarPrefix, menu);
         showGroupColors = new BooleanSetting(CivChat2.getInstance(), true, "Show group colors in chat", "showGroupColors",
             "Disabling this setting will make all group colors in chat, gray");
         PlayerSettingAPI.registerSetting(showGroupColors, menu);
@@ -122,6 +138,22 @@ public class CivChat2SettingsManager {
 
     public boolean isShowPrefix(UUID uuid) {
         return showPrefix.getValue(uuid);
+    }
+
+    public boolean isShowStars(UUID uuid) {
+        return showStars.getValue(uuid);
+    }
+
+    public boolean isShowCustomPrefixes(UUID uuid) {
+        return showCustomPrefixes.getValue(uuid);
+    }
+
+    public boolean isShowPatreonPrefix(UUID uuid) {
+        return showPatreonPrefix.getValue(uuid);
+    }
+
+    public boolean isShowPvpStarPrefix(UUID uuid) {
+        return showPvpStarPrefix.getValue(uuid);
     }
 
     public boolean showGroupColors(UUID uuid) {
