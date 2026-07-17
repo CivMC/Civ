@@ -31,5 +31,5 @@ research:
   enabled: true
   shop-enabled: true
   disable-progress-until: 0
-  phase-one-runs: 15000
-  phase-two-runs: 10000
+  phase-one-runs: 22500
+  phase-two-runs: 12500
