@@ -33,6 +33,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -298,6 +299,38 @@ public class BlockListener implements Listener {
 
         if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getModifyBlocks())) {
             player.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onCoralDry(BlockFadeEvent event) {
+        Material type = event.getBlock().getType();
+        Material to = event.getNewState().getType();
+
+        if (!((type == Material.BRAIN_CORAL_BLOCK && to == Material.DEAD_BRAIN_CORAL_BLOCK) ||
+            (type == Material.BUBBLE_CORAL_BLOCK && to == Material.DEAD_BUBBLE_CORAL_BLOCK) ||
+            (type == Material.FIRE_CORAL_BLOCK && to == Material.DEAD_FIRE_CORAL_BLOCK) ||
+            (type == Material.HORN_CORAL_BLOCK && to == Material.DEAD_HORN_CORAL_BLOCK) ||
+            (type == Material.TUBE_CORAL_BLOCK && to == Material.DEAD_TUBE_CORAL_BLOCK) ||
+            (type == Material.BRAIN_CORAL && to == Material.DEAD_BRAIN_CORAL) ||
+            (type == Material.BUBBLE_CORAL && to == Material.DEAD_BUBBLE_CORAL) ||
+            (type == Material.FIRE_CORAL && to == Material.DEAD_FIRE_CORAL) ||
+            (type == Material.HORN_CORAL && to == Material.DEAD_HORN_CORAL) ||
+            (type == Material.TUBE_CORAL && to == Material.DEAD_TUBE_CORAL) ||
+            (type == Material.BRAIN_CORAL_FAN && to == Material.DEAD_BRAIN_CORAL_FAN) ||
+            (type == Material.BUBBLE_CORAL_FAN && to == Material.DEAD_BUBBLE_CORAL_FAN) ||
+            (type == Material.FIRE_CORAL_FAN && to == Material.DEAD_FIRE_CORAL_FAN) ||
+            (type == Material.HORN_CORAL_FAN && to == Material.DEAD_HORN_CORAL_FAN) ||
+            (type == Material.TUBE_CORAL_FAN && to == Material.DEAD_TUBE_CORAL_FAN) ||
+            (type == Material.BRAIN_CORAL_WALL_FAN && to == Material.DEAD_BRAIN_CORAL_WALL_FAN) ||
+            (type == Material.BUBBLE_CORAL_WALL_FAN && to == Material.DEAD_BUBBLE_CORAL_WALL_FAN) ||
+            (type == Material.FIRE_CORAL_WALL_FAN && to == Material.DEAD_FIRE_CORAL_WALL_FAN) ||
+            (type == Material.HORN_CORAL_WALL_FAN && to == Material.DEAD_HORN_CORAL_WALL_FAN) ||
+            (type == Material.TUBE_CORAL_WALL_FAN && to == Material.DEAD_TUBE_CORAL_WALL_FAN))) return;
+
+        // Note: For non-blocks (fans, wall fans, corals) this will check the block it is placed on instead
+        if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
             event.setCancelled(true);
         }
     }
