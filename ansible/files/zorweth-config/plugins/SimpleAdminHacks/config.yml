@@ -568,6 +568,7 @@ hacks:
     blocks:
       JUNGLE_LEAVES: 0.025
       DARK_OAK_LEAVES: 0.05
+      PALE_OAK_LEAVES: 0.05
       OAK_LEAVES: 0
       BIRCH_LEAVES: 0
       ACACIA_LEAVES: 0
