@@ -307,7 +307,7 @@ public class BlockListener implements Listener {
     public void onCoralDry(BlockFadeEvent event) {
         Material type = event.getBlock().getType();
 
-        // Corals includes everything except blocks
+        // Corals includes everything (fans and coral) except blocks
         if (!(Tag.CORALS.isTagged(type) || Tag.CORAL_BLOCKS.isTagged(type))) return;
 
         // Note: For non-blocks (fans, wall fans, corals) this will check the block it is placed on instead
