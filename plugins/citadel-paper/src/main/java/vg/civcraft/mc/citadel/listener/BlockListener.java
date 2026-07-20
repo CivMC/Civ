@@ -306,28 +306,9 @@ public class BlockListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onCoralDry(BlockFadeEvent event) {
         Material type = event.getBlock().getType();
-        Material to = event.getNewState().getType();
 
-        if (!((type == Material.BRAIN_CORAL_BLOCK && to == Material.DEAD_BRAIN_CORAL_BLOCK) ||
-            (type == Material.BUBBLE_CORAL_BLOCK && to == Material.DEAD_BUBBLE_CORAL_BLOCK) ||
-            (type == Material.FIRE_CORAL_BLOCK && to == Material.DEAD_FIRE_CORAL_BLOCK) ||
-            (type == Material.HORN_CORAL_BLOCK && to == Material.DEAD_HORN_CORAL_BLOCK) ||
-            (type == Material.TUBE_CORAL_BLOCK && to == Material.DEAD_TUBE_CORAL_BLOCK) ||
-            (type == Material.BRAIN_CORAL && to == Material.DEAD_BRAIN_CORAL) ||
-            (type == Material.BUBBLE_CORAL && to == Material.DEAD_BUBBLE_CORAL) ||
-            (type == Material.FIRE_CORAL && to == Material.DEAD_FIRE_CORAL) ||
-            (type == Material.HORN_CORAL && to == Material.DEAD_HORN_CORAL) ||
-            (type == Material.TUBE_CORAL && to == Material.DEAD_TUBE_CORAL) ||
-            (type == Material.BRAIN_CORAL_FAN && to == Material.DEAD_BRAIN_CORAL_FAN) ||
-            (type == Material.BUBBLE_CORAL_FAN && to == Material.DEAD_BUBBLE_CORAL_FAN) ||
-            (type == Material.FIRE_CORAL_FAN && to == Material.DEAD_FIRE_CORAL_FAN) ||
-            (type == Material.HORN_CORAL_FAN && to == Material.DEAD_HORN_CORAL_FAN) ||
-            (type == Material.TUBE_CORAL_FAN && to == Material.DEAD_TUBE_CORAL_FAN) ||
-            (type == Material.BRAIN_CORAL_WALL_FAN && to == Material.DEAD_BRAIN_CORAL_WALL_FAN) ||
-            (type == Material.BUBBLE_CORAL_WALL_FAN && to == Material.DEAD_BUBBLE_CORAL_WALL_FAN) ||
-            (type == Material.FIRE_CORAL_WALL_FAN && to == Material.DEAD_FIRE_CORAL_WALL_FAN) ||
-            (type == Material.HORN_CORAL_WALL_FAN && to == Material.DEAD_HORN_CORAL_WALL_FAN) ||
-            (type == Material.TUBE_CORAL_WALL_FAN && to == Material.DEAD_TUBE_CORAL_WALL_FAN))) return;
+        // Corals includes everything except blocks
+        if (!(Tag.CORALS.isTagged(type) || Tag.CORAL_BLOCKS.isTagged(type))) return;
 
         // Note: For non-blocks (fans, wall fans, corals) this will check the block it is placed on instead
         if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
