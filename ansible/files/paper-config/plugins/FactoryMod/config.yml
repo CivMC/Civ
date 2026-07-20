@@ -1316,66 +1316,77 @@ factories:
       - make_fence_gates
       - make_signs
       - make_hanging_signs
+      - make_shelves
       - make_trapdoors
       - make_wood_doors
       - make_spruce_fences
       - make_spruce_fence_gates
       - make_spruce_signs
       - make_spruce_hanging_signs
+      - make_spruce_shelves
       - make_spruce_trapdoors
       - make_spruce_doors
       - make_birch_fences
       - make_birch_fence_gates
       - make_birch_signs
       - make_birch_hanging_signs
+      - make_birch_shelves
       - make_birch_trapdoors
       - make_birch_doors
       - make_jungle_fences
       - make_jungle_fence_gates
       - make_jungle_signs
       - make_jungle_hanging_signs
+      - make_jungle_shelves
       - make_jungle_trapdoors
       - make_jungle_doors
       - make_acacia_fences
       - make_acacia_fence_gates
       - make_acacia_signs
       - make_acacia_hanging_signs
+      - make_acacia_shelves
       - make_acacia_trapdoors
       - make_acacia_doors
       - make_dark_oak_fences
       - make_dark_oak_fence_gates
       - make_dark_oak_signs
       - make_dark_oak_hanging_signs
+      - make_dark_oak_shelves
       - make_dark_oak_trapdoors
       - make_dark_oak_doors
       - make_cherry_fences
       - make_cherry_fence_gates
       - make_cherry_signs
       - make_cherry_hanging_signs
+      - make_cherry_shelves
       - make_cherry_trapdoors
       - make_cherry_doors
       - make_mangrove_fences
       - make_mangrove_fence_gates
       - make_mangrove_signs
       - make_mangrove_hanging_signs
+      - make_mangrove_shelves
       - make_mangrove_trapdoors
       - make_mangrove_doors
       - make_pale_oak_fences
       - make_pale_oak_fence_gates
       - make_pale_oak_signs
       - make_pale_oak_hanging_signs
+      - make_pale_oak_shelves
       - make_pale_oak_trapdoors
       - make_pale_oak_doors
       - make_crimson_fences
       - make_crimson_fence_gates
       - make_crimson_signs
       - make_crimson_hanging_signs
+      - make_crimson_shelves
       - make_crimson_trapdoors
       - make_crimson_doors
       - make_warped_fences
       - make_warped_fence_gates
       - make_warped_signs
       - make_warped_hanging_signs
+      - make_warped_shelves
       - make_warped_trapdoors
       - make_warped_doors
       - repair_carpentry
@@ -7437,6 +7448,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: OAK_HANGING_SIGN
         amount: 128
+  make_shelves:
+    production_time: 4s
+    name: Make Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHEST
+        amount: 12
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OAK_SHELF
+        amount: 128
   make_ladders:
     production_time: 4s
     name: Make Ladders
@@ -7671,6 +7698,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_HANGING_SIGN
         amount: 128
+  make_spruce_shelves:
+    production_time: 4s
+    name: Make Spruce Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SPRUCE_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SPRUCE_SHELF
+        amount: 128
   make_spruce_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -7771,6 +7814,22 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_HANGING_SIGN
+        amount: 128
+  make_birch_shelves:
+    production_time: 4s
+    name: Make Birch Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BIRCH_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BIRCH_SHELF
         amount: 128
   make_birch_trapdoors:
     production_time: 4s
@@ -7873,6 +7932,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_HANGING_SIGN
         amount: 128
+  make_jungle_shelves:
+    production_time: 4s
+    name: Make Jungle Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: JUNGLE_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: JUNGLE_SHELF
+        amount: 128
   make_jungle_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -7973,6 +8048,22 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ACACIA_HANGING_SIGN
+        amount: 128
+  make_acacia_shelves:
+    production_time: 4s
+    name: Make Acacia Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ACACIA_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ACACIA_SHELF
         amount: 128
   make_acacia_trapdoors:
     production_time: 4s
@@ -8075,6 +8166,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_HANGING_SIGN
         amount: 128
+  make_dark_oak_shelves:
+    production_time: 4s
+    name: Make Dark Oak Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DARK_OAK_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DARK_OAK_SHELF
+        amount: 128
   make_dark_oak_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -8175,6 +8282,22 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHERRY_HANGING_SIGN
+        amount: 128
+  make_cherry_shelves:
+    production_time: 4s
+    name: Make Cherry Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHERRY_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHERRY_SHELF
         amount: 128
   make_cherry_trapdoors:
     production_time: 4s
@@ -8277,6 +8400,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_HANGING_SIGN
         amount: 128
+  make_mangrove_shelves:
+    production_time: 4s
+    name: Make Mangrove Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MANGROVE_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MANGROVE_SHELF
+        amount: 128
   make_mangrove_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -8377,6 +8516,22 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_HANGING_SIGN
+        amount: 128
+  make_pale_oak_shelves:
+    production_time: 4s
+    name: Make Pale Oak Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_SHELF
         amount: 128
   make_pale_oak_trapdoors:
     production_time: 4s
@@ -8479,6 +8634,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: CRIMSON_HANGING_SIGN
         amount: 128
+  make_crimson_shelves:
+    production_time: 4s
+    name: Make Crimson Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CRIMSON_STEM
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CRIMSON_SHELF
+        amount: 128
   make_crimson_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -8579,6 +8750,22 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WARPED_HANGING_SIGN
+        amount: 128
+  make_warped_shelves:
+    production_time: 4s
+    name: Make Warped Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WARPED_STEM
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WARPED_SHELF
         amount: 128
   make_warped_trapdoors:
     production_time: 4s
