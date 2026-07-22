@@ -79,10 +79,10 @@ public final class TokenModifier extends ModifierData {
 
     @Override
     public @Nullable List<@NotNull String> getDisplayInfo() {
-        return switch (this.token) {
-            case Token $ -> null;
-            case null -> List.of(ChatColor.GOLD + "Any token");
-        };
+        return List.of(ChatColor.GOLD + switch (this.token) {
+            case Token $ -> "Token: " + ChatColor.MAGIC + "madeyoulook";
+            case null -> "Any token";
+        });
     }
 
     @Override
