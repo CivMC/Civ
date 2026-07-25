@@ -2,10 +2,11 @@ The_Undying:
   Type: WITHER_SKELETON
   Display: '&5&lThe Undying'
   Health: 200
-  Damage: 12
+  Damage: 9
   Drops:
-    - light_weighted_pressure_plate{name="&eTotem Shard"} 1 0.05
-    - gold_nugget{name="&eTotem Fragment"} 3-5
+    - light_weighted_pressure_plate{name="&eTotem Shard"} 1 0.15
+    - gold_nugget{name="&eTotem Fragment"} 4-8
+    - endermite_spawn_egg{name="&5Zorslug Egg"} 1 0.01
   Skills:
     - setvariable{var=caster.minions;type=INTEGER;val=0} @self ~onSpawn
     - skill{s=UndyingFear} @PlayersInRadius{r=25} 0.3
@@ -41,7 +42,7 @@ UndyingMinion:
   Type: WITHER_SKELETON
   Health: 25
   Drops:
-    - gold_nugget{name="&eTotem Fragment"} 0-2 0.5
+    - gold_nugget{name="&eTotem Fragment"} 1-2 0.3
     - coal 0-3
   Skills:
     - skill{s=UndyingMinionAttack} @target 0.2

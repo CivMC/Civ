@@ -5,7 +5,7 @@ UndyingGrip:
   Skills:
     - forcepull{spread=2} @PlayersInRadius{r=20}
     - delay 20
-    - explosion{yield=4} @Self
+    - explosion{yield=1} @Self
     - effect:sound{s=block.sculk_shrieker.shriek;volume=1.0;pitch=0.4}
 UndyingFear:
   Cooldown: 12
@@ -27,7 +27,7 @@ UndyingJump:
     - delay 20
     - jump{velocity=-100}
     - effect:explosion @self
-    - damage{amount=20} @EntitiesInRadius{r=5}
+    - damage{amount=10} @EntitiesInRadius{r=5}
 UndyingMinionSwarm:
   Cooldown: 30
   Conditions:
