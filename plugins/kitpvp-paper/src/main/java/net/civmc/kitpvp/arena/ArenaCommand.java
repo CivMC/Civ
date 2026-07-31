@@ -32,14 +32,16 @@ public class ArenaCommand implements CommandExecutor {
     private final RankedQueueManager rankedQueueManager;
     private final ArenaManager manager;
     private final PrivateArenaListener privateArenaListener;
+    private final ArenaGravityListener gravityListener;
 
-    public ArenaCommand(JavaPlugin plugin, ArenaDao dao, RankedDao rankedDao, RankedQueueManager rankedQueueManager, ArenaManager manager, PrivateArenaListener privateArenaListener) {
+    public ArenaCommand(JavaPlugin plugin, ArenaDao dao, RankedDao rankedDao, RankedQueueManager rankedQueueManager, ArenaManager manager, PrivateArenaListener privateArenaListener, ArenaGravityListener gravityListener) {
         this.plugin = plugin;
         this.dao = dao;
         this.rankedDao = rankedDao;
         this.rankedQueueManager = rankedQueueManager;
         this.manager = manager;
         this.privateArenaListener = privateArenaListener;
+        this.gravityListener = gravityListener;
     }
 
     @Override
@@ -171,18 +173,14 @@ public class ArenaCommand implements CommandExecutor {
             manager.setMaxArenas(arenas);
             player.sendMessage(Component.text("Set arena cap to " + arenas, NamedTextColor.GREEN));
             return true;
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("gravity")) {
+            return gravity(player, args);
         } else if (args.length > 0 && args[0].equalsIgnoreCase("add")) {
             if (args.length < 2) {
                 return false;
             }
 
-            LoadedArena playerArena = null;
-            for (LoadedArena arena : manager.getArenas()) {
-                if (!arena.ranked() && arena.owner().equals(player.getPlayerProfile())) {
-                    playerArena = arena;
-                    break;
-                }
-            }
+            LoadedArena playerArena = manager.getOwnedArena(player);
             if (playerArena == null) {
                 player.sendMessage(Component.text("You do not currently have an arena", NamedTextColor.RED));
                 return true;
@@ -219,13 +217,7 @@ public class ArenaCommand implements CommandExecutor {
                 return false;
             }
 
-            LoadedArena playerArena = null;
-            for (LoadedArena arena : manager.getArenas()) {
-                if (!arena.ranked() && arena.owner().equals(player.getPlayerProfile())) {
-                    playerArena = arena;
-                    break;
-                }
-            }
+            LoadedArena playerArena = manager.getOwnedArena(player);
             if (playerArena == null) {
                 player.sendMessage(Component.text("You do not currently have an arena", NamedTextColor.RED));
                 return true;
@@ -263,11 +255,45 @@ public class ArenaCommand implements CommandExecutor {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 double elo = rankedDao.getElo(player.getUniqueId());
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    new ArenaGui(dao, rankedQueueManager, elo, manager).open(player);
+                    new ArenaGui(dao, rankedQueueManager, elo, manager, gravityListener).open(player);
                 });
             });
             return true;
         }
         return false;
+    }
+
+    private boolean gravity(Player player, String[] args) {
+        if (args.length != 1 && args.length != 2) {
+            return false;
+        }
+
+        LoadedArena arena = manager.getOwnedArena(player);
+        if (arena == null) {
+            player.sendMessage(Component.text("You do not currently own an arena", NamedTextColor.RED));
+            return true;
+        }
+
+        if (args.length == 1) {
+            Component message = Component.text("Arena gravity: " + arena.gravity().displayName() + " (" + arena.gravity().value() + ")", NamedTextColor.GREEN);
+            if (arena.gravityLocked()) {
+                message = message.append(Component.text(" (locked)", NamedTextColor.RED));
+            }
+            player.sendMessage(message);
+            return true;
+        }
+
+        ArenaGravity gravity = ArenaGravity.parse(args[1]).orElse(null);
+        if (gravity == null) {
+            player.sendMessage(Component.text("Gravity must be main or zorweth", NamedTextColor.RED));
+            return true;
+        }
+        if (!arena.setGravity(gravity)) {
+            player.sendMessage(Component.text("Arena gravity is locked because another player has joined", NamedTextColor.RED));
+            return true;
+        }
+        gravityListener.refresh(player);
+        player.sendMessage(Component.text("Set arena gravity to " + gravity.displayName(), NamedTextColor.GREEN));
+        return true;
     }
 }
