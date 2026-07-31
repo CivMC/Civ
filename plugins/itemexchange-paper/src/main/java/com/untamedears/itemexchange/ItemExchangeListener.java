@@ -2,6 +2,7 @@ package com.untamedears.itemexchange;
 
 import com.untamedears.itemexchange.events.BrowseOrPurchaseEvent;
 import com.untamedears.itemexchange.events.SuccessfulPurchaseEvent;
+import com.untamedears.itemexchange.items.Token;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ShopRule;
@@ -12,6 +13,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -22,6 +28,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -33,6 +40,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -290,4 +298,36 @@ public final class ItemExchangeListener implements Listener {
         }
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void sendTokenOnRightClick(
+        final @NotNull PlayerInteractEvent event
+    ) {
+        switch (event.getAction()) {
+            case RIGHT_CLICK_AIR:
+            case RIGHT_CLICK_BLOCK:
+                break;
+            default:
+                return;
+        }
+        final Token itemToken = Token.fromItem(event.getItem());
+        if (itemToken == null) {
+            return;
+        }
+        event.setUseInteractedBlock(Event.Result.DENY);
+        event.setUseItemInHand(Event.Result.DENY);
+        event.getPlayer().sendMessage(Component.textOfChildren(
+            Component.text(
+                "That item holds the following token: ",
+                NamedTextColor.GRAY
+            ),
+            Component.text(
+                itemToken.token(),
+                Style.style()
+                    .color(NamedTextColor.WHITE)
+                    .clickEvent(ClickEvent.copyToClipboard(itemToken.token()))
+                    .hoverEvent(HoverEvent.showText(Component.text("Click to copy token to clipboard")))
+                    .build()
+            )
+        ));
+    }
 }
