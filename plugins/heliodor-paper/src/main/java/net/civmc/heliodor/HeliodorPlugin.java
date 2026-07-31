@@ -93,7 +93,9 @@ public class HeliodorPlugin extends ACivMod {
         Bukkit.getScheduler().runTaskTimer(this, this.recipes, 15 * 20, 15 * 20);
 
         getCommand("heliodor").setExecutor(new HeliodorDebugCommand(veinCache, veinSpawner, oreLocationsKey));
-        getCommand("meteor").setExecutor(new MeteorCommand(veinSpawner));
+        final boolean publicAnnouncementsEnabled = getConfig()
+            .getBoolean("meteoric_iron_vein.public_announcement.enabled");
+        getCommand("meteor").setExecutor(new MeteorCommand(veinSpawner, publicAnnouncementsEnabled));
 
         getServer().getPluginManager().registerEvents(new AnvilRepairListener(), this);
 
