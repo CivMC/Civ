@@ -18,7 +18,7 @@ public class CommandRegistrar extends CommandManager {
         registerCommand(new DebugCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ReloadCommand(getPlugin()));
-        registerCommand(new SetCommand());
+        registerCommand(new SetCommand(getPlugin()));
     }
 
     /**
