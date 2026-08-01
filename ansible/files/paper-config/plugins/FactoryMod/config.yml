@@ -1336,6 +1336,13 @@ factories:
       - make_jungle_hanging_signs
       - make_jungle_trapdoors
       - make_jungle_doors
+      - make_bamboo_fences
+      - make_bamboo_fence_gates
+      - make_bamboo_signs
+      - make_bamboo_hanging_signs
+      - make_bamboo_trapdoors
+      - make_bamboo_doors
+      - make_bamboo_shelves
       - make_acacia_fences
       - make_acacia_fence_gates
       - make_acacia_signs
@@ -7819,6 +7826,123 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_FENCE_GATE
+        amount: 128
+  make_bamboo_fences:
+    production_time: 4s
+    name: Make Bamboo Fences
+    type: PRODUCTION
+    input:
+      BAMBOO_BLOCK:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_BLOCK
+        amount: 32
+    output:
+      fence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_FENCE
+        amount: 128
+  make_bamboo_signs:
+    production_time: 4s
+    name: Make Bamboo Signs
+    type: PRODUCTION
+    input:
+      BAMBOO_BLOCK:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_BLOCK
+        amount: 48
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_SIGN
+        amount: 128
+  make_bamboo_hanging_signs:
+    production_time: 4s
+    name: Make Bamboo Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_BLOCK
+        amount: 24
+      iron_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_HANGING_SIGN
+        amount: 128
+  make_bamboo_trapdoors:
+    production_time: 4s
+    name: Make Trap Doors
+    type: PRODUCTION
+    input:
+      BAMBOO_BLOCK:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_BLOCK
+        amount: 64
+    output:
+      trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_TRAPDOOR
+        amount: 128
+  make_bamboo_doors:
+    production_time: 4s
+    name: Make Doors
+    type: PRODUCTION
+    input:
+      BAMBOO_BLOCK:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_BLOCK
+        amount: 48
+    output:
+      door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_DOOR
+        amount: 128
+  make_bamboo_fence_gates:
+    production_time: 4s
+    name: Make Fence Gates
+    type: PRODUCTION
+    input:
+      BAMBOO_BLOCK:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_BLOCK
+        amount: 32
+    output:
+      door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_FENCE_GATE
+        amount: 128
+  make_bamboo_shelves:
+    production_time: 4s
+    name: Make Bamboo Shelves
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_BLOCK
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO_SHELF
         amount: 128
   make_jungle_fences:
     production_time: 4s
