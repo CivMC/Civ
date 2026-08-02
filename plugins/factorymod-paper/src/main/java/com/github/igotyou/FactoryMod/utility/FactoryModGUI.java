@@ -367,26 +367,25 @@ public class FactoryModGUI {
     private List<String> buildTruncatedList(List<IRecipe> input, int maxSize) {
         int totalElements = input.size();
         List<String> loreList = new ArrayList<>();
+        List<IRecipe> toDisplayList;
+        boolean truncated = false;
 
         if (totalElements <= maxSize) {
-            for (IRecipe item : input) {
-                if (item instanceof Upgraderecipe) {
-                    loreList.add(ChatColor.GRAY + " - " + ChatColor.GREEN + item.getName());
-                } else {
-                    loreList.add(ChatColor.GRAY + " - " + ChatColor.AQUA + item.getName());
-                }
-            }
+            toDisplayList = input;
         } else {
-            List<IRecipe> subListForDisplay = input.subList(0, maxSize);
+            toDisplayList = input.subList(0, maxSize);
+            truncated = true;
+        }
 
-            for (IRecipe item : subListForDisplay) {
-                if (item instanceof Upgraderecipe) {
-                    loreList.add(ChatColor.GRAY + " - " + ChatColor.GREEN + item.getName());
-                } else {
-                    loreList.add(ChatColor.GRAY + " - " + ChatColor.AQUA + item.getName());
-                }
+        for (IRecipe item : toDisplayList) {
+            if (item instanceof Upgraderecipe) {
+                loreList.add(ChatColor.GRAY + " - " + ChatColor.GREEN + item.getName());
+            } else {
+                loreList.add(ChatColor.GRAY + " - " + ChatColor.AQUA + item.getName());
             }
+        }
 
+        if (truncated) {
             int remainingCount = totalElements - maxSize;
             loreList.add(ChatColor.GRAY + "... click for " + remainingCount + " other recipes");
         }
