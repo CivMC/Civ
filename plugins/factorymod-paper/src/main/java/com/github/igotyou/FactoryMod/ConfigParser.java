@@ -27,6 +27,7 @@ import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.recipes.WordBankRecipe;
+import com.github.igotyou.FactoryMod.recipes.brewery.StackableBrewRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorCreateRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorFinishRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorRefillRecipe;
@@ -64,8 +65,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -674,6 +677,36 @@ public class ConfigParser {
                 manager.addCompactLore(decompactedLore);
                 result = new DecompactingRecipe(identifier, input, name, productionTime, decompactedLore);
                 break;
+            case "BREW_STACK":
+                if (!Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
+                    plugin.warning("BreweryX plugin must be enabled for brew stacking recipes");
+                    result = null;
+                    break;
+                }
+                int brewStackSize = config.getInt("max_stack_size",
+                    (parentRecipe instanceof StackableBrewRecipe) ? ((StackableBrewRecipe) parentRecipe).getDefaultStackSize()
+                        : 16);
+                if (!isValidBrewStackSize(brewStackSize)) {
+                    plugin.warning("Invalid max_stack_size " + brewStackSize + " for brew stacking recipe " + name
+                        + ", it must be between 2 and 99. The recipe was skipped");
+                    result = null;
+                    break;
+                }
+                boolean sealUnsealedBrews = config.getBoolean("seal_unsealed",
+                    !(parentRecipe instanceof StackableBrewRecipe)
+                        || ((StackableBrewRecipe) parentRecipe).isSealUnsealed());
+                String brewPackedLore = config.getString("packed_lore",
+                    (parentRecipe instanceof StackableBrewRecipe) ? ((StackableBrewRecipe) parentRecipe).getPackedLore()
+                        : null);
+                Map<String, Integer> allowedBrews = parseAllowedBrews(config, brewStackSize, parentRecipe);
+                if (allowedBrews.isEmpty()) {
+                    plugin.warning("No allowed_brews specified for brew stacking recipe " + name + ", it was skipped");
+                    result = null;
+                    break;
+                }
+                result = new StackableBrewRecipe(identifier, name, productionTime, input, allowedBrews, brewStackSize,
+                    sealUnsealedBrews, brewPackedLore);
+                break;
             case "REPAIR":
                 int health = config.getInt("health_gained",
                     (parentRecipe instanceof RepairRecipe) ? ((RepairRecipe) parentRecipe).getHealth() : 0);
@@ -1044,6 +1077,53 @@ public class ConfigParser {
             plugin.info("Parsed recipe " + name);
         }
         return result;
+    }
+
+    /**
+     * Parses the allow list of a brew stacking recipe, keyed by BreweryX brew id. Accepts either a plain list of ids
+     * which all use defaultStackSize, or a mapping of id to stack size where an entry may also be a section carrying
+     * max_stack_size. Falls back to the parent recipe's list when neither is present.
+     * <p>
+     * The ids are not checked against BreweryX here, because it loads after us and has no brews registered yet.
+     * {@link StackableBrewRecipe} warns about unknown ids on first use instead.
+     *
+     * @return Map of lower case brew id to the stack size configured for it
+     */
+    private Map<String, Integer> parseAllowedBrews(ConfigurationSection config, int defaultStackSize,
+                                                   IRecipe parentRecipe) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        if (config.isList("allowed_brews")) {
+            for (String id : config.getStringList("allowed_brews")) {
+                result.put(id.toLowerCase(Locale.ROOT), defaultStackSize);
+            }
+            return result;
+        }
+        ConfigurationSection section = config.getConfigurationSection("allowed_brews");
+        if (section == null) {
+            if (parentRecipe instanceof StackableBrewRecipe) {
+                result.putAll(((StackableBrewRecipe) parentRecipe).copyAllowedBrews());
+            }
+            return result;
+        }
+        for (String id : section.getKeys(false)) {
+            int stackSize = section.isConfigurationSection(id)
+                ? section.getInt(id + ".max_stack_size", defaultStackSize)
+                : section.getInt(id, defaultStackSize);
+            if (!isValidBrewStackSize(stackSize)) {
+                plugin.warning("Invalid max_stack_size " + stackSize + " for brew " + id + " at "
+                    + config.getCurrentPath() + ", it must be between 2 and 99. The brew was skipped");
+                continue;
+            }
+            result.put(id.toLowerCase(Locale.ROOT), stackSize);
+        }
+        return result;
+    }
+
+    /**
+     * One would leave the brew as unstackable as it already was, and the item meta rejects anything above 99 anyway
+     */
+    private static boolean isValidBrewStackSize(int stackSize) {
+        return stackSize >= 2 && stackSize <= 99;
     }
 
     private static ItemStack parseFirstItem(ConfigurationSection config) {

@@ -1750,6 +1750,39 @@ factories:
       - make_compact_repair_kit
       - repair_compactor
       - repair_compactor_kit
+  brew_packer:
+    type: FCC
+    name: Brew Packer
+    citadelBreakReduction: 0.8
+    setupcost:
+      glass:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS
+        amount: 64
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 32
+      barrel:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 16
+      crate:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHEST
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Crate
+    recipes:
+      - pack_brews
+      - repair_brew_packer
   printing_press:
     type: FCC
     name: Printing Press
@@ -12116,6 +12149,58 @@ recipes:
     type: DECOMPACT
     input:
     compact_lore: Compacted Item
+  pack_brews:
+    production_time: 2s
+    fuel_consumption_intervall: 4s
+    name: Pack Brews
+    type: BREW_STACK
+    input:
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 1
+    max_stack_size: 16
+    seal_unsealed: true
+    packed_lore: Packed Brew ({size})
+    allowed_brews:
+      wheatbeer: 16
+      beer: 16
+      darkbeer: 16
+      mead: 8
+      whiskey: 8
+      vodka: 4
+  repair_brew_packer:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      glass:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS
+        amount: 8
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_INGOT
+        amount: 4
+      barrel:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
+        amount: 2
+      crate:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHEST
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Crate
+    health_gained: 10000
   repair_compactor:
     production_time: 4s
     name: Repair Factory
