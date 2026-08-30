@@ -3,7 +3,7 @@
 We are grateful you have decided to contribute to the CivMC repository and become part of the over 14-year history
 that is Civ. There are a few things you should know before making your first contribution.
 
-We would greatly appreicate if you tested your changes, ideally using the Docker setup in this repository using
+We would greatly appreciate if you tested your changes, ideally using the Docker setup in this repository using
 `docker compose up paper proxy -d`. This will start up a single server on localhost.
 
 Keep in mind that if you are making any config changes, you should change the default plugin config in the resources
