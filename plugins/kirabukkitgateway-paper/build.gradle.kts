@@ -14,6 +14,8 @@ dependencies {
     compileOnly(project(":plugins:namelayer-paper"))
     compileOnly(project(":plugins:civchat2-paper"))
     compileOnly(project(":plugins:jukealert-paper"))
+    compileOnly(project(":plugins:itemexchange-paper"))
+    compileOnly(project(":plugins:citadel-paper"))
 
     api(libs.rabbitmq.client)
     compileOnly(libs.luckperms.api)
