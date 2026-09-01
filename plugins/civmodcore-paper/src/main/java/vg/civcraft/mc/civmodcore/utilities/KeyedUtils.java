@@ -1,7 +1,12 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
+import com.google.common.base.Suppliers;
+import java.util.Objects;
+import java.util.function.Supplier;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,4 +75,15 @@ public final class KeyedUtils {
         return new NamespacedKey("test", key);
     }
 
+    public static @NotNull Supplier<@NotNull NamespacedKey> of(
+        final @NotNull Class<? extends JavaPlugin> pluginClass,
+        final @NotNull String value
+    ) {
+        Objects.requireNonNull(pluginClass);
+        if (Key.checkValue(value).isPresent()) {
+            throw new IllegalArgumentException("Invalid NamespacedKey value: " + value);
+        }
+        // TODO: Switch this to a LazyConstant once it's stabilised: https://openjdk.org/jeps/526
+        return Suppliers.memoize(() -> new NamespacedKey(JavaPlugin.getPlugin(pluginClass), value));
+    }
 }
