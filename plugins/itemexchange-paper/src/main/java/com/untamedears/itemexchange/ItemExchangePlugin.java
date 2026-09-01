@@ -5,6 +5,7 @@ import com.untamedears.itemexchange.glues.citadel.CitadelGlue;
 import com.untamedears.itemexchange.glues.jukealert.JukeAlertGlue;
 import com.untamedears.itemexchange.glues.namelayer.NameLayerGlue;
 import com.untamedears.itemexchange.rules.ModifierRegistrar;
+import com.untamedears.itemexchange.rules.ShopRule;
 import com.untamedears.itemexchange.rules.modifiers.BookModifier;
 import com.untamedears.itemexchange.rules.modifiers.DamageableModifier;
 import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
@@ -16,6 +17,7 @@ import com.untamedears.itemexchange.rules.modifiers.RepairModifier;
 import java.util.List;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.mods.packets.CivModPackets;
 import vg.civcraft.mc.civmodcore.utilities.DependencyGlue;
 
 /**
@@ -54,6 +56,7 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
         modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
         registerListener(new ItemExchangeListener());
         this.glues.forEach(DependencyGlue::registerGlue);
+        CivModPackets.registerOutgoingPacket(this, ShopRule.SHOW_TRADE_PACKET.get());
     }
 
     @Override
