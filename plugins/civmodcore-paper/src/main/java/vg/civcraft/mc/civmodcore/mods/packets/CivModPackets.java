@@ -38,7 +38,8 @@ public class CivModPackets {
                     LOGGER.warn(
                         "{} sent a packet with an invalid packetId: {}",
                         sender.getName(),
-                        channel
+                        channel,
+                        e
                     );
                     return;
                 }
@@ -54,7 +55,8 @@ public class CivModPackets {
                             "{} sent a packet [packetId:{}] with an invalid payload: {}",
                             sender.getName(),
                             receivedPacketId,
-                            raw
+                            raw,
+                            e
                         );
                         return;
                     }
@@ -73,7 +75,8 @@ public class CivModPackets {
                         "Something went wrong while handling {}'s [packetId:{}] with payload: {}",
                         sender.getName(),
                         receivedPacketId,
-                        json
+                        json,
+                        e
                     );
                 }
             });
