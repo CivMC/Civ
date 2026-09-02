@@ -46,9 +46,7 @@ public class CivModPackets {
                 final JsonElement json; {
                     final String raw = new String(payload, StandardCharsets.UTF_8);
                     try {
-                        synchronized (GSON) {
-                            json = GSON.fromJson(raw, JsonElement.class);
-                        }
+                        json = GSON.fromJson(raw, JsonElement.class);
                     }
                     catch (final Exception e) {
                         LOGGER.warn(
@@ -109,10 +107,7 @@ public class CivModPackets {
         final @NotNull Key packetId,
         final @NotNull JsonElement json
     ) {
-        final String payload;
-        synchronized (GSON) {
-            payload = GSON.toJson(json);
-        }
+        final String payload = GSON.toJson(json);
         LOGGER.info(
             "Sending packet to {}: [packetId:{}]: {}",
             recipient.getName(),
