@@ -11,7 +11,6 @@ import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import net.minecraft.nbt.NbtOps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
@@ -35,7 +34,7 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 public final class ShopRule implements Validation {
 
     private final ItemExchangePlugin PLUGIN = ItemExchangePlugin.getInstance();
-    public static final Supplier<NamespacedKey> SHOW_TRADE_PACKET = KeyedUtils.of(ItemExchangePlugin.class, "trade-details");
+    public static final NamespacedKey SHOW_TRADE_PACKET = KeyedUtils.of(ItemExchangePlugin.class, "trade-details");
 
     private final List<TradeRule> trades = new ArrayList<>();
 
@@ -119,7 +118,7 @@ public final class ShopRule implements Validation {
         CivModPackets.sendPacket(
             ItemExchangePlugin.getInstance(),
             player,
-            SHOW_TRADE_PACKET.get(),
+            SHOW_TRADE_PACKET,
             NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, displayNbt.internal())
         );
     }

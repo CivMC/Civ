@@ -56,7 +56,7 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
         modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
         registerListener(new ItemExchangeListener());
         this.glues.forEach(DependencyGlue::registerGlue);
-        CivModPackets.registerOutgoingPacket(this, ShopRule.SHOW_TRADE_PACKET.get());
+        CivModPackets.registerOutgoingPacket(this, ShopRule.SHOW_TRADE_PACKET);
     }
 
     @Override

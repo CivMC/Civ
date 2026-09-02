@@ -1,9 +1,6 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
-import com.google.common.base.Suppliers;
-import java.util.Objects;
-import java.util.function.Supplier;
-import net.kyori.adventure.key.Key;
+import io.papermc.paper.plugin.provider.classloader.ConfiguredPluginClassLoader;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -75,15 +72,27 @@ public final class KeyedUtils {
         return new NamespacedKey("test", key);
     }
 
-    public static @NotNull Supplier<@NotNull NamespacedKey> of(
+    public static @NotNull NamespacedKey of(
         final @NotNull Class<? extends JavaPlugin> pluginClass,
         final @NotNull String value
     ) {
-        Objects.requireNonNull(pluginClass);
-        if (Key.checkValue(value).isPresent()) {
-            throw new IllegalArgumentException("Invalid NamespacedKey value: " + value);
+        /// This code is based on [JavaPlugin#getPlugin] but avoids accessing the plugin instance itself, making this
+        /// safe to use even when a plugin instance doesn't necessarily exist yet.
+        if (!JavaPlugin.class.isAssignableFrom(pluginClass)) {
+            throw new IllegalArgumentException("%s does not extend %s!".formatted(
+                pluginClass.getName(),
+                JavaPlugin.class.getName()
+            ));
         }
-        // TODO: Switch this to a LazyConstant once it's stabilised: https://openjdk.org/jeps/526
-        return Suppliers.memoize(() -> new NamespacedKey(JavaPlugin.getPlugin(pluginClass), value));
+        if (!(pluginClass.getClassLoader() instanceof ConfiguredPluginClassLoader classLoader)) {
+            throw new IllegalArgumentException("%s was not loaded by %s!".formatted(
+                pluginClass.getName(),
+                ConfiguredPluginClassLoader.class.getName()
+            ));
+        }
+        return new NamespacedKey(
+            classLoader.getConfiguration().namespace(),
+            value
+        );
     }
 }
