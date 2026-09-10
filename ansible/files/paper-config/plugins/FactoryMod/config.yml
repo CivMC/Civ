@@ -12396,7 +12396,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EMERALD_BLOCK
-        amount: 10
+        amount: 12
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
