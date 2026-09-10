@@ -11799,7 +11799,7 @@ recipes:
           lore:
             - A bundle of mob drops
             - Used in the elite cauldron
-      food bundle:
+      hot bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
@@ -11807,11 +11807,11 @@ recipes:
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Food Bundle
+          display-name: Hot Biome Bundle
           lore:
-            - A bundle of food crops
+            - A bundle of hot biome resources
             - Used in the elite cauldron
-      plant bundle:
+      cold bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
@@ -11819,21 +11819,33 @@ recipes:
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Plant Bundle
+          display-name: Cold Biome Bundle
           lore:
-            - A bundle of various plants
+            - A bundle of cold biome resources
             - Used in the elite cauldron
-      sapling bundle:
+      temperate bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
-        amount: 4
+        amount: 8
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Sapling Bundle
+          display-name: Temperate Biome Bundle
           lore:
-            - A bundle of various saplings
+            - A bundle of temperate biome resources
+            - Used in the elite cauldron
+      humid bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Humid Biome Bundle
+          lore:
+            - A bundle of humid biome resources
             - Used in the elite cauldron
       nether bundle:
         v: 3839
