@@ -1742,9 +1742,10 @@ factories:
       - decompact
       - make_mining_bundle
       - make_mob_bundle
-      - make_food_bundle
-      - make_plant_bundle
-      - make_sapling_bundle
+      - make_hot_bundle
+      - make_cold_bundle
+      - make_temperate_bundle
+      - make_humid_bundle
       - make_nether_bundle
       - make_space_bundle
       - make_compact_repair_kit
@@ -11974,7 +11975,7 @@ recipes:
           lore:
             - A bundle of mob drops
             - Used in the elite cauldron
-      food bundle:
+      hot bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
@@ -11982,11 +11983,11 @@ recipes:
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Food Bundle
+          display-name: Hot Biome Bundle
           lore:
-            - A bundle of food crops
+            - A bundle of hot biome resources
             - Used in the elite cauldron
-      plant bundle:
+      cold bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
@@ -11994,21 +11995,33 @@ recipes:
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Plant Bundle
+          display-name: Cold Biome Bundle
           lore:
-            - A bundle of various plants
+            - A bundle of cold biome resources
             - Used in the elite cauldron
-      sapling bundle:
+      temperate bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
-        amount: 4
+        amount: 8
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Sapling Bundle
+          display-name: Temperate Biome Bundle
           lore:
-            - A bundle of various saplings
+            - A bundle of temperate biome resources
+            - Used in the elite cauldron
+      humid bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Humid Biome Bundle
+          lore:
+            - A bundle of humid biome resources
             - Used in the elite cauldron
       nether bundle:
         v: 3839
@@ -12263,104 +12276,16 @@ recipes:
           lore:
             - A bundle of mob drops
             - Used in the elite cauldron
-  make_food_bundle:
+  make_hot_bundle:
     production_time: 8s
-    name: Make Food Bundle
+    name: Make Hot Biome Bundle
     type: PRODUCTION
     input:
-      wheat:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHEAT
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      carrot:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CARROT
-        amount: 48
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      potato:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: POTATO
-        amount: 48
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      beetroot:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BEETROOT
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
       melon:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MELON
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      sweet_berries:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SWEET_BERRIES
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-    output:
-      food bundle:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: COMPOSTER
-        amount: 1
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: Food Bundle
-          lore:
-            - A bundle of food crops
-            - Used in the elite cauldron
-  make_plant_bundle:
-    production_time: 8s
-    name: Make Plant Bundle
-    type: PRODUCTION
-    input:
-      red_mushroom:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: RED_MUSHROOM
-        amount: 4
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      brown_mushroom:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BROWN_MUSHROOM
-        amount: 4
+        amount: 256
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -12370,57 +12295,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: KELP
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      bamboo:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BAMBOO
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      vine:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: VINE
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      cocoa_beans:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: COCOA_BEANS
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      pumpkin:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: PUMPKIN
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      sugar_cane:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SUGAR_CANE
-        amount: 32
+        amount: 128
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -12430,45 +12305,75 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CACTUS
-        amount: 48
+        amount: 384
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      glass_bottle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS_BOTTLE
+        amount: 512
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
     output:
-      plant bundle:
+      hot bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
-        amount: 1
+        amount: 8
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Plant Bundle
+          display-name: Hot Biome Bundle
           lore:
-            - A bundle of various plants
+            - A bundle of hot biome resources
             - Used in the elite cauldron
-  make_sapling_bundle:
+  make_cold_bundle:
     production_time: 8s
-    name: Make Sapling Bundle
+    name: Make Cold Biome Bundle
     type: PRODUCTION
     input:
-      oak_sapling:
+      potato:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: OAK_SAPLING
-        amount: 8
+        type: POTATO
+        amount: 384
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      birch_sapling:
+      beetroot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: BIRCH_SAPLING
-        amount: 8
+        type: BEETROOT
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      sweet_berries:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SWEET_BERRIES
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      pumpkin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PUMPKIN
+        amount: 128
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -12478,7 +12383,143 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_SAPLING
-        amount: 4
+        amount: 16
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      cold bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Cold Biome Bundle
+          lore:
+            - A bundle of cold biome resources
+            - Used in the elite cauldron
+  make_temperate_bundle:
+    production_time: 8s
+    name: Make Temperate Biome Bundle
+    type: PRODUCTION
+    input:
+      wheat:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WHEAT
+        amount: 256
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      carrot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CARROT
+        amount: 384
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      vine:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: VINE
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      oak_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OAK_SAPLING
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      birch_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BIRCH_SAPLING
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+    output:
+      temperate bundle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COMPOSTER
+        amount: 8
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Temperate Biome Bundle
+          lore:
+            - A bundle of temperate biome resources
+            - Used in the elite cauldron
+  make_humid_bundle:
+    production_time: 8s
+    name: Make Humid Biome Bundle
+    type: PRODUCTION
+    input:
+      red_mushroom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RED_MUSHROOM
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      brown_mushroom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BROWN_MUSHROOM
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      bamboo:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      cocoa_beans:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COCOA_BEANS
+        amount: 256
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      sugar_cane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SUGAR_CANE
+        amount: 256
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -12488,24 +12529,24 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_SAPLING
-        amount: 4
+        amount: 16
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
     output:
-      sapling bundle:
+      humid bundle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COMPOSTER
-        amount: 1
+        amount: 8
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
-          display-name: Sapling Bundle
+          display-name: Humid Biome Bundle
           lore:
-            - A bundle of various saplings
+            - A bundle of humid biome resources
             - Used in the elite cauldron
   make_nether_bundle:
     production_time: 8s
@@ -12631,7 +12672,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_SAPLING
-        amount: 16
+        amount: 8
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
