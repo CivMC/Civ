@@ -132,7 +132,7 @@ public class QueueListener {
 
         final String queueTargetName = queueTarget.getServerInfo().getName();
         final boolean queueConnect = previousServer != null && isQueueConnect(event.getPlayer(), queueTargetName);
-        if (queueTarget.getPlayersConnected().size() >= 145 && !event.getPlayer().hasPermission("joinbypass.use")) {
+        if (queueTarget.getPlayersConnected().size() >= 115 && !event.getPlayer().hasPermission("joinbypass.use")) {
             if (previousServer != null) {
                 if (queueConnect) {
                     this.plugin.getLogger().info("Allowing queued player {} from pvp to {}",
