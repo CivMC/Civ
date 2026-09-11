@@ -7896,7 +7896,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BAMBOO_BLOCK
-        amount: 16
+        amount: 32
     output:
       fence:
         v: 3839
@@ -7912,7 +7912,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BAMBOO_BLOCK
-        amount: 24
+        amount: 48
     output:
       sign:
         v: 3839
@@ -7949,7 +7949,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BAMBOO_BLOCK
-        amount: 32
+        amount: 64
     output:
       trapdoor:
         v: 3839
@@ -7965,7 +7965,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BAMBOO_BLOCK
-        amount: 24
+        amount: 48
     output:
       door:
         v: 3839
@@ -7981,7 +7981,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BAMBOO_BLOCK
-        amount: 16
+        amount: 32
     output:
       door:
         v: 3839
