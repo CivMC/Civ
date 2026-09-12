@@ -112,6 +112,7 @@ factories:
       - research_phase_2
       - make_armour_repair_kit
       - refine_crude_oil
+      - advanced_refine_crude_oil
       - make_space_chem_factory_kit
       - repair_space_chem_factory
       - repair_space_chem_factory_kit
@@ -20121,6 +20122,35 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GLOWSTONE_DUST
         amount: 128
+    output:
+      rocket_fuel:
+        custom-key: rocket_fuel
+        amount: 8
+  advanced_refine_crude_oil:
+    production_time: 64s
+    fuel_consumption_intervall: 16s
+    name: Refine Crude Oil
+    type: PRODUCTION
+    input:
+      crude_oil:
+        custom-key: crude_oil
+        amount: 64
+      glowstone_dust:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOWSTONE_DUST
+        amount: 48
+      salt:
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: SUGAR
+        amount: 16
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: Salt
+          lore:
+            - Gathered from the Zorweth salt flats
     output:
       rocket_fuel:
         custom-key: rocket_fuel
