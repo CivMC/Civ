@@ -33,10 +33,8 @@ public final class GroupModifier extends ModifierData {
     // Make sure to have a template instance to make registration easier
     public static final GroupModifier TEMPLATE = new GroupModifier();
 
-    private static final String ID_KEY = "id";
     private static final String NAME_KEY = "name";
 
-    private int groupId;
     private String groupName;
 
     @Override
@@ -51,18 +49,18 @@ public final class GroupModifier extends ModifierData {
 
     @Override
     public boolean isBroken() {
-        return false;
+        return this.groupName == null;
     }
 
     @Override
     public void toNBT(final @NotNull NbtCompound nbt) {
-        nbt.setInt(ID_KEY, getGroupId());
-        nbt.setString(NAME_KEY, getGroupName());
+        if (this.groupName instanceof final String groupName) {
+            nbt.setString(NAME_KEY, groupName);
+        }
     }
 
     public static @NotNull GroupModifier fromNBT(final @NotNull NbtCompound nbt) {
         final var modifier = new GroupModifier();
-        modifier.setGroupId(nbt.getInt(ID_KEY, 0));
         modifier.setGroupName(nbt.getString(NAME_KEY, null));
         return modifier;
     }
@@ -76,7 +74,7 @@ public final class GroupModifier extends ModifierData {
 
     @Override
     public String toString() {
-        return "%S{%s:%d}".formatted(getSlug(), getGroupName(), getGroupId());
+        return "%S:%s".formatted(getSlug(), getGroupName());
     }
 
     // ------------------------------------------------------------
@@ -104,7 +102,6 @@ public final class GroupModifier extends ModifierData {
                 return;
             }
             final GroupModifier modifier = handler.ensureModifier();
-            modifier.setGroupId(group.getGroupId());
             modifier.setGroupName(group.getName());
             handler.relay(ChatColor.GREEN + "Set trade to group \"" + group.getName() + "\"");
         }
@@ -113,14 +110,6 @@ public final class GroupModifier extends ModifierData {
     // ------------------------------------------------------------
     // Getters + Setters
     // ------------------------------------------------------------
-
-    public int getGroupId() {
-        return this.groupId;
-    }
-
-    public void setGroupId(final int groupId) {
-        this.groupId = groupId;
-    }
 
     public String getGroupName() {
         return this.groupName;
