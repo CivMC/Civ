@@ -70,6 +70,24 @@ public class ArenaManager {
         return new ArrayList<>(arenas.sequencedValues());
     }
 
+    public LoadedArena getOwnedArena(Player player) {
+        return arenas.get(player.getUniqueId());
+    }
+
+    public LoadedArena getArena(String worldName) {
+        for (LoadedArena arena : arenas.values()) {
+            if (getArenaName(arena).equals(worldName)) {
+                return arena;
+            }
+        }
+        for (LoadedArena arena : rankedArenas) {
+            if (getArenaName(arena).equals(worldName)) {
+                return arena;
+            }
+        }
+        return null;
+    }
+
     public void deleteArena(PlayerProfile owner) {
         LoadedArena removedArena = arenas.remove(owner.getId());
         if (removedArena == null) {
