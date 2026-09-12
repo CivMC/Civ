@@ -12382,16 +12382,6 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
-      glass_bottle:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GLASS_BOTTLE
-        amount: 512
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
     output:
       exp:
         v: 3839
