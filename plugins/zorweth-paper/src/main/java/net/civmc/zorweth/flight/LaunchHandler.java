@@ -251,9 +251,9 @@ public class LaunchHandler {
                 Component.text("Destination not set.", NamedTextColor.RED));
         }
 
-        if (containsExilePearl(payload)) {
+        if (containsIllegalItem(payload)) {
             return new RocketManifestResult(null,
-                Component.text("Pearls cannot be transferred on rockets.", NamedTextColor.RED));
+                Component.text("Filled maps and pearls cannot be transferred on rockets.", NamedTextColor.RED));
         }
 
         return new RocketManifestResult(new RocketManifest(
@@ -286,39 +286,35 @@ public class LaunchHandler {
         return (int) column;
     }
 
-    private static boolean containsExilePearl(final RocketWeightPayload payload) {
+    private static boolean containsIllegalItem(final RocketWeightPayload payload) {
         for (final RocketManifestPassenger passenger : payload.passengers()) {
-            if (containsExilePearl(passenger.inventoryContents())) {
+            if (containsIllegalItem(passenger.inventoryContents())) {
                 return true;
             }
         }
         for (final RocketManifestChest chest : payload.chests()) {
-            if (containsExilePearl(chest.contents())) {
+            if (containsIllegalItem(chest.contents())) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean containsExilePearl(final ItemStack[] contents) {
+    private static boolean containsIllegalItem(final ItemStack[] contents) {
         for (final ItemStack item : contents) {
-            if (isExilePearl(item)) {
+            if (item != null && (item.getType() == Material.FILLED_MAP
+                || (item.getType() == Material.ENDER_PEARL
+                    && Bukkit.getPluginManager().isPluginEnabled("ExilePearl")
+                    && ExilePearlPlugin.getApi() != null
+                    && ExilePearlPlugin.getApi().getPearlFromItemStack(item) != null))) {
                 return true;
             }
             if (item != null && item.getItemMeta() instanceof BundleMeta bundleMeta
-                && containsExilePearl(bundleMeta.getItems().toArray(ItemStack[]::new))) {
+                && containsIllegalItem(bundleMeta.getItems().toArray(ItemStack[]::new))) {
                 return true;
             }
         }
         return false;
-    }
-
-    private static boolean isExilePearl(final ItemStack item) {
-        return item != null
-            && item.getType() == Material.ENDER_PEARL
-            && Bukkit.getPluginManager().isPluginEnabled("ExilePearl")
-            && ExilePearlPlugin.getApi() != null
-            && ExilePearlPlugin.getApi().getPearlFromItemStack(item) != null;
     }
 
     private static double getRemainingFuel(final List<RocketManifestChest> chests,
