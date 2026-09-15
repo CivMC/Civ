@@ -137,6 +137,8 @@ public final class DestinationTransferListener implements Listener {
             return;
         }
 
+        // A previous departure marker can still exist when returning to this server.
+        player.getPersistentDataContainer().remove(RocketTransferKeys.SOURCE_TRANSFER_ID);
         player.getPersistentDataContainer().set(RocketTransferKeys.NO_OTT, PersistentDataType.BOOLEAN, true);
         player.getPersistentDataContainer().set(RocketTransferKeys.NO_STARTER_KIT, PersistentDataType.BOOLEAN, true);
 

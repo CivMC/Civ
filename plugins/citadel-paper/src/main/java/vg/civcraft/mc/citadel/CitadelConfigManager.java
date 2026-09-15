@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -61,6 +62,7 @@ public class CitadelConfigManager extends ConfigParser {
     private int reinforcementBreaksPerToolDamage;
 
     private Map<UUID, WorldBorderBuffers> buffers;
+    private Map<String, List<String>> decayBiomes;
 
     private ReinforcementMultiplier multiplier;
 
@@ -131,6 +133,11 @@ public class CitadelConfigManager extends ConfigParser {
 
     public Map<UUID, WorldBorderBuffers> getWorldBorderBuffers() {
         return Collections.unmodifiableMap(this.buffers);
+    }
+
+    public boolean isBiomeDecayLocation(Location location) {
+        List<String> biomes = decayBiomes.get(location.getWorld().getName());
+        return biomes != null && biomes.contains(location.getBlock().getBiome().getKey().toString());
     }
 
     public ReinforcementMultiplier getMultiplier() {
@@ -218,6 +225,13 @@ public class CitadelConfigManager extends ConfigParser {
         reinforcementBreaksPerToolDamage = config.getInt("reinforcementBreaksPerToolDamage");
 
         parseWorldBorderBuffers(config.getConfigurationSection("world-border-buffers"));
+        decayBiomes = new HashMap<>();
+        ConfigurationSection biomeConfig = config.getConfigurationSection("decay-biomes");
+        if (biomeConfig != null) {
+            for (String worldName : biomeConfig.getKeys(false)) {
+                decayBiomes.put(worldName, biomeConfig.getStringList(worldName));
+            }
+        }
 
         return true;
     }

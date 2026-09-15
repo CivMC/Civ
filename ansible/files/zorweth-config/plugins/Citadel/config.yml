@@ -394,6 +394,11 @@ world-border-buffers:
       x: 0.0
       z: -20000.0
 
+# Basalt deltas decay from reinforcement creation time, regardless of group activity.
+decay-biomes:
+  world:
+    - minecraft:basalt_deltas
+
 # Set this to the unix timestamp in seconds when the activity feature is being added,
 # this is the time used when a player has not entered a region yet
 # activity-default: 1646588117

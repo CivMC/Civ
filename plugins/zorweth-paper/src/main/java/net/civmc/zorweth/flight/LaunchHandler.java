@@ -158,6 +158,9 @@ public class LaunchHandler {
                 itemMass = itemAmount * Fuel.CRUDE_OIL_ITEM_MASS_KG;
             }
             mass += itemMass;
+            if (item.getItemMeta() instanceof BundleMeta bundleMeta) {
+                mass += itemAmount * calculateItemMass(bundleMeta.getItems().toArray(ItemStack[]::new));
+            }
         }
         return mass;
     }

@@ -97,6 +97,9 @@ public final class ZorwethPlugin extends JavaPlugin {
             getServer().getPluginManager().registerEvents(this.researchDisplay, this);
         }
         getServer().getPluginManager().registerEvents(this.stasisHandler, this);
+        if (getServer().getPluginManager().isPluginEnabled("CombatTagPlus")) {
+            getServer().getPluginManager().registerEvents(new RocketCombatLogListener(), this);
+        }
         getServer().getPluginManager().registerEvents(new FlightComputerGui(this), this);
         getServer().getPluginManager().registerEvents(new ArmourRepairKitListener(this), this);
         getServer().getPluginManager().registerEvents(new PhantomMembraneLoreListener(), this);
