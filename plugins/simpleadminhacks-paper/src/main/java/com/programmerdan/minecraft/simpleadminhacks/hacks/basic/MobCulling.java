@@ -5,17 +5,22 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import java.util.Collection;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.DataParser;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Strider;
-import org.bukkit.entity.Turtle;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -23,18 +28,14 @@ public class MobCulling extends BasicHack {
 
     private BukkitTask task;
 
+    @AutoLoad(processor = DataParser.ENTITY_TYPE)
+    private List<EntityType> mobs = List.of();
     @AutoLoad
-    private int turtleAllowance;
+    private int allowance;
     @AutoLoad
-    private int turtleMaxAge;
-
-    @AutoLoad
-    private int striderAllowance;
-    @AutoLoad
-    private int striderMaxAge;
-
-    private final Map<World, Integer> turtleCount = new WeakHashMap<>();
-    private final Map<World, Integer> striderCount = new WeakHashMap<>();
+    private int maxAge;
+    private final Set<EntityType> mobTypes = EnumSet.noneOf(EntityType.class);
+    private final Map<World, Map<EntityType, Integer>> mobCounts = new WeakHashMap<>();
 
     public MobCulling(SimpleAdminHacks plugin, BasicHackConfig config) {
         super(plugin, config);
@@ -43,31 +44,33 @@ public class MobCulling extends BasicHack {
     @Override
     public void onEnable() {
         super.onEnable();
+        for (final EntityType mob : mobs) {
+            if (mob == null || !mob.isAlive()) {
+                plugin.getLogger().warning("Ignoring invalid MobCulling entity type: " + mob);
+                continue;
+            }
+            mobTypes.add(mob);
+        }
         this.task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            for (World world : Bukkit.getWorlds()) {
-                Collection<Turtle> turtles = world.getEntitiesByClass(Turtle.class);
-                turtleCount.put(world, turtles.size());
-                if (turtleMaxAge >= 0) {
-                    for (Turtle turtle : turtles) {
-                        if (turtle.getTicksLived() > turtleMaxAge && turtle.customName() == null) {
-                            Location location = turtle.getLocation();
-                            plugin.getLogger().info("Despawning turtle with " + turtle.getTicksLived() + " ticks lived at " + location.getX() + " " + location.getY() + " " + location.getZ());
-                            turtle.remove();
-                        }
+            for (final World world : Bukkit.getWorlds()) {
+                final Map<EntityType, Integer> counts = new EnumMap<>(EntityType.class);
+                for (final EntityType mobType : mobTypes) {
+                    counts.put(mobType, 0);
+                }
+                for (final LivingEntity mob : world.getLivingEntities()) {
+                    if (!mobTypes.contains(mob.getType())) {
+                        continue;
+                    }
+                    counts.merge(mob.getType(), 1, Integer::sum);
+                    if (maxAge >= 0 && mob.getTicksLived() > maxAge && mob.customName() == null
+                        && (!(mob instanceof Strider strider) || !strider.hasSaddle())) {
+                        final Location location = mob.getLocation();
+                        plugin.getLogger().info("Despawning " + mob.getType() + " with " + mob.getTicksLived()
+                            + " ticks lived at " + location.getX() + " " + location.getY() + " " + location.getZ());
+                        mob.remove();
                     }
                 }
-
-                Collection<Strider> striders = world.getEntitiesByClass(Strider.class);
-                striderCount.put(world, striders.size());
-                if (striderMaxAge >= 0) {
-                    for (Strider strider : striders) {
-                        if (strider.getTicksLived() > striderMaxAge && strider.customName() == null && !strider.hasSaddle()) {
-                            Location location = strider.getLocation();
-                            plugin.getLogger().info("Despawning strider with " + strider.getTicksLived() + " ticks lived at " + location.getX() + " " + location.getY() + " " + location.getZ());
-                            strider.remove();
-                        }
-                    }
-                }
+                mobCounts.put(world, counts);
             }
         }, 0, 20 * 60 * 10);
     }
@@ -80,8 +83,8 @@ public class MobCulling extends BasicHack {
         }
     }
 
-    @EventHandler
-    public void on(PreCreatureSpawnEvent e) {
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void on(final PreCreatureSpawnEvent e) {
         if (e.getReason() != CreatureSpawnEvent.SpawnReason.NATURAL) {
             return;
         }
@@ -89,20 +92,14 @@ public class MobCulling extends BasicHack {
         // The mob allowance is to allow some mobs to spawn with a normal chance so when the world is first
         // generated, players don't find it impossible to find the mob. But later on in the world the mobs just
         // keep accumulating, so you need to stop them from spawning.
-        if (e.getType() == EntityType.TURTLE && turtleAllowance >= 0) {
-            Integer currentCount = turtleCount.get(e.getSpawnLocation().getWorld());
-            if (currentCount == null || currentCount >= turtleAllowance) {
-                if (ThreadLocalRandom.current().nextFloat() >= 0.02) {
-                    e.setCancelled(true);
-                }
-            }
-        } else if (e.getType() == EntityType.STRIDER && striderAllowance >= 0) {
-            Integer currentCount = striderCount.get(e.getSpawnLocation().getWorld());
-            if (currentCount == null || currentCount >= striderAllowance) {
-                if (ThreadLocalRandom.current().nextFloat() >= 0.02) {
-                    e.setCancelled(true);
-                }
-            }
+        if (!mobTypes.contains(e.getType()) || allowance < 0) {
+            return;
+        }
+        final Map<EntityType, Integer> counts = mobCounts.get(e.getSpawnLocation().getWorld());
+        final Integer currentCount = counts == null ? null : counts.get(e.getType());
+        if ((currentCount == null || currentCount >= allowance)
+            && ThreadLocalRandom.current().nextFloat() >= 0.02) {
+            e.setCancelled(true);
         }
     }
 }

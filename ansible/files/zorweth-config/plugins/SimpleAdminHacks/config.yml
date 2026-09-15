@@ -645,11 +645,12 @@ hacks:
   Trowel:
     enabled: true
   MobCulling:
-    enabled: true
-    turtleAllowance: 200
-    turtleMaxAge: 360000
-    striderAllowance: 200
-    striderMaxAge: 360000
+    enabled: false
+    mobs:
+      - TURTLE
+      - STRIDER
+    allowance: 200
+    maxAge: 360000
   NetheriteCrafting:
     enabled: true
   NameLocker:

@@ -73,8 +73,8 @@ public class BuildRocketRecipe extends InputRecipe {
     public List<String> getTextualOutputRepresentation(final Inventory i, final FurnCraftChestFactory fccf) {
         return List.of("Rocket:",
             "6 uses",
-            "200 kg structural mass",
-            "50 kg per player",
+            "150 kg structural mass",
+            "10 kg per player",
             "1 kg per stack",
             "5,000 m/s exhaust velocity",
             "Requires physical space");

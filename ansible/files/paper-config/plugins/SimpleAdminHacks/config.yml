@@ -647,10 +647,18 @@ hacks:
     enabled: true
   MobCulling:
     enabled: true
-    turtleAllowance: 200
-    turtleMaxAge: 360000
-    striderAllowance: 200
-    striderMaxAge: 360000
+    mobs:
+      - TURTLE
+      - STRIDER
+      - CHICKEN
+      - COW
+      - SHEEP
+      - PIG
+      - NAUTILUS
+      - FOX
+      - ARMADILLO
+    allowance: 200
+    maxAge: 360000
   NetheriteCrafting:
     enabled: true
   NameLocker:
