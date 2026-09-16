@@ -1,7 +1,7 @@
-val paperPlugin by configurations.creating
-val pvpPlugin by configurations.creating
-val proxyPlugin by configurations.creating
-val zorwethPlugin by configurations.creating
+val paperPlugin = configurations.create("paperPlugin")
+val pvpPlugin = configurations.create("pvpPlugin")
+val proxyPlugin = configurations.create("proxyPlugin")
+val zorwethPlugin = configurations.create("zorwethPlugin")
 
 dependencies {
     paperPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
@@ -87,7 +87,7 @@ val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
 
     from("$projectDir/src/paper-plugins")
     from(paperPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
-    into("$buildDir/paper-plugins")
+    into(layout.buildDirectory.dir("paper-plugins"))
 }
 
 val copyZorwethPlugins = tasks.register<Copy>("copyZorwethPlugins") {
@@ -99,7 +99,7 @@ val copyZorwethPlugins = tasks.register<Copy>("copyZorwethPlugins") {
 
     from("$projectDir/src/zorweth-plugins")
     from(zorwethPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
-    into("$buildDir/zorweth-plugins")
+    into(layout.buildDirectory.dir("zorweth-plugins"))
 }
 
 val copyPvpPlugins = tasks.register<Copy>("copyPvpPlugins") {
