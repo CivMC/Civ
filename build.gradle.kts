@@ -38,7 +38,6 @@ allprojects {
 }
 
 subprojects {
-    // Add `jvm-test-suite` to subprojects to apply their tests
     project.pluginManager.withPlugin("java") {
         @Suppress("UnstableApiUsage")
         project.extensions.configure<TestingExtension> {
