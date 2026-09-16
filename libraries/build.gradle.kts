@@ -2,7 +2,7 @@
 subprojects {
     apply(plugin = "java-library")
 
-    var javaVersion = 21
+    var javaVersion = 25
     configure<JavaPluginExtension> {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(javaVersion))
