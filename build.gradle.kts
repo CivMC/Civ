@@ -1,4 +1,6 @@
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     alias(libs.plugins.paper.userdev) apply false
@@ -32,5 +34,30 @@ allprojects {
         maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
         maven("https://jitpack.io")
         maven("https://repo.ajg0702.us/releases")
+    }
+}
+
+subprojects {
+    // Add `jvm-test-suite` to subprojects to apply their tests
+    project.pluginManager.withPlugin("java") {
+        @Suppress("UnstableApiUsage")
+        project.extensions.configure<TestingExtension> {
+            suites {
+                withType<JvmTestSuite>().configureEach {
+                    useJUnitJupiter()
+                    targets.configureEach {
+                        testTask.configure {
+                            testLogging {
+                                events(*TestLogEvent.entries.toTypedArray())
+                                exceptionFormat = TestExceptionFormat.FULL
+                                showCauses = true
+                                showExceptions = true
+                                showStackTraces = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
