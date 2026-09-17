@@ -28,7 +28,7 @@ mechanics:
 pioneer-end-timestamp: 1783116000000
 
 research:
-  enabled: true
+  enabled: false
   shop-enabled: true
   disable-progress-until: 0
   phase-one-runs: 22500
