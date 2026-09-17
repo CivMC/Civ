@@ -156,6 +156,7 @@ entities:
         diorite: 1200
         granite: 1200
         andesite: 1200
+        netherrack: 1200
         deepslate_diamond_ore: 12000
         diamond: 12000
         diamond_axe: 12000
