@@ -99,6 +99,10 @@ hacks:
       - BAD_OMEN
       - SLOW_DIGGING
       - SLOW_FALLING
+      - OOZING
+      - WEAVING
+      - INFESTED
+      - WIND_CHARGED
   DebugWand:
     enabled: true
   ServerLinksHack:
@@ -562,8 +566,8 @@ hacks:
   WitherSkeletonCoalHack:
     enabled: true
     coalDropChance: 0.2
-  NoOozing:
-    enabled: true
+  WaterMushroomDropHack:
+    enabled: false
   PortalConnect:
     enabled: false
     server: main

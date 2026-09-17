@@ -109,6 +109,10 @@ hacks:
       - SLOW_DIGGING
       - SLOW_FALLING
       - UNLUCK
+      - OOZING
+      - WEAVING
+      - INFESTED
+      - WIND_CHARGED
   DebugWand:
     enabled: true
   DogFacts:
@@ -620,8 +624,8 @@ hacks:
   WitherSkeletonCoalHack:
     enabled: true
     coalDropChance: 0.2
-  NoOozing:
-    enabled: true
+  WaterMushroomDropHack:
+    enabled: false
   BuildLimits:
     enabled: true
     limits:

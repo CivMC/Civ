@@ -108,6 +108,10 @@ hacks:
       - SLOW_DIGGING
       - SLOW_FALLING
       - UNLUCK
+      - OOZING
+      - WEAVING
+      - INFESTED
+      - WIND_CHARGED
   DebugWand:
     enabled: true
   DogFacts:
@@ -567,8 +571,8 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
-  NoOozing:
-    enabled: true
+  WaterMushroomDropHack:
+    enabled: false
   PortalConnect:
     enabled: true
     server: main
