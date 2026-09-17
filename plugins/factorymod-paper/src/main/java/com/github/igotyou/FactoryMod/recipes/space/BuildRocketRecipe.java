@@ -172,7 +172,7 @@ public class BuildRocketRecipe extends InputRecipe {
                 } else if (Tag.COPPER_CHESTS.isTagged(target.getType())) {
                     final Reinforcement furnaceReinforcement = ReinforcementLogic.getReinforcementAt(fccf.getFurnace().getLocation());
                     if (furnaceReinforcement == null) {
-                        return;
+                        continue;
                     }
                     reinforce(fccf, target, Material.STONE);
                 }
