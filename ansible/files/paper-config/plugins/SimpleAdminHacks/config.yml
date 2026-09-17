@@ -607,6 +607,8 @@ hacks:
       WAXED_WEATHERED_COPPER: 19
       OXIDIZED_COPPER: 15
       WAXED_OXIDIZED_COPPER: 15
+  CactusCleanup:
+    enabled: true
   CopperRail:
     enabled: true
     deoxidise: true

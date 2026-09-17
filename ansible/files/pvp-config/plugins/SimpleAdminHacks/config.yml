@@ -556,6 +556,8 @@ hacks:
       EXPOSED_COPPER: 24
       WEATHERED_COPPER: 19
       OXIDIZED_COPPER: 15
+  CactusCleanup:
+    enabled: false
   CopperRail:
     enabled: true
     deoxidise: true
