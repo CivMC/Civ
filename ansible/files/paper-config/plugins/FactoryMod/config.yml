@@ -540,21 +540,7 @@ factories:
         type: WHITE_WOOL
         amount: 128
     recipes:
-      - dye_wool_orange
-      - dye_wool_magenta
-      - dye_wool_light_blue
-      - dye_wool_yellow
-      - dye_wool_lime
-      - dye_wool_pink
-      - dye_wool_gray
-      - dye_wool_light_gray
-      - dye_wool_cyan
-      - dye_wool_purple
-      - dye_wool_blue
-      - dye_wool_brown
-      - dye_wool_green
-      - dye_wool_red
-      - dye_wool_black
+      - dye_variant_wool
       - repair_wool
   dye_clay:
     type: FCC
@@ -5312,321 +5298,44 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: BLACK_GLAZED_TERRACOTTA
         amount: 64
-  dye_wool_orange:
+  dye_variant_wool:
     production_time: 4s
-    name: Dye Wool Orange
-    type: PRODUCTION
+    name: Dye Wool
+    type: VARIANT
     input:
-      wool:
+      white_wool:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_WOOL
         amount: 64
-      orange_dye:
+    variant_input:
+      white_dye:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: ORANGE_DYE
+        type: WHITE_DYE
         amount: 4
-    output:
-      orange_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: ORANGE_WOOL
-        amount: 64
-  dye_wool_magenta:
-    production_time: 4s
-    name: Dye Wool Magenta
-    type: PRODUCTION
-    input:
-      wool:
+    variant_output:
+      white_wool:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_WOOL
         amount: 64
-      magenta_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: MAGENTA_DYE
-        amount: 4
-    output:
-      magenta_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: MAGENTA_WOOL
-        amount: 64
-  dye_wool_light_blue:
-    production_time: 4s
-    name: Dye Wool Light Blue
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      light_blue_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: LIGHT_BLUE_DYE
-        amount: 4
-    output:
-      light_blue_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: LIGHT_BLUE_WOOL
-        amount: 64
-  dye_wool_yellow:
-    production_time: 4s
-    name: Dye Wool Yellow
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      yellow_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: YELLOW_DYE
-        amount: 4
-    output:
-      yellow_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: YELLOW_WOOL
-        amount: 64
-  dye_wool_lime:
-    production_time: 4s
-    name: Dye Wool Lime
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      lime_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: LIME_DYE
-        amount: 4
-    output:
-      lime_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: LIME_WOOL
-        amount: 64
-  dye_wool_pink:
-    production_time: 4s
-    name: Dye Wool Pink
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      pink_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: PINK_DYE
-        amount: 4
-    output:
-      pink_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: PINK_WOOL
-        amount: 64
-  dye_wool_gray:
-    production_time: 4s
-    name: Dye Wool Gray
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      gray_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GRAY_DYE
-        amount: 4
-    output:
-      gray_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GRAY_WOOL
-        amount: 64
-  dye_wool_light_gray:
-    production_time: 4s
-    name: Dye Wool Light Gray
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      light_gray_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: LIGHT_GRAY_DYE
-        amount: 4
-    output:
-      light_gray_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: LIGHT_GRAY_WOOL
-        amount: 64
-  dye_wool_cyan:
-    production_time: 4s
-    name: Dye Wool Cyan
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      cyan_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CYAN_DYE
-        amount: 4
-    output:
-      cyan_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CYAN_WOOL
-        amount: 64
-  dye_wool_purple:
-    production_time: 4s
-    name: Dye Wool Purple
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      purple_dye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: PURPLE_DYE
-        amount: 4
-    output:
-      purple_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: PURPLE_WOOL
-        amount: 64
-  dye_wool_blue:
-    production_time: 4s
-    name: Dye Wool Blue
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      lapis:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BLUE_DYE
-        amount: 4
-    output:
-      blue_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BLUE_WOOL
-        amount: 64
-  dye_wool_brown:
-    production_time: 4s
-    name: Dye Wool Brown
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      cocoa:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BROWN_DYE
-        amount: 4
-    output:
-      brown_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BROWN_WOOL
-        amount: 64
-  dye_wool_green:
-    production_time: 4s
-    name: Dye Wool Green
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      cactus green:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GREEN_DYE
-        amount: 4
-    output:
-      green_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GREEN_WOOL
-        amount: 64
-  dye_wool_red:
-    production_time: 4s
-    name: Dye Wool Red
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      rose red:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: RED_DYE
-        amount: 4
-    output:
-      red_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: RED_WOOL
-        amount: 64
-  dye_wool_black:
-    production_time: 4s
-    name: Dye Wool Black
-    type: PRODUCTION
-    input:
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
-        amount: 64
-      ink sac:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BLACK_DYE
-        amount: 4
-    output:
-      black_wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BLACK_WOOL
-        amount: 64
+    variant_prefixes:
+      - ORANGE
+      - MAGENTA
+      - LIGHT_BLUE
+      - YELLOW
+      - LIME
+      - PINK
+      - GRAY
+      - LIGHT_GRAY
+      - CYAN
+      - PURPLE
+      - BLUE
+      - BROWN
+      - GREEN
+      - RED
+      - BLACK
   dye_glass_white:
     production_time: 4s
     name: Dye Glass White
