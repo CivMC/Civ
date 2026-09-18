@@ -7,6 +7,7 @@ import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.recipes.VariantRecipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -126,6 +127,11 @@ public class ItemUseGUI {
         if (recipe.getInput().getAmount(item) != 0) {
             return getItemRecipeStack(fccEgg, recipe, item);
         }
+        if (recipe instanceof VariantRecipe vr) {
+            if (vr.acceptsInputMaterial(item.getType())) {
+                return getItemRecipeStack(fccEgg, recipe, item);
+            }
+        }
         return null;
     }
 
@@ -139,6 +145,11 @@ public class ItemUseGUI {
         if (recipe instanceof CompactingRecipe) {
             CompactingRecipe output = (CompactingRecipe) recipe;
             if (String.join("", ItemUtils.getLore(item)).equals(output.getCompactedLore())) {
+                return getItemRecipeStack(fccEgg, recipe, item);
+            }
+        }
+        if (recipe instanceof VariantRecipe vr) {
+            if (vr.producesOutputMaterial(item.getType())) {
                 return getItemRecipeStack(fccEgg, recipe, item);
             }
         }

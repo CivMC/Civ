@@ -1,5 +1,30 @@
 package com.github.igotyou.FactoryMod;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import org.apache.commons.lang3.text.WordUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
@@ -26,6 +51,7 @@ import com.github.igotyou.FactoryMod.recipes.RandomOutputRecipe;
 import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
+import com.github.igotyou.FactoryMod.recipes.VariantRecipe;
 import com.github.igotyou.FactoryMod.recipes.WordBankRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorCreateRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorFinishRecipe;
@@ -43,35 +69,12 @@ import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
 import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
-import org.apache.commons.lang3.text.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
+
 import vg.civcraft.mc.civmodcore.config.ConfigHelper;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTime;
 import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTimeAsTicks;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class ConfigParser {
 
@@ -583,6 +586,93 @@ public class ConfigParser {
                     modi = ((ProductionRecipe) parentRecipe).getModifier().clone();
                 }
                 result = new ProductionRecipe(identifier, name, productionTime, input, output, recipeRepresentation, modi);
+                break;
+            case "VARIANT":
+                ConfigurationSection variantInputSection = config.getConfigurationSection("variant_input");
+                if (variantInputSection == null) {
+                    plugin.warning("No variant_input specified for VARIANT recipe " + name);
+                    result = null;
+                    break;
+                }
+                ItemStack variantInput = parseFirstItem(variantInputSection);
+                if (variantInput == null || variantInput.getType().isEmpty()) {
+                    plugin.warning("Could not parse variant_input for VARIANT recipe " + name);
+                    result = null;
+                    break;
+                }
+                ConfigurationSection variantOutputSection = config.getConfigurationSection("variant_output");
+                if (variantOutputSection == null) {
+                    plugin.warning("No variant_output specified for VARIANT recipe " + name);
+                    result = null;
+                    break;
+                }
+                ItemStack variantOutput = parseFirstItem(variantOutputSection);
+                if (variantOutput == null || variantOutput.getType().isEmpty()) {
+                    plugin.warning("Could not parse variant_output for VARIANT recipe " + name);
+                    result = null;
+                    break;
+                }
+                ItemMap fixedOutputMap;
+                ConfigurationSection fixedOutputSection = config.getConfigurationSection("output");
+                if (fixedOutputSection == null) {
+                    fixedOutputMap = new ItemMap();
+                } else {
+                    fixedOutputMap = ConfigHelper.parseItemMap(fixedOutputSection);
+                }
+                List<String> variantPrefixes = config.getStringList("variant_prefixes");
+                ConfigurationSection overridesSection = config.getConfigurationSection("variant_overrides");
+                Map<Material, Material> variantMap = new LinkedHashMap<>();
+                String baseInputName = variantInput.getType().name();
+                int firstUnderscore = baseInputName.indexOf('_');
+                String basePrefix = firstUnderscore != -1 ? baseInputName.substring(0, firstUnderscore) : baseInputName;
+                String inputSuffix = firstUnderscore != -1 ? baseInputName.substring(firstUnderscore) : "";
+                String baseOutputName = variantOutput.getType().name();
+                int outFirstUnderscore = baseOutputName.indexOf('_');
+                String outputSuffix = outFirstUnderscore != -1 ? baseOutputName.substring(outFirstUnderscore) : "";
+                boolean outputHasSuffix = outFirstUnderscore != -1;
+                for (String prefix : variantPrefixes) {
+                    String inputName = prefix + inputSuffix;
+                    Material inputMat = Material.getMaterial(inputName);
+                    Material outputMat;
+                    String outputName;
+                    if (outputHasSuffix) {
+                        outputName = prefix + outputSuffix;
+                        outputMat = Material.getMaterial(outputName);
+                    } else {
+                        outputName = baseOutputName;
+                        outputMat = variantOutput.getType();
+                    }
+                    if (inputMat != null && outputMat != null) {
+                        variantMap.put(inputMat, outputMat);
+                    } else {
+                        plugin.warning("Could not resolve VARIANT mapping for prefix " + prefix
+                            + " in recipe " + name + " (" + inputName + " -> " + outputName + ")");
+                    }
+                }
+                if (overridesSection != null) {
+                    for (String key : overridesSection.getKeys(false)) {
+                        ConfigurationSection overrideSec = overridesSection.getConfigurationSection(key);
+                        if (overrideSec != null) {
+                            Material overrideInput = Material.getMaterial(overrideSec.getString("input", ""));
+                            Material overrideOutput;
+                            String explicitOutput = overrideSec.getString("output", null);
+                            if (explicitOutput != null) {
+                                overrideOutput = Material.getMaterial(explicitOutput);
+                            } else {
+                                overrideOutput = outputHasSuffix ? Material.getMaterial(key + outputSuffix) : variantOutput.getType();
+                            }
+                            if (overrideInput != null && overrideOutput != null) {
+                                variantMap.put(overrideInput, overrideOutput);
+                            } else {
+                                plugin.warning("Could not resolve VARIANT override for " + key
+                                    + " in recipe " + name);
+                            }
+                        }
+                    }
+                }
+                variantMap.putIfAbsent(variantInput.getType(), variantOutput.getType());
+                result = new VariantRecipe(identifier, name, productionTime, input, variantInput,
+                    fixedOutputMap, variantOutput, variantMap);
                 break;
             case "EXTRACT_OIL":
                 ConfigurationSection oilOutputSection = config.getConfigurationSection("output");
