@@ -98,7 +98,7 @@ performance:
       spawn-chance: 25.0
   throttle-hopper-when-full:
     # Throttles the hopper if target container is full.
-    enabled: false
+    enabled: true
     # How many ticks to throttle when the Hopper is throttled.
     skip-ticks: 8
   skip-map-item-data-updates-if-map-does-not-have-craftmaprenderer: true
