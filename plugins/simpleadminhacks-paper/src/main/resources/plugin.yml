@@ -89,8 +89,8 @@ commands:
     usage: /<command> full.path.to.event
     permission: simpleadmin.eventdebug
   setplayercap:
-    description: Set player cap
-    usage: /<command> <cap>
+    description: Set a manual player cap, enable automatic control, or show status
+    usage: /<command> <cap|auto|status>
     permission: simpleadmin.setplayercap
   stats: { } # Defined in (basic) PlayerStats
 permissions:

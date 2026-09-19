@@ -578,6 +578,24 @@ hacks:
     enabled: true
   PlayerCap:
     enabled: true
+    auto:
+      enabled: false
+      # Players may fill the minimum normally; above it growth is one slot at a time.
+      # Existing slots remain available for replacements when players leave.
+      minCap: 125
+      maxCap: 200
+      sampleSeconds: 5
+      ewmaHalfLifeSeconds: 30
+      # EWMA measures tick execution time in milliseconds (excluding idle time).
+      # Each full high-MSPT period reduces min(cap, online count) by reduceStep.
+      # A cap below the online count blocks joins without kicking existing players.
+      reduceAboveMspt: 59.0
+      reduceHoldSeconds: 60
+      reduceStep: 1
+      increaseBelowMspt: 54.0
+      recoverySeconds: 60
+      # Starts on population growth (including bypass joins), not slot offers or replacements.
+      settleSeconds: 90
   FairPlay:
     enabled: true
   PlayerCount:

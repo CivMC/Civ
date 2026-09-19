@@ -647,6 +647,20 @@ hacks:
     enabled: true
   PlayerCap:
     enabled: true
+    auto:
+      enabled: true
+      # Baseline capacity; growth above this is one slot at a time.
+      # Departures leave existing slots available; replacements do not reset settling.
+      minCap: 125
+      maxCap: 200
+      sampleSeconds: 5
+      ewmaHalfLifeSeconds: 30
+      reduceAboveMspt: 71.0
+      reduceHoldSeconds: 60
+      reduceStep: 1
+      increaseBelowMspt: 62.0
+      recoverySeconds: 60
+      settleSeconds: 90
   FairPlay:
     enabled: true
   PlayerCount:

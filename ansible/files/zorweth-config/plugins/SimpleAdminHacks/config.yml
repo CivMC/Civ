@@ -644,6 +644,8 @@ hacks:
     enabled: true
   PlayerCap:
     enabled: true
+    auto:
+      enabled: false
   FairPlay:
     enabled: true
   PlayerCount:
