@@ -1,7 +1,9 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
+import io.papermc.paper.plugin.provider.classloader.ConfiguredPluginClassLoader;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,4 +72,27 @@ public final class KeyedUtils {
         return new NamespacedKey("test", key);
     }
 
+    public static @NotNull NamespacedKey of(
+        final @NotNull Class<? extends JavaPlugin> pluginClass,
+        final @NotNull String value
+    ) {
+        /// This code is based on [JavaPlugin#getPlugin] but avoids accessing the plugin instance itself, making this
+        /// safe to use even when a plugin instance doesn't necessarily exist yet.
+        if (!JavaPlugin.class.isAssignableFrom(pluginClass)) {
+            throw new IllegalArgumentException("%s does not extend %s!".formatted(
+                pluginClass.getName(),
+                JavaPlugin.class.getName()
+            ));
+        }
+        if (!(pluginClass.getClassLoader() instanceof ConfiguredPluginClassLoader classLoader)) {
+            throw new IllegalArgumentException("%s was not loaded by %s!".formatted(
+                pluginClass.getName(),
+                ConfiguredPluginClassLoader.class.getName()
+            ));
+        }
+        return new NamespacedKey(
+            classLoader.getConfiguration().namespace(),
+            value
+        );
+    }
 }
