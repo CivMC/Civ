@@ -367,7 +367,7 @@ public abstract class InputRecipe implements IRecipe {
                 ItemStack toInsert = outputTemplate.clone();
                 toInsert.setAmount(movedAmount);
 
-                Map<Integer, ItemStack> overflow = outputInv.addItem(toInsert);
+                java.util.Map<Integer, ItemStack> overflow = outputInv.addItem(toInsert);
 
                 int overflowAmount = 0;
                 for (ItemStack overflowStack : overflow.values()) {
@@ -423,7 +423,7 @@ public abstract class InputRecipe implements IRecipe {
                 ItemStack removedStack = removedTemplate.clone();
                 removedStack.setAmount(movedAmount);
 
-                Map<Integer, ItemStack> overflow = inputInv.addItem(removedStack);
+                java.util.Map<Integer, ItemStack> overflow = inputInv.addItem(removedStack);
 
                 if (!overflow.isEmpty()) {
                     FactoryMod.getInstance().warning(
