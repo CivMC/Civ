@@ -159,7 +159,7 @@ public class VariantRecipe extends InputRecipe {
     }
 
     @Override
-    public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv,Inventory outputInv,FurnCraftChestFactory fccf) {
         Material selectedOutput = null;
         ItemMap invMap = new ItemMap(inputInv);
 
@@ -267,7 +267,6 @@ public class VariantRecipe extends InputRecipe {
         return result;
     }
 
-    @Override
     public ItemStack getRecipeRepresentation(Inventory inputInv) {
 
         Material displayMaterial = baseVariantOutput.getType();
