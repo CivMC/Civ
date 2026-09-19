@@ -311,7 +311,7 @@ fixes:
 hopper:
   cooldown-when-full: true
   disable-move-event: false
-  ignore-occluding-blocks: false
+  ignore-occluding-blocks: true
 lootables:
   auto-replenish: false
   max-refills: -1
