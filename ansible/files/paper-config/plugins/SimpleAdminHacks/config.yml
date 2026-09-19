@@ -655,10 +655,10 @@ hacks:
       maxCap: 200
       sampleSeconds: 5
       ewmaHalfLifeSeconds: 30
-      reduceAboveMspt: 71.0
+      reduceAboveMspt: 73.0
       reduceHoldSeconds: 60
       reduceStep: 1
-      increaseBelowMspt: 62.0
+      increaseBelowMspt: 64.0
       recoverySeconds: 60
       settleSeconds: 90
   FairPlay:
