@@ -175,18 +175,10 @@ performance:
     # A list of entities to ignore for activation
     blacklisted-entities:
     - blaze
-    - cave_spider
-    - ghast
-    - goat
-    - hoglin
-    - husk
-    - piglin_brute
-    - silverfish
     - stray
     - sniffer
     - villager
     - witch
-    - wither_skeleton
     - zombified_piglin
   dont-save-entity:
     # Disable save primed tnt on chunk unloads.
