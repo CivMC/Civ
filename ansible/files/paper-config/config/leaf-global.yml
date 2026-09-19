@@ -109,7 +109,7 @@ performance:
   skip-ai-for-non-aware-mob: true
   reduce-packets:
     reduce-entity-move-packets: false
-  optimized-powered-rails: false
+  optimized-powered-rails: true
   optimize-waypoint: false
   optimize-random-tick: true
   # Whether to optimize player movement processing by skipping unnecessary edge checks and avoiding redundant view distance updates.
