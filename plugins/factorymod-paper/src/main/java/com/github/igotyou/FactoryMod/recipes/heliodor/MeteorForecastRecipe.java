@@ -46,7 +46,7 @@ public final class MeteorForecastRecipe extends InputRecipe {
 
     @Override
     public List<String> getTextualOutputRepresentation(final Inventory i, final FurnCraftChestFactory fccf) {
-        return List.of("Reports a one hour window for the next meteor");
+        return List.of("Reports a 5 minute window for the next meteor");
     }
 
     @Override
