@@ -147,27 +147,60 @@ public abstract class InputRecipe implements IRecipe {
      * @return A single itemstack which is used to represent this recipe as a
      * whole in an item gui
      */
-    public ItemStack getRecipeRepresentation() {
-        ItemStack res = getRecipeRepresentationType();
-        ItemMeta im = res.getItemMeta();
-        im.setDisplayName(ChatColor.DARK_GREEN + getName());
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GOLD + "Input:");
+public ItemStack getRecipeRepresentation() {
+    return getRecipeRepresentation(null);
+}
+
+public ItemStack getRecipeRepresentation(Inventory inputInv) {
+    ItemStack res = getRecipeRepresentationType();
+    ItemMeta im = res.getItemMeta();
+    im.setDisplayName(ChatColor.DARK_GREEN + getName());
+
+    List<String> lore = new ArrayList<>();
+    lore.add(ChatColor.GOLD + "Input:");
+
+    if (inputInv == null) {
         for (String s : getTextualInputRepresentation(null, null)) {
             lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + s);
         }
-        lore.add("");
-        lore.add(ChatColor.GOLD + "Output:");
-        for (String s : getTextualOutputRepresentation(null, null)) {
-            lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + s);
+    } else {
+        ItemMap inventoryMap = new ItemMap(inputInv);
+
+        for (Entry<ItemStack, Integer> entry : input.getAllItems().entrySet()) {
+            if (entry.getValue() <= 0) {
+                continue;
+            }
+
+            int required = entry.getValue();
+            int available = inventoryMap.getAmount(entry.getKey());
+
+            ChatColor color = available >= required
+                ? ChatColor.GREEN
+                : ChatColor.RED;
+
+            lore.add(
+                ChatColor.GRAY + " - "
+                    + color + available + "/" + required + " "
+                    + formatIngredientName(entry.getKey())
+            );
         }
-        lore.add("");
-        lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.GRAY + TextUtil
-            .formatDuration(getProductionTime() * 50, TimeUnit.MILLISECONDS));
-        im.setLore(lore);
-        res.setItemMeta(im);
-        return res;
     }
+
+    lore.add("");
+    lore.add(ChatColor.GOLD + "Output:");
+
+    for (String s : getTextualOutputRepresentation(null, null)) {
+        lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + s);
+    }
+
+    lore.add("");
+    lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.GRAY + TextUtil
+        .formatDuration(getProductionTime() * 50, TimeUnit.MILLISECONDS));
+
+    im.setLore(lore);
+    res.setItemMeta(im);
+    return res;
+}
 
     public abstract Material getRecipeRepresentationMaterial();
 

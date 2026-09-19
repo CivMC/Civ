@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.component.DataComponents;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -65,11 +67,17 @@ public class PrintNoteRecipe extends PrintBookRecipe {
     }
 
     @Override
-    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+    public boolean applyEffect(
+        Inventory inputInv,
+        Inventory outputInv,
+        FurnCraftChestFactory fccf
+    ) {
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
 
-        ItemStack printingPlateStack = getPrintingPlateItemStack(inputInv, getPrintingPlate());
+        ItemStack printingPlateStack =
+            getPrintingPlateItemStack(inputInv, getPrintingPlate());
+
         ItemMap toRemove = this.input.clone();
 
         if (printingPlateStack != null
@@ -77,13 +85,14 @@ public class PrintNoteRecipe extends PrintBookRecipe {
             && toRemove.removeSafelyFrom(inputInv)
         ) {
             BookInfo info = getBookInfo(printingPlateStack);
-            ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
 
+            ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
             ItemMeta paperMeta = paper.getItemMeta();
+
             paperMeta.setDisplayName(ChatColor.RESET + info.title);
             paperMeta.setLore(info.lines);
-            paper.setItemMeta(paperMeta);
 
+            paper.setItemMeta(paperMeta);
             outputInv.addItem(paper);
         }
 
@@ -94,27 +103,46 @@ public class PrintNoteRecipe extends PrintBookRecipe {
     private BookInfo getBookInfo(ItemStack printingPlateStack) {
         ItemStack book = createBook(printingPlateStack, 1);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
+
         int version = getVersion(printingPlateStack);
-        String text = bookMeta.getPageCount() > 0 ?
-            version == 0 ? bookMeta.getPage(1) : String.join("", bookMeta.getPages())
+
+        String text = bookMeta.getPageCount() > 0
+            ? version == 0
+                ? bookMeta.getPage(1)
+                : String.join("", bookMeta.getPages())
             : "";
+
         String[] lines = text.split("\n");
         List<String> fixedLines = new ArrayList<>();
 
         for (String line : lines) {
-            fixedLines.add(ChatColor.GRAY + line
-                .replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
+            fixedLines.add(
+                ChatColor.GRAY + line
+                    .replaceAll(
+                        ChatColor.RESET.toString(),
+                        ChatColor.GRAY.toString()
+                    )
+            );
         }
 
         String bookTitle = bookMeta.getTitle();
 
         BookInfo info = new BookInfo();
         info.lines = fixedLines;
-        info.title = bookTitle != null && !bookTitle.isEmpty() ? bookTitle : this.title;
+        info.title = bookTitle != null && !bookTitle.isEmpty()
+            ? bookTitle
+            : this.title;
 
         if (this.secureNote) {
-            net.minecraft.world.item.ItemStack bookItem = CraftItemStack.asNMSCopy(printingPlateStack);
-            String bookSN = bookItem.get(DataComponents.CUSTOM_DATA).copyTag().getString("SN").get();
+            net.minecraft.world.item.ItemStack bookItem =
+                CraftItemStack.asNMSCopy(printingPlateStack);
+
+            String bookSN = bookItem
+                .get(DataComponents.CUSTOM_DATA)
+                .copyTag()
+                .getString("SN")
+                .get();
+
             info.lines.add(bookSN);
         }
 
@@ -124,18 +152,38 @@ public class PrintNoteRecipe extends PrintBookRecipe {
     private int getVersion(ItemStack item) {
         var book = CraftItemStack.asNMSCopy(item);
         var tag = book.get(DataComponents.WRITTEN_BOOK_CONTENT);
-        if (tag != null) return tag.generation();
+
+        if (tag != null) {
+            return tag.generation();
+        }
+
         return 0;
     }
 
     @Override
-    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+    public List<String> getTextualInputRepresentation(
+        Inventory i,
+        FurnCraftChestFactory fccf
+    ) {
+        return super.getTextualInputRepresentation(i, fccf);
+    }
+
+    @Override
+    public List<ItemStack> getOutputRepresentation(
+        Inventory i,
+        FurnCraftChestFactory fccf
+    ) {
         ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
         ItemUtils.setDisplayName(paper, this.title);
 
         List<ItemStack> stacks = new ArrayList<>();
         stacks.add(paper);
-        stacks.add(getPrintingPlateRepresentation(getPrintingPlate(), PrintingPlateRecipe.itemName));
+        stacks.add(
+            getPrintingPlateRepresentation(
+                getPrintingPlate(),
+                PrintingPlateRecipe.itemName
+            )
+        );
 
         if (i == null) {
             return stacks;
@@ -144,8 +192,12 @@ public class PrintNoteRecipe extends PrintBookRecipe {
         int possibleRuns = input.getMultiplesContainedIn(i);
 
         for (ItemStack is : stacks) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
-                + String.valueOf(possibleRuns) + " runs");
+            ItemUtils.addLore(
+                is,
+                ChatColor.GREEN + "Enough materials for "
+                    + String.valueOf(possibleRuns)
+                    + " runs"
+            );
         }
 
         return stacks;
@@ -154,9 +206,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
     @Override
     public ItemStack getRecipeRepresentation() {
         ItemStack res = new ItemStack(Material.PAPER);
-
         ItemUtils.setDisplayName(res, getName());
-
         return res;
     }
 

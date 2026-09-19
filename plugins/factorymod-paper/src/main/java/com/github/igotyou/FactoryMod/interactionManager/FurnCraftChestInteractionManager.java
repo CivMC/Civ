@@ -273,7 +273,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
         List<IClickable> recipeClickList = new ArrayList<>(recipeList.size());
         for (IRecipe rec : fccf.getRecipes()) {
             InputRecipe recipe = (InputRecipe) (rec);
-            ItemStack recStack = recipe.getRecipeRepresentation();
+            ItemStack recStack = recipe.getRecipeRepresentation(fccf.getInputInventory());
             int runcount = fccf.getRunCount(recipe);
             ItemUtils.addLore(recStack, "", ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
             if (rec == fccf.getCurrentRecipe()) {

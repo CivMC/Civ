@@ -6,6 +6,7 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.WrittenBookContent;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -23,6 +25,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
+
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -37,7 +40,13 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
         return this.output;
     }
 
-    public PrintingPlateRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap output) {
+    public PrintingPlateRecipe(
+        String identifier,
+        String name,
+        int productionTime,
+        ItemMap input,
+        ItemMap output
+    ) {
         super(identifier, name, productionTime, input);
         this.output = output;
     }
@@ -48,33 +57,60 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
     }
 
     @Override
-    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-        MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+    public boolean applyEffect(
+        Inventory inputInv,
+        Inventory outputInv,
+        FurnCraftChestFactory fccf
+    ) {
+        MultiInventoryWrapper combo =
+            new MultiInventoryWrapper(inputInv, outputInv);
+
         logBeforeRecipeRun(combo, fccf);
 
         ItemStack book = getBook(inputInv);
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
+
         if (!bookMeta.hasGeneration()) {
             bookMeta.setGeneration(Generation.ORIGINAL);
         }
+
         String serialNumber = UUID.randomUUID().toString();
 
         ItemMap toRemove = input.clone();
         ItemMap toAdd = output.clone();
 
-        if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
+        if (toRemove.isContainedIn(inputInv)
+            && toRemove.removeSafelyFrom(inputInv)
+        ) {
             for (ItemStack is : toAdd.getItemStackRepresentation()) {
-                is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).get(DataComponents.WRITTEN_BOOK_CONTENT));
+
+                is = addTags(
+                    serialNumber,
+                    is,
+                    CraftItemStack.asNMSCopy(book)
+                        .get(DataComponents.WRITTEN_BOOK_CONTENT)
+                );
 
                 ItemUtils.setDisplayName(is, itemName);
-                ItemUtils.setLore(is,
+
+                ItemUtils.setLore(
+                    is,
                     serialNumber,
                     ChatColor.WHITE + bookMeta.getTitle(),
                     ChatColor.GRAY + "by " + bookMeta.getAuthor(),
-                    ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
+                    ChatColor.GRAY
+                        + getGenerationName(bookMeta.getGeneration())
                 );
-                is.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
-                is.editMeta(x -> x.addItemFlags(ItemFlag.HIDE_ENCHANTS));
+
+                is.addUnsafeEnchantment(
+                    Enchantment.UNBREAKING,
+                    1
+                );
+
+                is.editMeta(
+                    x -> x.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                );
+
                 outputInv.addItem(is);
             }
         }
@@ -83,18 +119,32 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
         return true;
     }
 
-    public static ItemStack addTags(String serialNumber, ItemStack plate, WrittenBookContent bookTag) {
-        net.minecraft.world.item.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
-        CustomData customData = CustomData.EMPTY
-				.update(nbt -> {
-					nbt.putString("SN", serialNumber);
-					nbt.putInt("Version", version);
-				});
-		nmsPlate.set(DataComponents.CUSTOM_DATA, customData);
-		nmsPlate.set(DataComponents.WRITTEN_BOOK_CONTENT, bookTag); // TODO: does this actually work?
+    public static ItemStack addTags(
+        String serialNumber,
+        ItemStack plate,
+        WrittenBookContent bookTag
+    ) {
+        net.minecraft.world.item.ItemStack nmsPlate =
+            CraftItemStack.asNMSCopy(plate);
+
+        CustomData customData =
+            CustomData.EMPTY.update(nbt -> {
+                nbt.putString("SN", serialNumber);
+                nbt.putInt("Version", version);
+            });
+
+        nmsPlate.set(
+            DataComponents.CUSTOM_DATA,
+            customData
+        );
+
+        nmsPlate.set(
+            DataComponents.WRITTEN_BOOK_CONTENT,
+            bookTag
+        ); // TODO: does this actually work?
 
         return CraftItemStack.asBukkitCopy(nmsPlate);
-	}
+    }
 
     public static String getGenerationName(Generation gen) {
         switch (gen) {
@@ -112,12 +162,24 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
     }
 
     @Override
-    public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+    public List<ItemStack> getInputRepresentation(
+        Inventory i,
+        FurnCraftChestFactory fccf
+    ) {
         List<ItemStack> result = new LinkedList<>();
 
         if (i == null) {
-            result.add(new ItemStack(Material.WRITTEN_BOOK, 1));
-            result.addAll(this.input.getItemStackRepresentation());
+            result.add(
+                new ItemStack(
+                    Material.WRITTEN_BOOK,
+                    1
+                )
+            );
+
+            result.addAll(
+                this.input.getItemStackRepresentation()
+            );
+
             return result;
         }
 
@@ -132,21 +194,147 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
         return result;
     }
 
+    /**
+     * Creates the recipe item shown in the recipe scrollbar.
+     *
+     * The Written Book is a special required input for this recipe
+     * and is not part of the normal input ItemMap.
+     */
     @Override
-    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+    public ItemStack getRecipeRepresentation(Inventory inputInv) {
+        ItemStack res = getRecipeRepresentationType();
+        org.bukkit.inventory.meta.ItemMeta im = res.getItemMeta();
+
+        im.setDisplayName(ChatColor.DARK_GREEN + getName());
+
+        List<String> lore = new ArrayList<>();
+
+        lore.add(ChatColor.GOLD + "Input:");
+
+        if (inputInv == null) {
+            for (String s : getTextualInputRepresentation(null, null)) {
+                lore.add(
+                    ChatColor.GRAY + " - "
+                        + ChatColor.AQUA + s
+                );
+            }
+
+            lore.add(
+                ChatColor.GRAY + " - "
+                    + ChatColor.AQUA
+                    + "1 Written Book"
+            );
+        } else {
+            ItemMap inventoryMap = new ItemMap(inputInv);
+
+            // Normal recipe inputs.
+            for (
+                java.util.Map.Entry<ItemStack, Integer> entry
+                    : input.getAllItems().entrySet()
+            ) {
+                if (entry.getValue() <= 0) {
+                    continue;
+                }
+
+                int required = entry.getValue();
+                int available =
+                    inventoryMap.getAmount(entry.getKey());
+
+                ChatColor color =
+                    available >= required
+                        ? ChatColor.GREEN
+                        : ChatColor.RED;
+
+                lore.add(
+                    ChatColor.GRAY + " - "
+                        + color
+                        + available + "/" + required + " "
+                        + formatIngredientName(entry.getKey())
+                );
+            }
+
+            // A Written Book is always required for this recipe.
+            ItemStack book = getBook(inputInv);
+
+            ChatColor bookColor =
+                book != null
+                    ? ChatColor.GREEN
+                    : ChatColor.RED;
+
+            lore.add(
+                ChatColor.GRAY + " - "
+                    + bookColor
+                    + (book != null
+                        ? "1/1 "
+                        : "0/1 ")
+                    + "Written Book"
+            );
+        }
+
+        lore.add("");
+
+        lore.add(ChatColor.GOLD + "Output:");
+
+        for (
+            String s
+                : getTextualOutputRepresentation(null, null)
+        ) {
+            lore.add(
+                ChatColor.GRAY + " - "
+                    + ChatColor.AQUA + s
+            );
+        }
+
+        lore.add("");
+
+        lore.add(
+            ChatColor.DARK_AQUA + "Time: "
+                + ChatColor.GRAY
+                + vg.civcraft.mc.civmodcore.utilities.TextUtil
+                    .formatDuration(
+                        getProductionTime() * 50,
+                        java.util.concurrent.TimeUnit.MILLISECONDS
+                    )
+        );
+
+        im.setLore(lore);
+        res.setItemMeta(im);
+
+        return res;
+    }
+
+    @Override
+    public List<ItemStack> getOutputRepresentation(
+        Inventory i,
+        FurnCraftChestFactory fccf
+    ) {
         List<ItemStack> stacks = new ArrayList<>();
-        stacks.add(getPrintingPlateRepresentation(this.output, itemName));
-        stacks.add(new ItemStack(Material.WRITTEN_BOOK));
+
+        stacks.add(
+            getPrintingPlateRepresentation(
+                this.output,
+                itemName
+            )
+        );
+
+        stacks.add(
+            new ItemStack(Material.WRITTEN_BOOK)
+        );
 
         if (i == null) {
             return stacks;
         }
 
-        int possibleRuns = this.input.getMultiplesContainedIn(i);
+        int possibleRuns =
+            this.input.getMultiplesContainedIn(i);
 
         for (ItemStack is : stacks) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
-                + String.valueOf(possibleRuns) + " runs");
+            ItemUtils.addLore(
+                is,
+                ChatColor.GREEN + "Enough materials for "
+                    + String.valueOf(possibleRuns)
+                    + " runs"
+            );
         }
 
         return stacks;
@@ -154,14 +342,19 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
     @Override
     public Material getRecipeRepresentationMaterial() {
-        return getPrintingPlateRepresentation(this.output, getName()).getType();
+        return getPrintingPlateRepresentation(
+            this.output,
+            getName()
+        ).getType();
     }
 
     public ItemStack getBook(Inventory i) {
         for (ItemStack is : i.getContents()) {
-            if (is != null &&
-                is.getType() == Material.WRITTEN_BOOK &&
-                ((BookMeta) is.getItemMeta()).getGeneration() != Generation.TATTERED) {
+            if (is != null
+                && is.getType() == Material.WRITTEN_BOOK
+                && ((BookMeta) is.getItemMeta()).getGeneration()
+                    != Generation.TATTERED
+            ) {
                 return is;
             }
         }
@@ -175,7 +368,10 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
     }
 
     @Override
-    public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+    public List<String> getTextualOutputRepresentation(
+        Inventory i,
+        FurnCraftChestFactory fccf
+    ) {
         return formatLore(output);
     }
 }
