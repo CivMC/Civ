@@ -1,75 +1,180 @@
 package vg.civcraft.mc.civmodcore.chat.dialog;
 
-import com.google.common.base.Preconditions;
-import java.util.ArrayList;
+import io.papermc.paper.connection.PlayerGameConnection;
+import io.papermc.paper.dialog.Dialog;
+import io.papermc.paper.dialog.DialogResponseView;
+import io.papermc.paper.event.player.PaperPlayerCustomClickEvent;
+import io.papermc.paper.registry.data.dialog.ActionButton;
+import io.papermc.paper.registry.data.dialog.DialogBase;
+import io.papermc.paper.registry.data.dialog.action.DialogAction;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
+import io.papermc.paper.registry.data.dialog.type.DialogType;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Objects;
 import java.util.UUID;
-import org.bukkit.command.CommandSender;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.server.TabCompleteEvent;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
-public class DialogManager implements Listener {
+@SuppressWarnings("UnstableApiUsage")
+public final class DialogManager implements Listener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DialogManager.class);
+    private static final String DIALOG_ID_KEY = "dialogId";
+    private static final Key CONFIRM_DIALOG_KEY = Key.key("civmodcore", "confirm_dialog");
+    private static final Key CLOSE_DIALOG_KEY = Key.key("civmodcore", "close_dialog");
 
-    public static final DialogManager INSTANCE = new DialogManager();
-    private static final Map<UUID, Dialog> DIALOGS = new TreeMap<>();
+    private record InternalDialogCallback(float dialogId, DialogCallback handler) {}
+    private static final Map<UUID, InternalDialogCallback> callbacks = new ConcurrentHashMap<>();
 
-    private DialogManager() {
-    }
-
-    public static Dialog getDialog(final UUID player) {
-        return DIALOGS.get(player);
-    }
-
-    public static void registerDialog(final UUID player, final Dialog dialog) {
-        Preconditions.checkNotNull(player, "Player cannot be null!");
-        Preconditions.checkNotNull(dialog, "Dialog cannot be null!");
-        forceEndDialog(player); // Unregister any existing dialog
-        DIALOGS.put(player, dialog);
-    }
-
-    public static void forceEndDialog(final UUID player) {
-        final Dialog dialog = DIALOGS.remove(player);
-        if (dialog != null) {
-            dialog.end();
+    public static void showDialog(
+        final @NotNull Player player,
+        final @NotNull Component title,
+        final @NotNull List<? extends @NotNull DialogBody> body,
+        final @NotNull List<? extends @NotNull DialogInput> inputs,
+        final @NotNull DialogCallback callback
+    ) {
+        final float dialogId = ThreadLocalRandom.current().nextFloat();
+        final InternalDialogCallback previousCallback = callbacks.put(player.getUniqueId(), new InternalDialogCallback(
+            dialogId,
+            Objects.requireNonNull(callback)
+        ));
+        if (previousCallback != null) {
+            LOGGER.warn(
+                "Replacing player[{}]'s dialog with {}: {} with: {}",
+                player.getName(),
+                DIALOG_ID_KEY,
+                previousCallback.dialogId(),
+                dialogId
+            );
         }
+        player.showDialog(Dialog.create((b) -> b
+            .empty()
+            .base(
+                DialogBase.builder(Objects.requireNonNull(title))
+                    .canCloseWithEscape(true)
+                    .pause(false)
+                    .afterAction(DialogBase.DialogAfterAction.NONE)
+                    .body(List.copyOf(body))
+                    .inputs(List.copyOf(inputs))
+                    .build()
+            )
+            .type(DialogType.confirmation(
+                ActionButton.create(
+                    Component.text("Confirm", NamedTextColor.GREEN),
+                    null,
+                    100,
+                    DialogHelpers.customClick(CONFIRM_DIALOG_KEY, (nbt) -> nbt.putFloat(DIALOG_ID_KEY, dialogId))
+                ),
+                ActionButton.create(
+                    Component.translatable("gui.cancel", NamedTextColor.RED),
+                    null,
+                    100,
+                    DialogAction.customClick(CLOSE_DIALOG_KEY, null)
+                )
+            ))
+        ));
     }
 
-    public static void resetDialogs() {
-        DIALOGS.forEach((player, dialog) -> dialog.end());
-        DIALOGS.clear();
-    }
-
-    // LISTENER PART
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void tabComplete(final TabCompleteEvent event) {
-        final CommandSender sender = event.getSender();
-        if (!(sender instanceof Player)) {
-            return;
-        }
-        final Player player = (Player) sender;
-        final Dialog dialog = getDialog(player.getUniqueId());
-        if (dialog == null) {
-            return;
-        }
-        final String[] arguments = event.getBuffer().split(" ");
-        final String lastArgument = arguments.length == 0 ? "" : arguments[arguments.length - 1];
-        List<String> completed = dialog.onTabComplete(lastArgument, arguments);
-        if (completed == null) {
-            completed = new ArrayList<>();
-        }
-        event.setCompletions(completed);
+    public static void clearCallbacks() {
+        callbacks.clear();
     }
 
     @EventHandler
-    public void playerExit(final PlayerQuitEvent event) {
-        forceEndDialog(event.getPlayer().getUniqueId());
+    private static void handleCustomAction(
+        final @NotNull PaperPlayerCustomClickEvent event
+    ) {
+        // Getting the player as recommended by https://docs.papermc.io/paper/dev/dialogs/#reading-the-input
+        final Player player; switch (event.getCommonConnection()) {
+            case final PlayerGameConnection conn: player = conn.getPlayer(); break;
+            default: return;
+        }
+        final Key clickAction = event.getIdentifier();
+        if (CLOSE_DIALOG_KEY.equals(clickAction)) {
+            player.closeDialog();
+            return;
+        }
+        if (!CONFIRM_DIALOG_KEY.equals(clickAction)) {
+            return;
+        }
+        final DialogResponseView view = event.getDialogResponseView();
+        if (view == null) {
+            LOGGER.warn(
+                "Player[{}] sent a dialog-submit without any data?!",
+                player.getName()
+            );
+            return;
+        }
+        final Float responseId = view.getFloat(DIALOG_ID_KEY);
+        if (responseId == null) {
+            LOGGER.warn(
+                "Player[{}] sent a dialog-submit without a {}?!",
+                player.getName(),
+                DIALOG_ID_KEY
+            );
+            return;
+        }
+        final InternalDialogCallback callback = callbacks.get(player.getUniqueId());
+        if (callback == null) {
+            LOGGER.warn(
+                "Player[{}] sent a non-prompted dialog submit for {}: {}?!",
+                player.getName(),
+                DIALOG_ID_KEY,
+                responseId
+            );
+            return;
+        }
+        if (callback.dialogId() != responseId) {
+            LOGGER.warn(
+                "Player[{}] sent a dialog-submit with for {}: {}, expected: {}!",
+                player.getName(),
+                DIALOG_ID_KEY,
+                responseId,
+                callback.dialogId()
+            );
+            return;
+        }
+        try {
+            callback.handler().handle(player, view);
+        }
+        catch (final Exception e) {
+            LOGGER.error(
+                "Player[{}]'s dialog submit [{}: {}] failed during handling!",
+                event.getIdentifier(),
+                DIALOG_ID_KEY,
+                responseId,
+                e
+            );
+            return;
+        }
     }
 
+    @EventHandler
+    private static void expireCallbackOnLogout(
+        final @NotNull PlayerQuitEvent event
+    ) {
+       callbacks.remove(event.getPlayer().getUniqueId());
+    }
+
+    private DialogManager() {}
+    private static final DialogManager INSTANCE = new DialogManager();
+    /// Should only be called by [CivModCorePlugin#onEnable()]
+    @ApiStatus.Internal
+    public static void init(
+        final @NotNull CivModCorePlugin plugin
+    ) {
+        plugin.registerListener(INSTANCE);
+    }
 }
