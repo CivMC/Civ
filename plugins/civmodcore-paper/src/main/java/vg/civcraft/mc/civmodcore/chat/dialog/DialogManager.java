@@ -147,7 +147,7 @@ public final class DialogManager implements Listener {
             return;
         }
         try {
-            callback.handler().handle(player, view);
+            callback.handler().handle(view);
         }
         catch (final Exception e) {
             LOGGER.error(
