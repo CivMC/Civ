@@ -212,7 +212,7 @@ public class QueueListener {
             return;
         }
 
-        addPriority(event.getPlayer(), name);
+        addDeparturePriority(event.getPlayer(), name);
     }
 
     @Subscribe
@@ -225,7 +225,7 @@ public class QueueListener {
             return;
         }
 
-        addPriority(event.getPlayer(), name);
+        addDeparturePriority(event.getPlayer(), name);
     }
 
     @Subscribe
@@ -239,7 +239,20 @@ public class QueueListener {
             return;
         }
 
-        addPriority(event.getPlayer(), name);
+        addDeparturePriority(event.getPlayer(), name);
+    }
+
+    private void addDeparturePriority(final Player player, final String sourceServer) {
+        addPriority(player, sourceServer);
+        if (!this.zorweth.isProtectedServer(sourceServer)) {
+            return;
+        }
+
+        // Rocket launches update the route before passengers leave the source server.
+        final String destinationServer = getExpectedServer(player);
+        if (destinationServer != null && !destinationServer.equals(sourceServer)) {
+            addPriority(player, destinationServer);
+        }
     }
 
     private void addPriority(Player player, String server) {
