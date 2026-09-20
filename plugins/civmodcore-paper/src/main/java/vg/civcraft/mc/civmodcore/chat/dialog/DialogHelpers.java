@@ -1,13 +1,16 @@
 package vg.civcraft.mc.civmodcore.chat.dialog;
 
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.dialog.DialogResponseView;
 import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import java.util.Objects;
 import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.minecraft.nbt.CompoundTag;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class DialogHelpers {
@@ -20,6 +23,18 @@ public final class DialogHelpers {
         return DialogAction.customClick(
             Objects.requireNonNull(actionKey),
             BinaryTagHolder.encode(nbt, PaperAdventure.NBT_CODEC)
+        );
+    }
+
+    /// Ensures that the text is either null or non-blank.
+    ///
+    /// @apiNote Use this instead of [DialogResponseView#getText].
+    public static @Nullable String getTrimmedText(
+        final @NotNull DialogResponseView view,
+        final @NotNull String inputId
+    ) {
+        return StringUtils.trimToNull(
+            view.getText(Objects.requireNonNull(inputId))
         );
     }
 }

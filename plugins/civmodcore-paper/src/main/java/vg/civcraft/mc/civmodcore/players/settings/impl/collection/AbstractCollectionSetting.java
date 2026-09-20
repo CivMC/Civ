@@ -1,19 +1,25 @@
 package vg.civcraft.mc.civmodcore.players.settings.impl.collection;
 
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
+import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogHelpers;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
@@ -188,34 +194,37 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
                 menu.showScreen(p);
             }
         }, 0);
-        ItemStack addItemStack = new ItemStack(Material.GREEN_CONCRETE);
-        ItemUtils.setDisplayName(addItemStack, ChatColor.GOLD + "Add new entry");
-        pageView.setMenuSlot(new Clickable(addItemStack) {
-
-            @Override
-            public void clicked(Player p) {
-                new Dialog(p, getOwningPlugin(), ChatColor.GOLD + "Enter the name of the entry to add") {
-
-                    @Override
-                    public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-                        return null;
-                    }
-
-                    @Override
-                    public void onReply(String[] message) {
-                        String full = String.join(" ", message);
-                        if (!elementSetting.isValidValue(full)) {
-                            p.sendMessage(ChatColor.RED + "You entered an invalid value");
-                        } else {
-                            p.sendMessage(ChatColor.GREEN + "Added " + full);
-                            addElement(p.getUniqueId(), elementSetting.deserialize(full));
-                        }
-                        handleMenuClick(player, menu);
-                    }
-                };
-            }
-        }, 3);
+        pageView.setMenuSlot(this.generateAddEntryButton(menu), 3);
         pageView.showScreen();
     }
 
+    private @NotNull Clickable generateAddEntryButton(
+        final @NotNull MenuSection menu
+    ) {
+        final var addItemStack = new ItemStack(Material.GREEN_CONCRETE);
+        ItemUtils.setDisplayName(addItemStack, ChatColor.GOLD + "Add new entry");
+        return new LClickable(addItemStack, (p) -> {
+            final String INPUT_ID = "prompt_input";
+            DialogManager.showDialog(
+                p,
+                Component.text("Add to " + AbstractCollectionSetting.this.getNiceName() + "?"),
+                List.of(),
+                List.of(
+                    DialogInput.text(INPUT_ID, Component.text("Value to add:", NamedTextColor.GOLD))
+                        .maxLength(256)
+                        .build()
+                ),
+                (view) -> {
+                    final String value = DialogHelpers.getTrimmedText(view, INPUT_ID);
+                    if (value == null || !AbstractCollectionSetting.this.isValidValue(value)) {
+                        p.sendMessage(ChatColor.RED + "You entered an invalid value");
+                        return;
+                    }
+                    AbstractCollectionSetting.this.addElement(p.getUniqueId(), AbstractCollectionSetting.this.elementSetting.deserialize(value));
+                    p.sendMessage(ChatColor.GREEN + "Added " + value);
+                    menu.showScreen(p); // Refresh the GUI
+                }
+            );
+        });
+    }
 }
