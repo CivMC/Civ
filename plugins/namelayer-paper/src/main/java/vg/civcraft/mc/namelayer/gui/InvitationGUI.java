@@ -27,7 +27,6 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitationGUI extends AbstractGroupGUI {
 
-    private PlayerType selectedType;
     private MainGroupGUI parent;
 
     public InvitationGUI(Group g, Player p, MainGroupGUI parent) {
@@ -73,7 +72,7 @@ public class InvitationGUI extends AbstractGroupGUI {
                                 .build()
                         ),
                         (view) -> {
-                            if (!gm.hasAccess(g, p.getUniqueId(), MainGroupGUI.getAccordingPermission(selectedType))) {
+                            if (!gm.hasAccess(g, p.getUniqueId(), MainGroupGUI.getAccordingPermission(pType))) {
                                 p.sendMessage(ChatColor.RED + "You do not have permission to invite a player to this rank");
                                 parent.showScreen();
                                 return;
