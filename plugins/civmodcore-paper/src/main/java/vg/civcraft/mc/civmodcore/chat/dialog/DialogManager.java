@@ -127,7 +127,7 @@ public final class DialogManager implements Listener {
             );
             return;
         }
-        final InternalDialogCallback callback = callbacks.get(player.getUniqueId());
+        final InternalDialogCallback callback = callbacks.remove(player.getUniqueId());
         if (callback == null) {
             LOGGER.warn(
                 "Player[{}] sent a non-prompted dialog submit for {}: {}?!",
