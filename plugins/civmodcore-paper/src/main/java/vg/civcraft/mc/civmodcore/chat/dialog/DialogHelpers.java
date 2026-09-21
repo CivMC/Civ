@@ -7,22 +7,22 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
-import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class DialogHelpers {
     public static @NotNull DialogAction customClick(
         final @NotNull Key actionKey,
-        final @NotNull Consumer<@NotNull CompoundTag> editor
+        final @NotNull Consumer<@NotNull NbtCompound> editor
     ) {
-        final var nbt = new CompoundTag();
+        final var nbt = new NbtCompound();
         editor.accept(nbt);
         return DialogAction.customClick(
             Objects.requireNonNull(actionKey),
-            BinaryTagHolder.encode(nbt, PaperAdventure.NBT_CODEC)
+            BinaryTagHolder.encode(nbt.internal(), PaperAdventure.NBT_CODEC)
         );
     }
 

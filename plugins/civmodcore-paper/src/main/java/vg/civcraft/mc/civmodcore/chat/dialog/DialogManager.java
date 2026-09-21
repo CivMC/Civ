@@ -76,7 +76,7 @@ public final class DialogManager implements Listener {
                     Component.text("Confirm", NamedTextColor.GREEN),
                     null,
                     100,
-                    DialogHelpers.customClick(CONFIRM_DIALOG_KEY, (nbt) -> nbt.putFloat(DIALOG_ID_KEY, dialogId))
+                    DialogHelpers.customClick(CONFIRM_DIALOG_KEY, (nbt) -> nbt.setFloat(DIALOG_ID_KEY, dialogId))
                 ),
                 ActionButton.create(
                     Component.translatable("gui.cancel", NamedTextColor.RED),
