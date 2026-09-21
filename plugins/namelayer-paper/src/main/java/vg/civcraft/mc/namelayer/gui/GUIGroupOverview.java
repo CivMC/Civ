@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogHelpers;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
@@ -261,7 +262,7 @@ public class GUIGroupOverview {
                             .build()
                     ),
                     (view) -> {
-                        String groupName = view.getText(NAME_ID);
+                        String groupName = DialogHelpers.getAssuredText(view, NAME_ID);
                         if (groupName.equals("")) {
                             p.sendMessage(ChatColor.RED
                                 + "You didn't enter anything!");
@@ -334,7 +335,7 @@ public class GUIGroupOverview {
                             .build()
                     ),
                     (view) -> {
-                        String groupName = view.getText(NAME_ID);
+                        String groupName = DialogHelpers.getAssuredText(view, NAME_ID);
                         final Group g = gm.getGroup(groupName);
                         if (g == null) {
                             p.sendMessage(ChatColor.RED + "This group doesn't exist");

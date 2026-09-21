@@ -26,6 +26,20 @@ public final class DialogHelpers {
         );
     }
 
+    /// Ensures that the retrieved string is never null.
+    ///
+    /// @apiNote Use this instead of [DialogResponseView#getText]. Keep in mind that this makes it impossible to test
+    ///          whether the Dialog included the value within its payload, so use this only when you don't care.
+    public static @NotNull String getAssuredText(
+        final @NotNull DialogResponseView view,
+        final @NotNull String inputId
+    ) {
+        return Objects.requireNonNullElse(
+            view.getText(Objects.requireNonNull(inputId)),
+            ""
+        );
+    }
+
     /// Ensures that the text is either null or non-blank.
     ///
     /// @apiNote Use this instead of [DialogResponseView#getText].

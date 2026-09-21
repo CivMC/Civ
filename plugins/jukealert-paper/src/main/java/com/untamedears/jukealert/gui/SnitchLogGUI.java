@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.Componentify;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogHelpers;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
@@ -127,11 +128,8 @@ public class SnitchLogGUI {
                             .build()
                     ),
                     (view) -> {
-                        String newName = view.getText(NAME_ID);
-                        if (newName == null) {
-                            newName = "";
-                        }
-                        else if (newName.length() > 40) {
+                        String newName = DialogHelpers.getAssuredText(view, NAME_ID);
+                        if (newName.length() > 40) {
                             newName = newName.substring(0, 40);
                         }
                         snitchManager.renameSnitch(SnitchLogGUI.this.snitch, newName);

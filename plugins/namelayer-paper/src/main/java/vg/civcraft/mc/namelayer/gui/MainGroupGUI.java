@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogHelpers;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
@@ -768,7 +769,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                 .build()
                         ),
                         (view) -> {
-                            final String playerName = view.getText(PLAYER_ID);
+                            final String playerName = DialogHelpers.getAssuredText(view, PLAYER_ID);
                             if (!gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("BLACKLIST"))) {
                                 p.sendMessage(ChatColor.RED
                                     + "You lost permission to do this");
@@ -866,7 +867,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                 showScreen();
                                 return;
                             }
-                            final String newPassword = view.getText(PASSWORD_ID);
+                            final String newPassword = DialogHelpers.getAssuredText(view, PASSWORD_ID);
                             if (newPassword.length() == 0) {
                                 NameLayerPlugin.log(Level.INFO, p.getName()
                                     + " removed password "

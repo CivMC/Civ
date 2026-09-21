@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogHelpers;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
@@ -118,7 +119,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                     .build()
             ),
             (view) -> {
-                final UUID transferUUID = NameLayerAPI.getUUID(view.getText(PLAYER_ID));
+                final UUID transferUUID = NameLayerAPI.getUUID(DialogHelpers.getAssuredText(view, PLAYER_ID));
                 if (transferUUID == null) {
                     p.sendMessage(ChatColor.RED + "This player doesn't exist");
                     showScreen();
@@ -240,7 +241,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                         .build()
                 ),
                 (view) -> {
-                    final String text = view.getText(COLOUR_ID);
+                    final String text = DialogHelpers.getAssuredText(view, COLOUR_ID);
                     if (text.indexOf(' ') > -1) {
                         p.sendRichMessage("<red>Colors cannot have spaces</red>");
                         showScreen();

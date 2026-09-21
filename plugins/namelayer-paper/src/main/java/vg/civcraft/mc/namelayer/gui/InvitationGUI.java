@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogHelpers;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
@@ -77,7 +78,7 @@ public class InvitationGUI extends AbstractGroupGUI {
                                 parent.showScreen();
                                 return;
                             }
-                            final String s = view.getText(PLAYER_ID);
+                            final String s = DialogHelpers.getAssuredText(view, PLAYER_ID);
                             UUID inviteUUID = NameLayerAPI.getUUID(s);
                             if (inviteUUID == null) {
                                 p.sendMessage(ChatColor.RED + "The player " + s + " doesn't exist");
