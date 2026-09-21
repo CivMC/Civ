@@ -3,8 +3,9 @@ package vg.civcraft.mc.namelayer.gui;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -18,8 +19,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.util.StringUtil;
-import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
@@ -757,78 +757,68 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
                 @Override
                 public void clicked(final Player p) {
-                    p.sendMessage(ChatColor.GOLD + "Enter the name of the player to blacklist or \"cancel\" to exit this prompt");
-                    ClickableInventory.forceCloseInventory(p);
-                    new Dialog(p, NameLayerPlugin.getInstance()) {
-
-                        @Override
-                        public List<String> onTabComplete(String word, String[] msg) {
-                            List<String> players = Bukkit.getOnlinePlayers().stream()
-                                .filter(p -> !g.isMember(p.getUniqueId()))
-                                .map(Player::getName)
-                                .collect(Collectors.toList());
-                            players.add("cancel");
-
-                            return StringUtil.copyPartialMatches(word, players, new ArrayList<>());
-                        }
-
-                        @Override
-                        public void onReply(String[] message) {
-                            if (message[0].equalsIgnoreCase("cancel")) {
-                                showScreen();
-                                return;
-                            }
-                            if (gm.hasAccess(g, p.getUniqueId(),
-                                PermissionType.getPermission("BLACKLIST"))) {
-                                for (String playerName : message) {
-                                    UUID blackUUID = NameLayerAPI
-                                        .getUUID(playerName);
-                                    if (blackUUID == null) {
-                                        p.sendMessage(ChatColor.RED
-                                            + playerName + " doesn't exist");
-                                        continue;
-                                    }
-                                    if (g.isMember(blackUUID)) {
-                                        p.sendMessage(ChatColor.RED
-                                            + NameLayerAPI.getCurrentName(blackUUID)
-                                            + " is currently a member of this group and can't be blacklisted");
-                                        continue;
-                                    }
-                                    BlackList bl = NameLayerPlugin
-                                        .getBlackList();
-                                    if (bl.isBlacklisted(g, blackUUID)) {
-                                        p.sendMessage(ChatColor.RED
-                                            + NameLayerAPI.getCurrentName(blackUUID)
-                                            + " is already blacklisted");
-                                        continue;
-                                    }
-                                    NameLayerPlugin
-                                        .log(Level.INFO,
-                                            p.getName()
-                                                + " blacklisted "
-                                                + NameLayerAPI.getCurrentName(blackUUID)
-                                                + " for group "
-                                                + g.getName()
-                                                + " via the gui");
-                                    bl.addBlacklistMemberAsync(p.getUniqueId(), g, blackUUID, false, result -> {
-                                        if (result.success()) {
-                                            p.sendMessage(ChatColor.GREEN
-                                                + NameLayerAPI.getCurrentName(blackUUID)
-                                                + " was successfully blacklisted");
-                                        } else {
-                                            p.sendMessage(ChatColor.RED + result.message());
-                                        }
-                                        showScreen();
-                                    });
-                                }
-                            } else {
+                    final String PLAYER_ID = "player_name";
+                    DialogManager.showDialog(
+                        p,
+                        Component.text("Add player to blacklist?"),
+                        List.of(),
+                        List.of(
+                            DialogInput.text(PLAYER_ID, Component.text("Player name:", NamedTextColor.GOLD))
+                                .maxLength(16)
+                                .build()
+                        ),
+                        (view) -> {
+                            final String playerName = view.getText(PLAYER_ID);
+                            if (!gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("BLACKLIST"))) {
                                 p.sendMessage(ChatColor.RED
                                     + "You lost permission to do this");
                                 showScreen();
+                                return;
                             }
+                            UUID blackUUID = NameLayerAPI
+                                .getUUID(playerName);
+                            if (blackUUID == null) {
+                                p.sendMessage(ChatColor.RED
+                                    + playerName + " doesn't exist");
+                                showScreen();
+                                return;
+                            }
+                            if (g.isMember(blackUUID)) {
+                                p.sendMessage(ChatColor.RED
+                                    + NameLayerAPI.getCurrentName(blackUUID)
+                                    + " is currently a member of this group and can't be blacklisted");
+                                showScreen();
+                                return;
+                            }
+                            BlackList bl = NameLayerPlugin
+                                .getBlackList();
+                            if (bl.isBlacklisted(g, blackUUID)) {
+                                p.sendMessage(ChatColor.RED
+                                    + NameLayerAPI.getCurrentName(blackUUID)
+                                    + " is already blacklisted");
+                                showScreen();
+                                return;
+                            }
+                            NameLayerPlugin
+                                .log(Level.INFO,
+                                    p.getName()
+                                        + " blacklisted "
+                                        + NameLayerAPI.getCurrentName(blackUUID)
+                                        + " for group "
+                                        + g.getName()
+                                        + " via the gui");
+                            bl.addBlacklistMemberAsync(p.getUniqueId(), g, blackUUID, false, result -> {
+                                if (result.success()) {
+                                    p.sendMessage(ChatColor.GREEN
+                                        + NameLayerAPI.getCurrentName(blackUUID)
+                                        + " was successfully blacklisted");
+                                } else {
+                                    p.sendMessage(ChatColor.RED + result.message());
+                                }
+                                showScreen();
+                            });
                         }
-                    };
-
+                    );
                 }
             };
         } else {
@@ -857,76 +847,64 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
                 @Override
                 public void clicked(final Player p) {
-                    if (gm.hasAccess(g, p.getUniqueId(),
-                        PermissionType.getPermission("PASSWORD"))) {
-                        p.sendMessage(ChatColor.GOLD
-                            + "Enter the new password for "
-                            + g.getName()
-                            + ". Enter \" delete\" to remove an existing password or \"cancel\" to exit this prompt");
-                        ClickableInventory.forceCloseInventory(p);
-                        new Dialog(p, NameLayerPlugin.getInstance()) {
-
-                            @Override
-                            public List<String> onTabComplete(
-                                String wordCompleted, String[] fullMessage) {
-                                return Collections.emptyList();
+                    final String PASSWORD_ID = "group_password";
+                    DialogManager.showDialog(
+                        p,
+                        Component.text("Change " + g.getName() + "'s password?"),
+                        List.of(
+                            DialogBody.plainMessage(Component.text("Group: " + g.getName()))
+                        ),
+                        List.of(
+                            DialogInput.text(PASSWORD_ID, Component.text("New password (empty will remove the password):", NamedTextColor.GOLD))
+                                .maxLength(256)
+                                .build()
+                        ),
+                        (view) -> {
+                            if (!gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("PASSWORD"))) {
+                                p.sendMessage(ChatColor.RED
+                                    + "You lost permission to do this");
+                                showScreen();
+                                return;
                             }
-
-                            @Override
-                            public void onReply(String[] message) {
-                                if (message.length == 0) {
-                                    p.sendMessage(ChatColor.RED
-                                        + "You entered nothing, no password was set");
-                                    return;
-                                }
-                                if (message.length > 1) {
-                                    p.sendMessage(ChatColor.RED
-                                        + "Your password may not contain spaces");
-                                    return;
-                                }
-                                String newPassword = message[0];
-                                if (newPassword.equals("cancel")) {
+                            final String newPassword = view.getText(PASSWORD_ID);
+                            if (newPassword.length() == 0) {
+                                NameLayerPlugin.log(Level.INFO, p.getName()
+                                    + " removed password "
+                                    + " for group " + g.getName()
+                                    + " via the gui");
+                                g.setPasswordAsync(p.getUniqueId(), null, result -> {
+                                    if (result.success()) {
+                                        p.sendMessage(ChatColor.GREEN
+                                            + "Removed the password from the group");
+                                    } else {
+                                        p.sendMessage(ChatColor.RED + result.message());
+                                    }
+                                    showScreen();
+                                });
+                                return;
+                            }
+                            if (newPassword.indexOf(' ') > -1) {
+                                p.sendMessage(ChatColor.RED
+                                    + "Your password may not contain spaces");
+                                showScreen();
+                                return;
+                            }
+                            NameLayerPlugin.log(Level.INFO, p.getName()
+                                + " set password to " + newPassword
+                                + " for group " + g.getName()
+                                + " via the gui");
+                            g.setPasswordAsync(p.getUniqueId(), newPassword, result -> {
+                                if (result.success()) {
                                     p.sendMessage(ChatColor.GREEN
-                                        + "Left password unchanged");
-                                    return;
-                                }
-                                if (newPassword.equals("delete")) {
-                                    NameLayerPlugin.log(Level.INFO, p.getName()
-                                        + " removed password "
-                                        + " for group " + g.getName()
-                                        + " via the gui");
-                                    g.setPasswordAsync(p.getUniqueId(), null, result -> {
-                                        if (result.success()) {
-                                            p.sendMessage(ChatColor.GREEN
-                                                + "Removed the password from the group");
-                                        } else {
-                                            p.sendMessage(ChatColor.RED + result.message());
-                                        }
-                                        showScreen();
-                                    });
+                                        + "Set new password: "
+                                        + ChatColor.YELLOW + newPassword);
                                 } else {
-                                    NameLayerPlugin.log(Level.INFO, p.getName()
-                                        + " set password to " + newPassword
-                                        + " for group " + g.getName()
-                                        + " via the gui");
-                                    g.setPasswordAsync(p.getUniqueId(), newPassword, result -> {
-                                        if (result.success()) {
-                                            p.sendMessage(ChatColor.GREEN
-                                                + "Set new password: "
-                                                + ChatColor.YELLOW + newPassword);
-                                        } else {
-                                            p.sendMessage(ChatColor.RED + result.message());
-                                        }
-                                        showScreen();
-                                    });
+                                    p.sendMessage(ChatColor.RED + result.message());
                                 }
-                            }
-                        };
-                    } else {
-                        p.sendMessage(ChatColor.RED
-                            + "You lost permission to do this");
-                        showScreen();
-                    }
+                                showScreen();
+                            });
+                        }
+                    );
                 }
             };
         } else {
