@@ -7,6 +7,7 @@ import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.appender.LeverToggleAppender;
 import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.Componentify;
-import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
@@ -115,23 +116,23 @@ public class SnitchLogGUI {
         return new Clickable(item) {
             @Override
             public void clicked(@NotNull final Player clicker) {
-                clicker.sendMessage(Component.text()
-                    .color(NamedTextColor.YELLOW)
-                    .content("Please enter a new name for the snitch:")
-                    .build());
-                ClickableInventory.forceCloseInventory(clicker);
-                new Dialog(clicker, JukeAlert.getInstance()) {
-                    @Override
-                    public void onReply(String[] message) {
-                        StringBuilder builder = new StringBuilder();
-                        for (String s : message) {
-                            builder.append(s).append(" ");
+                final String NAME_ID = "snitch_name";
+                DialogManager.showDialog(
+                    clicker,
+                    Component.text("Please enter a new name for the snitch:"),
+                    List.of(),
+                    List.of(
+                        DialogInput.text(NAME_ID, Component.text("Snitch name:"))
+                            .maxLength(40)
+                            .build()
+                    ),
+                    (view) -> {
+                        String newName = view.getText(NAME_ID);
+                        if (newName == null) {
+                            newName = "";
                         }
-                        String newName = "";
-                        if (builder.toString().length() > 40) {
-                            newName = builder.substring(0, 40);
-                        } else {
-                            newName = builder.toString();
+                        else if (newName.length() > 40) {
+                            newName = newName.substring(0, 40);
                         }
                         snitchManager.renameSnitch(SnitchLogGUI.this.snitch, newName);
                         clicker.sendMessage(Component.text()
@@ -140,12 +141,7 @@ public class SnitchLogGUI {
                             .build());
                         showScreen();
                     }
-
-                    @Override
-                    public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-                        return null;
-                    }
-                };
+                );
             }
         };
     }
