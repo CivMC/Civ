@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.chat.dialog;
+package vg.civcraft.mc.civmodcore.dialog;
 
 import io.papermc.paper.connection.PlayerGameConnection;
 import io.papermc.paper.dialog.Dialog;

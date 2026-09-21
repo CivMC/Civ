@@ -3,7 +3,7 @@ package vg.civcraft.mc.civmodcore;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
-import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
+import vg.civcraft.mc.civmodcore.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.commands.CustomItemCommand;
