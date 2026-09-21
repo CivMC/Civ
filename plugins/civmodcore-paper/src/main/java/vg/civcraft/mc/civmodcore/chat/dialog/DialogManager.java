@@ -120,9 +120,10 @@ public final class DialogManager implements Listener {
         final Float responseId = view.getFloat(DIALOG_ID_KEY);
         if (responseId == null) {
             LOGGER.warn(
-                "Player[{}] sent a dialog-submit without a {}?!",
+                "Player[{}] sent a dialog-submit without a {}?! Payload: {}",
                 player.getName(),
-                DIALOG_ID_KEY
+                DIALOG_ID_KEY,
+                view.payload()
             );
             return;
         }
