@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.dialog;
 
+import com.google.common.hash.Hashing;
 import io.papermc.paper.connection.PlayerGameConnection;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.dialog.DialogResponseView;
@@ -10,6 +11,7 @@ import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class DialogManager implements Listener {
@@ -152,12 +155,34 @@ public final class DialogManager implements Listener {
             callback.handler().handle(view);
         }
         catch (final Exception e) {
+            final String errorId = "error:%s:%s".formatted(
+                player.getName(),
+                HexFormat.of().formatHex(
+                    Hashing.sha1()
+                        .newHasher()
+                        .putLong(System.currentTimeMillis())
+                        .putInt(ThreadLocalRandom.current().nextInt())
+                        .hash()
+                        .asBytes()
+                )
+            );
             LOGGER.error(
-                "Player[{}]'s dialog submit [{}: {}] failed during handling!",
+                "Player[{}]'s dialog submit [{}: {}] failed during handling! Errno: {}",
                 event.getIdentifier(),
                 DIALOG_ID_KEY,
                 responseId,
+                errorId,
                 e
+            );
+            player.sendMessage(
+                Component.text()
+                    .color(NamedTextColor.RED)
+                    .append(
+                        Component.text("Something went wrong handling that Dialog action! Please give \""),
+                        ChatUtils.clickToCopy(errorId),
+                        Component.text("\" to the admins!")
+                    )
+                    .build()
             );
             return;
         }
