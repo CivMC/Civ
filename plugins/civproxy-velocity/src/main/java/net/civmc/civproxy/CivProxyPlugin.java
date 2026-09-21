@@ -3,7 +3,6 @@ package net.civmc.civproxy;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
@@ -19,7 +18,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.civmc.civproxy.renamer.PlayerRenamer;
 import net.civmc.civproxy.sessionlimit.SessionLimitConfig;
 import net.civmc.civproxy.sessionlimit.SessionLimitManager;
-import net.civmc.civproxy.sessionlimit.SessionStore;
 import net.civmc.nameapi.NameAPI;
 import net.civmc.zorweth.velocity.ZorwethVelocityPlugin;
 import org.slf4j.Logger;
@@ -35,9 +33,6 @@ public class CivProxyPlugin {
     private CommentedConfigurationNode config;
 
     private NameAPI nameAPI;
-    private HikariDataSource dataSource;
-    private SessionLimitManager sessionLimit;
-
     @Inject
     public CivProxyPlugin(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
@@ -70,21 +65,12 @@ public class CivProxyPlugin {
         }
     }
 
-    @Subscribe
-    public void onProxyShutdown(ProxyShutdownEvent event) {
-        if (this.sessionLimit != null) {
-            this.sessionLimit.shutdown();
-        }
-    }
-
     private void startSessionLimit(final QueueListener queueListener) {
         final SessionLimitConfig sessionLimitConfig = SessionLimitConfig.load(this.config.node("session-limit"));
         if (!sessionLimitConfig.enabled()) {
             return;
         }
-        this.sessionLimit = new SessionLimitManager(this, this.server, queueListener, sessionLimitConfig,
-            new SessionStore(this.logger, this.dataSource), this.nameAPI::getUUID);
-        this.sessionLimit.start();
+        new SessionLimitManager(this, this.server, queueListener, sessionLimitConfig, this.nameAPI::getUUID).start();
     }
 
     private void loadNameApiConfig() {
@@ -108,8 +94,7 @@ public class CivProxyPlugin {
         if (password != null && !password.isBlank()) {
             config.setPassword(password);
         }
-        this.dataSource = new HikariDataSource(config);
-        this.nameAPI = new NameAPI(this.logger, this.dataSource);
+        this.nameAPI = new NameAPI(this.logger, new HikariDataSource(config));
     }
 
     /**

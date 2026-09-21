@@ -6,10 +6,8 @@ import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import com.velocitypowered.api.scheduler.ScheduledTask;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,7 +38,6 @@ public final class SessionLimitManager {
     private static final Duration PRIORITY_SEND_WINDOW = Duration.ofMinutes(1);
     private static final Duration PRIORITY_QUEUE_MEMORY = Duration.ofHours(2);
     private static final Duration KEEP_OFFLINE_STREAKS = Duration.ofHours(6);
-    private static final Duration KEEP_SAVED_STREAKS = Duration.ofDays(1);
     private static final Duration RED_BAR_UNDER = Duration.ofMinutes(10);
 
     private final CivProxyPlugin plugin;
@@ -49,7 +46,6 @@ public final class SessionLimitManager {
     private final SessionLimitConfig config;
     private final SessionLimitPolicy policy;
     private final SessionLimitMessages messages;
-    private final @Nullable SessionStore store;
     private final Function<String, UUID> offlinePlayerResolver;
 
     private final Map<UUID, Tracked> tracked = new ConcurrentHashMap<>();
@@ -58,20 +54,14 @@ public final class SessionLimitManager {
     // Sent to the limited server by ajQueue after queueing with leave priority
     private final Map<UUID, Instant> sentWithLeavePriority = new ConcurrentHashMap<>();
 
-    private boolean persist;
-    private ScheduledTask tickTask;
-    private ScheduledTask maintainTask;
-
     public SessionLimitManager(final CivProxyPlugin plugin, final ProxyServer server, final QueueListener queueListener,
-                               final SessionLimitConfig config, final @Nullable SessionStore store,
-                               final Function<String, UUID> offlinePlayerResolver) {
+                               final SessionLimitConfig config, final Function<String, UUID> offlinePlayerResolver) {
         this.plugin = plugin;
         this.server = server;
         this.queueListener = queueListener;
         this.config = config;
         this.policy = new SessionLimitPolicy(config.limit(), config.warning());
         this.messages = new SessionLimitMessages(config);
-        this.store = store;
         this.offlinePlayerResolver = offlinePlayerResolver;
     }
 
@@ -96,13 +86,6 @@ public final class SessionLimitManager {
     }
 
     public void start() {
-        if (this.store != null && this.store.migrate()) {
-            this.persist = true;
-            final Map<UUID, PlayStreak> saved = this.store.loadSince(Instant.now().minus(KEEP_SAVED_STREAKS));
-            saved.forEach((playerId, streak) -> this.tracked.put(playerId, new Tracked(streak)));
-            this.plugin.getLogger().info("Session limit loaded {} saved streaks", saved.size());
-        }
-
         this.server.getEventManager().register(this.plugin, this);
         AjQueueAPI.getInstance().listen(PreQueueEvent.class, this::onPreQueue);
         AjQueueAPI.getInstance().listen(PreConnectEvent.class, this::onQueueSend);
@@ -113,9 +96,9 @@ public final class SessionLimitManager {
         commands.register(commands.metaBuilder("sessionlimit").plugin(this.plugin).build(),
             new SessionLimitCommand(this, this.server));
 
-        this.tickTask = this.server.getScheduler().buildTask(this.plugin, this::tick)
+        this.server.getScheduler().buildTask(this.plugin, this::tick)
             .delay(Duration.ofSeconds(1)).repeat(Duration.ofSeconds(1)).schedule();
-        this.maintainTask = this.server.getScheduler().buildTask(this.plugin, this::maintain)
+        this.server.getScheduler().buildTask(this.plugin, this::maintain)
             .delay(Duration.ofMinutes(1)).repeat(Duration.ofMinutes(1)).schedule();
 
         this.plugin.getLogger().info("Session limit {}on {}: {} limit, countdown for the last {}, {} break resets,"
@@ -123,19 +106,6 @@ public final class SessionLimitManager {
             this.config.dryRun() ? "in dry-run mode " : "enabled ", this.config.server(),
             DurationFormat.words(this.config.limit()), DurationFormat.words(this.config.warning()),
             DurationFormat.words(this.config.breakReset()), DurationFormat.words(this.config.queueGrace()));
-    }
-
-    public void shutdown() {
-        if (this.tickTask != null) {
-            this.tickTask.cancel();
-        }
-        if (this.maintainTask != null) {
-            this.maintainTask.cancel();
-        }
-        if (this.persist) {
-            final Instant now = Instant.now();
-            this.store.save(snapshots(now), now);
-        }
     }
 
     public SessionLimitConfig config() {
@@ -392,19 +362,9 @@ public final class SessionLimitManager {
                 && this.server.getPlayer(entry.getKey()).isEmpty());
             this.queuedWithLeavePriority.values().removeIf(at -> now.isAfter(at.plus(PRIORITY_QUEUE_MEMORY)));
             this.sentWithLeavePriority.values().removeIf(at -> now.isAfter(at.plus(PRIORITY_SEND_WINDOW)));
-            if (this.persist) {
-                this.store.save(snapshots(now), now);
-                this.store.deleteSavedBefore(now.minus(KEEP_SAVED_STREAKS));
-            }
         } catch (final RuntimeException exception) {
             this.plugin.getLogger().warn("Maintaining session limit", exception);
         }
-    }
-
-    private Map<UUID, PlayStreak.Snapshot> snapshots(final Instant now) {
-        final Map<UUID, PlayStreak.Snapshot> snapshots = new HashMap<>();
-        this.tracked.forEach((playerId, entry) -> snapshots.put(playerId, entry.streak.snapshot(now)));
-        return snapshots;
     }
 
     private boolean isOnLimitedServer(final Player player) {
