@@ -5,14 +5,18 @@ import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.civmc.zorweth.velocity.ZorwethVelocityPlugin;
@@ -30,9 +34,16 @@ import us.ajg0702.queue.api.players.AdaptedPlayer;
 
 public class QueueListener {
 
+    /**
+     * The ajQueue priority given to players who just left a server
+     */
+    public static final int LEAVE_PRIORITY = 10;
+    private static final Duration PRIORITY_SUPPRESSION = Duration.ofMinutes(1);
+
     private final Map<UUID, QueueRecord> players = new ConcurrentHashMap<>();
     private final Map<UUID, KickRecord> kickReasons = new ConcurrentHashMap<>();
     private final Map<UUID, QueueRecord> queueConnects = new ConcurrentHashMap<>();
+    private final Map<UUID, Instant> prioritySuppressedUntil = new ConcurrentHashMap<>();
 
     private final CivProxyPlugin plugin;
     private final ProxyServer server;
@@ -243,7 +254,13 @@ public class QueueListener {
     }
 
     private void addPriority(Player player, String server) {
-        // Players who just disconnected get 5 minutes of queue priority
+        // Players who just disconnected get 5 minutes of queue priority, unless the session limit moved them off
+
+        if (isPrioritySuppressed(player.getUniqueId())) {
+            this.plugin.getLogger().info("Not giving {} queue priority for {}: they were moved off by the session limit",
+                player.getUniqueId(), server);
+            return;
+        }
 
         UserManager userManager = LuckPermsProvider.get().getUserManager();
         userManager.loadUser(player.getUniqueId()).thenAccept(user -> {
@@ -252,12 +269,78 @@ public class QueueListener {
             }
             user.data().add(
                 PermissionNode.builder()
-                    .permission("ajqueue.serverpriority." + server + ".10")
+                    .permission(leavePriorityPermission(server))
                     .expiry(5, TimeUnit.MINUTES)
                     .build(),
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
             userManager.saveUser(user);
         });
+    }
+
+    public static String leavePriorityPermission(final String server) {
+        return "ajqueue.serverpriority." + server + "." + LEAVE_PRIORITY;
+    }
+
+    /**
+     * Moves a player to the lobby and puts them at the back of the queue for the server they were on. They don't get
+     * leave priority for this, and any leave priority left over from an earlier exit is removed first.
+     *
+     * @return true if the player reached the lobby; if the move fails they are disconnected with {@code fallbackReason}
+     */
+    public CompletableFuture<Boolean> moveToLobbyAndQueue(final Player player, final String fromServer,
+                                                          final Component arrivedMessage, final Component fallbackReason) {
+        final UUID playerId = player.getUniqueId();
+        final Instant now = Instant.now();
+        this.prioritySuppressedUntil.values().removeIf(until -> !now.isBefore(until));
+        this.prioritySuppressedUntil.put(playerId, now.plus(PRIORITY_SUPPRESSION));
+
+        final String queueTarget = getKickQueueTarget(player, fromServer);
+        final Optional<RegisteredServer> lobby = this.server.getServer("pvp");
+        if (lobby.isEmpty()) {
+            this.plugin.getLogger().error("Unable to move {} to the lobby: no pvp server is registered", playerId);
+            player.disconnect(fallbackReason);
+            return CompletableFuture.completedFuture(false);
+        }
+
+        final String leavePriority = leavePriorityPermission(queueTarget);
+        return LuckPermsProvider.get().getUserManager()
+            .modifyUser(playerId, user -> user.data().clear(node -> node.getKey().equals(leavePriority)))
+            .exceptionally(exception -> {
+                this.plugin.getLogger().warn("Unable to remove leftover queue priority from {}", playerId, exception);
+                return null;
+            })
+            .thenCompose(ignored -> {
+                // The ServerPostConnectEvent handler adds them to the queue once they reach the lobby
+                this.players.put(playerId, new QueueRecord(Instant.now(), queueTarget));
+                return player.createConnectionRequest(lobby.get()).connect();
+            })
+            .thenApply(result -> {
+                if (result.isSuccessful()) {
+                    player.sendMessage(arrivedMessage);
+                    return true;
+                }
+                this.players.remove(playerId);
+                if (result.getStatus() == ConnectionRequestBuilder.Status.CONNECTION_IN_PROGRESS) {
+                    // Already on their way somewhere else, e.g. a rocket, so they're leaving anyway
+                    this.plugin.getLogger().info("Not moving {} to the lobby: they are already switching servers", playerId);
+                    return false;
+                }
+                this.plugin.getLogger().warn("Unable to move {} to the lobby ({}); disconnecting them instead",
+                    playerId, result.getStatus());
+                player.disconnect(fallbackReason);
+                return false;
+            })
+            .exceptionally(exception -> {
+                this.players.remove(playerId);
+                this.plugin.getLogger().error("Unable to move {} to the lobby; disconnecting them instead", playerId, exception);
+                player.disconnect(fallbackReason);
+                return false;
+            });
+    }
+
+    private boolean isPrioritySuppressed(final UUID playerId) {
+        final Instant until = this.prioritySuppressedUntil.get(playerId);
+        return until != null && Instant.now().isBefore(until);
     }
 
     private void addToQueue(final Player player, final String server) {
