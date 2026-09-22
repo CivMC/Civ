@@ -106,6 +106,7 @@ public final class DialogManager implements Listener {
         }
         final Key clickAction = event.getIdentifier();
         if (CLOSE_DIALOG_KEY.equals(clickAction)) {
+            callbacks.remove(player.getUniqueId());
             player.closeDialog();
             return;
         }
