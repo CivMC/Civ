@@ -4,7 +4,7 @@ import com.google.common.hash.Hashing;
 import io.papermc.paper.connection.PlayerGameConnection;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.dialog.DialogResponseView;
-import io.papermc.paper.event.player.PaperPlayerCustomClickEvent;
+import io.papermc.paper.event.player.PlayerCustomClickEvent;
 import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
 import io.papermc.paper.registry.data.dialog.action.DialogAction;
@@ -97,7 +97,7 @@ public final class DialogManager implements Listener {
 
     @EventHandler
     private static void handleCustomAction(
-        final @NotNull PaperPlayerCustomClickEvent event
+        final @NotNull PlayerCustomClickEvent event
     ) {
         // Getting the player as recommended by https://docs.papermc.io/paper/dev/dialogs/#reading-the-input
         final Player player; switch (event.getCommonConnection()) {
