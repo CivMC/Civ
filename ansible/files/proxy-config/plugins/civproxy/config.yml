@@ -15,11 +15,11 @@ session-limit:
   # Set to true to only log who would be moved, without boss bars or moving anyone
   dry-run: false
   server: main
-  limit-minutes: 480
+  limit-minutes: 2
   # Boss bar countdown for the last hour
-  warning-minutes: 60
+  warning-minutes: 1
   # Time away that resets the timer. Coming back through the queue with leave priority never resets it
-  break-reset-minutes: 10
+  break-reset-minutes: 1
   # Countdown for players already past the limit when a queue forms
-  queue-grace-minutes: 5
+  queue-grace-minutes: 1
   chat-warnings-minutes: [60, 30, 15, 5, 1]
