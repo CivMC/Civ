@@ -35,7 +35,7 @@ final class SessionLimitMessages {
                 + " on " + this.server + ". If players are waiting in the queue when it runs out, you'll be moved to"
                 + " the lobby and the back of the queue. Type or click ", NamedTextColor.YELLOW))
             .append(logoutButton())
-            .append(Component.text(" to leave safely. A break of " + this.breakReset + " or more resets your timer.",
+            .append(Component.text(" to leave safely.",
                 NamedTextColor.YELLOW))
             .build();
     }
