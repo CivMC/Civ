@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 /** Main-thread admission controller. All timestamps are monotonic nanoseconds. */
 public final class PlayerCapController {
 
+    private static final double MAX_MSPT = 500;
+
     public record Settings(int minCap, int maxCap, double sampleSeconds, double ewmaHalfLifeSeconds,
                            double reduceAboveMspt, double reduceHoldSeconds, int reduceStep,
                            double increaseBelowMspt, double recoverySeconds, double settleSeconds) {
@@ -50,7 +52,7 @@ public final class PlayerCapController {
             throw new IllegalArgumentException("Tick duration must be finite and non-negative");
         }
         ticks++;
-        tickDurationTotal += tickDurationMillis;
+        tickDurationTotal += Math.min(tickDurationMillis, MAX_MSPT);
         final double elapsed = seconds(now - sampleStart);
         if (elapsed < settings.sampleSeconds()) {
             return;
