@@ -291,9 +291,6 @@ public final class SessionLimitManager {
             }
             case OVER_LIMIT -> {
                 hideBar(player, entry);
-                if (previous == null || previous == Action.COUNTDOWN) {
-                    send(player, this.messages.overLimit());
-                }
             }
             case START_GRACE -> {
                 entry.streak.startGrace(now.plus(this.config.queueGrace()));

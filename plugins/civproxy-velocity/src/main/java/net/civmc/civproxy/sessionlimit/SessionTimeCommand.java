@@ -46,8 +46,7 @@ final class SessionTimeCommand implements SimpleCommand {
         final Instant now = Instant.now();
         final Optional<PlayStreak.Snapshot> snapshot = this.manager.snapshot(player.getUniqueId());
         if (snapshot.isEmpty() || snapshot.get().played().isZero()) {
-            return "Your session timer starts when you join " + server + ". After " + limit + " without a break of "
-                + DurationFormat.words(config.breakReset()) + ", you may be moved to the lobby if players are queueing.";
+            return "Your session timer starts when you join " + server + ".";
         }
 
         final PlayStreak.Snapshot streak = snapshot.get();
@@ -56,15 +55,13 @@ final class SessionTimeCommand implements SimpleCommand {
             if (streak.leftAt() != null && !now.isBefore(streak.leftAt().plus(config.breakReset()))) {
                 return "Your session timer will start fresh the next time you join " + server + ".";
             }
-            return "You've played " + played + " on " + server + " without a break. Stay off " + server + " for "
-                + DurationFormat.words(config.breakReset()) + " and your timer resets; come back sooner and it carries on.";
+            return "You've played " + played + " on " + server + " without a break.";
         }
 
         final Duration remaining = config.limit().minus(streak.played());
         if (remaining.isPositive()) {
             return "You've played " + played + " on " + server + " without a break. You reach the " + limit
-                + " limit in " + DurationFormat.words(remaining) + ". A break of "
-                + DurationFormat.words(config.breakReset()) + " or more resets your timer.";
+                + " limit in " + DurationFormat.words(remaining) + ".";
         }
         if (streak.graceEndsAt() != null && now.isBefore(streak.graceEndsAt())) {
             return "You're past the " + limit + " limit and players are queueing. You'll be moved to the lobby in "

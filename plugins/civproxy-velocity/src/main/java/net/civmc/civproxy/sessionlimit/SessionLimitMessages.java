@@ -21,7 +21,7 @@ final class SessionLimitMessages {
     }
 
     Component countdownBar(final Duration remaining) {
-        return Component.text("Session limit: " + DurationFormat.clock(remaining) + " left · type /logout to leave safely");
+        return Component.text("Session limit: " + DurationFormat.clock(remaining) + " left: type /logout to leave safely");
     }
 
     Component graceBar(final Duration remaining) {
@@ -38,12 +38,6 @@ final class SessionLimitMessages {
             .append(Component.text(" to leave safely. A break of " + this.breakReset + " or more resets your timer.",
                 NamedTextColor.YELLOW))
             .build();
-    }
-
-    Component overLimit() {
-        return Component.text("You've reached your " + this.limit + " on " + this.server + ", but nobody is waiting in"
-            + " the queue, so you can keep playing. If a queue forms, you'll get " + this.grace + " of warning before"
-            + " being moved to the lobby.", NamedTextColor.YELLOW);
     }
 
     Component graceStarted() {
@@ -70,8 +64,8 @@ final class SessionLimitMessages {
     }
 
     Component moved() {
-        return Component.text("You were moved to the lobby after " + this.limit + " on " + this.server + " so players"
-            + " waiting in the queue can get in. You're back in the queue.", NamedTextColor.GOLD);
+        return Component.text("You were moved to the queue after " + this.limit + " on " + this.server + " so players"
+            + " waiting in the queue can get in..", NamedTextColor.GOLD);
     }
 
     Component movedDisconnect() {
