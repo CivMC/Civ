@@ -3,7 +3,7 @@ package vg.civcraft.mc.civmodcore;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
-import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
+import vg.civcraft.mc.civmodcore.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.commands.CustomItemCommand;
@@ -68,7 +68,7 @@ public class CivModCorePlugin extends ACivMod {
         ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
         // Register listeners
         registerListener(new ClickableInventoryListener());
-        registerListener(DialogManager.INSTANCE);
+        DialogManager.init(this);
         registerListener(new ScoreBoardListener());
         registerListener(new PlayerNames(this));
         // Register commands
@@ -98,7 +98,7 @@ public class CivModCorePlugin extends ACivMod {
             this.database.close();
             this.database = null;
         }
-        DialogManager.resetDialogs();
+        DialogManager.clearCallbacks();
         PlayerSettingAPI.saveAll();
         ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
         if (this.commands != null) {

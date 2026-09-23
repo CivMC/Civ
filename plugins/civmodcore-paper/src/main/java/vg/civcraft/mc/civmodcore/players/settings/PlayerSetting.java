@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.players.settings;
 
 import com.google.common.base.Preconditions;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,11 +11,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.dialog.DialogHelpers;
+import vg.civcraft.mc.civmodcore.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
@@ -169,7 +176,31 @@ public abstract class PlayerSetting<T> {
      * Called when this setting is clicked in a menu to adjust its value
      */
     public void handleMenuClick(Player player, MenuSection menu) {
-        new MenuDialog(player, this, menu, "Invalid input");
+        final String INPUT_ID = "prompt_input", currentValue = this.getSerializedValueFor(player.getUniqueId());
+        DialogManager.showDialog(
+            player,
+            Key.key("civmodcore", "player_setting_set"),
+            Component.text(this.getNiceName()),
+            List.of(
+                DialogBody.plainMessage(Component.text("Current value: " + currentValue))
+            ),
+            List.of(
+                DialogInput.text(INPUT_ID, Component.text("Enter a new value for " + this.getNiceName() + ":", NamedTextColor.GOLD))
+                    .maxLength(256)
+                    .initial(currentValue)
+                    .build()
+            ),
+            (view) -> {
+                final String value = DialogHelpers.getTrimmedText(view, INPUT_ID);
+                if (value == null || !this.isValidValue(value)) {
+                    player.sendMessage(ChatColor.RED + "Invalid input");
+                    return;
+                }
+                this.setValueFromString(player.getUniqueId(), value);
+                player.sendMessage(ChatColor.GREEN + this.getNiceName() + " set to: " + value);
+                menu.showScreen(player); // Refresh the GUI
+            }
+        );
     }
 
     public void setValueFromString(UUID player, String inputValue) {

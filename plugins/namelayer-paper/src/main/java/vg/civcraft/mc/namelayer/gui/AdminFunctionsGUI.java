@@ -1,11 +1,11 @@
 package vg.civcraft.mc.namelayer.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -15,9 +15,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.StringUtil;
-import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
-import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
+import vg.civcraft.mc.civmodcore.dialog.DialogHelpers;
+import vg.civcraft.mc.civmodcore.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
@@ -108,35 +107,21 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
     }
 
     private void showTransferingMenu() {
-        p.sendMessage(ChatColor.GOLD
-            + "Enter the name of the new primary owner or \"cancel\" to exit this prompt");
-        ClickableInventory.forceCloseInventory(p);
-        new Dialog(p, NameLayerPlugin.getInstance()) {
-
-            @Override
-            public List<String> onTabComplete(String word, String[] arg1) {
-                List<String> players = Bukkit.getOnlinePlayers().stream()
-                    .filter(p -> g.isMember(p.getUniqueId()))
-                    .map(Player::getName)
-                    .collect(Collectors.toList());
-                players.add("cancel");
-
-                return StringUtil.copyPartialMatches(word, players, new ArrayList<>());
-            }
-
-            @Override
-            public void onReply(String[] arg0) {
-                if (arg0.length > 1) {
-                    p.sendMessage(ChatColor.RED
-                        + "You may only enter one player to transfer to");
-                    showScreen();
-                    return;
-                }
-                if (arg0[0].equals("cancel")) {
-                    showScreen();
-                    return;
-                }
-                final UUID transferUUID = NameLayerAPI.getUUID(arg0[0]);
+        final String PLAYER_ID = "player_name";
+        DialogManager.showDialog(
+            p,
+            Key.key("namelayer", "transfer_group"),
+            Component.text("Transfer Group?"),
+            List.of(
+                DialogBody.plainMessage(Component.text("You are about to transfer this group to someone else."))
+            ),
+            List.of(
+                DialogInput.text(PLAYER_ID, Component.text("Player name:", NamedTextColor.GOLD))
+                    .maxLength(16)
+                    .build()
+            ),
+            (view) -> {
+                final UUID transferUUID = NameLayerAPI.getUUID(DialogHelpers.getAssuredText(view, PLAYER_ID));
                 if (transferUUID == null) {
                     p.sendMessage(ChatColor.RED + "This player doesn't exist");
                     showScreen();
@@ -187,7 +172,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                 confirmInv.showInventory(p);
 
             }
-        };
+        );
     }
 
     private void showDeletionMenu() {
@@ -247,44 +232,31 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                 .append(g.getGroupNameColored())
                 .decoration(TextDecoration.ITALIC, false)
             , p -> {
-            ClickableInventory.forceCloseInventory(p);
-            p.sendMessage(Component.text("Enter the color you wish to change ", NamedTextColor.GREEN).append(g.getGroupNameColored())
-                .append(Component.text(" to or type \"cancel\" to leave this prompt", NamedTextColor.GREEN)));
-            new Dialog(p, NameLayerPlugin.getInstance()) {
-
-                @Override
-                public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-                    return Collections.emptyList();
-                }
-
-                @Override
-                public void onReply(String[] message) {
-                    if (message.length > 1) {
+            final String COLOUR_ID = "group_colour";
+            DialogManager.showDialog(
+                p,
+                Key.key("namelayer", "group_colour"),
+                Component.text("Choose Group Colour?"),
+                List.of(),
+                List.of(
+                    DialogInput.text(COLOUR_ID, Component.text("Colour name/hex (eg: RED/#FF0000):", NamedTextColor.GOLD))
+                        .maxLength(32)
+                        .build()
+                ),
+                (view) -> {
+                    final String text = DialogHelpers.getAssuredText(view, COLOUR_ID);
+                    if (text.indexOf(' ') > -1) {
                         p.sendRichMessage("<red>Colors cannot have spaces</red>");
                         showScreen();
-                        this.end();
-                        //For some reason if we don't force end the dialog after each this.end then
-                        //tab completion for other commands will be broken? (/nl, /g etc.)
-                        DialogManager.forceEndDialog(p.getUniqueId());
                         return;
                     }
-                    String cancel = message[0];
-                    if (cancel.equals("cancel")) {
-                        p.sendRichMessage("<red>Cancelled changing group color</red>");
-                        showScreen();
-                        this.end();
-                        DialogManager.forceEndDialog(p.getUniqueId());
-                        return;
-                    }
-                    TextColor color = NamedTextColor.NAMES.value(cancel);
+                    TextColor color = NamedTextColor.NAMES.value(text);
                     if (color == null) {
-                        color = TextColor.fromHexString(cancel);
+                        color = TextColor.fromHexString(text);
                     }
                     if (color == null) {
-                        player.sendRichMessage("<red>The value you entered was not a valid hex value or color.</red>");
+                        p.sendRichMessage("<red>The value you entered was not a valid hex value or color.</red>");
                         showScreen();
-                        this.end();
-                        DialogManager.forceEndDialog(p.getUniqueId());
                         return;
                     }
                     final TextColor finalColor = color;
@@ -297,10 +269,8 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                             p.sendMessage(Component.text(result.message(), NamedTextColor.RED));
                         }
                     });
-                    this.end();
-                    DialogManager.forceEndDialog(p.getUniqueId());
                 }
-            };
+            );
         });
     }
 
