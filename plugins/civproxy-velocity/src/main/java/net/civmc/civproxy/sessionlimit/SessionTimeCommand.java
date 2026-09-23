@@ -55,12 +55,12 @@ final class SessionTimeCommand implements SimpleCommand {
             if (streak.leftAt() != null && !now.isBefore(streak.leftAt().plus(config.breakReset()))) {
                 return "Your session timer will start fresh the next time you join " + server + ".";
             }
-            return "You've played " + played + " on " + server + " without a break.";
+            return "You've played " + played + " on " + server + ".";
         }
 
         final Duration remaining = config.limit().minus(streak.played());
         if (remaining.isPositive()) {
-            return "You've played " + played + " on " + server + " without a break. You reach the " + limit
+            return "You've played " + played + " on " + server + ". You reach the " + limit
                 + " limit in " + DurationFormat.words(remaining) + ".";
         }
         if (streak.graceEndsAt() != null && now.isBefore(streak.graceEndsAt())) {
