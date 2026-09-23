@@ -4,6 +4,7 @@ import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
@@ -64,6 +65,7 @@ public class InvitationGUI extends AbstractGroupGUI {
                     final String PLAYER_ID = "player_name";
                     DialogManager.showDialog(
                         arg0,
+                        Key.key("namelayer", "invite_player"),
                         Component.text("Group Invite"),
                         List.of(),
                         List.of(

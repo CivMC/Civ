@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -120,6 +121,7 @@ public class SnitchLogGUI {
                 final String NAME_ID = "snitch_name";
                 DialogManager.showDialog(
                     clicker,
+                    Key.key("jukealert", "snitch_name"),
                     Component.text("Please enter a new name for the snitch:"),
                     List.of(),
                     List.of(

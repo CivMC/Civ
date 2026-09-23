@@ -5,6 +5,7 @@ import io.papermc.paper.registry.data.dialog.input.DialogInput;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -109,6 +110,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
         final String PLAYER_ID = "player_name";
         DialogManager.showDialog(
             p,
+            Key.key("namelayer", "transfer_group"),
             Component.text("Transfer Group?"),
             List.of(
                 DialogBody.plainMessage(Component.text("You are about to transfer this group to someone else."))
@@ -233,6 +235,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
             final String COLOUR_ID = "group_colour";
             DialogManager.showDialog(
                 p,
+                Key.key("namelayer", "group_colour"),
                 Component.text("Choose Group Colour?"),
                 List.of(),
                 List.of(

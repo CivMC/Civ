@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -761,6 +762,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                     final String PLAYER_ID = "player_name";
                     DialogManager.showDialog(
                         p,
+                        Key.key("namelayer", "blacklist_player"),
                         Component.text("Add player to blacklist?"),
                         List.of(),
                         List.of(
@@ -851,6 +853,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                     final String PASSWORD_ID = "group_password";
                     DialogManager.showDialog(
                         p,
+                        Key.key("namelayer", "group_password"),
                         Component.text("Change " + g.getName() + "'s password?"),
                         List.of(
                             DialogBody.plainMessage(Component.text("Group: " + g.getName()))

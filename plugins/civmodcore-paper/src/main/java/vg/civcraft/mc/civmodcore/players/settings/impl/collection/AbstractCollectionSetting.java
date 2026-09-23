@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
@@ -207,6 +208,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
             final String INPUT_ID = "prompt_input";
             DialogManager.showDialog(
                 p,
+                Key.key("civmodcore", "player_setting_add"),
                 Component.text("Add to " + AbstractCollectionSetting.this.getNiceName() + "?"),
                 List.of(),
                 List.of(

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
@@ -251,6 +252,7 @@ public class GUIGroupOverview {
                 final String NAME_ID = "group_name", PASSWORD_ID = "group_password";
                 DialogManager.showDialog(
                     p,
+                    Key.key("namelayer", "create_group"),
                     Component.text("Create Group?"),
                     List.of(),
                     List.of(
@@ -324,6 +326,7 @@ public class GUIGroupOverview {
                 final String NAME_ID = "group_name", PASSWORD_ID = "group_password";
                 DialogManager.showDialog(
                     p,
+                    Key.key("namelayer", "join_group"),
                     Component.text("Join Password-Protected Group?"),
                     List.of(),
                     List.of(

@@ -36,6 +36,7 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 public final class DialogManager implements Listener {
     private static final Logger LOGGER = LoggerFactory.getLogger(DialogManager.class);
     private static final String DIALOG_ID_KEY = "dialogId";
+    private static final String DIALOG_TYPE_KEY = "dialogType";
     private static final Key CONFIRM_DIALOG_KEY = Key.key("civmodcore", "confirm_dialog");
     private static final Key CLOSE_DIALOG_KEY = Key.key("civmodcore", "close_dialog");
 
@@ -44,6 +45,7 @@ public final class DialogManager implements Listener {
 
     public static void showDialog(
         final @NotNull Player player,
+        final @NotNull Key dialogType,
         final @NotNull Component title,
         final @NotNull List<? extends @NotNull DialogBody> body,
         final @NotNull List<? extends @NotNull DialogInput> inputs,
@@ -79,7 +81,10 @@ public final class DialogManager implements Listener {
                     Component.text("Confirm", NamedTextColor.GREEN),
                     null,
                     100,
-                    DialogHelpers.customClick(CONFIRM_DIALOG_KEY, (nbt) -> nbt.setFloat(DIALOG_ID_KEY, dialogId))
+                    DialogHelpers.customClick(CONFIRM_DIALOG_KEY, (nbt) -> {
+                        nbt.setString(DIALOG_TYPE_KEY, dialogType.asMinimalString());
+                        nbt.setFloat(DIALOG_ID_KEY, dialogId);
+                    })
                 ),
                 ActionButton.create(
                     Component.translatable("gui.cancel", NamedTextColor.RED),

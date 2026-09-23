@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.text.WordUtils;
@@ -178,6 +179,7 @@ public abstract class PlayerSetting<T> {
         final String INPUT_ID = "prompt_input", currentValue = this.getSerializedValueFor(player.getUniqueId());
         DialogManager.showDialog(
             player,
+            Key.key("civmodcore", "player_setting_set"),
             Component.text(this.getNiceName()),
             List.of(
                 DialogBody.plainMessage(Component.text("Current value: " + currentValue))
