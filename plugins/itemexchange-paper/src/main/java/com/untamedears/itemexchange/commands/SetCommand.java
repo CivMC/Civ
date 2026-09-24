@@ -9,17 +9,29 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import com.untamedears.itemexchange.rules.TradeRule;
 import com.untamedears.itemexchange.utility.RuleHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import net.md_5.bungee.api.chat.TextComponent;
+
+
+import java.util.Objects;
 
 @CommandAlias(SetCommand.ALIAS)
 public final class SetCommand extends BaseCommand {
 
     public static final String ALIAS = "ies|ieset|set";
+
+    private final ItemExchangePlugin plugin;
+
+    public SetCommand(ItemExchangePlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @CatchUnknown
     @Description("Sets a pertinent field to an exchange rule.")
@@ -72,4 +84,26 @@ public final class SetCommand extends BaseCommand {
         }
     }
 
+    @Subcommand("name|n")
+    @Description("Sets the name of a trade rule.")
+    @Syntax("<name>")
+    public void setName(Player player, String name) {
+        TradeRule tradeRule = this.plugin.listener().getTradeRule();
+        if (tradeRule == null) {
+            TextComponent lineText = new TextComponent(ChatColor.RED + "No trade rule to name.");
+            player.spigot().sendMessage(lineText);
+            return;
+        }
+        String prevName = tradeRule.getInput().getName();
+        if (prevName == null)
+            prevName = "";
+        boolean empty = Objects.equals(prevName, "");
+        TextComponent lineText = new TextComponent(ChatColor.GREEN + 
+                (empty ?  "Set " : "Changed ") + 
+                "trade rule name to ");
+        lineText.addExtra(ChatColor.AQUA + name);
+        lineText.addExtra(empty ? "" : ChatColor.GREEN + " from " + ChatColor.GOLD + prevName);
+        tradeRule.getInput().setName(name);
+        player.spigot().sendMessage(lineText);
+    }
 }
