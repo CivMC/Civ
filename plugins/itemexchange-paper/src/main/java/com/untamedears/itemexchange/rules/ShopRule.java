@@ -4,7 +4,6 @@ import static com.untamedears.itemexchange.rules.ExchangeRule.Type;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.mojang.serialization.JsonOps;
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import net.kyori.adventure.key.Key;
-import net.minecraft.nbt.NbtOps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -118,7 +116,7 @@ public final class ShopRule implements Validation {
             ItemExchangePlugin.getInstance(),
             player,
             SHOW_TRADE_PACKET,
-            NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, displayNbt.internal())
+            displayNbt
         );
     }
 

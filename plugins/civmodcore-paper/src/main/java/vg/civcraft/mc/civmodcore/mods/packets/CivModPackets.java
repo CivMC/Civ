@@ -2,9 +2,11 @@ package vg.civcraft.mc.civmodcore.mods.packets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import net.kyori.adventure.key.Key;
+import net.minecraft.nbt.NbtOps;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,6 +14,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 public class CivModPackets {
     private static final Logger LOGGER = LoggerFactory.getLogger(CivModPackets.class);
@@ -118,6 +121,21 @@ public class CivModPackets {
             plugin,
             packetId.toString(),
             payload.getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
+    /// Convenience shortcut
+    public static void sendPacket(
+        final @NotNull JavaPlugin plugin,
+        final @NotNull Player recipient,
+        final @NotNull Key packetId,
+        final @NotNull NbtCompound nbt
+    ) {
+        sendPacket(
+            plugin,
+            recipient,
+            packetId,
+            NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt.internal())
         );
     }
 }
