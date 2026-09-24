@@ -1,10 +1,12 @@
 package com.github.igotyou.FactoryMod;
 
 import com.github.igotyou.FactoryMod.commands.FMCommandManager;
+import com.github.igotyou.FactoryMod.listeners.BrewStackListener;
 import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.utility.FactoryModPermissionManager;
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class FactoryMod extends ACivMod {
@@ -56,6 +58,9 @@ public class FactoryMod extends ACivMod {
                 new CompactItemListener(), plugin);
         if (manager.isCitadelEnabled()) {
             plugin.getServer().getPluginManager().registerEvents(new CitadelListener(), plugin);
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
+            plugin.getServer().getPluginManager().registerEvents(new BrewStackListener(), plugin);
         }
     }
 }

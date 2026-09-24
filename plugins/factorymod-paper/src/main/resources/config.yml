@@ -693,6 +693,63 @@ factories:
 
 #appliedLore is the lore which is applied as replacement for the removed lore. This list may not be empty, but it may contain multiple entries
 
+
+#10. Brew stacking recipe
+
+#This type of recipe makes BreweryX brews stackable. Brews are potions, which vanilla caps at a stack size of one, so every
+#single bottle takes up a whole inventory slot. This recipe takes one brew at a time and hands back the very same brew with
+#the vanilla max stack size set on it, so bottles of it merge into one slot from then on. The brew stays a real brew and can
+#still be drunk, and the resulting stacks split and merge like any other item.
+
+#This recipe requires the BreweryX plugin. If it isn't enabled the recipe is skipped with a warning on startup.
+
+#A brew has to be sealed before it can stack. Sealing throws away the brewing details and rounds an odd quality down to the
+#next even one (1 becomes 2, 3 becomes 2, 5 becomes 4), and it cannot be undone, exactly as BreweryX's own sealing table does.
+
+#Example:
+
+#packBrews:
+#   type: BREW_STACK
+#   name: Pack Brews
+#   production_time: 2s
+#   input:
+#       glass_bottle:
+#           material: GLASS_BOTTLE
+#           amount: 1
+#   max_stack_size: 16
+#   seal_unsealed: true
+#   packed_lore: Packed Brew ({size})
+#   allowed_brews:
+#       wheatbeer: 16
+#       mead: 8
+#       whiskey: 8
+
+
+#type always has to be BREW_STACK for this type of recipe
+
+#input specifies the cost consumed for each brew made stackable, on top of the brew itself. It may be left empty
+
+#allowed_brews is the list of brews this recipe will accept, and nothing else will be touched. Entries are keyed by BREW ID,
+#which is the yaml key of the brew in BreweryX's own config, NOT its display name. So for a BreweryX recipe written as
+#  wheatbeer:
+#    name: Skunky Wheatbeer/Wheatbeer/Fine Wheatbeer
+#the entry here is 'wheatbeer'. An id that BreweryX doesn't know is reported with a warning the first time the factory runs.
+
+#Each entry's value is the stack size for that brew, so rarer brews can be made to stack less than cheap ones. It may also be
+#written as a section with max_stack_size in it, or allowed_brews can be a plain list of ids which all use max_stack_size.
+
+#max_stack_size is the stack size used for brews which don't name their own. It has to be between 2 and 99. Defaults to 16
+
+#seal_unsealed decides what happens to a brew that isn't sealed yet. When true the factory seals it as part of the run, when
+#false only already sealed brews are accepted and everything else is left alone. Defaults to true
+
+#packed_lore is an optional line of lore added to brews the factory has made stackable, so players can tell them apart from
+#ordinary ones. Leave it out for no lore. The placeholder {size} in it is replaced with the stack size that brew got, so
+#'Packed Brew ({size})' comes out as 'Packed Brew (16)' on a brew allowed to stack to 16
+
+#Note that a brew which is already stackable is skipped, so feeding one back in will never consume the input cost again
+
+
 #GENERAL NOTE:
 
 # Every recipe type can include at the same level as "name: " the following, although only FCC's will respect it currently:
