@@ -10,6 +10,7 @@ import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import net.kyori.adventure.key.Key;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -19,6 +20,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.mods.packets.CivModPackets;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 import vg.civcraft.mc.civmodcore.utilities.Validation;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -28,6 +31,7 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 public final class ShopRule implements Validation {
 
     private final ItemExchangePlugin PLUGIN = ItemExchangePlugin.getInstance();
+    public static final Key SHOW_TRADE_PACKET = Key.key("itemexchange", "trade-details");
 
     private final List<TradeRule> trades = new ArrayList<>();
 
@@ -84,19 +88,36 @@ public final class ShopRule implements Validation {
         if (trade == null) {
             throw new NullPointerException("Could not message player about trade... this shouldn't happen.");
         }
+        final int currentTradeIndex = this.currentTradeIndex + 1, tradesCount = this.trades.size();
         player.sendMessage(String.format("%s(%d/%d) exchanges present.",
-            ChatColor.YELLOW, this.currentTradeIndex + 1, this.trades.size()));
+            ChatColor.YELLOW, currentTradeIndex, tradesCount));
         for (String line : trade.getInput().getDisplayInfo()) {
             player.sendMessage(line);
         }
-        if (trade.getOutput() != null) {
-            for (String line : trade.getOutput().getDisplayInfo()) {
+        int stock = 0;
+        if (trade.getOutput() instanceof final ExchangeRule outputRule) {
+            for (String line : outputRule.getDisplayInfo()) {
                 player.sendMessage(line);
             }
             PLUGIN.debug("[ShopRule] Calculating stock.");
-            int stock = trade.calculateStock();
+            stock = trade.calculateStock();
             player.sendMessage(ChatColor.YELLOW + "" + stock + " exchange" + (stock == 1 ? "" : "s") + " available.");
         }
+        // Mod support
+        final var displayNbt = new NbtCompound();
+        displayNbt.setInt("trades", tradesCount);
+        displayNbt.setInt("index", currentTradeIndex);
+        displayNbt.setCompound("input", trade.getInput().toNBT());
+        if (trade.getOutput() instanceof final ExchangeRule outputRule) {
+            displayNbt.setCompound("output", outputRule.toNBT());
+            displayNbt.setInt("stock", stock);
+        }
+        CivModPackets.sendPacket(
+            ItemExchangePlugin.getInstance(),
+            player,
+            SHOW_TRADE_PACKET,
+            displayNbt
+        );
     }
 
     // ------------------------------------------------------------
