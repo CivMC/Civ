@@ -11,10 +11,10 @@ import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import net.kyori.adventure.key.Key;
 import net.minecraft.nbt.NbtOps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -24,7 +24,6 @@ import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.mods.packets.CivModPackets;
 import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
-import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.Validation;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -34,7 +33,7 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 public final class ShopRule implements Validation {
 
     private final ItemExchangePlugin PLUGIN = ItemExchangePlugin.getInstance();
-    public static final NamespacedKey SHOW_TRADE_PACKET = KeyedUtils.of(ItemExchangePlugin.class, "trade-details");
+    public static final Key SHOW_TRADE_PACKET = Key.key("itemexchange", "trade-details");
 
     private final List<TradeRule> trades = new ArrayList<>();
 
