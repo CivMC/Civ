@@ -141,6 +141,19 @@ public class LoggableActionListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onCamelMovement(EntityMoveEvent event) {
+        if (event.getEntity().getType() != EntityType.CAMEL) {
+            return;
+        }
+
+       for (Entity e : event.getEntity().getPassengers()) {
+            if (e instanceof Player) {
+                enterSnitchProximity(new PlayerMoveEvent((Player) e, event.getFrom(), event.getTo()));
+        }
+    }
+}
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         handlePlayerAction(event.getPlayer(), s -> new BlockPlaceAction(System.currentTimeMillis(), s,
             event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBlock().getType()));
