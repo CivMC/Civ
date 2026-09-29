@@ -3,6 +3,7 @@ package net.civmc.kitpvp.arena.gui;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import net.civmc.kitpvp.arena.ArenaGravityListener;
 import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.LoadedArena;
 import net.civmc.kitpvp.arena.data.Arena;
@@ -32,12 +33,14 @@ public class ArenaGui {
     private final RankedQueueManager rankedQueueManager;
     private final double elo;
     private final ArenaManager manager;
+    private final ArenaGravityListener gravityListener;
 
-    public ArenaGui(ArenaDao dao, RankedQueueManager rankedQueueManager, double elo, ArenaManager manager) {
+    public ArenaGui(ArenaDao dao, RankedQueueManager rankedQueueManager, double elo, ArenaManager manager, ArenaGravityListener gravityListener) {
         this.dao = dao;
         this.rankedQueueManager = rankedQueueManager;
         this.elo = elo;
         this.manager = manager;
+        this.gravityListener = gravityListener;
     }
 
     public void open(Player player) {
@@ -80,6 +83,15 @@ public class ArenaGui {
             }
             lore.add(Component.text("Click to teleport", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             lore.add(Component.text("Shift left click to join as spectator", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+            String gravityLore = "Gravity: " + loadedArena.gravity().displayName();
+            NamedTextColor gravityColour = NamedTextColor.AQUA;
+            if (isOwner && loadedArena.gravityLocked()) {
+                gravityLore += " [Locked]";
+                gravityColour = NamedTextColor.RED;
+            } else if (isOwner) {
+                gravityLore += " [Right-click: " + loadedArena.gravity().alternate().displayName() + "]";
+            }
+            lore.add(Component.text(gravityLore, gravityColour).decoration(TextDecoration.ITALIC, false));
             if (hasAccess) {
                 lore.add(Component.text("Shift right click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             }
@@ -112,6 +124,21 @@ public class ArenaGui {
                         player.setGameMode(GameMode.SPECTATOR);
                         player.teleport(arena.spawn().toLocation(world));
                     }
+                }
+
+                @Override
+                protected void onRightClick(@NotNull Player clicker) {
+                    if (!isOwner) {
+                        super.onRightClick(clicker);
+                        return;
+                    }
+                    if (!loadedArena.setGravity(loadedArena.gravity().alternate())) {
+                        clicker.sendMessage(Component.text("Arena gravity is locked because another player has joined", NamedTextColor.RED));
+                        return;
+                    }
+                    gravityListener.refresh(clicker);
+                    clicker.sendMessage(Component.text("Set arena gravity to " + loadedArena.gravity().displayName(), NamedTextColor.GREEN));
+                    open(clicker);
                 }
 
                 @Override

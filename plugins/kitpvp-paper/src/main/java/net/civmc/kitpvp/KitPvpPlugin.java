@@ -5,6 +5,7 @@ import java.util.List;
 import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.arena.ArenaCleaner;
 import net.civmc.kitpvp.arena.ArenaCommand;
+import net.civmc.kitpvp.arena.ArenaGravityListener;
 import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.MysqlLoader;
 import net.civmc.kitpvp.arena.PrivateArenaListener;
@@ -39,6 +40,7 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 public class KitPvpPlugin extends ACivMod {
 
     private ManagedDatasource source;
+    private ArenaGravityListener gravityListener;
 
     @Override
     public void onEnable() {
@@ -92,7 +94,10 @@ public class KitPvpPlugin extends ACivMod {
 
             PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);
             getServer().getPluginManager().registerEvents(privateArenaListener, this);
-            getCommand("arena").setExecutor(new ArenaCommand(this, arenaDao, ranked, queueManager, manager, privateArenaListener));
+            gravityListener = new ArenaGravityListener(manager, this);
+            gravityListener.resetOnlinePlayers();
+            getServer().getPluginManager().registerEvents(gravityListener, this);
+            getCommand("arena").setExecutor(new ArenaCommand(this, arenaDao, ranked, queueManager, manager, privateArenaListener, gravityListener));
             getServer().getPluginManager().registerEvents(new RespawnListener(manager, this), this);
             Bukkit.getScheduler().runTaskTimer(this, new ArenaCleaner(manager), 20 * 60, 20 * 60);
         } catch (SQLException e) {
@@ -102,6 +107,9 @@ public class KitPvpPlugin extends ACivMod {
 
     @Override
     public void onDisable() {
+        if (gravityListener != null) {
+            gravityListener.resetOnlinePlayers();
+        }
         this.source.close();
     }
 }

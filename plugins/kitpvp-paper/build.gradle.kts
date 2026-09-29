@@ -17,4 +17,11 @@ dependencies {
     compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.6.3.jar"))
     compileOnly(libs.aswm.api)
     compileOnly(libs.placeholderapi)
+
+    testImplementation(libs.paper.api)
+    testImplementation(libs.bundles.junit)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
