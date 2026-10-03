@@ -15,6 +15,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class MobListener implements Listener {
 
+    private static final Set<String> BLOCKED_MYTHIC_MOBS = Set.of("Bleeze", "TallEnderman");
+
     private final BastionBlockManager blockManager;
 
     public MobListener(BastionBlockManager blockManager) {
@@ -24,7 +26,7 @@ public class MobListener implements Listener {
     // Fix for https://git.lumine.io/mythiccraft/MythicMobs/-/issues/2158, otherwise only one listener would be necessary
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void on(MythicMobSpawnEvent event) {
-        if (!event.getMobType().getInternalName().equals("Bleeze")) {
+        if (!BLOCKED_MYTHIC_MOBS.contains(event.getMobType().getInternalName())) {
             return;
         }
         Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getLocation(), b -> b.getType().isBlockMobs() && b.isMature());
