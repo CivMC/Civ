@@ -2,7 +2,9 @@ package net.civmc.kitpvp.arena.gui;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.LoadedArena;
 import net.civmc.kitpvp.arena.data.Arena;
@@ -44,14 +46,14 @@ public class ArenaGui {
         List<IClickable> arenas = new ArrayList<>();
 
         List<LoadedArena> loadedArenas = manager.getArenas();
-        loadedArenas.sort(Comparator.comparingInt(s -> {
-            World world = Bukkit.getWorld(manager.getArenaName(s));
-            if (world == null) {
-                return -1;
-            } else {
-                return world.getPlayerCount();
-            }
-        }));
+        final Map<LoadedArena, List<Player>> playingPlayers = new HashMap<>();
+        for (final LoadedArena loadedArena : loadedArenas) {
+            final World world = Bukkit.getWorld(manager.getArenaName(loadedArena));
+            playingPlayers.put(loadedArena, world == null ? List.of() : world.getPlayers().stream()
+                .filter(worldPlayer -> worldPlayer.getGameMode() == GameMode.SURVIVAL)
+                .toList());
+        }
+        loadedArenas.sort(Comparator.comparingInt((LoadedArena arena) -> playingPlayers.get(arena).size()).reversed());
         for (LoadedArena loadedArena : loadedArenas) {
             if (loadedArena.ranked()) {
                 continue;
@@ -84,12 +86,11 @@ public class ArenaGui {
                 lore.add(Component.text("Shift right click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             }
             World world = Bukkit.getWorld(manager.getArenaName(loadedArena));
-            if (world != null && world.getPlayerCount() > 0) {
+            final List<Player> arenaPlayers = playingPlayers.get(loadedArena);
+            if (!arenaPlayers.isEmpty()) {
                 lore.add(Component.text("Currently playing:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
-                for (Player worldPlayer : world.getPlayers()) {
-                    if (worldPlayer.getGameMode() == GameMode.SURVIVAL) {
-                        lore.add(Component.text("- " + worldPlayer.getName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-                    }
+                for (final Player worldPlayer : arenaPlayers) {
+                    lore.add(Component.text("- " + worldPlayer.getName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
                 }
             }
             meta.lore(lore);
@@ -102,7 +103,9 @@ public class ArenaGui {
                         if (player.getGameMode() == GameMode.SPECTATOR && !player.hasPermission("kitpvp.admin")) {
                             player.setGameMode(GameMode.SURVIVAL);
                         }
-                        player.teleport(arena.spawn().toLocation(world));
+                        if (player.teleport(arena.spawn().toLocation(world))) {
+                            player.sendMessage(Component.text("Use /spawn to leave this arena.", NamedTextColor.GOLD));
+                        }
                     }
                 }
 
@@ -110,7 +113,9 @@ public class ArenaGui {
                 protected void onShiftLeftClick(@NotNull Player clicker) {
                     if (world != null) {
                         player.setGameMode(GameMode.SPECTATOR);
-                        player.teleport(arena.spawn().toLocation(world));
+                        if (player.teleport(arena.spawn().toLocation(world))) {
+                            player.sendMessage(Component.text("Use /spawn to leave this arena.", NamedTextColor.GOLD));
+                        }
                     }
                 }
 
