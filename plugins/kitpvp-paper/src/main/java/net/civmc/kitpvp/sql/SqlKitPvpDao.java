@@ -32,6 +32,11 @@ public class SqlKitPvpDao implements KitPvpDao {
                     UNIQUE KEY (name, player)
                 )
                 """);
+        source.registerMigration(8, false, """
+            ALTER TABLE kits
+                ADD INDEX kits_player (player),
+                ADD INDEX kits_public (public)
+            """);
     }
 
     private Kit getKit(ResultSet resultSet) throws SQLException {
@@ -87,18 +92,20 @@ public class SqlKitPvpDao implements KitPvpDao {
     }
 
     @Override
-    public List<Kit> getKits(UUID player) {
-        try (Connection connection = source.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT id, name, public, icon, inventory FROM kits WHERE (player = ? AND NOT public) OR public");
+    public List<Kit> getKits(final UUID player) {
+        try (final Connection connection = source.getConnection()) {
+            final PreparedStatement statement = connection.prepareStatement("""
+                 SELECT id, name, public, icon, inventory FROM kits WHERE (player = ? AND NOT public) OR public
+                 """);
             statement.setString(1, player.toString());
-            ResultSet resultSet = statement.executeQuery();
-            List<Kit> kits = new ArrayList<>();
+            final ResultSet resultSet = statement.executeQuery();
+            final List<Kit> kits = new ArrayList<>();
             while (resultSet.next()) {
                 kits.add(getKit(resultSet));
             }
             return kits;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (final SQLException exception) {
+            throw new RuntimeException(exception);
         }
     }
 
