@@ -24,7 +24,7 @@ public class MobListener implements Listener {
     // Fix for https://git.lumine.io/mythiccraft/MythicMobs/-/issues/2158, otherwise only one listener would be necessary
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void on(MythicMobSpawnEvent event) {
-        if (!event.getMobType().getInternalName().equals("Bleeze")) {
+        if (event.getMobType().getInternalName().equals("BleezeMinion")) {
             return;
         }
         Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getLocation(), b -> b.getType().isBlockMobs() && b.isMature());
