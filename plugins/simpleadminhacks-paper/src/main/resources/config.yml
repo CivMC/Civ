@@ -79,6 +79,8 @@ hacks:
       - <gold>That <it>really<gold> hurt!
   BedLocator:
     enabled: true
+  BelowWorldRescue:
+    enabled: false
   BeeKeeping:
     enabled: true
     # Value between 0 and 1 that determines the percentage chance that a bee will replace
