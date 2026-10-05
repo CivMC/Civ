@@ -168,7 +168,7 @@ Like with Diamond and Netherite, a more efficient form of crafting the armor and
 
 #### Backpacks
 Backpacks allow the player to access an extra inventory anywhere they want, accessible as long as they are able to interact with a backpack. This means you do not need to carry a backpack with you, just be able to access one where you need it. Allowing for communal access points, if nations a willing to risk it being stolen.<br>
-These backpacks look like and function similar to vanilla enderchests, with the exception that once you die, all contents of the backpack will be dropped. Therefore, it cannot be used as an invulnerable storage place, like in vanilla. 
+These backpacks look like and function similar to vanilla enderchests, with the exception that if you are killed by a player, all contents of the backpack will be dropped. Therefore, it cannot be used as an invulnerable storage place, like in vanilla. 
 
 To craft a backpack surround an enderchest with Meteoric Iron ingots in a crafting table like so:
 ![Backpack Crafting recipe](media/backpack.png)
