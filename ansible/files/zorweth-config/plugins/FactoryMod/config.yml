@@ -88,6 +88,12 @@ factories:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          use-cooldown:
+            ==: UseCooldown
+            seconds: 3.0
       glowstone_dust:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -12577,6 +12583,12 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          use-cooldown:
+            ==: UseCooldown
+            seconds: 3.0
     output:
       mob bundle:
         v: 3839
@@ -19424,6 +19436,12 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          use-cooldown:
+            ==: UseCooldown
+            seconds: 3.0
   make_maces:
     production_time: 4s
     name: Make Maces
@@ -19783,6 +19801,12 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          use-cooldown:
+            ==: UseCooldown
+            seconds: 3.0
       glowstone_dust:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -19831,6 +19855,12 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 4
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          use-cooldown:
+            ==: UseCooldown
+            seconds: 3.0
       glowstone_dust:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -19927,6 +19957,12 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          use-cooldown:
+            ==: UseCooldown
+            seconds: 3.0
     output:
       empty_advanced_oxygen_tank:
         custom-key: empty_advanced_oxygen_tank
@@ -19975,6 +20011,12 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WIND_CHARGE
         amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          use-cooldown:
+            ==: UseCooldown
+            seconds: 3.0
     output:
       oxygen_filters:
         custom-key: oxygen_filters

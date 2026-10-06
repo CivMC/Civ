@@ -62,7 +62,7 @@ public class ArenaGui {
             if (!player.hasPermission("kitpvp.admin")
                 && loadedArena.invitedPlayers() != null
                 && !loadedArena.invitedPlayers().contains(player.getPlayerProfile())
-                && !loadedArena.owner().equals(player.getPlayerProfile())) {
+                && !loadedArena.owner().getId().equals(player.getPlayerProfile().getId())) {
                 continue;
             }
 
