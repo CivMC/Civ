@@ -3,8 +3,7 @@ package net.civmc.kiragatewayvelocity.impersonation;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import net.civmc.kiragatewayvelocity.KiraGateway;
-import net.kyori.adventure.audience.MessageType;
-import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +36,13 @@ public class PseudoConsoleSender implements ConsoleCommandSource {
         KiraGateway.getInstance().getRabbit().replyToUser(actualUser, input, discordChannelId);
     }
 
-    /**
-     * @noinspection UnstableApiUsage
-     */
     @Override
-    public void sendMessage(@NotNull Identity identity, @NotNull Component message, @NotNull MessageType type) {
+    public void sendMessage(@NotNull Component message) {
+        handleReply(PlainTextComponentSerializer.plainText().serialize(message));
+    }
+
+    @Override
+    public void sendMessage(@NotNull Component message, @NotNull ChatType.Bound boundChatType) {
         handleReply(PlainTextComponentSerializer.plainText().serialize(message));
     }
 
