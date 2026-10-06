@@ -706,15 +706,15 @@ factories:
             - Activity reward used to fuel pearls
     recipes:
       - smelt_coal_ore
-      - smelt_raw_copper
       - smelt_raw_copper_catalyst
+      - smelt_raw_copper
       - smelt_bauxite
-      - smelt_raw_iron
       - smelt_raw_iron_catalyst
-      - smelt_diamond_ore
+      - smelt_raw_iron
       - smelt_diamond_ore_catalyst
-      - smelt_deepslate_diamond_ore
+      - smelt_diamond_ore
       - smelt_deepslate_diamond_ore_catalyst
+      - smelt_deepslate_diamond_ore
       - smelt_raw_gold
       - smelt_nether_gold_ore
       - smelt_redstone_ore
@@ -734,15 +734,15 @@ factories:
     recipes:
       - adv_smelt_ancient_debris
       - smelt_coal_ore
-      - adv_smelt_raw_copper
       - adv_smelt_raw_copper_catalyst
+      - adv_smelt_raw_copper
       - adv_smelt_bauxite
-      - adv_smelt_raw_iron
       - adv_smelt_raw_iron_catalyst
-      - adv_smelt_diamond_ore
+      - adv_smelt_raw_iron
       - adv_smelt_diamond_ore_catalyst
-      - adv_smelt_deepslate_diamond_ore
+      - adv_smelt_diamond_ore
       - adv_smelt_deepslate_diamond_ore_catalyst
+      - adv_smelt_deepslate_diamond_ore
       - adv_smelt_raw_gold
       - adv_smelt_nether_gold_ore
       - adv_smelt_redstone_ore
@@ -763,15 +763,15 @@ factories:
       - smelt_meteoric_nuggets
       - elite_smelt_ancient_debris
       - smelt_coal_ore
-      - elite_smelt_raw_copper
       - elite_smelt_raw_copper_catalyst
+      - elite_smelt_raw_copper
       - elite_smelt_bauxite
-      - elite_smelt_raw_iron
       - elite_smelt_raw_iron_catalyst
-      - elite_smelt_diamond_ore
+      - elite_smelt_raw_iron
       - elite_smelt_diamond_ore_catalyst
-      - elite_smelt_deepslate_diamond_ore
+      - elite_smelt_diamond_ore
       - elite_smelt_deepslate_diamond_ore_catalyst
+      - elite_smelt_deepslate_diamond_ore
       - elite_smelt_raw_gold
       - elite_smelt_nether_gold_ore
       - elite_smelt_redstone_ore
