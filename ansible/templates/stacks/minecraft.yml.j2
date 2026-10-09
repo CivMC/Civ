@@ -59,7 +59,7 @@ services:
             - /opt/PrivateConfig/proxy/config/nuvotifier/rsa/private.key:/config/plugins/nuvotifier/rsa/private.key
 
     paper:
-        image: itzg/minecraft-server:stable-java25
+        image: ghcr.io/huskydog9988/docker-mc-otel-server:v0.0.2
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -120,7 +120,16 @@ services:
             CIV_WATCHDOG_TIMEOUT_TIME: 60
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
-            JVM_OPTS: '-agentpath:./libti.so'
+            JVM_OPTS: '-javaagent:/agents/otel.jar -agentpath:./libti.so'
+
+            # disabling due there being no sink
+            OTEL_SDK_DISABLED: "true"
+            OTEL_TRACES_EXPORTER: "none"
+            OTEL_METRICS_EXPORTER: "none"
+            OTEL_LOGS_EXPORTER: "none"
+
+            OTEL_SERVICE_NAME: 'main'
+            OTEL_RESOURCE_ATTRIBUTES: 'service.namespace=civ-production,service.version={{git_commit_sha}}'
         volumes:
             # Persistence
             - /opt/stacks/minecraft/paper-data:/data
