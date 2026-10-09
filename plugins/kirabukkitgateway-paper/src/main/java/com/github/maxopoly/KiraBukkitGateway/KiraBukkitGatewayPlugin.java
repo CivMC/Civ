@@ -8,6 +8,7 @@ import com.github.maxopoly.KiraBukkitGateway.impersonation.KiraLuckPermsWrapper;
 import com.github.maxopoly.KiraBukkitGateway.listener.CivChatListener;
 import com.github.maxopoly.KiraBukkitGateway.listener.JukeAlertListener;
 import com.github.maxopoly.KiraBukkitGateway.listener.SkynetListener;
+import com.github.maxopoly.KiraBukkitGateway.listener.SuccessfulPurchaseListener;
 import com.github.maxopoly.KiraBukkitGateway.log.KiraLogAppender;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitCommands;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitHandler;
@@ -41,6 +42,7 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
         getServer().getPluginManager().registerEvents(new CivChatListener(), this);
         getServer().getPluginManager().registerEvents(new JukeAlertListener(), this);
         getServer().getPluginManager().registerEvents(new SkynetListener(), this);
+        getServer().getPluginManager().registerEvents(new SuccessfulPurchaseListener(), this);
         getLogger().info("Successfully enabled " + getName());
         commandManager = new CommandManager(this);
         commandManager.init();

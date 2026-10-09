@@ -57,6 +57,7 @@ public final class ExchangeRule implements ExchangeData {
     private static final String TYPE_KEY = "type";
     private static final String MATERIAL_KEY = "material";
     private static final String AMOUNT_KEY = "amount";
+    private static final String NAME_KEY = "name";
     private static final String MODIFIERS_KEY = "modifiers";
     private static final String CLASS_KEY = "==";
     private static final String LEGACY_DISPLAY_NAME_KEY = "displayName";
@@ -73,6 +74,7 @@ public final class ExchangeRule implements ExchangeData {
     private Material material;
     private int amount;
     private final ModifierStorage modifiers = new ModifierStorage();
+    private String name;
 
     /**
      * Creates a third generation Exchange rule.
@@ -207,12 +209,31 @@ public final class ExchangeRule implements ExchangeData {
         return this.modifiers;
     }
 
+    /**
+     * Gets the rule's name.
+     *
+     * @return Return this rule's name.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Sets the rule's name.
+     *
+     * @param name The name to give this rule.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public void toNBT(@NotNull final NbtCompound nbt) {
         nbt.setInt(VERSION_KEY, 4);
         nbt.setString(TYPE_KEY, this.type.name());
         nbt.setString(MATERIAL_KEY, this.material.name());
         nbt.setInt(AMOUNT_KEY, this.amount);
+        nbt.setString(NAME_KEY, this.name);
         nbt.setCompoundArray(MODIFIERS_KEY, this.modifiers.stream()
             .map((modifier) -> {
                 final var modifierNBT = new NbtCompound();
@@ -229,6 +250,7 @@ public final class ExchangeRule implements ExchangeData {
         rule.type = nbt.getEnum(TYPE_KEY, Type.class, null);
         rule.material = MaterialUtils.getMaterial(nbt.getString(MATERIAL_KEY, null));
         rule.amount = nbt.getInt(AMOUNT_KEY, 0);
+        rule.name = nbt.getString(NAME_KEY, null);
         rule.modifiers.clear();
         final var modifierRegistrar = ItemExchangePlugin.modifierRegistrar();
         Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY, true))
