@@ -6,6 +6,12 @@ import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 @Deprecated
 public interface NBTSerializable {
+    default @NotNull NbtCompound toNBT() {
+        final var nbt = new NbtCompound();
+        this.toNBT(nbt);
+        return nbt;
+    }
+
     /**
      * Serializes this class onto a given NBTCompound.
      *
