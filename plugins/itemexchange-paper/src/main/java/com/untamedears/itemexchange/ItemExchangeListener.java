@@ -52,6 +52,27 @@ public final class ItemExchangeListener implements Listener {
     private final Map<Player, Location> shopRecord = new HashMap<>();
     private final Map<Player, Integer> ruleIndex = new HashMap<>();
 
+    private long tradeRuleTimestamp = 0L;
+    private TradeRule tradeRule = null;
+
+    /**
+     * Responds when a player interacts with a trade.
+     *
+     * @param event The player interaction event itself.
+     */
+    @EventHandler(ignoreCancelled = true)
+    public void browseEvent(BrowseOrPurchaseEvent event) {
+        tradeRule = event.getTrade();
+        tradeRuleTimestamp = System.currentTimeMillis();
+    }
+
+    public TradeRule getTradeRule() {
+        long now = System.currentTimeMillis();
+        if (now - tradeRuleTimestamp > TIME_BEFORE_TIMEOUT)
+           return null; 
+        return tradeRule;
+    }
+
     /**
      * Responds when a player interacts with a shop.
      *
@@ -289,5 +310,4 @@ public final class ItemExchangeListener implements Listener {
             event.setCancelled(true);
         }
     }
-
 }
