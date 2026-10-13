@@ -13,6 +13,7 @@ import com.untamedears.itemexchange.rules.modifiers.EnchantStorageModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.rules.modifiers.PotionModifier;
 import com.untamedears.itemexchange.rules.modifiers.RepairModifier;
+import com.untamedears.itemexchange.rules.modifiers.TokenModifier;
 import java.util.List;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
@@ -44,6 +45,7 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
         commands = new CommandRegistrar(this);
         commands.init();
         modifiers = new ModifierRegistrar();
+        modifiers.registerModifier(TokenModifier.TEMPLATE); // 50
         modifiers.registerModifier(DisplayNameModifier.TEMPLATE); // 100
         modifiers.registerModifier(EnchantModifier.TEMPLATE); // 200
         modifiers.registerModifier(EnchantStorageModifier.TEMPLATE); // 201
