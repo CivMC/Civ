@@ -2,15 +2,13 @@ package net.civmc.kiragatewayvelocity.impersonation;
 
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
-import net.civmc.kiragatewayvelocity.KiraGateway;
-import net.kyori.adventure.audience.MessageType;
-import net.kyori.adventure.identity.Identity;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.civmc.kiragatewayvelocity.KiraGateway;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 public class PseudoConsoleSender implements ConsoleCommandSource {
 
@@ -41,7 +39,7 @@ public class PseudoConsoleSender implements ConsoleCommandSource {
      * @noinspection UnstableApiUsage
      */
     @Override
-    public void sendMessage(@NotNull Identity identity, @NotNull Component message, @NotNull MessageType type) {
+    public void sendMessage(@NotNull Component message) {
         handleReply(PlainTextComponentSerializer.plainText().serialize(message));
     }
 
