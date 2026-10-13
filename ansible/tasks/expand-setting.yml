@@ -6,10 +6,23 @@
   include_vars:
     file: ../variables/secrets.yml
 
-- name: Expand Setting | Set Setting
+- name: Expand Setting | Set Secret
   set_fact:
     secret: "{{secrets[setting]}}"
 
 - name: Expand Setting | Set Setting
   set_fact:
     setting: "{{settings[setting]}}"
+
+- name: Expand Setting | Get Git commit
+  ansible.builtin.command:
+    cmd: git rev-parse HEAD
+    chdir: "{{ playbook_dir }}"
+  delegate_to: localhost
+  run_once: true
+  register: git_commit
+  changed_when: false
+
+- name: Expand Setting | Set Git commit
+  ansible.builtin.set_fact:
+    git_commit_sha: "{{ git_commit.stdout }}"

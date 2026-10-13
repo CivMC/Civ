@@ -8,7 +8,7 @@ services:
   #################
 
   proxy:
-    image: itzg/mc-proxy:java25
+    image: ghcr.io/huskydog9988/docker-mc-otel-proxy:v0.0.2
     restart: no
     tty: true
     stdin_open: true
@@ -60,7 +60,7 @@ services:
           cpus: '2'
 
   paper:
-    image: itzg/minecraft-server:stable-java25
+    image: ghcr.io/huskydog9988/docker-mc-otel-server:v0.0.2
     restart: on-failure
     tty: true
     stdin_open: true
@@ -107,9 +107,17 @@ services:
 
       CIV_SECUREBOOT_ENABLE: 'false'
 
-      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      JVM_OPTS: -javaagent:/agents/otel.jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
+
+      OTEL_SDK_DISABLED: "true"
+      OTEL_TRACES_EXPORTER: "none"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_LOGS_EXPORTER: "none"
+
+      OTEL_SERVICE_NAME: "main"
+      OTEL_RESOURCE_ATTRIBUTES: "service.namespace=civ-development"
     ports:
       - "5005:5005"
     volumes:
@@ -118,7 +126,7 @@ services:
       - ./ansible/build/paper-plugins:/plugins
 
   zorweth:
-    image: itzg/minecraft-server:stable-java25
+    image: ghcr.io/huskydog9988/docker-mc-otel-server:v0.0.2
     restart: on-failure
     tty: true
     stdin_open: true
@@ -174,7 +182,7 @@ services:
       - ./ansible/build/zorweth-plugins:/plugins
 
   pvp:
-    image: itzg/minecraft-server:stable-java25
+    image: ghcr.io/huskydog9988/docker-mc-otel-server:v0.0.2
     restart: on-failure
     tty: true
     stdin_open: true
