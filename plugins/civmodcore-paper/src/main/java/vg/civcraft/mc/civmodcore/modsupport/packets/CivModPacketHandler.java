@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.mods.packets;
+package vg.civcraft.mc.civmodcore.modsupport.packets;
 
 import com.google.gson.JsonElement;
 import net.kyori.adventure.key.Key;

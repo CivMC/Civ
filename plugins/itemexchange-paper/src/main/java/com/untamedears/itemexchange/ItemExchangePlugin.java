@@ -17,7 +17,7 @@ import com.untamedears.itemexchange.rules.modifiers.RepairModifier;
 import java.util.List;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
-import vg.civcraft.mc.civmodcore.mods.packets.CivModPackets;
+import vg.civcraft.mc.civmodcore.modsupport.packets.CivModPackets;
 import vg.civcraft.mc.civmodcore.utilities.DependencyGlue;
 
 /**
