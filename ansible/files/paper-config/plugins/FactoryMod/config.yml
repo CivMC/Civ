@@ -6836,6 +6836,7 @@ recipes:
     production_time: 4s
     name: Make Gem Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       gold:
         v: 3839
@@ -7005,6 +7006,7 @@ recipes:
     production_time: 4s
     name: Make Concrete Mixer Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       sand:
         v: 3839
@@ -7065,6 +7067,7 @@ recipes:
     production_time: 4s
     name: Make Grill Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -7136,6 +7139,7 @@ recipes:
     production_time: 4s
     name: Make Ore Smelter Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       coal:
         v: 3839
@@ -7228,6 +7232,7 @@ recipes:
     production_time: 4s
     name: Make Advanced Ore Smelter Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       diamond:
         v: 3839
@@ -7320,6 +7325,7 @@ recipes:
     production_time: 4s
     name: Make Elite Ore Smelter Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       diamond:
         v: 3839
@@ -9045,6 +9051,7 @@ recipes:
     production_time: 4s
     name: Make Rail Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -9267,6 +9274,7 @@ recipes:
     production_time: 4s
     name: Make Redstone Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -9897,6 +9905,7 @@ recipes:
     production_time: 4s
     name: Make Bastion Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       casing:
         v: 3839
@@ -10335,6 +10344,7 @@ recipes:
     production_time: 4s
     name: Make Iron Forge Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -10416,6 +10426,7 @@ recipes:
     production_time: 4s
     name: Make Animal Husbandry Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -11091,6 +11102,7 @@ recipes:
     production_time: 4s
     name: Make Basic Cauldron Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -12202,6 +12214,7 @@ recipes:
     production_time: 4s
     name: Make Advanced Cauldron Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       emerald_block:
         v: 3839
@@ -13026,6 +13039,7 @@ recipes:
     production_time: 4s
     name: Make Compact Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron_block:
         v: 3839
@@ -14506,6 +14520,7 @@ recipes:
     production_time: 4s
     name: Make Printer Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       ink:
         v: 3839
@@ -14567,6 +14582,7 @@ recipes:
     production_time: 4s
     name: Make Research Station Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       essence:
         v: 3839
@@ -15726,6 +15742,7 @@ recipes:
     production_time: 4s
     name: Make Copper Workshop Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       copper_block:
         v: 3839
@@ -16765,6 +16782,7 @@ recipes:
     production_time: 4s
     name: Make Bio Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       bone_block:
         v: 3839
@@ -19537,6 +19555,7 @@ recipes:
     production_time: 4s
     name: Make Crude Oil Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       copper_ingot:
         v: 3839
@@ -19639,6 +19658,7 @@ recipes:
     production_time: 4s
     name: Make Space Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron_block:
         v: 3839
@@ -19767,6 +19787,7 @@ recipes:
     production_time: 4s
     name: Make Space Chemistry Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       glass_bottle:
         v: 3839

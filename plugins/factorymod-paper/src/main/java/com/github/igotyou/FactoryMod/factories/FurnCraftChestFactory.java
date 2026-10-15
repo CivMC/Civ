@@ -8,7 +8,6 @@ import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
 import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
@@ -727,8 +726,9 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
      */
     public IRecipe getAutoSelectRecipe() {
         var selectedRecipe = recipes.stream()
-            // Repairs are left to the player, so are the recipes making this factory's repair kits
-            .filter(it -> !rm.inDisrepair() && !(it instanceof RepairRecipe) && !makesRepairKit(it))
+            // Repairs are left to the player, so are the recipes marked as making repair kits
+            .filter(it -> !rm.inDisrepair() && !(it instanceof RepairRecipe)
+                && !(it instanceof InputRecipe input && input.isRepairKit()))
             .filter(it -> it.enoughMaterialAvailable(getInputInventory()))
             .findFirst()
             .orElse(null);
@@ -738,25 +738,6 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         }
 
         return selectedRecipe;
-    }
-
-    /**
-     * @return Whether the recipe makes the repair kit of one of this factory's repair recipes, i.e. the single custom
-     * item that repair recipe consumes. Plain items don't count, a stone smelter is repaired with plain stone
-     */
-    private boolean makesRepairKit(IRecipe recipe) {
-        if (!(recipe instanceof ProductionRecipe production)) {
-            return false;
-        }
-        for (IRecipe other : recipes) {
-            if (other instanceof RepairRecipe repair && repair.getInput().getAllItems().size() == 1) {
-                ItemStack kit = repair.getInput().getAllItems().keySet().iterator().next();
-                if (kit.hasItemMeta() && production.getOutput().getAmount(kit) > 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**

@@ -29,6 +29,7 @@ public abstract class InputRecipe implements IRecipe {
     protected ItemMap input;
     protected int fuel_consumption_intervall = -1;
     protected String identifier;
+    protected boolean repairKit = false;
 
     public InputRecipe(String identifier, String name, int productionTime, ItemMap input) {
         this.name = name;
@@ -121,6 +122,17 @@ public abstract class InputRecipe implements IRecipe {
 
     public void setFuelConsumptionIntervall(int intervall) {
         this.fuel_consumption_intervall = intervall;
+    }
+
+    /**
+     * @return Whether this recipe makes a factory's repair kit ("repair_kit: true" in the config)
+     */
+    public boolean isRepairKit() {
+        return repairKit;
+    }
+
+    public void setRepairKit(boolean repairKit) {
+        this.repairKit = repairKit;
     }
 
     @Override
