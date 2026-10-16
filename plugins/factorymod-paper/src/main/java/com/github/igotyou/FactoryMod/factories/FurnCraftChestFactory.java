@@ -276,28 +276,11 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             return;
         }
 
-        //If Autoselect is on
-        if (autoSelect) {
-            //If the factory is in disrepair and we got autoSelect on, we want to repair it
-            if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
-                IRecipe autoRepair = getRepairRecipe();
-                //Just incase any factory for some reason cannot be repaired.
-                if (autoRepair == null) {
-                    if (p != null) {
-                        p.sendMessage(ChatColor.RED + "The factory doesn't have a repair recipe.");
-                    }
-                    return;
-                } else {
-                    if (p != null) {
-                        p.sendMessage(ChatColor.GOLD + "Automatically selected recipe " + autoRepair.getName());
-                    }
-                    setRecipe(autoRepair);
-                }
-            }
-
-            // If we run out of input materials, try to auto-select a new recipe
-            if (!hasInputMaterials()) {
-                IRecipe autoSelected = getAutoSelectRecipe();
+        //If Autoselect is on. Auto select never repairs, a factory in disrepair has to be repaired by hand
+        if (autoSelect && !rm.inDisrepair()) {
+            // On start, run the first recipe in the factory's list that has materials, so the list order is the priority
+            IRecipe autoSelected = getAutoSelectRecipe();
+            if (autoSelected != currentRecipe) {
                 if (autoSelected == null) {
                     if (p != null) {
                         p.sendMessage(ChatColor.RED + "Not enough materials available to run any recipe");
@@ -311,17 +294,17 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
                 }
             }
         } else {
-            //We are running the factory manually, so we just do the usual checks
-            if (!hasInputMaterials()) {
-                if (p != null) {
-                    p.sendMessage(ChatColor.RED + "Not enough materials available");
-                }
-                return;
-            }
+            //We are running the factory manually or it is in disrepair, so we just do the usual checks
             //The factory is broken and needs to be repaired
             if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
                 if (p != null) {
-                    p.sendMessage(ChatColor.RED + "This factory is in disrepair, you have to repair it before using it");
+                    p.sendMessage(ChatColor.RED + "This factory is in disrepair, select its repair recipe to repair it before using it");
+                }
+                return;
+            }
+            if (!hasInputMaterials()) {
+                if (p != null) {
+                    p.sendMessage(ChatColor.RED + "Not enough materials available");
                 }
                 return;
             }
@@ -743,14 +726,9 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
      */
     public IRecipe getAutoSelectRecipe() {
         var selectedRecipe = recipes.stream()
-            .filter(it -> {
-                // We want to select a repair recipe if and only if the factory is in disrepair
-                if (rm.inDisrepair()) {
-                    return it instanceof RepairRecipe;
-                } else {
-                    return !(it instanceof RepairRecipe);
-                }
-            })
+            // Repairs are left to the player, so are the recipes marked as making repair kits
+            .filter(it -> !rm.inDisrepair() && !(it instanceof RepairRecipe)
+                && !(it instanceof InputRecipe input && input.isRepairKit()))
             .filter(it -> it.enoughMaterialAvailable(getInputInventory()))
             .findFirst()
             .orElse(null);

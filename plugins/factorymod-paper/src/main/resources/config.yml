@@ -425,6 +425,9 @@ factories:
 
 #production_time is simply how long this recipe takes to complete one run
 
+#repair_kit is optional and marks a recipe that makes a factory's repair kit. Auto select never picks a recipe marked
+#with repair_kit: true
+
 
 #Now on to the actual recipes:
 
