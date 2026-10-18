@@ -27,6 +27,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 
 public class BastionBreakListener implements Listener {
 
@@ -56,6 +57,26 @@ public class BastionBreakListener implements Listener {
             }
         }.runTaskLater(Bastion.getPlugin(), 1);
         storage.deleteDeadBastion(loc); // just in case.
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void on(ReinforcementAcidBlockedEvent event) {
+        Block block = event.getReinforcement().getLocation().getBlock();
+        BastionType type = storage.getTypeAtLocation(block.getLocation());
+        if (type == null) {
+            type = storage.getAndRemovePendingBastion(block.getLocation());
+        }
+        if (type != null) {
+            Bastion.getPlugin().getLogger().log(Level.INFO, "BastionType broken {0}", type.toString());
+
+            BastionBlock bastion = storage.getBastionBlock(block.getLocation());
+            if (bastion != null) {
+                bastion.destroy();
+            }
+            event.setCancelled(true);
+            block.setType(Material.AIR);
+            dropBastionItem(block.getLocation(), type, null, null);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
