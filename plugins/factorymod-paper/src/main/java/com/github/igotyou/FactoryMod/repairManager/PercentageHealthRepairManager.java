@@ -64,6 +64,11 @@ public class PercentageHealthRepairManager implements IRepairManager {
         }
         FactoryMod.getInstance().getServer().getScheduler()
             .scheduleSyncDelayedTask(FactoryMod.getInstance(), () -> {
+                if (FactoryMod.getInstance().getManager()
+                    .getFactoryAt(factory.getMultiBlockStructure().getCenter()) != factory) {
+                    return;
+                }
+
                 if (factory.getMultiBlockStructure().relevantBlocksDestroyed()) {
                     LoggingUtils.log(factory.getLogData() + " removed because blocks were destroyed");
                     FactoryMod.getInstance().getManager().removeFactory(factory);

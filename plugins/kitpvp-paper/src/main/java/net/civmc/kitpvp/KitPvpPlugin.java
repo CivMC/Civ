@@ -44,6 +44,7 @@ public class KitPvpPlugin extends ACivMod {
     public void onEnable() {
         AnvilGui anvilGui = new AnvilGui();
         getServer().getPluginManager().registerEvents(anvilGui, this);
+        getServer().getPluginManager().registerEvents(new WitherSpawnListener(), this);
 
         saveDefaultConfig();
         DatabaseCredentials credentials = (DatabaseCredentials) getConfig().get("database");

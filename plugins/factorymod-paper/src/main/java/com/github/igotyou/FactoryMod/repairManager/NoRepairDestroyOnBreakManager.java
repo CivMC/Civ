@@ -31,6 +31,10 @@ public class NoRepairDestroyOnBreakManager implements IRepairManager {
 
                     @Override
                     public void run() {
+                        if (FactoryMod.getInstance().getManager()
+                            .getFactoryAt(factory.getMultiBlockStructure().getCenter()) != factory) {
+                            return;
+                        }
                         if (factory.getMultiBlockStructure()
                             .relevantBlocksDestroyed()) {
                             LoggingUtils.log(factory.getLogData()
