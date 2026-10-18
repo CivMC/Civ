@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -48,14 +53,28 @@ public final class ItemUtils {
         return item == null ? null : ChatUtils.stringify(Component.translatable(item));
     }
 
-    /**
-     * Checks whether the given item can be interpreted as an empty slot.
-     *
-     * @param item The item to check.
-     * @return Returns true if the item can be interpreted as an empty slot.
-     */
-    public static boolean isEmptyItem(final ItemStack item) {
+    /// Checks whether the given item can be interpreted as an empty slot.
+    ///
+    /// @apiNote This is not merely a null-safe version of [org.bukkit.inventory.ItemStack#isEmpty()]: this does not
+    ///          check the item's amount. The purpose of this function is to determine whether the item is safe to
+    ///          operate on (a stack of buttons with -2 amount can still have its display name set).
+    @Contract("null -> true")
+    public static boolean isEmptyItem(
+        final ItemStack item
+    ) {
         return item == null || item.getType() == Material.AIR;
+    }
+
+    /// Checks whether the given item can be interpreted as an empty slot.
+    ///
+    /// @apiNote This is not merely a null-safe version of [net.minecraft.world.item.ItemStack#isEmpty()]: this does
+    ///          not check the item's amount. The purpose of this function is to determine whether the item is safe to
+    ///          operate on (a stack of buttons with -2 amount can still have its display name set).
+    @Contract("null -> true")
+    public static boolean isEmptyItem(
+        final net.minecraft.world.item.ItemStack item
+    ) {
+        return item == null || item == net.minecraft.world.item.ItemStack.EMPTY || item.getItem() == Items.AIR;
     }
 
     /**
@@ -151,25 +170,21 @@ public final class ItemUtils {
         return MetaUtils.areMetasEqual(former.getItemMeta(), latter.getItemMeta());
     }
 
-    /**
-     * Returns the NMS version of a given item, preferring the item's craft handle but will fall back upon creating an
-     * NMS copy.
-     *
-     * @param item The item to get the NMS version of.
-     * @return The NMS version, either handle or copy.
-     */
-    @Contract("!null -> !null")
-    @Nullable
-    public static net.minecraft.world.item.ItemStack getNMSItemStack(@Nullable final ItemStack item) {
+    /// Unwraps a given Bukkit item to retrieve the internal NMS item.
+    ///
+    /// @return Returns the internal NMS item, or null. Will return null if the given item is "empty" (as determined by
+    ///         [#isEmptyItem]).
+    public static @Nullable net.minecraft.world.item.ItemStack getNMSItemStack(
+        final ItemStack item
+    ) {
         if (item == null) {
             return null;
         }
-        if (item instanceof CraftItemStack craftItem) {
-            if (craftItem.handle != null) {
-                return craftItem.handle;
-            }
+        final net.minecraft.world.item.ItemStack nms = CraftItemStack.unwrap(item);
+        if (isEmptyItem(nms)) {
+            return null;
         }
-        return CraftItemStack.asNMSCopy(item);
+        return nms;
     }
 
     /**
@@ -382,6 +397,40 @@ public final class ItemUtils {
             return damageable;
         }
         return null;
+    }
+
+    /// Retrieves the `minecraft:custom_data` component from an item. Do **NOT** modify it.
+    ///
+    /// @param item Cannot be null or "empty" (as determined by Bukkit).
+    ///
+    /// @apiNote This should **ONLY** be used for inspection. If you want to set data, use [#editCustomData] instead.
+    public static @Nullable CompoundTag inspectCustomData(
+        final @NotNull ItemStack item
+    ) {
+        final net.minecraft.world.item.ItemStack nms = Objects.requireNonNull(getNMSItemStack(item));
+        if (nms.get(DataComponents.CUSTOM_DATA) instanceof final CustomData component) {
+            //noinspection deprecation
+            return component.getUnsafe();
+        }
+        return null;
+    }
+
+    /// Edits the `minecraft:custom_data` component of an item. If the provided NBT is empty after being edited, the
+    /// component is removed from the item.
+    ///
+    /// @param item Cannot be null or "empty" (as determined by Bukkit).
+    ///
+    /// @apiNote It is good practice to namespace your data onto a child component instead of setting it directly onto
+    ///          the provided nbt.
+    public static void editCustomData(
+        final @NotNull ItemStack item,
+        final @NotNull Consumer<@NotNull CompoundTag> editor
+    ) {
+        CustomData.update(
+            DataComponents.CUSTOM_DATA,
+            Objects.requireNonNull(getNMSItemStack(item)),
+            Objects.requireNonNull(editor)
+        );
     }
 
 	/**
