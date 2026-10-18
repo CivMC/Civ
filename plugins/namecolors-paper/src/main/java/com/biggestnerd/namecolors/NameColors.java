@@ -60,8 +60,8 @@ public class NameColors extends ACivMod implements Listener {
                 PropertyConfiguration users = TAB.getInstance().getConfiguration().getUsers();
                 if (users.getProperty(player.getName(), "tabprefix", null, null) != null) {
                     users.setProperty(player.getName(), "tabprefix", null, null, null);
+                    TAB.getInstance().getFeatureManager().onGroupChange(TAB.getInstance().getPlayer(player.getUniqueId()));
                 }
-                TAB.getInstance().getFeatureManager().onGroupChange(TAB.getInstance().getPlayer(player.getUniqueId()));
             }, 20L);
         }
     }
