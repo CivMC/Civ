@@ -118,7 +118,7 @@ public class BastionInteractListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         ItemStack inHand = event.getItemInHand();
         if (inHand == null) {
