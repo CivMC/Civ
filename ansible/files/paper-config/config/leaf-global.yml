@@ -107,7 +107,7 @@ performance:
     # Will improve performance on servers with massive datapack functions.
     skip-inactive-entity-for-execute-command: false
   skip-ai-for-non-aware-mob: true
-  sleeping-block-entity: true
+  sleeping-block-entity: false
   reduce-packets:
     reduce-entity-move-packets: false
   optimized-powered-rails: true
