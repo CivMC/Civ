@@ -14,8 +14,8 @@ settings:
       hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
         soft_max_memory: 42G
-        memory: 44G
-        memory_limit: 48G
+        memory: 48G
+        memory_limit: 52G
         pvp_memory: 11G
         pvp_memory_limit: 14G
         zorweth_memory: 24G
