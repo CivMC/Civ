@@ -8,6 +8,7 @@ version = "1.0"
 
 dependencies {
     compileOnly(libs.velocity.api)
+    compileOnly(libs.ajQueue.api)
     annotationProcessor(libs.velocity.api)
 
     implementation(libs.configurate.yaml)

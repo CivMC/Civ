@@ -32,6 +32,13 @@ public class RabbitCommands {
         internal.sendMessage(payload);
     }
 
+    public void sendQueueStatus(final int players) {
+        final JsonObject json = new JsonObject();
+        json.addProperty("target", "main");
+        json.addProperty("players", players);
+        sendInternal("queuestatus", json);
+    }
+
     private void nonNullArgs(Object... objects) {
         for (Object o : objects) {
             if (o == null) {

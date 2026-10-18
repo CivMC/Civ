@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -31,6 +32,7 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
     private ConfigParser config;
     private List<KiraLogAppender> logAppenders;
     private CommandManager commandManager;
+    private BukkitTask statusTask;
 
     public void onEnable() {
         super.onEnable();
@@ -55,6 +57,10 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
     }
 
     public void reload() {
+        if (statusTask != null) {
+            statusTask.cancel();
+            statusTask = null;
+        }
         config = new ConfigParser(this);
         if (rabbit != null) {
             rabbit.shutdown();
@@ -67,6 +73,15 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
         }
         rabbit.beginAsyncListen();
         rabbitCommands = new RabbitCommands(rabbit, config.getServerName());
+        if ("main".equals(config.getServerName())) {
+            statusTask = Bukkit.getScheduler().runTaskTimer(this, () -> {
+                final int players = Bukkit.getOnlinePlayers().size();
+                final int playerCap = Bukkit.getMaxPlayers();
+                final RabbitCommands commands = rabbitCommands;
+                Bukkit.getScheduler().runTaskAsynchronously(this,
+                    () -> commands.sendServerStatus(players, playerCap));
+            }, 20L, 600L);
+        }
         Logger logger = (Logger) LogManager.getRootLogger();
         if (logAppenders != null) {
             for (KiraLogAppender appender : logAppenders) {
@@ -90,6 +105,9 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 
     @Override
     public void onDisable() {
+        if (statusTask != null) {
+            statusTask.cancel();
+        }
         rabbit.shutdown();
     }
 

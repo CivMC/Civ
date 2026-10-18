@@ -6,10 +6,13 @@ import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 import java.nio.file.Path;
+import java.time.Duration;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -17,13 +20,16 @@ import net.civmc.kiragatewayvelocity.auth.AuthcodeManager;
 import net.civmc.kiragatewayvelocity.commands.DiscordAuth;
 import net.civmc.kiragatewayvelocity.rabbit.RabbitCommands;
 import net.civmc.kiragatewayvelocity.rabbit.RabbitHandler;
+import us.ajg0702.queue.api.AjQueueAPI;
+import us.ajg0702.queue.api.queues.QueueServer;
 
 @Plugin(
     id = "kiragateway",
     name = "kiragateway",
     version = "1.0",
     url = "https://civmc.net",
-    authors = {"Huskydog9988"}
+    authors = {"Huskydog9988"},
+    dependencies = {@Dependency(id = "ajqueue", optional = true)}
 )
 public class KiraGateway {
 
@@ -37,6 +43,7 @@ public class KiraGateway {
     private AuthcodeManager authcodeManager;
     private RabbitHandler rabbitHandler;
     private RabbitCommands rabbitCommands;
+    private ScheduledTask queueStatusTask;
     private @Nullable CommentedConfigurationNode config;
 
     @Inject
@@ -69,12 +76,23 @@ public class KiraGateway {
         }
         rabbitHandler.beginAsyncListen();
         rabbitCommands = new RabbitCommands(rabbitHandler);
+        if (proxy.getPluginManager().isLoaded("ajqueue")) {
+            queueStatusTask = proxy.getScheduler().buildTask(this, () -> {
+                final QueueServer main = AjQueueAPI.getInstance().getQueueManager().findServer("main");
+                if (main != null) {
+                    rabbitCommands.sendQueueStatus(main.getQueue().size());
+                }
+            }).delay(Duration.ofSeconds(1)).repeat(Duration.ofSeconds(30)).schedule();
+        }
 
         registerCommands();
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
+        if (queueStatusTask != null) {
+            queueStatusTask.cancel();
+        }
         rabbitHandler.shutdown();
     }
 

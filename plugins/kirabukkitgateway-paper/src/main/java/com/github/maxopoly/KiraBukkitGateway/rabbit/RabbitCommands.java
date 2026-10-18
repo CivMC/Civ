@@ -40,6 +40,13 @@ public class RabbitCommands {
         sendInternal("consolelog", json);
     }
 
+    public void sendServerStatus(final int players, final int playerCap) {
+        final JsonObject json = new JsonObject();
+        json.addProperty("players", players);
+        json.addProperty("playerCap", playerCap);
+        sendInternal("serverstatus", json);
+    }
+
     public void replyToRequestSession(JsonObject json) {
         nonNullArgs(json);
         sendInternal("requestsession", json);

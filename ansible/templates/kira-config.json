@@ -17,6 +17,8 @@
   "bot": {
     "serverid": 912074050086502470,
     "authroleid": 979201905622401025,
+    "mainVoiceChannelId": 0,
+    "queueVoiceChannelId": 0,
     "token": "{{secret.minecraft.kira.token}}"
   },
   "api": {
