@@ -1041,6 +1041,7 @@ public class ConfigParser {
             }
             ((InputRecipe) result)
                 .setFuelConsumptionIntervall(interval);
+            ((InputRecipe) result).setRepairKit(config.getBoolean("repair_kit", false));
             plugin.info("Parsed recipe " + name);
         }
         return result;

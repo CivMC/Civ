@@ -712,15 +712,15 @@ factories:
             - Activity reward used to fuel pearls
     recipes:
       - smelt_coal_ore
-      - smelt_raw_copper
       - smelt_raw_copper_catalyst
+      - smelt_raw_copper
       - smelt_bauxite
-      - smelt_raw_iron
       - smelt_raw_iron_catalyst
-      - smelt_diamond_ore
+      - smelt_raw_iron
       - smelt_diamond_ore_catalyst
-      - smelt_deepslate_diamond_ore
+      - smelt_diamond_ore
       - smelt_deepslate_diamond_ore_catalyst
+      - smelt_deepslate_diamond_ore
       - smelt_raw_gold
       - smelt_nether_gold_ore
       - smelt_redstone_ore
@@ -740,15 +740,15 @@ factories:
     recipes:
       - adv_smelt_ancient_debris
       - smelt_coal_ore
-      - adv_smelt_raw_copper
       - adv_smelt_raw_copper_catalyst
+      - adv_smelt_raw_copper
       - adv_smelt_bauxite
-      - adv_smelt_raw_iron
       - adv_smelt_raw_iron_catalyst
-      - adv_smelt_diamond_ore
+      - adv_smelt_raw_iron
       - adv_smelt_diamond_ore_catalyst
-      - adv_smelt_deepslate_diamond_ore
+      - adv_smelt_diamond_ore
       - adv_smelt_deepslate_diamond_ore_catalyst
+      - adv_smelt_deepslate_diamond_ore
       - adv_smelt_raw_gold
       - adv_smelt_nether_gold_ore
       - adv_smelt_redstone_ore
@@ -769,15 +769,15 @@ factories:
       - smelt_meteoric_nuggets
       - elite_smelt_ancient_debris
       - smelt_coal_ore
-      - elite_smelt_raw_copper
       - elite_smelt_raw_copper_catalyst
+      - elite_smelt_raw_copper
       - elite_smelt_bauxite
-      - elite_smelt_raw_iron
       - elite_smelt_raw_iron_catalyst
-      - elite_smelt_diamond_ore
+      - elite_smelt_raw_iron
       - elite_smelt_diamond_ore_catalyst
-      - elite_smelt_deepslate_diamond_ore
+      - elite_smelt_diamond_ore
       - elite_smelt_deepslate_diamond_ore_catalyst
+      - elite_smelt_deepslate_diamond_ore
       - elite_smelt_raw_gold
       - elite_smelt_nether_gold_ore
       - elite_smelt_redstone_ore
@@ -6842,6 +6842,7 @@ recipes:
     production_time: 4s
     name: Make Gem Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       gold:
         v: 3839
@@ -7011,6 +7012,7 @@ recipes:
     production_time: 4s
     name: Make Concrete Mixer Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       sand:
         v: 3839
@@ -7071,6 +7073,7 @@ recipes:
     production_time: 4s
     name: Make Grill Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -7142,6 +7145,7 @@ recipes:
     production_time: 4s
     name: Make Ore Smelter Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       coal:
         v: 3839
@@ -7234,6 +7238,7 @@ recipes:
     production_time: 4s
     name: Make Advanced Ore Smelter Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       diamond:
         v: 3839
@@ -7326,6 +7331,7 @@ recipes:
     production_time: 4s
     name: Make Elite Ore Smelter Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       diamond:
         v: 3839
@@ -9051,6 +9057,7 @@ recipes:
     production_time: 4s
     name: Make Rail Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -9273,6 +9280,7 @@ recipes:
     production_time: 4s
     name: Make Redstone Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -9903,6 +9911,7 @@ recipes:
     production_time: 4s
     name: Make Bastion Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       casing:
         v: 3839
@@ -10341,6 +10350,7 @@ recipes:
     production_time: 4s
     name: Make Iron Forge Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -10422,6 +10432,7 @@ recipes:
     production_time: 4s
     name: Make Animal Husbandry Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -11097,6 +11108,7 @@ recipes:
     production_time: 4s
     name: Make Basic Cauldron Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron:
         v: 3839
@@ -12208,6 +12220,7 @@ recipes:
     production_time: 4s
     name: Make Advanced Cauldron Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       emerald_block:
         v: 3839
@@ -13038,6 +13051,7 @@ recipes:
     production_time: 4s
     name: Make Compact Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron_block:
         v: 3839
@@ -14518,6 +14532,7 @@ recipes:
     production_time: 4s
     name: Make Printer Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       ink:
         v: 3839
@@ -14579,6 +14594,7 @@ recipes:
     production_time: 4s
     name: Make Research Station Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       essence:
         v: 3839
@@ -15738,6 +15754,7 @@ recipes:
     production_time: 4s
     name: Make Copper Workshop Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       copper_block:
         v: 3839
@@ -16777,6 +16794,7 @@ recipes:
     production_time: 4s
     name: Make Bio Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       bone_block:
         v: 3839
@@ -19555,6 +19573,7 @@ recipes:
     production_time: 4s
     name: Make Crude Oil Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       copper_ingot:
         v: 3839
@@ -19657,6 +19676,7 @@ recipes:
     production_time: 4s
     name: Make Space Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       iron_block:
         v: 3839
@@ -19785,6 +19805,7 @@ recipes:
     production_time: 4s
     name: Make Space Chemistry Factory Repair Kit
     type: PRODUCTION
+    repair_kit: true
     input:
       glass_bottle:
         v: 3839
