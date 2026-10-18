@@ -13,13 +13,13 @@ settings:
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
-        soft_max_memory: 44G
-        memory: 50G
-        memory_limit: 54G
+        soft_max_memory: 46G
+        memory: 52G
+        memory_limit: 56G
         pvp_memory: 11G
         pvp_memory_limit: 14G
-        zorweth_memory: 22G
-        zorweth_memory_limit: 26G
+        zorweth_memory: 20G
+        zorweth_memory_limit: 24G
     # Optional Stacks
     auth:
       enabled: false
