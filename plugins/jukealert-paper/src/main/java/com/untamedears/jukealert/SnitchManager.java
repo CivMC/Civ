@@ -1,9 +1,7 @@
 package com.untamedears.jukealert;
 
-import com.github.davidmoten.rtree2.Entry;
 import com.github.davidmoten.rtree2.RTree;
 import com.github.davidmoten.rtree2.geometry.Rectangle;
-import com.github.davidmoten.rtree2.geometry.internal.PointDouble;
 import com.github.davidmoten.rtree2.geometry.internal.RectangleDouble;
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.model.Snitch;
@@ -25,6 +23,7 @@ import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.world.locations.RTreeUtils;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -132,13 +131,9 @@ public class SnitchManager {
     }
 
     public Set<Snitch> getSnitchesCovering(Location location) {
-        Iterable<Entry<Snitch, Rectangle>> search = getTreeFor(location).search(PointDouble.create(location.getBlockX(), location.getBlockZ()));
-        Set<Snitch> result = new HashSet<>();
-        for (Entry<Snitch, Rectangle> qt : search) {
-            if (qt.value().getFieldManager().isInside(location)) {
-                result.add(qt.value());
-            }
-        }
+        final Set<Snitch> result = new HashSet<>();
+        RTreeUtils.searchPoint(getTreeFor(location), location.getBlockX(), location.getBlockZ(),
+            snitch -> snitch.getFieldManager().isInside(location), result);
         Iterator<Snitch> iter = result.iterator();
         while (iter.hasNext()) {
             Snitch s = iter.next();

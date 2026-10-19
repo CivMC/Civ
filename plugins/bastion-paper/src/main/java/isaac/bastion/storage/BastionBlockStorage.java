@@ -31,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.world.locations.QTBox;
+import vg.civcraft.mc.civmodcore.world.locations.RTreeUtils;
 
 public class BastionBlockStorage {
 
@@ -224,13 +225,9 @@ public class BastionBlockStorage {
      * @return A set of QTBoxes (bastions) that overlap with the location
      */
     public Set<BastionBlock> forLocation(Location loc) {
-        Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockZ()));
-        Set<BastionBlock> result = new HashSet<>();
-        for (Entry<BastionBlock, Rectangle> qt : search) {
-            if (qt.value().inField(loc)) {
-                result.add(qt.value());
-            }
-        }
+        final Set<BastionBlock> result = new HashSet<>();
+        RTreeUtils.searchPoint(blocks.get(loc.getWorld()), loc.getBlockX(), loc.getBlockZ(),
+            bastion -> bastion.inField(loc), result);
         return result;
     }
 
