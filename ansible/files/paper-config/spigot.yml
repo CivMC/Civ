@@ -147,7 +147,7 @@ world-settings:
     thunder-chance: 10000
     arrow-despawn-rate: 100
     trident-despawn-rate: 100
-    hanging-tick-frequency: 100
+    hanging-tick-frequency: 400
     zombie-aggressive-towards-villager: true
     max-entity-collisions: 1
     nerf-spawner-mobs: true
