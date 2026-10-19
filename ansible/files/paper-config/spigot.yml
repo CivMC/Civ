@@ -80,7 +80,7 @@ world-settings:
       misc: 12
       water: 12
       villagers: 16
-      flying-monsters: 32
+      flying-monsters: 16
       wake-up-inactive:
         animals-max-per-tick: 2
         animals-every: 1200

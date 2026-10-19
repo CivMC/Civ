@@ -106,7 +106,7 @@ services:
 
       CIV_SECUREBOOT_ENABLE: 'false'
 
-      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -XX:ObjectAlignmentInBytes=16
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
     ports:
