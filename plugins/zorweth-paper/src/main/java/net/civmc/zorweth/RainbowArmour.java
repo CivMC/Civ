@@ -111,10 +111,14 @@ private RainbowArmour() {
     }
 
     private static boolean isRainbowArmour(final ItemStack item) {
-        return CustomItem.isCustomItem(item, RAINBOW_HELMET)
-            || CustomItem.isCustomItem(item, RAINBOW_CHESTPLATE)
-            || CustomItem.isCustomItem(item, RAINBOW_LEGGINGS)
-            || CustomItem.isCustomItem(item, RAINBOW_BOOTS);
+        final String key = CustomItem.getCustomItemKey(item);
+        if (key == null) {
+            return false;
+        }
+        return RAINBOW_HELMET.equals(key)
+            || RAINBOW_CHESTPLATE.equals(key)
+            || RAINBOW_LEGGINGS.equals(key)
+            || RAINBOW_BOOTS.equals(key);
     }
 
     private static Color getRainbowColor(final long ticks) {

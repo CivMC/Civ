@@ -46,15 +46,14 @@ public class CustomItem {
     }
 
     public static String getCustomItemKey(ItemStack item) {
-        if (isCustomItem(item)) {
-            String key = item.getPersistentDataContainer().get(CUSTOM_ITEM, PersistentDataType.STRING);
-            if (!customItems.containsKey(key)) {
-                return null;
-            }
-            return key;
-        } else {
+        if (item == null || item.isEmpty()) {
             return null;
         }
+        final String key = item.getPersistentDataContainer().get(CUSTOM_ITEM, PersistentDataType.STRING);
+        if (key == null || !customItems.containsKey(key)) {
+            return null;
+        }
+        return key;
     }
 
     public static Set<String> getKeys() {

@@ -111,7 +111,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         if (getChest().getType() != Material.CHEST && getChest().getType() != Material.TRAPPED_CHEST && !Tag.COPPER_CHESTS.isTagged(getChest().getType())) {
             return null;
         }
-        Chest chestBlock = (Chest) (getChest().getState());
+        Chest chestBlock = (Chest) (getChest().getState(false));
         return chestBlock.getInventory();
     }
 
@@ -145,20 +145,20 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         for (BlockFace relativeFace : ioTypeFunc.apply(getFurnaceIOSelector()).apply(facing)) {
             Block relBlock = fblock.getRelative(relativeFace);
             if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(relBlock.getType())) {
-                combinedInvList.add(((Chest) relBlock.getState()).getInventory());
+                combinedInvList.add(((Chest) relBlock.getState(false)).getInventory());
             }
             if (relBlock.getType() == Material.BARREL) {
-                combinedInvList.add(((Barrel) relBlock.getState()).getInventory());
+                combinedInvList.add(((Barrel) relBlock.getState(false)).getInventory());
             }
         }
         Block tblock = fccs.getCraftingTable();
         for (BlockFace relativeFace : ioTypeFunc.apply(getTableIOSelector()).apply(facing)) {
             Block relBlock = tblock.getRelative(relativeFace);
             if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(relBlock.getType())) {
-                combinedInvList.add(((Chest) relBlock.getState()).getInventory());
+                combinedInvList.add(((Chest) relBlock.getState(false)).getInventory());
             }
             if (relBlock.getType() == Material.BARREL) {
-                combinedInvList.add(((Barrel) relBlock.getState()).getInventory());
+                combinedInvList.add(((Barrel) relBlock.getState(false)).getInventory());
             }
         }
     }
@@ -225,8 +225,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         if (fblock.getType() != Material.FURNACE) {
             return null;
         }
-        Furnace fstate = (Furnace) fblock.getState();
-        org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
+        final org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fblock.getBlockData();
         return fdata.getFacing();
     }
 
@@ -238,7 +237,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         if (getFurnace().getType() != Material.FURNACE) {
             return null;
         }
-        Furnace furnaceBlock = (Furnace) (getFurnace().getState());
+        Furnace furnaceBlock = (Furnace) (getFurnace().getState(false));
         return furnaceBlock.getInventory();
     }
 

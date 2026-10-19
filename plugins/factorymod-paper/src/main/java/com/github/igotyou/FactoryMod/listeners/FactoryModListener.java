@@ -71,7 +71,7 @@ public class FactoryModListener implements Listener {
         Block powerSource = evt.getBlock();
         Material psType = powerSource.getType();
         if (psType == Material.REPEATER || psType == Material.COMPARATOR) {
-            BlockData psData = powerSource.getState().getBlockData();
+            final BlockData psData = powerSource.getBlockData();
             BlockFace direction = ((Directional) psData).getFacing();
             // repeaters "face" their input apparently
             Block poweredBlock = powerSource.getRelative(direction.getOppositeFace());
