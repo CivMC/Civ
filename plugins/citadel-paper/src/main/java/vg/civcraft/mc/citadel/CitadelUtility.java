@@ -1,10 +1,9 @@
 package vg.civcraft.mc.citadel;
 
 import java.util.logging.Level;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -12,6 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -108,24 +108,20 @@ public class CitadelUtility {
     }
 
     public static void sendAndLog(CommandSender receiver, ChatColor color, String message, Location location) {
-        final TextComponent component = new TextComponent(color + message);
-        addCoordsHoverComponent(component, location);
-        receiver.spigot().sendMessage(component);
+        final Component component = LegacyComponentSerializer.legacySection().deserialize(color + message);
+        receiver.sendMessage(addCoordsHoverComponent(component, location));
         if (Citadel.getInstance().getConfigManager().logMessages()) {
             Citadel.getInstance().getLogger().log(Level.INFO, "Sent {0} reply {1}",
                 new Object[]{receiver.getName(), message});
         }
     }
 
-    private static BaseComponent addCoordsHoverComponent(BaseComponent component, Location location) {
+    private static @NotNull Component addCoordsHoverComponent(final @NotNull Component component, final @NotNull Location location) {
         String hoverText = String.format("Location: %s %s %s",
             location.getBlockX(),
             location.getBlockY(),
             location.getBlockZ());
-        component.setHoverEvent(new HoverEvent(
-            HoverEvent.Action.SHOW_TEXT,
-            new Text(hoverText)));
-        return component;
+        return component.hoverEvent(HoverEvent.showText(Component.text(hoverText)));
     }
 
     public static boolean consumeReinforcementItems(Player player, ReinforcementType type, boolean consumeExtra) {

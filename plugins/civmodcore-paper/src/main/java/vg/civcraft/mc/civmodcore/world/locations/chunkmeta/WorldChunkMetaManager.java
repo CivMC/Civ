@@ -101,9 +101,8 @@ public class WorldChunkMetaManager {
      * supposed to be generated
      */
     private ChunkCoord getChunkCoord(int x, int z, boolean gen, boolean populate) {
-        ChunkCoord coord = new ChunkCoord(x, z, worldID, world);
         synchronized (metas) {
-            ChunkCoord value = metas.get(coord);
+            ChunkCoord value = metas.get(new XZWCoord(x, z, worldID));
             if (value != null) {
                 if (populate) {
                     // Prevent removal from metas in case we load at the same time
@@ -116,6 +115,7 @@ public class WorldChunkMetaManager {
             if (!gen) {
                 return null;
             }
+            final ChunkCoord coord = new ChunkCoord(x, z, worldID, world);
             metas.put(coord, coord);
             if (populate) {
                 // up until here we are still sync from the ChunkLoadEvent, so we need to
