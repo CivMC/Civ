@@ -13,13 +13,13 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import java.nio.file.Path;
 import java.time.Duration;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 import net.civmc.kiragatewayvelocity.auth.AuthcodeManager;
 import net.civmc.kiragatewayvelocity.commands.DiscordAuth;
 import net.civmc.kiragatewayvelocity.rabbit.RabbitCommands;
 import net.civmc.kiragatewayvelocity.rabbit.RabbitHandler;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import us.ajg0702.queue.api.AjQueueAPI;
 import us.ajg0702.queue.api.queues.QueueServer;
 
