@@ -58,7 +58,7 @@ public class NameColors extends ACivMod implements Listener {
             Bukkit.getScheduler().runTaskLater(this, () -> {
                 // For some reason setPrefix directly doesn't work
                 PropertyConfiguration users = TAB.getInstance().getConfiguration().getUsers();
-                if (users.getProperty(player.getName(), "tabprefix", null, null) != null) {
+                if (users.getGlobalSettings(player.getName()).containsKey("tabprefix")) {
                     users.setProperty(player.getName(), "tabprefix", null, null, null);
                     TAB.getInstance().getFeatureManager().onGroupChange(TAB.getInstance().getPlayer(player.getUniqueId()));
                 }

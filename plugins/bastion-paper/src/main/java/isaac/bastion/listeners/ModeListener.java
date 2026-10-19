@@ -159,7 +159,7 @@ public class ModeListener implements Listener {
         if (locSetting.showOnActionbar(player.getUniqueId())) {
             bsiBottomLine.updatePlayer(player, text);
         }
-        if (locSetting.showOnSidebar(player.getUniqueId())) {
+        if (locSetting.showOnSidebar(player.getUniqueId()) && !text.equals(bsiBoard.get(player))) {
             bsiBoard.set(player, text);
         }
     }
