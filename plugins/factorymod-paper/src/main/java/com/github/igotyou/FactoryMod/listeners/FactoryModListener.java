@@ -182,7 +182,7 @@ public class FactoryModListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
             boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
-            InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+            InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder(false) : event.getView().getBottomInventory().getHolder(false);
             if (holder instanceof Furnace) {
                 Block furnace = ((Furnace) holder).getBlock();
                 if (manager.isPossibleInteractionBlock(furnace.getType())) {

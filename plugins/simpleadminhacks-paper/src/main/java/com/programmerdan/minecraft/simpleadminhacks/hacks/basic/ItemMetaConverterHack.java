@@ -38,7 +38,7 @@ public class ItemMetaConverterHack extends BasicHack {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void convertOnInventoryOpen(final InventoryOpenEvent event) {
         final var inventory = event.getInventory();
-        if (inventory.getHolder() == null) {
+        if (inventory.getHolder(false) == null) {
             return; // GUI
         }
         for (final ItemStack item : inventory.getStorageContents()) {

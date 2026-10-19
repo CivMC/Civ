@@ -363,11 +363,11 @@ public class MultiInventoryWrapper implements Inventory {
         List<Inventory> uniqueInvs = new ArrayList<>(wrapped.size());
         for (Inventory inv : wrapped) {
 
-            InventoryHolder holder = inv.getHolder();
+            InventoryHolder holder = inv.getHolder(false);
             if (holder instanceof DoubleChest) {
                 DoubleChest dch = (DoubleChest) holder;
-                InventoryHolder hleft = dch.getLeftSide();
-                InventoryHolder hright = dch.getRightSide();
+                InventoryHolder hleft = dch.getLeftSide(false);
+                InventoryHolder hright = dch.getRightSide(false);
                 if (invHolders.contains(dch) || invHolders.contains(hleft) || invHolders.contains(hright)) {
                     continue;
                 }
