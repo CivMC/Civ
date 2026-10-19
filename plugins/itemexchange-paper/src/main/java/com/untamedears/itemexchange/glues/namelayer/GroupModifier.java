@@ -53,7 +53,10 @@ public final class GroupModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(final @NotNull NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         if (this.groupName instanceof final String groupName) {
             nbt.setString(NAME_KEY, groupName);
         }

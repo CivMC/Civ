@@ -107,9 +107,9 @@ public final class ShopRule implements Validation {
         final var displayNbt = new NbtCompound();
         displayNbt.setInt("trades", tradesCount);
         displayNbt.setInt("index", currentTradeIndex);
-        displayNbt.setCompound("input", trade.getInput().toNBT());
+        displayNbt.setCompound("input", trade.getInput().toNBT(true));
         if (trade.getOutput() instanceof final ExchangeRule outputRule) {
-            displayNbt.setCompound("output", outputRule.toNBT());
+            displayNbt.setCompound("output", outputRule.toNBT(true));
             displayNbt.setInt("stock", stock);
         }
         CivModPackets.sendPacket(
