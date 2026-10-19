@@ -107,6 +107,13 @@ performance:
     # Will improve performance on servers with massive datapack functions.
     skip-inactive-entity-for-execute-command: false
   skip-ai-for-non-aware-mob: true
+  entity-goal:
+    start-tick-chance:
+      nearest-attackable-target: 15
+      follow-parent: 5
+      avoid-entity: 3
+      temptation: 5
+      enderman-look-for-player: -1
   sleeping-block-entity: false
   reduce-packets:
     reduce-entity-move-packets: false
