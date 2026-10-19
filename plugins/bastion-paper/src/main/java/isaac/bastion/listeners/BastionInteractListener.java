@@ -118,17 +118,27 @@ public class BastionInteractListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         ItemStack inHand = event.getItemInHand();
-        if (inHand == null) {
-            return;
-        }
 
         BastionType type = blockToType(event.getBlock(), inHand);
         if (type != null) {
             Bastion.getPlugin().getLogger().log(Level.INFO, "Pending a bastion at {0}", event.getBlock().getLocation());
             blockStorage.addPendingBastion(event.getBlock().getLocation(), type);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBlockPlaceMonitor(BlockPlaceEvent event) {
+        if (!event.isCancelled()) {
+            return;
+        }
+        ItemStack inHand = event.getItemInHand();
+
+        BastionType type = blockToType(event.getBlock(), inHand);
+        if (type != null) {
+            blockStorage.getAndRemovePendingBastion(event.getBlock().getLocation());
         }
     }
 
