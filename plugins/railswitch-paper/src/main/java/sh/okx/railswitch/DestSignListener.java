@@ -15,8 +15,7 @@ import sh.okx.railswitch.settings.SettingsManager;
 
 public class DestSignListener implements Listener {
 
-    private final List<String> destStrings = Arrays.asList("[DEST]",
-        "[DESTINATION]");
+    private final List<String> destStrings = Arrays.asList("[SET DEST]", "[SET DESTINATION]");
     private static final PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
     @EventHandler
