@@ -49,7 +49,7 @@ mythic-dist = { group = "io.lumine", name = "Mythic-Dist", version = "5.6.1" }
 packetevents-spigot = { group = "com.github.retrooper", name = "packetevents-spigot", version = "2.11.2" }
 placeholderapi = { group = "me.clip", name = "placeholderapi", version = "2.11.6" }
 rtree2 = { group = "com.github.davidmoten", name = "rtree2", version = "0.9.3" }
-ajQueue-api = { group = "us.ajg0702.queue.api", name = "api", version = "2.8.0" }
+ajQueue-api = { group = "us.ajg0702.queue.api", name = "api", version = "2.9.0" }
 mariadb-client = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version = "3.5.6" }
 
 [bundles]
