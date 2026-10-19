@@ -39,11 +39,21 @@ public class SetDefaultGroup extends BaseCommandMiddle {
 
         String x = gm.getDefaultGroup(uuid);
         if (x == null) {
-            g.setDefaultGroup(uuid);
-            p.sendMessage(ChatColor.GREEN + "You have set your default group to " + g.getName());
+            g.setDefaultGroupAsync(uuid, result -> {
+                if (result.success()) {
+                    p.sendMessage(ChatColor.GREEN + "You have set your default group to " + g.getName());
+                } else {
+                    p.sendMessage(ChatColor.RED + result.message());
+                }
+            });
         } else {
-            g.changeDefaultGroup(uuid);
-            p.sendMessage(ChatColor.GREEN + "You changed your default group from " + x + " to " + gm.getDefaultGroup(uuid));
+            g.changeDefaultGroupAsync(uuid, result -> {
+                if (result.success()) {
+                    p.sendMessage(ChatColor.GREEN + "You changed your default group from " + x + " to " + gm.getDefaultGroup(uuid));
+                } else {
+                    p.sendMessage(ChatColor.RED + result.message());
+                }
+            });
         }
     }
 }

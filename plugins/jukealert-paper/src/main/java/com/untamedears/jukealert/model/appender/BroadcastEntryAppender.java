@@ -1,6 +1,7 @@
 package com.untamedears.jukealert.model.appender;
 
 import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.broadcaster.RemoteSnitchAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
@@ -12,6 +13,7 @@ import java.util.UUID;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -62,6 +64,25 @@ public class BroadcastEntryAppender extends ConfigurableSnitchAppender<LimitedAc
                 }
             }
         }
+        broadcastRemote(log);
+    }
+
+    private void broadcastRemote(final LoggablePlayerAction log) {
+        final Location location = snitch.getLocation();
+        JukeAlert.getInstance().getBroadcaster().broadcast(new RemoteSnitchAlert(
+            System.currentTimeMillis(),
+            JukeAlert.getInstance().getConfigManager().getDatabaseName(),
+            log.getIdentifier(),
+            log.getPlayer(),
+            log.getPlayerName(),
+            snitch.getGroup().getName(),
+            snitch.getType().getName(),
+            snitch.getName(),
+            location.getWorld().getName(),
+            location.getBlockX(),
+            location.getBlockY(),
+            location.getBlockZ()
+        ));
     }
 
     @Override

@@ -16,3 +16,8 @@ commands:
       /<command> listveins
       /<command> listores
       /<command> spawnmeteoricironvein
+      /<command> forcepublicmeteor
+      /<command> nextpublicmeteor
+  meteor:
+    usage: /<command>
+    description: Shows the last active public meteoric iron location

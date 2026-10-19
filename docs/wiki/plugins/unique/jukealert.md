@@ -33,3 +33,6 @@ Snitches can be integrated with discord, to relay the snitch notifications to a 
 To do this you have to invite the Shakira bot to your discord server ([use this link](https://discord.com/oauth2/authorize?client_id=952325487663939645&scope=bot)) and give them access to a channel where you want the bot to relay the notifications to. Then perform the command: **!kira createrelayhere** followed by the snitch group name in the channel. 
 
 ![Create relay command](media/Kirarelay.png)
+
+Kira relays on zorweth are sperated from main. This means a seperate relay is required even when on the same group. Use the following command in discord to make a Zorweth relay:
+`!kira createrelayhere zorweth <group>`

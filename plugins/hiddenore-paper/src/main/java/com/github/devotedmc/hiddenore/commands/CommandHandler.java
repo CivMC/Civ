@@ -94,9 +94,20 @@ public class CommandHandler implements CommandExecutor {
                         if (!(sender instanceof Player player)) {
                             return false;
                         }
+                        if (args.length != 2 && args.length != 4) {
+                            sender.sendMessage("Usage: /hiddenore clearores <radius> [centre-x centre-z]");
+                            return true;
+                        }
+                        int radius = Integer.parseInt(args[1]);
+                        int centerX = 0;
+                        int centerZ = 0;
+                        if (args.length == 4) {
+                            centerX = Integer.parseInt(args[2]);
+                            centerZ = Integer.parseInt(args[3]);
+                        }
                         for (WorldGenerationListener worldGenerationListener : worldGenerationListeners) {
                             if (worldGenerationListener.getWorldName().equals(player.getWorld().getName())) {
-                                worldGenerationListener.clearManually(sender, Integer.parseInt(args[1]));
+                                worldGenerationListener.clearManually(sender, radius, centerX, centerZ);
                                 return true;
                             }
                         }

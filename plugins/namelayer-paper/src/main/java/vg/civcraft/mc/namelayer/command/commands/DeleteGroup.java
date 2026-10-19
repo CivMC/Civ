@@ -48,13 +48,14 @@ public class DeleteGroup extends BaseCommandMiddle {
                     Date now = new Date(System.currentTimeMillis() - 15000);
                     //if it has been less than 15 seconds
                     if (now.getTime() < Long.parseLong(entry[1])) {
-                        //good to go delete the group
-                        if (gm.deleteGroup(gD.getName()))
-                            p.sendMessage(Component.text("Group was successfully deleted.").color(NamedTextColor.GREEN));
-                        else
-                            p.sendMessage(Component.text("Group is now disciplined. Check back later to see if group is deleted.").color(NamedTextColor.GREEN));
-
                         confirmDeleteGroup.remove(uuid);
+                        gm.deleteGroupAsync(uuid, gD, false, result -> {
+                            if (result.success()) {
+                                p.sendMessage(Component.text("Group was successfully deleted.").color(NamedTextColor.GREEN));
+                            } else {
+                                p.sendMessage(Component.text(result.message()).color(NamedTextColor.RED));
+                            }
+                        });
                         return;
                     } else {
                         p.sendMessage(Component.text("You did not do '/nldg %s %s' fast enough, you will need to start over".formatted(confirm, gD.getName())).color(NamedTextColor.RED));
@@ -80,7 +81,7 @@ public class DeleteGroup extends BaseCommandMiddle {
             return;
         }
         if (g.isDisciplined() && !p.hasPermission("namelayer.admin")) {
-            p.sendMessage(Component.text("Group is disiplined.").color(NamedTextColor.RED));
+            p.sendMessage(Component.text("Group is disciplined.").color(NamedTextColor.RED));
             return;
         }
         //set that user can confirm group in 15 seconds

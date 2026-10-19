@@ -79,6 +79,8 @@ hacks:
       - <gold>That <it>really<gold> hurt!
   BedLocator:
     enabled: true
+  BelowWorldRescue:
+    enabled: false
   BeeKeeping:
     enabled: true
     # Value between 0 and 1 that determines the percentage chance that a bee will replace
@@ -89,6 +91,8 @@ hacks:
     # its stinger and thus die when successfully attacking an entity.
     # Default: 1.0 (100%)
     severStingerChance: 1.0
+  BrewIndex:
+    enabled: true
   BuffSpanker:
     enabled: true
     # The list of PotionEffectType's that you do not wish players to receive.
@@ -97,8 +101,16 @@ hacks:
       - BAD_OMEN
       - SLOW_DIGGING
       - SLOW_FALLING
+      - OOZING
+      - WEAVING
+      - INFESTED
+      - WIND_CHARGED
   DebugWand:
     enabled: true
+  ServerLinksHack:
+    enabled: false
+    discordUrl: https://discord.gg/ [...]
+    patreonUrl: https://www.patreon.com/ [...]
   DogFacts:
     enabled: false
     intervalTime: 30m
@@ -196,6 +208,8 @@ hacks:
     stormSpawn: true
     # Determines what the maximum light level is that phantoms can spawn to.
     maximumLightSpawn: 7
+    # Biomes where natural phantom spawns bypass this hack's spawn restrictions. Use Bukkit biome names.
+    biomeWhitelist: []
   PlayerRevive:
     enabled: true
   PlayerStatistics:
@@ -451,7 +465,7 @@ hacks:
       enabled: true
       contents:
         - ==: org.bukkit.inventory.ItemStack
-          v: 1
+          v: 3839
           type: COOKIE
           amount: 32
           meta:
@@ -462,7 +476,7 @@ hacks:
               - "Gift from the Admins as you"
               - "begin your journey on Devotion."
         - ==: org.bukkit.inventory.ItemStack
-          v: 1
+          v: 3839
           type: RED_BED
           amount: 1
           meta:
@@ -536,6 +550,8 @@ hacks:
       EXPOSED_COPPER: 24
       WEATHERED_COPPER: 19
       OXIDIZED_COPPER: 15
+  CactusCleanup:
+    enabled: false
   CopperRail:
     enabled: true
     deoxidise: true
@@ -551,8 +567,11 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
-  NoOozing:
+  WitherSkeletonCoalHack:
     enabled: true
+    coalDropChance: 0.2
+  WaterMushroomDropHack:
+    enabled: false
   PortalConnect:
     enabled: false
     server: main
@@ -561,6 +580,24 @@ hacks:
     enabled: true
   PlayerCap:
     enabled: true
+    auto:
+      enabled: false
+      # Players may fill the minimum normally; above it growth is one slot at a time.
+      # Existing slots remain available for replacements when players leave.
+      minCap: 125
+      maxCap: 200
+      sampleSeconds: 5
+      ewmaHalfLifeSeconds: 30
+      # EWMA measures tick execution time in milliseconds (excluding idle time).
+      # Each full high-MSPT period reduces min(cap, online count) by reduceStep.
+      # A cap below the online count blocks joins without kicking existing players.
+      reduceAboveMspt: 59.0
+      reduceHoldSeconds: 60
+      reduceStep: 1
+      increaseBelowMspt: 54.0
+      recoverySeconds: 60
+      # Starts on population growth (including bypass joins), not slot offers or replacements.
+      settleSeconds: 90
   FairPlay:
     enabled: true
   PlayerCount:
@@ -569,9 +606,10 @@ hacks:
     enabled: true
   MobCulling:
     enabled: false
-    turtleAllowance: 100
-    turtleMaxAge: 360000
-    striderAllowance: 100
-    striderMaxAge: 360000
+    mobs:
+      - TURTLE
+      - STRIDER
+    allowance: 100
+    maxAge: 360000
   NetheriteCrafting:
     enabled: true

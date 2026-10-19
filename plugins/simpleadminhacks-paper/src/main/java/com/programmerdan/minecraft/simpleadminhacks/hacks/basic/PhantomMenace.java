@@ -4,6 +4,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,6 +35,9 @@ public final class PhantomMenace extends BasicHack {
     @AutoLoad
     private int maximumLightSpawn;
 
+    @AutoLoad
+    private List<String> biomeWhitelist;
+
     public PhantomMenace(final SimpleAdminHacks plugin, final BasicHackConfig config) {
         super(plugin, config);
         this.timeSinceRestCap = Math.max(-1, this.timeSinceRestCap);
@@ -54,12 +58,19 @@ public final class PhantomMenace extends BasicHack {
             default:
                 return;
         }
+        final Phantom phantom = (Phantom) event.getEntity();
+        final String biomeName = phantom.getLocation().getBlock().getBiome().getKey().asString();
+        if (this.biomeWhitelist != null && !this.biomeWhitelist.isEmpty()
+            && this.biomeWhitelist.stream().noneMatch(biomeName::equalsIgnoreCase)) {
+            event.setCancelled(true);
+            plugin().debug("Phantom prevented from spawning: biome was not whitelisted.");
+            return;
+        }
         if (!this.nightSpawn && !this.stormSpawn) {
             event.setCancelled(true);
             plugin().debug("Phantom prevented from spawning: cannot spawn during the night nor during storms.");
             return;
         }
-        final Phantom phantom = (Phantom) event.getEntity();
         final World world = phantom.getWorld();
         if (!this.nightSpawn && this.stormSpawn) {
             if (!world.hasStorm()) {

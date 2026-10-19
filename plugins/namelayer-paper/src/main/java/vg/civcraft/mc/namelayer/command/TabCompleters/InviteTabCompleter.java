@@ -3,7 +3,6 @@ package vg.civcraft.mc.namelayer.command.TabCompleters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.bukkit.entity.Player;
@@ -19,8 +18,8 @@ public class InviteTabCompleter {
 
     public static List<String> complete(String lastArg, Player sender) {
         UUID uuid = NameLayerAPI.getUUID(sender.getName());
-        Set<Group> groups = PlayerListener.getNotifications(uuid);
-        if (groups == null) {
+        List<Group> groups = PlayerListener.getNotifications(uuid);
+        if (groups.isEmpty()) {
             return Collections.emptyList();
         }
         List<String> groupsString = groups.stream().map(Group::getName).collect(Collectors.toList());

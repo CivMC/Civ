@@ -177,7 +177,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
                     ChatColor.GOLD + fccf.getName() + " currently turned " + (fccf.isActive() ? "on" : "off"));
                 if (fccf.isActive()) {
                     p.sendMessage(ChatColor.GOLD
-                        + String.valueOf((fccf.getCurrentRecipe().getProductionTime() - fccf.getRunningTime()) / 20)
+                        + String.valueOf((fccf.getCurrentRecipe().getProductionTime(fccf) - fccf.getRunningTime()) / 20)
                         + " seconds remaining until current run is complete");
                 }
                 p.sendMessage(ChatColor.GOLD + "Currently selected recipe: " + fccf.getCurrentRecipe().getName());

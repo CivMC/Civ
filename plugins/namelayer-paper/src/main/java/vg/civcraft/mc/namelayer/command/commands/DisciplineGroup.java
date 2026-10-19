@@ -27,12 +27,13 @@ public class DisciplineGroup extends BaseCommandMiddle {
             p.sendMessage(ChatColor.RED + "You do not have permission for this op command.");
             return;
         }
-        if (g.isDisciplined()) {
-            g.setDisciplined(false);
-            sender.sendMessage(ChatColor.GREEN + "Group has been enabled.");
-        } else {
-            g.setDisciplined(true);
-            sender.sendMessage(ChatColor.GREEN + "Group has been disabled.");
-        }
+        final boolean disciplined = !g.isDisciplined();
+        g.setDisciplinedAsync(p.getUniqueId(), disciplined, true, result -> {
+            if (result.success()) {
+                sender.sendMessage(ChatColor.GREEN + (disciplined ? "Group has been disabled." : "Group has been enabled."));
+            } else {
+                sender.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 }

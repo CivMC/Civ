@@ -9,6 +9,7 @@ import vg.civcraft.mc.citadel.command.CitadelCommandManager;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
+import vg.civcraft.mc.citadel.listener.MemoryOnlyWorldListener;
 import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.listener.RedstoneListener;
 import vg.civcraft.mc.citadel.listener.WorldBorderListener;
@@ -94,10 +95,18 @@ public class Citadel extends ACivMod {
 
     @Override
     public void onDisable() {
-        activityMap.disable();
-        dao.setBatchMode(true);
-        reinManager.shutDown();
-        dao.cleanupBatches();
+        if (activityMap != null) {
+            activityMap.disable();
+        }
+        if (dao != null) {
+            dao.setBatchMode(true);
+        }
+        if (reinManager != null) {
+            reinManager.shutDown();
+        }
+        if (dao != null) {
+            dao.cleanupBatches();
+        }
         HandlerList.unregisterAll(this);
         Bukkit.getScheduler().cancelTasks(this);
     }
@@ -124,31 +133,33 @@ public class Citadel extends ACivMod {
             return;
         }
         typeManager = new ReinforcementTypeManager();
-        config.getReinforcementTypes().forEach(t ->
-        {
+        config.getReinforcementTypes().forEach(t -> {
             if (!typeManager.register(t)) {
                 logger.severe("Errors in the config file, shutting down");
                 Bukkit.shutdown();
-                return;
             }
         });
-        dao = new CitadelDAO(this.logger, config.getDatabase());
-        if (!dao.updateDatabase()) {
-            logger.severe("Errors setting up database, shutting down");
-            Bukkit.shutdown();
-            return;
+        BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData = null;
+        if (config.hasDatabase()) {
+            dao = new CitadelDAO(this.logger, config.getDatabase());
+            if (!dao.updateDatabase()) {
+                logger.severe("Errors setting up database, shutting down");
+                Bukkit.shutdown();
+                return;
+            }
+
+            chunkMetaData = ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao), dao,
+                true);
+            if (chunkMetaData == null) {
+                logger.severe("Errors setting up chunk metadata API, shutting down");
+                Bukkit.shutdown();
+                return;
+            }
         }
 
         activityMap = new ActivityMap(this.logger, config.getDatabase());
         activityMap.enable();
 
-        BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData =
-            ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao), dao, true);
-        if (chunkMetaData == null) {
-            logger.severe("Errors setting up chunk metadata API, shutting down");
-            Bukkit.shutdown();
-            return;
-        }
         reinManager = new ReinforcementManager(chunkMetaData);
         stateManager = new PlayerStateManager();
         acidManager = new AcidManager(config.getAcidTypes());
@@ -167,6 +178,7 @@ public class Citadel extends ACivMod {
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+        getServer().getPluginManager().registerEvents(new MemoryOnlyWorldListener(this), this);
         getServer().getPluginManager().registerEvents(new ModeListener(this), this);
         getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
         getServer().getPluginManager().registerEvents(new ActivityListener(activityMap), this);

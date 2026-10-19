@@ -2,6 +2,7 @@ package sh.okx.railswitch.settings;
 
 import com.google.common.base.Strings;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.players.settings.impl.StringSetting;
@@ -23,5 +24,4 @@ public final class DestinationSetting extends StringSetting {
         }
         return value;
     }
-
 }

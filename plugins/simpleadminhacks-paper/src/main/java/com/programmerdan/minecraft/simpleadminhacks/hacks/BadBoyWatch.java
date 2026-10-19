@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,8 +42,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
         try {
             Player player = bbe.getPlayer();
             Block block = bbe.getBlock();
-            BlockState bs = block.getState();
-            Material material = bs.getType();
+            Material material = block.getType();
 
             lowTrackAndReport(player.getUniqueId(), block.getLocation(), material);
         } catch (Exception e) {
@@ -59,8 +57,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
         try {
             Player player = bbe.getPlayer();
             Block block = bbe.getBlock();
-            BlockState bs = block.getState();
-            Material material = bs.getType();
+            Material material = block.getType();
 
             trackAndReport(player.getUniqueId(), block.getLocation(), material);
         } catch (Exception e) {

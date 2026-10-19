@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmodcore.world.locations.chunkmeta;
 
-import java.util.Objects;
+import it.unimi.dsi.fastutil.HashCommon;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
@@ -64,7 +64,8 @@ public class XZWCoord implements Comparable<XZWCoord> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, z, worldID);
+        final long coordinates = ((long) x << 32) | (z & 0xffffffffL);
+        return Long.hashCode(HashCommon.murmurHash3(coordinates ^ (worldID * 0x9E3779B97F4A7C15L)));
     }
 
     @Override

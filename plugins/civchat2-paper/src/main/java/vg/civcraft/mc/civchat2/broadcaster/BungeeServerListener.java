@@ -11,6 +11,7 @@ import vg.civcraft.mc.civchat2.CivChat2Manager;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -39,6 +40,10 @@ public class BungeeServerListener implements PluginMessageListener {
             if (type.equals("group")) {
                 long timestamp = msgIn.readLong();
                 if (System.currentTimeMillis() - timestamp > 5000) {
+                    return;
+                }
+                String databaseName = msgIn.readUTF();
+                if (!Objects.equals(databaseName, CivChat2.getInstance().getPluginConfig().getMysqlDBname())) {
                     return;
                 }
                 manager.sendRemoteGroupMsg(UUID.fromString(msgIn.readUTF()), msgIn.readUTF(), GsonComponentSerializer.gson().deserialize(msgIn.readUTF()), msgIn.readUTF(), GsonComponentSerializer.gson().deserialize(msgIn.readUTF()));

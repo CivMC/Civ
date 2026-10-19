@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class NewPlayerListener implements Listener {
@@ -28,5 +29,12 @@ public class NewPlayerListener implements Listener {
 
         CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
         chatMan.addGroupChat(player, globalGroup);
+        if (!globalGroup.isCurrentMember(player.getUniqueId())) {
+            globalGroup.addMemberAsync(player.getUniqueId(), player.getUniqueId(), PlayerType.MEMBERS, result -> {
+                if (result.success()) {
+                    player.sendMessage("You autojoined global chat, which is called '!'. Use it like this: '/g ! Hello'");
+                }
+            });
+        }
     }
 }

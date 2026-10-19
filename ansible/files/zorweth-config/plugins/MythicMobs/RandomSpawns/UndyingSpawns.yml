@@ -1,0 +1,10 @@
+RandomUndying:
+  Type: The_Undying
+  Worlds: world
+  Chance: 0.001
+  Priority: 10
+  Action: ADD
+  Biomes: BASALT_DELTAS
+  Conditions:
+    - outside
+    - mobsinradius{t=The_Undying;a=<1;r=128} true

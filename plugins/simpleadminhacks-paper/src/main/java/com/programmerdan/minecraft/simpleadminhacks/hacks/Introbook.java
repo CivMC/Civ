@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 /**
  * Simple Hack that handles gifting introbooks if enabled. Handles respawns as well
@@ -32,6 +34,8 @@ import org.bukkit.inventory.meta.BookMeta;
  * @author ProgrammerDan programmerdan@gmail.com
  */
 public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, CommandExecutor {
+
+    private static final NamespacedKey ZORWETH_ROCKET_JOIN = new NamespacedKey("zorweth", "no_starter_kit");
 
     public static final String NAME = "Introbook";
     private static long bookGiftCount = 0l;
@@ -127,6 +131,8 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 
         UUID puid = alive.getUniqueId();
         if (puid == null) return;
+
+        if (alive.getPersistentDataContainer().has(ZORWETH_ROCKET_JOIN, PersistentDataType.BOOLEAN)) return;
 
         if (!alive.hasPlayedBefore() || this.hasBook.contains(puid)) {
             this.hasBook.remove(puid);

@@ -1,0 +1,9 @@
+TallEnderman:
+  Type: ENDERMAN
+  Health: 80
+  Damage: 12
+  Options:
+    PreventTargetLoss: true
+    Scale: 1.6
+    KnockbackResistance: 0.5
+    Angry: true

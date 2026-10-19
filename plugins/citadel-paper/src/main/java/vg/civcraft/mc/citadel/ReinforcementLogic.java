@@ -67,6 +67,7 @@ public final class ReinforcementLogic {
         futureHealth = Math.min(futureHealth, rein.getType().getHealth());
         rein.setHealth(futureHealth);
         if (rein.isBroken()) {
+            Citadel.getInstance().getReinforcementManager().removeReinforcement(rein);
             if (rein.getType().getDestructionEffect() != null) {
                 rein.getType().getDestructionEffect().playEffect(rein);
             }
@@ -105,22 +106,20 @@ public final class ReinforcementLogic {
             inactiveDecay = reinforcement.getType().getDeletedGroupMultiplier();
         }
 
-        return inactiveDecay * getBufferDecayDamage(reinforcement);
+        return inactiveDecay * getEnvironmentalDecayDamage(reinforcement);
     }
 
-    private static double getBufferDecayDamage(Reinforcement reinforcement) {
+    private static double getEnvironmentalDecayDamage(Reinforcement reinforcement) {
         Location location = reinforcement.getLocation();
-        WorldBorderBuffers buffer = Citadel.getInstance().getConfigManager().getWorldBorderBuffers()
-            .get(location.getWorld().getUID());
-        if (!buffer.decay()) {
-            return 1;
+        CitadelConfigManager config = Citadel.getInstance().getConfigManager();
+        WorldBorderBuffers buffer = config.getWorldBorderBuffers().get(location.getWorld().getUID());
+        boolean borderDecay = buffer != null && buffer.decay()
+            && buffer.checkIfOutside(location.getX(), location.getZ());
+        if (borderDecay || config.isBiomeDecayLocation(location)) {
+            return reinforcement.getType().getDecayDamageMultipler(reinforcement.getCreationTime());
         }
 
-        if (!buffer.checkIfOutside(location.getX(), location.getZ())) {
-            return 1;
-        }
-
-        return reinforcement.getType().getDecayDamageMultipler(reinforcement.getCreationTime());
+        return 1;
     }
 
 

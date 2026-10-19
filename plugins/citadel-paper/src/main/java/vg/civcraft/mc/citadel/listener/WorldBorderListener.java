@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
@@ -21,6 +22,14 @@ public class WorldBorderListener implements Listener {
 
     public WorldBorderListener() {
         this.buffers = Citadel.getInstance().getConfigManager().getWorldBorderBuffers();
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBiomeReinCreation(ReinforcementCreationEvent event) {
+        if (Citadel.getInstance().getConfigManager().isBiomeDecayLocation(event.getReinforcement().getLocation())
+            && warned.add(event.getPlayer().getUniqueId())) {
+            event.getPlayer().sendMessage(Component.text("Reinforcing in this biome will cause your reinforcements to instantly start decaying").color(NamedTextColor.RED));
+        }
     }
 
     @EventHandler

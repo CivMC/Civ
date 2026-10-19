@@ -1,8 +1,7 @@
 [versions]
 paper = "1.21.11-R0.1-SNAPSHOT"
-junit = "5.8.2"
 nuotifier = "2.7.2"
-velocity = "3.4.0-SNAPSHOT"
+velocity = "4.2.1-SNAPSHOT"
 configurate = "4.2.0"
 
 [plugins]
@@ -26,6 +25,7 @@ commons-math3 = { group = "org.apache.commons", name = "commons-math3", version 
 cron-utils = { group = "com.cronutils", name = "cron-utils", version = "9.2.1" }
 
 configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
+gson = { group = "com.google.code.gson", name = "gson", version = "2.13.2" }
 
 rabbitmq-client = { group = "com.rabbitmq", name = "amqp-client", version = "5.26.0" }
 
@@ -45,18 +45,14 @@ barapi = { group = "me.confuser", name = "BarAPI", version = "3.5" }
 ipaddress = { group = "com.github.seancfoley", name = "ipaddress", version = "2.0.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.18.3" }
 
-junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
-junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
-
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
 
 mythic-dist = { group = "io.lumine", name = "Mythic-Dist", version = "5.6.1" }
 packetevents-spigot = { group = "com.github.retrooper", name = "packetevents-spigot", version = "2.11.2" }
 placeholderapi = { group = "me.clip", name = "placeholderapi", version = "2.11.6" }
 rtree2 = { group = "com.github.davidmoten", name = "rtree2", version = "0.9.3" }
-ajQueue-api = { group = "us.ajg0702.queue.api", name = "api", version = "2.8.0" }
+ajQueue-api = { group = "us.ajg0702.queue.api", name = "api", version = "2.9.0" }
 mariadb-client = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version = "3.5.6" }
 
 [bundles]
-junit = ["junit-api", "junit-engine"]
 nuvotifier = ["nuvotifier-api", "nuvotifier-bukkit"]

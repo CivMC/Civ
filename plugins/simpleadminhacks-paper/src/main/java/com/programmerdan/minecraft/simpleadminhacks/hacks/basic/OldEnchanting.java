@@ -10,6 +10,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -305,7 +306,7 @@ public final class OldEnchanting extends BasicHack {
     public void onBreakExp(final BlockBreakEvent event) {
         if (this.disableGrindExp) {
             event.setExpToDrop(0);
-        }  else {
+        } else {
             event.setExpToDrop(applyModifier(event.getExpToDrop(), this.experienceModifier));
         }
     }
@@ -599,7 +600,7 @@ public final class OldEnchanting extends BasicHack {
     }
 
     private void createExpBottles(Player player, int totalExp) {
-        ItemMap inv = new ItemMap(player.getInventory());
+        ItemMap inv = new ItemMap(Arrays.asList(player.getInventory().getStorageContents()));
         int bottles = inv.getAmount(new ItemStack(Material.GLASS_BOTTLE));
         int xpavailable = totalExp / this.expPerBottle;
         int remove = Math.min(bottles, xpavailable);
@@ -616,8 +617,11 @@ public final class OldEnchanting extends BasicHack {
             is.setType(Material.EXPERIENCE_BOTTLE);
             HashMap<Integer, ItemStack> result = player.getInventory().addItem(is);
             if (!result.isEmpty()) {
-                is.setType(Material.GLASS_BOTTLE);
-                player.getInventory().addItem(is);
+                for (ItemStack value : result.values()) {
+                    value.setType(Material.GLASS_BOTTLE);
+                    bottleCount += initialAmount - value.getAmount();
+                    player.getInventory().addItem(value);
+                }
                 noSpace = true;
                 break;
             } else {

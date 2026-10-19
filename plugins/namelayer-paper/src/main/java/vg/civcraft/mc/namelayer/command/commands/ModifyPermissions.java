@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,10 +41,11 @@ public class ModifyPermissions extends BaseCommandMiddle {
             return;
         }
         if (g.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is currently disiplined.");
+            p.sendMessage(ChatColor.RED + "This group is currently disciplined.");
             return;
         }
-        if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))) {
+        final boolean adminOverride = p.isOp() || p.hasPermission("namelayer.admin");
+        if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !adminOverride) {
             p.sendMessage(ChatColor.RED + "You do not have permission for this command.");
             return;
         }
@@ -80,15 +83,29 @@ public class ModifyPermissions extends BaseCommandMiddle {
                     sender.sendMessage(ChatColor.RED + "You can't explicitly add players to this group. Per default any non blacklisted person will"
                         + "be included in this permission group");
                 }
-                gPerm.addPermission(playerType, pType);
-                sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.getName() + " was successfully added to the PlayerType: " +
-                    playerType.name());
+                gPerm.addPermission(uuid, playerType, pType, adminOverride, result -> {
+                    if (result.success()) {
+                        sender.sendMessage(Component.text(
+                            "The PermissionType: " + pType.getName() + " was successfully added to the PlayerType: " + playerType.name(),
+                            NamedTextColor.GREEN
+                        ));
+                    } else {
+                        sender.sendMessage(Component.text(result.message(), NamedTextColor.RED));
+                    }
+                });
             }
         } else if (info.equalsIgnoreCase("remove")) {
             if (gPerm.hasPermission(playerType, pType)) {
-                gPerm.removePermission(playerType, pType);
-                sender.sendMessage(ChatColor.GREEN + "The PermissionType: " + pType.getName() + " was successfully removed from" +
-                    " the PlayerType: " + playerType.name());
+                gPerm.removePermission(uuid, playerType, pType, adminOverride, result -> {
+                    if (result.success()) {
+                        sender.sendMessage(Component.text(
+                            "The PermissionType: " + pType.getName() + " was successfully removed from the PlayerType: " + playerType.name(),
+                            NamedTextColor.GREEN
+                        ));
+                    } else {
+                        sender.sendMessage(Component.text(result.message(), NamedTextColor.RED));
+                    }
+                });
             } else
                 sender.sendMessage(ChatColor.RED + "This PlayerType does not have the PermissionType: " + pType.getName());
         } else {

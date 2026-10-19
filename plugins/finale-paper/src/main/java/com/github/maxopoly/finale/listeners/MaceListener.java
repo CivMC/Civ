@@ -7,10 +7,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WindCharge;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class MaceListener implements Listener {
 
@@ -54,6 +57,21 @@ public class MaceListener implements Listener {
 
         ItemStack item = event.getItemStack();
         item.setData(DataComponentTypes.USE_COOLDOWN, UseCooldown.useCooldown(windCooldown).build());
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void on(final InventoryClickEvent event) {
+        applyWindCooldown(event.getCurrentItem());
+        applyWindCooldown(event.getCursor());
+        if (event.getHotbarButton() >= 0) {
+            applyWindCooldown(event.getWhoClicked().getInventory().getItem(event.getHotbarButton()));
+        }
+    }
+
+    private void applyWindCooldown(@Nullable final ItemStack item) {
+        if (item != null && item.getType() == Material.WIND_CHARGE) {
+            item.setData(DataComponentTypes.USE_COOLDOWN, UseCooldown.useCooldown(windCooldown).build());
+        }
     }
 
     @EventHandler

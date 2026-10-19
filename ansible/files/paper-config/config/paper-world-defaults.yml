@@ -150,9 +150,13 @@ entities:
       items:
         ancient_debris: 12000
         cactus: 1200
-        cobbled_deepslate: 3000
-        cobblestone: 3000
-        deepslate: 3000
+        cobbled_deepslate: 1200
+        cobblestone: 1200
+        deepslate: 1200
+        diorite: 1200
+        granite: 1200
+        andesite: 1200
+        netherrack: 1200
         deepslate_diamond_ore: 12000
         diamond: 12000
         diamond_axe: 12000
@@ -184,44 +188,28 @@ entities:
     despawn-range-shape: ELLIPSOID
     despawn-ranges:
       ambient:
-        hard:
-          horizontal: 36
-          vertical: 96
+        hard: default
         soft: 24
       axolotls:
-        hard:
-          horizontal: 36
-          vertical: 128
+        hard: default
         soft: 24
       creature:
-        hard:
-          horizontal: 36
-          vertical: 128
+        hard: default
         soft: 24
       misc:
-        hard:
-          horizontal: 36
-          vertical: 96
+        hard: default
         soft: 24
       monster:
-        hard:
-          horizontal: 36
-          vertical: 128
+        hard: default
         soft: 24
       underground_water_creature:
-        hard:
-          horizontal: 36
-          vertical: 96
+        hard: default
         soft: 24
       water_ambient:
-        hard:
-          horizontal: 36
-          vertical: 96
+        hard: default
         soft: 24
       water_creature:
-        hard:
-          horizontal: 36
-          vertical: 96
+        hard: default
         soft: 24
     disable-mob-spawner-spawn-egg-transformation: true
     duplicate-uuid:
@@ -323,7 +311,7 @@ fixes:
 hopper:
   cooldown-when-full: true
   disable-move-event: false
-  ignore-occluding-blocks: false
+  ignore-occluding-blocks: true
 lootables:
   auto-replenish: false
   max-refills: -1
@@ -335,7 +323,7 @@ lootables:
   retain-unlooted-shulker-box-loot-table-on-non-player-break: true
 maps:
   item-frame-cursor-limit: 128
-  item-frame-cursor-update-interval: 160
+  item-frame-cursor-update-interval: 600
 max-growth-height:
   bamboo:
     max: 10

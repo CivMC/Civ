@@ -98,7 +98,7 @@ performance:
       spawn-chance: 25.0
   throttle-hopper-when-full:
     # Throttles the hopper if target container is full.
-    enabled: false
+    enabled: true
     # How many ticks to throttle when the Hopper is throttled.
     skip-ticks: 8
   skip-map-item-data-updates-if-map-does-not-have-craftmaprenderer: true
@@ -107,9 +107,17 @@ performance:
     # Will improve performance on servers with massive datapack functions.
     skip-inactive-entity-for-execute-command: false
   skip-ai-for-non-aware-mob: true
+  entity-goal:
+    start-tick-chance:
+      nearest-attackable-target: 15
+      follow-parent: 5
+      avoid-entity: 3
+      temptation: 5
+      enderman-look-for-player: -1
+  sleeping-block-entity: false
   reduce-packets:
     reduce-entity-move-packets: false
-  optimized-powered-rails: false
+  optimized-powered-rails: true
   optimize-waypoint: false
   optimize-random-tick: true
   # Whether to optimize player movement processing by skipping unnecessary edge checks and avoiding redundant view distance updates.
@@ -120,9 +128,10 @@ performance:
   only-tick-items-in-hand: false
   optimize-mob-despawn: true
   optimize-block-entities: true
+  optimize-mob-spawning: true
   cache-biome:
-    enabled: false
-    mob-spawning: false
+    enabled: true
+    mob-spawning: true
     advancements: false
   # May cause the inconsistent order of future compose tasks.
   faster-structure-gen-future-sequencing: true
@@ -173,18 +182,10 @@ performance:
     # A list of entities to ignore for activation
     blacklisted-entities:
     - blaze
-    - cave_spider
-    - ghast
-    - goat
-    - hoglin
-    - husk
-    - piglin_brute
-    - silverfish
     - stray
     - sniffer
     - villager
     - witch
-    - wither_skeleton
     - zombified_piglin
   dont-save-entity:
     # Disable save primed tnt on chunk unloads.
@@ -210,6 +211,7 @@ fixes:
 #  GAMEPLAY  #
 ##############
 gameplay-mechanisms:
+  ice-and-snow-chance: 96
   use-spigot-item-merging-mechanism: false
   # This section contains settings for mob spawner blocks.
   spawner-settings:
@@ -316,7 +318,7 @@ network:
   # 'secure chat', such as offline-mode servers.
   chat-message-signature: true
   # Async switch connection state.
-  async-switch-state: false
+  async-switch-state: true
 
 ##########
 #  MISC  #

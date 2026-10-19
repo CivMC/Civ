@@ -4,7 +4,7 @@ author: ProgrammerDan
 authors: [ ProgrammerDan, Maxopoly ]
 version: ${version}
 depend: [ CivModCore ]
-softdepend: [ CombatTagPlus, NameLayer, Citadel, ProtocolLib, packetevents, BanStick, ExilePearl, PlaceholderAPI, FactoryMod ]
+softdepend: [ CombatTagPlus, NameLayer, Citadel, ProtocolLib, packetevents, BanStick, ExilePearl, PlaceholderAPI, FactoryMod, BreweryX ]
 api-version: 1.21.3
 commands:
   hacks:
@@ -89,8 +89,8 @@ commands:
     usage: /<command> full.path.to.event
     permission: simpleadmin.eventdebug
   setplayercap:
-    description: Set player cap
-    usage: /<command> <cap>
+    description: Set a manual player cap, enable automatic control, or show status
+    usage: /<command> <cap|auto|status>
     permission: simpleadmin.setplayercap
   stats: { } # Defined in (basic) PlayerStats
 permissions:

@@ -22,7 +22,6 @@ import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.players.settings.MenuDialog;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 
@@ -92,7 +91,7 @@ public class NameColorSetting extends PlayerSetting<String> {
             clicks.add(new Clickable(is) {
                 @Override
                 protected void clicked(@NotNull Player clicker) {
-                    new MenuDialog(player, NameColorSetting.this, menu, "Invalid input");
+                    NameColorSetting.super.handleMenuClick(clicker, menu);
                 }
             });
 

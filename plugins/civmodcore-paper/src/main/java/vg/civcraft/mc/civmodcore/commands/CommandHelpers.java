@@ -4,11 +4,13 @@ import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.InvalidCommandArgument;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.players.PlayerNames;
 
@@ -102,6 +104,20 @@ public final class CommandHelpers {
         completions.setDefaultCompletion(
             "allplayers",
             OfflinePlayer.class
+        );
+    }
+
+    /**
+     * Completion for registered custom item keys.
+     */
+    public static void registerCustomItemsCompletion(
+        final @NotNull CommandCompletions<?> completions
+    ) {
+        completions.registerCompletion(
+            "customitems",
+            (context) -> CustomItem.getKeys().stream()
+                .sorted(Comparator.naturalOrder())
+                .toList()
         );
     }
 

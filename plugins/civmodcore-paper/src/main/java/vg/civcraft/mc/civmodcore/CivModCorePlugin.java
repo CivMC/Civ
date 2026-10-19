@@ -3,9 +3,10 @@ package vg.civcraft.mc.civmodcore;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
-import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
+import vg.civcraft.mc.civmodcore.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.commands.CustomItemCommand;
 import vg.civcraft.mc.civmodcore.commands.StatCommand;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -67,7 +68,7 @@ public class CivModCorePlugin extends ACivMod {
         ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
         // Register listeners
         registerListener(new ClickableInventoryListener());
-        registerListener(DialogManager.INSTANCE);
+        DialogManager.init(this);
         registerListener(new ScoreBoardListener());
         registerListener(new PlayerNames(this));
         // Register commands
@@ -76,6 +77,7 @@ public class CivModCorePlugin extends ACivMod {
         this.commands.registerCommand(new ConfigCommand());
         this.commands.registerCommand(new StatCommand());
         this.commands.registerCommand(new ChunkMetaCommand());
+        this.commands.registerCommand(new CustomItemCommand());
         // Load APIs
         EnchantUtils.loadEnchantAbbreviations();
         BottomLineAPI.init();
@@ -96,7 +98,7 @@ public class CivModCorePlugin extends ACivMod {
             this.database.close();
             this.database = null;
         }
-        DialogManager.resetDialogs();
+        DialogManager.clearCallbacks();
         PlayerSettingAPI.saveAll();
         ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
         if (this.commands != null) {

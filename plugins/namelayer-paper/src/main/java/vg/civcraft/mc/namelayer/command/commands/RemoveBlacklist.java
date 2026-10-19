@@ -50,7 +50,18 @@ public class RemoveBlacklist extends BaseCommandMiddle {
             p.sendMessage(ChatColor.RED + "This player is not blacklisted");
             return;
         }
-        bl.removeBlacklistMember(g, targetUUID, true);
-        p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(targetUUID) + " was successfully removed from the blacklist for the group " + g.getName());
+        bl.removeBlacklistMemberAsync(
+            p.getUniqueId(),
+            g,
+            targetUUID,
+            p.isOp() || p.hasPermission("namelayer.admin"),
+            result -> {
+                if (result.success()) {
+                    p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(targetUUID) + " was successfully removed from the blacklist for the group " + g.getName());
+                } else {
+                    p.sendMessage(ChatColor.RED + result.message());
+                }
+            }
+        );
     }
 }

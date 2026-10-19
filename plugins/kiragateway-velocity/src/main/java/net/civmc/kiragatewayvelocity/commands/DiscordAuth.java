@@ -26,7 +26,7 @@ public final class DiscordAuth implements SimpleCommand {
             RabbitCommands rabbit = KiraGateway.getInstance().getRabbit();
             rabbit.sendAuthCode(code, player.getUsername(), player.getUniqueId());
             source.sendMessage(mm.deserialize(String.format(
-                "<hover:show_text:'Click to copy the auth code'><click:copy_to_clipboard:'%s'><gold>Your code is '%s'. Execute '/auth %s' in the official discord to authenticate and link your account. Note that upper/lower case does not matter.</gold></click></hover>",
+                "<hover:show_text:'Click to copy the auth code'><click:copy_to_clipboard:'%s'><gold>Your code is '%s'. Execute '/auth %s' in the official discord to authenticate and link your account. Note that upper/lower case does not matter. This code will expire in 5 minutes.</gold></click></hover>",
                 code, code, code)));
         } else {
             source.sendMessage(mm.deserialize("<red>This command can only be run by a player.</red>"));

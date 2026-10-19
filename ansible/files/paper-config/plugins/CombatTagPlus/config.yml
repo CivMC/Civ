@@ -136,7 +136,7 @@ deny-safezone: true
 deny-safezone-enderpearl: true
 
 # Enables force fields around Anti-PvP zones while in combat.
-force-fields: true
+force-fields: false
 
 # Radius in blocks around the player that should be checked for forcefields (Higher numbers = more laggy)
 force-field-radius: 10

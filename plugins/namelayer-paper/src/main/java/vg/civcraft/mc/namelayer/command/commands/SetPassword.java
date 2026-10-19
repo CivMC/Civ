@@ -46,7 +46,13 @@ public class SetPassword extends BaseCommandMiddle {
         String password = null;
         if (userPassword != null)
             password = userPassword;
-        g.setPassword(password);
-        p.sendMessage(ChatColor.GREEN + "Password has been successfully set to: " + g.getPassword());
+        final String finalPassword = password;
+        g.setPasswordAsync(uuid, finalPassword, result -> {
+            if (result.success()) {
+                p.sendMessage(ChatColor.GREEN + "Password has been successfully set to: " + finalPassword);
+            } else {
+                p.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -398,5 +399,18 @@ public final class ChatUtils {
             // TODO: There's a variant of this method that includes an NBT compound. My guess is to include display
             //       name and lore, perhaps also enchantments, etc..
         );
+    }
+
+    /// Creates an underlined text component that, when clicked, copies the given value to the clipboard.
+    public static @NotNull Component clickToCopy(
+        final @NotNull String value
+    ) {
+        Objects.requireNonNull(value);
+        return Component.text()
+            .content(value)
+            .decoration(TextDecoration.UNDERLINED, TextDecoration.State.TRUE)
+            .hoverEvent(HoverEvent.showText(Component.translatable("chat.copy.click")))
+            .clickEvent(ClickEvent.copyToClipboard(value))
+            .build();
     }
 }

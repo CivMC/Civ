@@ -1,4 +1,0 @@
-name: NameLayerBungee
-version: ${releaseVersion}
-author: rourke750
-main: vg.civcraft.mc.namelayer.bungee.NameLayerBungee

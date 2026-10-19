@@ -1,0 +1,10 @@
+RandomZorslug:
+  Type: Zorslug
+  Worlds: world
+  Chance: 0.0025
+  Priority: 8
+  Action: ADD
+  Biomes: END_BARRENS
+  Conditions:
+    - outside
+    - mobsinradius{t=Zorlsug;a=<1;r=48} true

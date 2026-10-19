@@ -81,7 +81,7 @@ public class ListMembers extends BaseCommandMiddle {
         for (UUID uu : uuids) {
             sb.append(NameLayerAPI.getCurrentName(uu));
             sb.append(" (");
-            sb.append(group.getPlayerType(uu));
+            sb.append(group.isOwner(uu) ? "PRIMARY_OWNER" : group.getPlayerType(uu));
             sb.append(")\n");
         }
 

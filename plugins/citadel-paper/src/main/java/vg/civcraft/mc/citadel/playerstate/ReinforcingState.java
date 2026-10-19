@@ -15,25 +15,26 @@ import vg.civcraft.mc.citadel.events.ReinforcementGroupChangeEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ReinforcingState extends AbstractPlayerState {
 
-    private Group group;
+    private final String groupName;
 
-    public ReinforcingState(Player p, Group group) {
+    public ReinforcingState(Player p, String groupName) {
         super(p);
-        this.group = group;
+        this.groupName = groupName;
     }
 
     public Group getGroup() {
-        return group;
+        return GroupManager.getGroup(groupName);
     }
 
     @Override
     public String getName() {
-        return "Reinforcing mode on " + ChatColor.LIGHT_PURPLE + group.getName();
+        return "Reinforcing mode on " + ChatColor.LIGHT_PURPLE + groupName;
     }
 
     @Override
@@ -45,9 +46,10 @@ public class ReinforcingState extends AbstractPlayerState {
         // always cancel
         e.setCancelled(true);
         // does group still exist?
-        if (!group.isValid()) {
+        Group group = getGroup();
+        if (group == null || !group.isValid()) {
             CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-                "The group " + group.getName() + " seems to have been deleted in the mean time");
+                "The group seems to have been deleted in the mean time");
             Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
             return;
         }
@@ -67,7 +69,7 @@ public class ReinforcingState extends AbstractPlayerState {
             type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem(), player.getWorld().getName());
         }
         Block block = ReinforcementLogic.getResponsibleBlock(e.getClickedBlock());
-        Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+        Reinforcement rein = ReinforcementLogic.getReinforcementAt(block.getLocation());
         // if there is no existing reinforcement and no material to create one, nothing to do
         // if reinforcement exists, check if player has permission to edit it
         if (rein != null && !rein.hasPermission(player, CitadelPermissionHandler.getBypass())) {
@@ -193,11 +195,12 @@ public class ReinforcingState extends AbstractPlayerState {
         if (!(o instanceof ReinforcingState)) {
             return false;
         }
-        return ((ReinforcingState) o).group.getName().equals(this.getGroup().getName());
+        return ((ReinforcingState) o).groupName.equals(this.groupName);
     }
 
     @Override
     public String getOverlayText() {
-        return String.format("%sCTR %s%s", ChatColor.GOLD, ChatColor.LIGHT_PURPLE, group.getName());
+        Group group = GroupManager.getGroup(groupName);
+        return String.format("%sCTR %s%s", ChatColor.GOLD, ChatColor.LIGHT_PURPLE, groupName);
     }
 }

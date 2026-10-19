@@ -455,8 +455,8 @@ public class BanStickEventHandler implements Listener {
                 }
                 // etc.
                 if (loveTapNewJoins && !joinEvent.getPlayer().hasPlayedBefore()) {
-                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                        "lovetap " + joinEvent.getPlayer().getName());
+//                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+//                        "lovetap " + joinEvent.getPlayer().getName());
                 }
             }
 

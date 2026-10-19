@@ -83,7 +83,7 @@ final class CoreLoreGenerator implements LoreProvider {
 
         lore.add(parse(""));
 
-        lore.add(parse("<a>Health: <n>%s/%s", health, config.getPearlHealthMaxValue()));
+        lore.add(parse("<a>Health (hours fuelled): <n>%s/%s", health, config.getPearlHealthMaxValue()));
         Set<RepairMaterial> repair = config.getRepairMaterials(pearl.getPearlType());
         if (repair != null) {
             for (RepairMaterial rep : repair) {

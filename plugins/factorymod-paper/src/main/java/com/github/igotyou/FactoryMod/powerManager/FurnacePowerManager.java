@@ -61,7 +61,7 @@ public class FurnacePowerManager implements IPowerManager {
         if (fuelCount == 0)
             fuelCount = 1;
 
-        FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
+        FurnaceInventory fi = ((Furnace) furnace.getState(false)).getInventory();
         ItemMap im = new ItemMap();
         im.addItemStack(fi.getFuel());
         im.addItemStack(fi.getSmelting());
@@ -91,7 +91,7 @@ public class FurnacePowerManager implements IPowerManager {
             }
         }
 
-        FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
+        FurnaceInventory fi = ((Furnace) furnace.getState(false)).getInventory();
 
         for (int i = 0; i < fuelCount; i++)
             fi.removeItem(fuel);
@@ -105,7 +105,7 @@ public class FurnacePowerManager implements IPowerManager {
                 return im.getAmount(fuel);
             }
         }
-        return new ItemMap(((Furnace) furnace.getState()).getInventory()).getAmount(fuel);
+        return new ItemMap(((Furnace) furnace.getState(false)).getInventory()).getAmount(fuel);
     }
 
     public ItemStack getFuel() {

@@ -85,19 +85,6 @@ public class BastionInteractListener implements Listener {
             TextComponent toSend = blockManager.infoMessageComponent(dev, block.getRelative(event.getBlockFace()), block, player);
 
             player.spigot().sendMessage(toSend);
-        } else if (PlayersStates.playerInMode(player, Mode.DELETE)) {
-            BastionBlock bastionBlock = blockStorage.getBastionBlock(block.getLocation());
-
-            if (bastionBlock == null) {
-                return;
-            }
-
-            if (bastionBlock.canRemove(player)) {
-                TextComponent toSend = blockManager.bastionDeletedMessageComponent(bastionBlock);
-                bastionBlock.destroy();
-                player.spigot().sendMessage(toSend);
-                event.setCancelled(true);
-            }
         } else if (PlayersStates.playerInMode(player, Mode.MATURE)) {
             BastionBlock bastionBlock = blockStorage.getBastionBlock(block.getLocation());
 
@@ -134,14 +121,24 @@ public class BastionInteractListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         ItemStack inHand = event.getItemInHand();
-        if (inHand == null) {
-            return;
-        }
 
         BastionType type = blockToType(event.getBlock(), inHand);
         if (type != null) {
             Bastion.getPlugin().getLogger().log(Level.INFO, "Pending a bastion at {0}", event.getBlock().getLocation());
             blockStorage.addPendingBastion(event.getBlock().getLocation(), type);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBlockPlaceMonitor(BlockPlaceEvent event) {
+        if (!event.isCancelled()) {
+            return;
+        }
+        ItemStack inHand = event.getItemInHand();
+
+        BastionType type = blockToType(event.getBlock(), inHand);
+        if (type != null) {
+            blockStorage.getAndRemovePendingBastion(event.getBlock().getLocation());
         }
     }
 

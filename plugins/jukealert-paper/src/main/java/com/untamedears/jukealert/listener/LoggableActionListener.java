@@ -255,7 +255,7 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onOpenInventory(InventoryOpenEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
+        InventoryHolder holder = event.getInventory().getHolder(false);
         Location location;
         Material material;
 

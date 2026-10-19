@@ -94,7 +94,7 @@ public class ProductionRecipe extends InputRecipe {
     }
 
     @Override
-    public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+    public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
         boolean isFeasible = InventoryUtils.safelyAddItemsToInventory(ClonedInventory.cloneInventory(outputInv), output.getItemStackRepresentation().toArray(new ItemStack[0]));
         String reasonSnippet = isFeasible ? null : "it ran out of storage space";
         return new EffectFeasibility(
@@ -139,6 +139,14 @@ public class ProductionRecipe extends InputRecipe {
     @Override
     public Material getRecipeRepresentationMaterial() {
         return this.recipeRepresentation.getType();
+    }
+
+    @Override
+    public ItemStack getRecipeRepresentationType() {
+        ItemStack itemStack = new ItemStack(this.recipeRepresentation);
+        itemStack.setAmount(1);
+        itemStack.lore(null);
+        return itemStack;
     }
 
     public ProductionRecipeModifier getModifier() {

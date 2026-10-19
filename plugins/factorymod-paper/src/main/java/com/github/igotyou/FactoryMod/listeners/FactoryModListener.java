@@ -71,7 +71,7 @@ public class FactoryModListener implements Listener {
         Block powerSource = evt.getBlock();
         Material psType = powerSource.getType();
         if (psType == Material.REPEATER || psType == Material.COMPARATOR) {
-            BlockData psData = powerSource.getState().getBlockData();
+            final BlockData psData = powerSource.getBlockData();
             BlockFace direction = ((Directional) psData).getFacing();
             // repeaters "face" their input apparently
             Block poweredBlock = powerSource.getRelative(direction.getOppositeFace());
@@ -152,6 +152,7 @@ public class FactoryModListener implements Listener {
                         if (player.getInventory().getItemInMainHand().getType() == manager
                             .getFactoryInteractionMaterial()) {
                             manager.attemptCreation(block, player);
+                            evt.setCancelled(true);
                         }
                     } else {
                         // check if chest is other half of double chest
@@ -181,7 +182,7 @@ public class FactoryModListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
             boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
-            InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+            InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder(false) : event.getView().getBottomInventory().getHolder(false);
             if (holder instanceof Furnace) {
                 Block furnace = ((Furnace) holder).getBlock();
                 if (manager.isPossibleInteractionBlock(furnace.getType())) {

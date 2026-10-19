@@ -16,7 +16,6 @@ import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 public class AcceptInvite extends BaseCommandMiddle {
 
@@ -25,30 +24,31 @@ public class AcceptInvite extends BaseCommandMiddle {
     @Description("Accept an invitation to a group.")
     @CommandCompletion("@NL_Invites")
     public void execute(Player sender, String groupName) {
-        Player p = (Player) sender;
         Group group = gm.getGroup(groupName);
         if (groupIsNull(sender, groupName, group)) {
             return;
         }
-        UUID uuid = NameLayerAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(sender.getName());
         PlayerType type = group.getInvite(uuid);
         if (type == null) {
-            p.sendMessage(Component.text("You were not invited to that group.").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text("You were not invited to that group.").color(NamedTextColor.RED));
             return;
         }
         if (group.isDisciplined()) {
-            p.sendMessage(Component.text("That group is disiplined.").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text("That group is disciplined.").color(NamedTextColor.RED));
             return;
         }
         if (group.isMember(uuid)) {
-            p.sendMessage(Component.text("You are already a member you cannot join again.").color(NamedTextColor.RED));
-            group.removeInvite(uuid, true);
+            sender.sendMessage(Component.text("You are already a member you cannot join again.").color(NamedTextColor.RED));
             return;
         }
-        group.addMember(uuid, type);
-        group.removeInvite(uuid, true);
-        PlayerListener.removeNotification(uuid, group);
-        p.sendMessage(Component.text("You have successfully been added to the group as a " + type.name() + ".").color(NamedTextColor.GREEN));
+        group.acceptInviteAsync(uuid, result -> {
+            if (result.success()) {
+                sender.sendMessage(Component.text("You have successfully been added to the group as a " + type.name() + ".").color(NamedTextColor.GREEN));
+            } else {
+                sender.sendMessage(Component.text(result.message()).color(NamedTextColor.RED));
+            }
+        });
     }
 
     @TabComplete("NL_Invites")

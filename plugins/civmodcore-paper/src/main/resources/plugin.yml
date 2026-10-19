@@ -10,3 +10,5 @@ permissions:
     default: op
   cmc.debug:
     default: op
+  cmc.customitem.give:
+    default: op

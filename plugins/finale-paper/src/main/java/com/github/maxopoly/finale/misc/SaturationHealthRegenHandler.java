@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 public class SaturationHealthRegenHandler implements Runnable {
 
+    public static final NamespacedKey NO_HEALTH_REGEN = new NamespacedKey("finale", "no_health_regen");
     private List<LinkedList<UUID>> ticks;
     private Map<UUID, Integer> tickMapping;
     private int currentTick;
@@ -103,6 +105,9 @@ public class SaturationHealthRegenHandler implements Runnable {
                 }
                 double maxHealth = p.getAttribute(Attribute.MAX_HEALTH).getValue();
                 if (p.getFoodLevel() >= minimumFood && p.getHealth() < maxHealth) {
+                    if (p.getPersistentDataContainer().has(NO_HEALTH_REGEN)) {
+                        continue;
+                    }
                     StringBuilder alterHealth = null;
 
                     if (Finale.getPlugin().getManager().isDebug()) {

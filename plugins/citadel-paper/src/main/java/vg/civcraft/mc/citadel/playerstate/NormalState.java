@@ -40,7 +40,7 @@ public class NormalState extends AbstractPlayerState {
         if (defaultGroup == null) {
             return;
         }
-        CitadelUtility.attemptReinforcementCreation(e.getBlock(), type, defaultGroup, player);
+        CitadelUtility.attemptReinforcementCreation(e.getBlock(), type, defaultGroup, defaultGroup.getName(), player);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class NormalState extends AbstractPlayerState {
         if (defaultGroup == null) {
             return;
         }
-        CitadelUtility.attemptReinforcementCreation(e.getClickedBlock(), type, defaultGroup, player);
+        CitadelUtility.attemptReinforcementCreation(e.getClickedBlock(), type, defaultGroup, defaultGroup.getName(), player);
     }
 
     @Override

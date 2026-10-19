@@ -13,6 +13,18 @@ groups:
   interact: true
   grouplimit: 25
   creationOnFirstJoin: true
+rabbitmq:
+  enabled: false
+  serverId: main
+  user: guest
+  password: guest
+  host: localhost
+  port: 5672
+  freshnessCheck:
+    enabled: true
+    intervalSeconds: 300
+    jitterSeconds: 30
+    staleGraceSeconds: 300
 persistance:
   forceloadnamecaching: true
 #name_cleanser:

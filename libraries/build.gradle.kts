@@ -2,7 +2,7 @@
 subprojects {
     apply(plugin = "java-library")
 
-    var javaVersion = 21
+    var javaVersion = 25
     configure<JavaPluginExtension> {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(javaVersion))
@@ -14,6 +14,12 @@ subprojects {
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
         options.release = javaVersion
+    }
+
+    tasks.withType<Javadoc> {
+        options {
+            (this as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
+        }
     }
 
     tasks.withType<ProcessResources> {

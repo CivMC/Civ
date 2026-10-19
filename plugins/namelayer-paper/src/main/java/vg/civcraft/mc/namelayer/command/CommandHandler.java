@@ -41,7 +41,6 @@ import vg.civcraft.mc.namelayer.command.commands.SetPassword;
 import vg.civcraft.mc.namelayer.command.commands.ShowBlacklist;
 import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
-import vg.civcraft.mc.namelayer.command.commands.UpdateName;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CommandHandler extends CommandManager {
@@ -66,7 +65,6 @@ public class CommandHandler extends CommandManager {
         registerCommand(new ListMembers());
         registerCommand(new ListInvites());
         registerCommand(new ListPermissions());
-        //addCommands(new MergeGroups("MergeGroups")); Disabled as it's currently semi broken
         registerCommand(new ModifyPermissions());
         registerCommand(new RemoveMember());
         registerCommand(new SetPassword());
@@ -80,7 +78,6 @@ public class CommandHandler extends CommandManager {
         registerCommand(new RevokeInvite());
         registerCommand(new SetDefaultGroup());
         registerCommand(new GetDefaultGroup());
-        registerCommand(new UpdateName());
         registerCommand(new AddBlacklist());
         registerCommand(new RemoveBlacklist());
         registerCommand(new ShowBlacklist());

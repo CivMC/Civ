@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import io.papermc.paper.adventure.PaperAdventure;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.server.network.FilteredText;
@@ -83,11 +84,12 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
         }
         String serialNumber = UUID.randomUUID().toString();
 
-        List<net.kyori.adventure.text.Component> pages = new ArrayList<>(bookMeta.pages().size());
-        pages.addAll(bookMeta.pages());
+        String[] rawPages = String.join("", bookMeta.getPages()).split("<<PAGE>>");
 
         List<Filterable<Component>> list = new ArrayList<>();
-		for (net.kyori.adventure.text.Component page : pages) {
+
+        for (String rawPage : rawPages) { 
+            net.kyori.adventure.text.Component page = GsonComponentSerializer.gson().deserialize(rawPage);
             list.add(Filterable.passThrough(PaperAdventure.asVanilla(page)));
         }
 

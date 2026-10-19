@@ -2,322 +2,262 @@ package vg.civcraft.mc.namelayer;
 
 import com.google.common.collect.Maps;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
+import net.civmc.namelayer.sync.NameLayerWriteOperation;
+import net.civmc.namelayer.sync.NameLayerWriteRequest;
+import net.civmc.namelayer.sync.NameLayerWriteResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+import vg.civcraft.mc.namelayer.cache.NameLayerGroupCache;
+import vg.civcraft.mc.namelayer.database.NameLayerReadDao;
 import vg.civcraft.mc.namelayer.events.GroupCreateEvent;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
-import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
-import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionHandler;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+import vg.civcraft.mc.namelayer.rabbitmq.NameLayerWriteClient;
 
 public class GroupManager {
 
-    private static GroupManagerDao groupManagerDao;
+    private static NameLayerReadDao nameLayerReadDao;
     private PermissionHandler permhandle;
 
-    private static Map<String, Group> groupsByName = new ConcurrentHashMap<>();
-    private static Map<Integer, Group> groupsById = new ConcurrentHashMap<>();
-
-    private static boolean mergingInProgress = false;
-
     public GroupManager() {
-        groupManagerDao = NameLayerPlugin.getGroupManagerDao();
+        nameLayerReadDao = NameLayerPlugin.getNameLayerReadDao();
         permhandle = new PermissionHandler();
     }
 
-    /**
-     * Saves the group into caching and saves it into the db. Also fires the GroupCreateEvent.
-     *
-     * @param group the group to create to db.
-     * @return the internal ID of the group created.
-     */
-    public int createGroup(Group group) {
-        return createGroup(group, true);
+    private static NameLayerGroupCache getCache() {
+        return NameLayerPlugin.getGroupCache();
     }
 
-    /**
-     * This will create a group asynchronously. Always saves to database. Pass in a Runnable of type RunnableOnGroup that
-     * specifies what to run <i>synchronously</i> after the insertion of the group. Your runnable should handle the case where
-     * id = -1 (failure).
-     * <p>
-     * Note that internally, we setGroupId on the RunnableOnGroup; your run() method should use getGroupId() to retrieve it
-     * and react to it.
-     *
-     * @param group             the Group placeholder to use in creating a group. Calls GroupCreateEvent synchronously, then insert the
-     *                          group asynchronously, then calls the RunnableOnGroup synchronously.
-     * @param postCreate        The RunnableOnGroup to run after insertion (whether successful or not!)
-     * @param checkBeforeCreate Checks if the group already exists (asynchronously) prior to creating it. Runs the CreateEvent
-     *                          synchronously, then behaves as normal after that (running async create).
-     */
-    public void createGroupAsync(final Group group, final RunnableOnGroup postCreate, boolean checkBeforeCreate) {
-        if (group == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
-            postCreate.setGroup(new Group(null, null, true, null, -1, System.currentTimeMillis(), null));
-            Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
-        } else {
-            if (checkBeforeCreate) {
-                // Run check asynchronously.
-                Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        // So.... when you `new Group` it makes a ton of DB calls and gets ids and members. If the group exists, ID at this point will be > -1...
-                        if (group.getGroupId() == -1) {// || getGroup(group.getName()) == null) {
-                            // group doesn't exist, so schedule create.
-                            Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), new Runnable() {
-                                @Override
-                                public void run() {
-                                    doCreateGroupAsync(group, postCreate);
-                                }
-                            });
-                        } else {
-                            // group does exist, so run postCreate with failure.
-                            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, group {0} already exists", group.getName());
-                            postCreate.setGroup(new Group(null, null, true, null, -1, System.currentTimeMillis(), null));
-                            Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
-                        }
-                    }
-                });
-
-            } else {
-                doCreateGroupAsync(group, postCreate);
-            }
-        }
+    public static void fullResyncCache() {
+        NameLayerPlugin.fullResyncGroupCache();
     }
 
-    private void doCreateGroupAsync(final Group group, final RunnableOnGroup postCreate) {
-        GroupCreateEvent event = new GroupCreateEvent(
-            group.getName(), group.getOwner(),
-            group.getPassword());
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
-            postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1, System.currentTimeMillis(), group.getGroupColor().toString()));
-            Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
-        }
-        final String name = event.getGroupName();
-        final UUID owner = event.getOwner();
-        final String password = event.getPassword();
-        NameLayerPlugin.getBlackList().initEmptyBlackList(name);
-        Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                int id = internalCreateGroup(group, true, name, owner, password);
-                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Async group create finished for group {0}, id assigned: {1}",
-                    new Object[]{name, id});
-                Group g = GroupManager.getGroup(id);
-                postCreate.setGroup(g);
-                Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
-            }
-        });
-    }
-
-    public int createGroup(Group group, boolean savetodb) {
-        if (group == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
-            return -1;
-        }
-        GroupCreateEvent event = new GroupCreateEvent(
-            group.getName(), group.getOwner(),
-            group.getPassword());
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
-            return -1;
-        }
-        return internalCreateGroup(group, savetodb, event.getGroupName(), event.getOwner(), event.getPassword());
-    }
-
-    private int internalCreateGroup(Group group, boolean savetodb, String name, UUID owner, String password) {
-        int id;
-        if (savetodb) {
-            id = groupManagerDao.createGroup(name, owner, password);
-            if (id > -1) {
-                initiateDefaultPerms(id); // give default perms to a newly create group
-                GroupManager.getGroup(id); // force a recache from DB.
-            }
-        } else {
-            id = group.getGroupId();
-        }
-        return id;
-    }
-
-    public boolean deleteGroup(String groupName) {
-        return deleteGroup(groupName, true);
-    }
-
-    public boolean deleteGroup(String groupName, boolean savetodb) {
-        if (groupName == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete failed, caller passed in null", new Exception());
+    public static boolean reloadGroupsById(final List<Integer> groupIds) {
+        if (groupIds == null) {
+            NameLayerPlugin.recordTargetedReloadFailure(0);
             return false;
         }
-        groupName = groupName.toLowerCase();
-        Group group = getGroup(groupName);
-        if (group == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete failed, failed to find group " + groupName);
+        final long startedAtMillis = System.currentTimeMillis();
+        final Set<Integer> uniqueGroupIds = new LinkedHashSet<>(groupIds);
+        final NameLayerReadDao.GroupReloadSnapshot snapshot = nameLayerReadDao.loadGroupsByIdsSnapshot(uniqueGroupIds);
+        if (snapshot == null) {
+            NameLayerPlugin.recordTargetedReloadFailure(uniqueGroupIds.size());
             return false;
         }
-
-        // Call once w/ finished false to allow cancellation.
-        GroupDeleteEvent event = new GroupDeleteEvent(group, false);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group delete was cancelled for " + groupName);
+        final Map<Integer, Group> groups = snapshot.groups();
+        final NameLayerGroupCache cache = getCache();
+        if (cache == null) {
+            NameLayerPlugin.recordTargetedReloadFailure(uniqueGroupIds.size());
             return false;
         }
-        // Unlinks subgroups.
-        group.prepareForDeletion();
-        deleteGroupPerms(group);
-        groupsByName.remove(group.getName());
-        for (int id : group.getGroupIds()) {
-            groupsById.remove(id);
+        for (final int groupId : uniqueGroupIds) {
+            cache.replaceGroupById(groupId, groups.get(groupId));
         }
-
-        // Call after actual delete to alert listeners that we're done.
-        event = new GroupDeleteEvent(group, true);
-        Bukkit.getPluginManager().callEvent(event);
-
-        group.setDisciplined(true);
-        group.setValid(false);
-        if (savetodb) {
-            groupManagerDao.deleteGroup(groupName);
-        }
+        cache.setAppliedVersion(snapshot.cacheVersion());
+        NameLayerPlugin.recordTargetedReload(uniqueGroupIds.size(), System.currentTimeMillis() - startedAtMillis);
         return true;
     }
 
-    public void transferGroup(Group g, UUID uuid) {
-        transferGroup(g, uuid, true);
+    public int countGroups(final UUID ownerUuid) {
+        final NameLayerGroupCache cache = getCache();
+        if (cache == null) {
+            return 0;
+        }
+        return cache.countGroups(ownerUuid);
     }
 
-    public void transferGroup(Group g, UUID uuid, boolean savetodb) {
-        if (g == null || uuid == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group transfer failed, caller passed in null", new Exception());
-            return;
-        }
-
-        GroupTransferEvent event = new GroupTransferEvent(g, uuid);
+    public void createGroupAsync(
+        final UUID actorUuid,
+        final String groupName,
+        final String password,
+        final int maxGroups,
+        final boolean adminOverride,
+        final Consumer<GroupWriteResult> callback
+    ) {
+        final GroupCreateEvent event = new GroupCreateEvent(groupName, actorUuid, password);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            NameLayerPlugin.log(Level.INFO, "Group transfer event was cancelled for group: " + g.getName());
+            completeGroupWriteOnMain(callback, GroupWriteResult.failure("Group create was cancelled"));
             return;
         }
-        if (savetodb) {
-            g.addMember(uuid, PlayerType.OWNER);
-            g.setOwner(uuid);
+        final Map<String, String> arguments = new HashMap<>();
+        arguments.put("groupName", event.getGroupName());
+        arguments.put("hasPassword", Boolean.toString(event.getPassword() != null));
+        if (event.getPassword() != null) {
+            arguments.put("password", event.getPassword());
+        }
+        arguments.put("defaultPermissions", encodeDefaultPermissions(PermissionType.getAllPermissions()));
+        arguments.put("maxGroups", Integer.toString(maxGroups));
+        arguments.put("adminOverride", Boolean.toString(adminOverride));
+        sendGroupWrite(actorUuid, NameLayerWriteOperation.CREATE_GROUP, arguments, callback);
+    }
+
+    public void ensureNewfriendGroupAsync(
+        final UUID playerUuid,
+        final String baseName,
+        final Consumer<GroupWriteResult> callback
+    ) {
+        final Map<String, String> arguments = new HashMap<>();
+        arguments.put("baseName", baseName);
+        arguments.put("defaultPermissions", encodeDefaultPermissions(PermissionType.getAllPermissions()));
+        sendGroupWrite(playerUuid, NameLayerWriteOperation.ENSURE_NEWFRIEND_GROUP, arguments, callback);
+    }
+
+    public void deleteGroupAsync(
+        final UUID actorUuid,
+        final Group group,
+        final boolean adminOverride,
+        final Consumer<GroupWriteResult> callback
+    ) {
+        if (group == null) {
+            completeGroupWriteOnMain(callback, GroupWriteResult.failure("Group does not exist"));
+            return;
+        }
+        GroupDeleteEvent event = new GroupDeleteEvent(group, false);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            completeGroupWriteOnMain(callback, GroupWriteResult.failure("Group delete was cancelled"));
+            return;
+        }
+        sendGroupWrite(
+            actorUuid,
+            NameLayerWriteOperation.DELETE_GROUP,
+            Map.of(
+                "groupId", Integer.toString(group.getGroupId()),
+                "adminOverride", Boolean.toString(adminOverride)
+            ),
+            result -> {
+                if (result.success()) {
+                    final GroupDeleteEvent finishedEvent = new GroupDeleteEvent(group, true);
+                    Bukkit.getPluginManager().callEvent(finishedEvent);
+                }
+                callback.accept(result);
+            }
+        );
+    }
+
+    private void sendGroupWrite(
+        final UUID actorUuid,
+        final NameLayerWriteOperation operation,
+        final Map<String, String> arguments,
+        final Consumer<GroupWriteResult> callback
+    ) {
+        final NameLayerWriteClient writeClient = NameLayerPlugin.getWriteClient();
+        if (writeClient == null) {
+            completeGroupWriteOnMain(callback, GroupWriteResult.failure("NameLayer proxy write client is unavailable"));
+            return;
+        }
+        final NameLayerPlugin plugin = NameLayerPlugin.getInstance();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final NameLayerWriteRequest request = NameLayerWriteRequest.create(
+                plugin.getConfig().getString("rabbitmq.serverId", "paper"),
+                actorUuid,
+                operation,
+                arguments
+            );
+            writeClient.send(request).whenComplete((response, error) -> handleGroupWriteResponse(response, error, callback));
+        });
+    }
+
+    private void handleGroupWriteResponse(
+        final NameLayerWriteResponse response,
+        final Throwable error,
+        final Consumer<GroupWriteResult> callback
+    ) {
+        if (error != null) {
+            NameLayerPlugin.getInstance().getLogger().log(Level.WARNING, "NameLayer group proxy write failed", error);
+            completeGroupWriteOnMain(callback, GroupWriteResult.failure("NameLayer proxy write failed"));
+            return;
+        }
+        if (!response.success()) {
+            completeGroupWriteOnMain(callback, GroupWriteResult.failure(response.message()));
+            return;
+        }
+        final boolean reloadSucceeded;
+        if (response.requiresFullResync()) {
+            NameLayerPlugin.fullResyncGroupCache();
+            reloadSucceeded = true;
         } else {
-            g.addMember(uuid, PlayerType.OWNER, false);
-            g.setOwner(uuid, false);
+            reloadSucceeded = reloadGroupsById(List.copyOf(response.affectedGroupIds()));
+        }
+        if (!reloadSucceeded) {
+            completeGroupWriteOnMain(callback, GroupWriteResult.failure("Group write succeeded, but local cache refresh failed"));
+            return;
+        }
+        final Group group = response.affectedGroupIds().isEmpty() ? null : getGroup(response.affectedGroupIds().iterator().next());
+        completeGroupWriteOnMain(callback, GroupWriteResult.successResult(group));
+    }
+
+    private void completeGroupWriteOnMain(final Consumer<GroupWriteResult> callback, final GroupWriteResult result) {
+        Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> callback.accept(result));
+    }
+
+    private String encodeDefaultPermissions(final Collection<PermissionType> permissions) {
+        final StringBuilder builder = new StringBuilder();
+        for (final PermissionType permission : permissions) {
+            for (final PlayerType playerType : permission.getDefaultPermLevels()) {
+                if (!builder.isEmpty()) {
+                    builder.append(';');
+                }
+                builder.append(playerType.name()).append(':').append(permission.getName());
+            }
+        }
+        return builder.toString();
+    }
+
+    public record GroupWriteResult(boolean success, String message, Group group) {
+
+        public static GroupWriteResult successResult(final Group group) {
+            return new GroupWriteResult(true, "", group);
+        }
+
+        public static GroupWriteResult failure(final String message) {
+            return new GroupWriteResult(false, message == null || message.isBlank() ? "Group write failed" : message, null);
         }
     }
 
     /**
-     * Merging is initiated asynchronously on the shard the player currently inhabits. Due to the complexity of keeping
-     * the cache consistent, we're whiffing on this one a bit and _for now_ simply invalidating the cache on servers.
+     * This will create a group asynchronously. Always saves to database. Pass in a callback that specifies what to run
+     * <i>synchronously</i> after the insertion of the group. Your callback should handle the case where
+     * id = -1 (failure).
      * <p>
-     * Eventually, we'll need to go line-by-line through the db code and just replicate in cache. That day is not today.
+     * Note that your run() method should use the passed group's getGroupId() to retrieve the created group ID and react to it.
      *
-     * @param group   the origin group
-     * @param toMerge the group to merge in
+     * @param group             the Group placeholder to use in creating a group. Calls GroupCreateEvent synchronously, then insert the
+     *                          group asynchronously, then calls the callback synchronously.
      */
-    public void doneMergeGroup(Group group, Group toMerge) {
-        if (group == null || toMerge == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
-            return;
-        }
-
-        // Merge brings subgroups with, but unlinks the toMerge group out from under any supergroup it had.
-        // This doesn't update the database but simply updates all _impacted_ groups in cache. The database is
-        // already updated for this.
-        for (Group subMerge : toMerge.getSubgroups()) {
-            Group.link(group, subMerge, false);
-        }
-
-        GroupMergeEvent event = new GroupMergeEvent(group, toMerge, true);
-        Bukkit.getPluginManager().callEvent(event);
-
-        // Then invalidate. Updating the cache was proving unreliable; we'll address it later.
-        GroupManager.invalidateCache(group.getName());
-        GroupManager.invalidateCache(toMerge.getName());
-    }
-
-    public void mergeGroup(Group group, Group to) {
-        mergeGroup(group, to, true);
-    }
-
-    public void mergeGroup(final Group group, final Group toMerge, boolean savetodb) {
-        if (group == null || toMerge == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, caller passed in null", new Exception());
-            return;
-        } else if (group == toMerge || group.getName().equalsIgnoreCase(toMerge.getName())) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group merge failed, can't merge the same group into itself", new Exception());
-            return;
-        }
-        GroupMergeEvent event = new GroupMergeEvent(group, toMerge, false);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            NameLayerPlugin.log(Level.INFO, "Group merge event was cancelled for groups: " +
-                group.getName() + " and " + toMerge.getName());
-            return;
-        }
-        group.isValid();
-        group.setDisciplined(true, false);
-        toMerge.setDisciplined(true, false);
-
-        if (savetodb) {
-            // This basically just fires starting events and disciplines groups on target server.
-            // They then wait for merge to complete. Botched merges will lock groups, basically. :shrug:
-
-            NameLayerPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(
-                NameLayerPlugin.getInstance(), new Runnable() {
-
-                    @Override
-                    public void run() {
-                        groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
-                        // At this point, at the DB level all non-overlap members are in target group, name is reset to target,
-                        // unique group header record is removed, and faction_id all point to new name.
-
-                        // We handle supergroup right here right now; does its own mercury message to update in cache.
-                        if (toMerge.getSuperGroup() != null) {
-                            Group sup = toMerge.getSuperGroup();
-                            Group.unlink(sup, toMerge);
-                            // The above handles the need to unlink any supergroup from merge in DB.
-                        }
-
-                        // Subgroup update is handled in doneMerge, as its a cache-only update.
-
-                        deleteGroupPerms(toMerge); // commit perm updates to DB.
-
-                        doneMergeGroup(group, toMerge);
-                    }
-                });
-        }
-    }
-
-    public static List<Group> getSubGroups(String name) {
-        if (name == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group getSubGroups event failed, caller passed in null", new Exception());
-            return new ArrayList<>();
-        }
-
-        List<Group> groups = groupManagerDao.getSubGroups(name);
-        for (Group group : groups) {
-            groupsByName.put(group.getName().toLowerCase(), group);
-            for (int j : group.getGroupIds()) {
-                groupsById.put(j, group);
+    public void createGroupAsync(final Group group, final int maxGroups, final boolean adminOverride) {
+        createGroupAsync(group.getOwner(), group.getName(), group.getPassword(), maxGroups, adminOverride, result -> {
+            Group createdGroup = result.group();
+            if (createdGroup != null) {
+                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
+                    new Object[]{createdGroup.getName(), createdGroup.getGroupId()});
             }
-        }
-        return groups;
+
+            Player player = Bukkit.getPlayer(group.getOwner());
+            if (player == null) {
+                return;
+            }
+            if (createdGroup == null) {
+                player.sendMessage(ChatColor.RED + result.message());
+            } else {
+                player.sendMessage(ChatColor.GREEN + "The group " + createdGroup.getName() + " was successfully created.");
+            }
+        });
     }
 
     /*
@@ -329,81 +269,30 @@ public class GroupManager {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup failed, caller passed in null", new Exception());
             return null;
         }
-
         String lower = name.toLowerCase();
-        if (groupsByName.containsKey(lower)) {
-            return groupsByName.get(lower);
-        } else {
-            Group group = groupManagerDao.getGroup(name);
+        NameLayerGroupCache cache = getCache();
+        if (cache != null) {
+            Group group = cache.getByName(lower);
             if (group != null) {
-                groupsByName.put(lower, group);
-                for (int j : group.getGroupIds()) {
-                    groupsById.put(j, group);
-                }
-            } else {
-                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name);
+                return group;
             }
-            return group;
         }
+
+        NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by Name failed, unable to find the group " + name);
+        return null;
     }
 
     public static Group getGroup(int groupId) {
-        if (groupsById.containsKey(groupId)) {
-            return groupsById.get(groupId);
-        } else {
-            Group group = groupManagerDao.getGroup(groupId);
+        NameLayerGroupCache cache = getCache();
+        if (cache != null) {
+            Group group = cache.getById(groupId);
             if (group != null) {
-                groupsByName.put(group.getName().toLowerCase(), group);
-                for (int j : group.getGroupIds()) {
-                    groupsById.put(j, group);
-                }
-            } else {
-                NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId);
+                return group;
             }
-            return group;
-        }
-    }
-
-    public static boolean hasGroup(String groupName) {
-        if (groupName == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "HasGroup Name failed, name was null ", new Exception());
-            return false;
         }
 
-        if (!groupsByName.containsKey(groupName.toLowerCase())) {
-            return (getGroup(groupName.toLowerCase()) != null);
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Returns the admin group for groups if the group was found to be null.
-     * Good for when you have to have a group that can't be null.
-     *
-     * @param name - The group name for the group
-     * @return Either the group or the special admin group.
-     */
-    public static Group getSpecialCircumstanceGroup(String name) {
-        if (name == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getSpecialCircumstance failed, caller passed in null", new Exception());
-            return null;
-        }
-        String lower = name.toLowerCase();
-        if (groupsByName.containsKey(lower)) {
-            return groupsByName.get(lower);
-        } else {
-            Group group = groupManagerDao.getGroup(name);
-            if (group != null) {
-                groupsByName.put(lower, group);
-                for (int j : group.getGroupIds()) {
-                    groupsById.put(j, group);
-                }
-            } else {
-                group = groupManagerDao.getGroup(NameLayerPlugin.getSpecialAdminGroup());
-            }
-            return group;
-        }
+        NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getGroup by ID failed, unable to find the group " + groupId);
+        return null;
     }
 
     /**
@@ -445,62 +334,25 @@ public class GroupManager {
                 return false;
             }
         }
-        return hasPlayerInheritsPerms(group, player, perm);
-    }
-
-    /**
-     * Checks if a player has a permission in a group or one of its parent groups
-     *
-     * @param group  the group, and its parents etc to check
-     * @param player the player
-     * @param perm   the permission to check
-     * @return if the player has the specified permission in a group or one of its parents
-     */
-    private boolean hasPlayerInheritsPerms(Group group, UUID player, PermissionType perm) {
-        while (group != null) {
-            if (group.isOwner(player) && perm.isOwnerPermission()) {
-                return true;
-            }
-            PlayerType type = group.getPlayerType(player);
-            if (type != null && getPermissionforGroup(group).hasPermission(type, perm)) {
-                return true;
-            }
-            group = group.getSuperGroup();
+        if (group.isOwner(player) && perm.isOwnerPermission()) {
+            return true;
         }
-        return false;
+        PlayerType type = group.getPlayerType(player);
+        return type != null && getPermissionforGroup(group).hasPermission(type, perm);
     }
 
     // == PERMISSION HANDLING ============================================================= //
-
-    private void deleteGroupPerms(Group group) {
-        if (group == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "deleteGroupPerms failed, caller passed in null", new Exception());
-            return;
-        }
-        permhandle.deletePerms(group);
-    }
 
     public List<String> getAllGroupNames(UUID uuid) {
         if (uuid == null) {
             NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getAllGroupNames failed, caller passed in null", new Exception());
             return new ArrayList<>();
         }
-        return groupManagerDao.getGroupNames(uuid);
-    }
-
-    private void initiateDefaultPerms(Integer groupId) {
-        if (groupId == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "initiateDefaultPerms failed, caller passed in null", new Exception());
-            return;
+        final NameLayerGroupCache cache = getCache();
+        if (cache == null) {
+            return new ArrayList<>();
         }
-        Map<PlayerType, List<PermissionType>> defaultPermMapping = new HashMap<GroupManager.PlayerType, List<PermissionType>>();
-        for (PermissionType perm : PermissionType.getAllPermissions()) {
-            for (PlayerType type : perm.getDefaultPermLevels()) {
-                List<PermissionType> perms = defaultPermMapping.computeIfAbsent(type, k -> new ArrayList<>());
-                perms.add(perm);
-            }
-        }
-        groupManagerDao.addAllPermissions(groupId, defaultPermMapping);
+        return cache.getGroupNames(uuid);
     }
 
     public String getDefaultGroup(UUID uuid) {
@@ -509,53 +361,6 @@ public class GroupManager {
             return null;
         }
         return NameLayerPlugin.getDefaultGroupHandler().getDefaultGroup(uuid);
-    }
-
-    /**
-     * Invalidates a group from cache.
-     *
-     * @param group the group to invalidate cache for
-     */
-    public static void invalidateCache(String group) {
-        if (group == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "invalidateCache failed, caller passed in null", new Exception());
-            return;
-        }
-
-        Group g = groupsByName.get(group.toLowerCase());
-        if (g != null) {
-            g.setValid(false);
-            List<Integer> k = g.getGroupIds();
-            groupsByName.remove(group.toLowerCase());
-            NameLayerPlugin.getBlackList().removeFromCache(g.getName());
-
-            boolean fail = true;
-            // You have a freaking hashmap, use it.
-            for (int j : k) {
-                if (groupsById.remove(j) != null) {
-                    fail = false;
-                }
-            }
-
-            // FALLBACK is hardloop
-            if (fail) { // can't find ID or cache is wrong.
-                for (Group x : groupsById.values()) {
-                    if (x.getName().equals(g.getName())) {
-                        groupsById.remove(x.getGroupId());
-                    }
-                }
-            }
-        } else {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Invalidate cache by name failed, unable to find the group " + group);
-        }
-    }
-
-    public int countGroups(UUID uuid) {
-        if (uuid == null) {
-            NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "countGroups failed, caller passed in null", new Exception());
-            return 0;
-        }
-        return groupManagerDao.countGroups(uuid);
     }
 
     /**
@@ -601,23 +406,6 @@ public class GroupManager {
             p.sendMessage(ChatColor.GREEN
                 + "The current types are: " + getStringOfTypes());
             //dont yell at player for nllpt
-        }
-
-        public static PlayerType getByID(int id) {
-            switch (id) {
-                case 0:
-                    return PlayerType.NOT_BLACKLISTED;
-                case 1:
-                    return PlayerType.MEMBERS;
-                case 2:
-                    return PlayerType.MODS;
-                case 3:
-                    return PlayerType.ADMINS;
-                case 4:
-                    return PlayerType.OWNER;
-                default:
-                    return null;
-            }
         }
 
         public static int getID(PlayerType type) {

@@ -5,7 +5,6 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
@@ -20,12 +19,10 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 public class Acid extends BaseCommand {
 
@@ -87,6 +84,8 @@ public class Acid extends BaseCommand {
                     continue;
                 }
 
+                foundAny = true;
+
                 ReinforcementAcidBlockedEvent event = new ReinforcementAcidBlockedEvent(p, reinforcement, relativeReinforcement);
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
@@ -94,7 +93,7 @@ public class Acid extends BaseCommand {
                         Citadel.getInstance().getLogger().log(Level.INFO,
                             "Acid block event cancelled for acid at " + reinforcement.getLocation());
                     }
-                    return;
+                    continue;
                 }
 
                 if (Citadel.getInstance().getConfigManager().logHostileBreaks()) {
@@ -102,7 +101,6 @@ public class Acid extends BaseCommand {
                         new Object[]{block.getLocation(), relativeBlock.getType(), relativeBlock.getLocation(), p.getName()});
                 }
 
-                foundAny = true;
                 ReinforcementLogic.damageReinforcement(relativeReinforcement, relativeReinforcement.getHealth() + 1, p);
                 if (!acidContainerBlock(relativeBlock)) {
                     relativeBlock.breakNaturally();

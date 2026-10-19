@@ -285,7 +285,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void enterBed(PlayerBedEnterEvent e) {
         if (!config.isEnabled() || !config.areDaytimeBedsEnabled()) {
             return;

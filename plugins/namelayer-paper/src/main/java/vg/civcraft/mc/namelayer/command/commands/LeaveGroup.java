@@ -32,7 +32,12 @@ public class LeaveGroup extends BaseCommandMiddle {
             p.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
-        g.removeMember(uuid);
-        p.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
+        g.removeMemberAsync(uuid, uuid, result -> {
+            if (result.success()) {
+                p.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
+            } else {
+                p.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 }

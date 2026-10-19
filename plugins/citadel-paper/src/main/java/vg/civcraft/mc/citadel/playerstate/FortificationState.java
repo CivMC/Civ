@@ -9,27 +9,28 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class FortificationState extends AbstractPlayerState {
 
     private final ReinforcementType type;
-    private final Group group;
+    private final String groupName;
 
-    public FortificationState(Player player, ReinforcementType type, Group group) {
+    public FortificationState(Player player, ReinforcementType type, String groupName) {
         super(player);
         this.type = type;
-        this.group = group;
+        this.groupName = groupName;
     }
 
     public Group getGroup() {
-        return group;
+        return GroupManager.getGroup(groupName);
     }
 
     @Override
     public String getName() {
         return "Fortifying mode with " + ChatColor.AQUA + type.getName() + ChatColor.YELLOW + " on "
-            + ChatColor.LIGHT_PURPLE + group.getName();
+            + ChatColor.LIGHT_PURPLE + groupName;
     }
 
     public ReinforcementType getType() {
@@ -44,7 +45,7 @@ public class FortificationState extends AbstractPlayerState {
         if (ReinforcementLogic.getReinforcementAt(block.getLocation()) != null) {
             return;
         }
-        if (CitadelUtility.attemptReinforcementCreation(block, type, group, player)) { // true == fail
+        if (CitadelUtility.attemptReinforcementCreation(block, type, getGroup(), groupName, player)) { // true == fail
             Citadel.getInstance().getStateManager().setState(player, null);
             event.setCancelled(true);
             //return;
@@ -57,16 +58,15 @@ public class FortificationState extends AbstractPlayerState {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof FortificationState)) {
+        if (!(other instanceof FortificationState fort)) {
             return false;
         }
-        FortificationState fort = (FortificationState) other;
-        return fort.type == this.type && fort.group.getName().equals(this.getGroup().getName());
+        return fort.type == this.type && fort.groupName.equals(this.groupName);
     }
 
     @Override
     public String getOverlayText() {
-        return String.format("%sCTF %s%s %s%s", ChatColor.GOLD, ChatColor.LIGHT_PURPLE, group.getName(), ChatColor.AQUA,
+        return String.format("%sCTF %s%s %s%s", ChatColor.GOLD, ChatColor.LIGHT_PURPLE, groupName, ChatColor.AQUA,
             type.getName());
     }
 }

@@ -9,3 +9,18 @@ database:
   connection_timeout: 10000
   idle_timeout: 600000
   max_lifetime: 7200000
+
+# Moves players off a server after a long unbroken session, but only while other players are waiting in its queue
+session-limit:
+  enabled: false
+  # Set to true to only log who would be moved, without boss bars or moving anyone
+  dry-run: false
+  server: main
+  limit-minutes: 480
+  # Boss bar countdown for the last part of the session
+  warning-minutes: 60
+  # Time away that resets the timer. Coming back through the queue with leave priority never resets it
+  break-reset-minutes: 10
+  # Countdown for players already past the limit when a queue forms
+  queue-grace-minutes: 5
+  chat-warnings-minutes: [60, 30, 15, 5, 1]

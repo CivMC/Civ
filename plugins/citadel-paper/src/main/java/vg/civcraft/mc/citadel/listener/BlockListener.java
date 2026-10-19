@@ -33,6 +33,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -302,6 +303,21 @@ public class BlockListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onCoralDry(BlockFadeEvent event) {
+        Material type = event.getBlock().getType();
+
+        // Corals includes everything (fans and coral) except blocks and wall fans, for some reason
+        if (!(Tag.CORALS.isTagged(type) ||
+              Tag.CORAL_BLOCKS.isTagged(type) ||
+              Tag.WALL_CORALS.isTagged(type))) return;
+
+        // Note: For non-blocks (fans, wall fans, corals) this will check the block it is placed on instead
+        if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
+            event.setCancelled(true);
+        }
+    }
+
     // prevent opening reinforced things
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void openContainer(PlayerInteractEvent e) {
@@ -329,7 +345,7 @@ public class BlockListener implements Listener {
             return;
         }
 
-        if (e.getClickedBlock().getState() instanceof Container) {
+        if (e.getClickedBlock().getState(false) instanceof Container) {
             if (!rein.hasPermission(player, CitadelPermissionHandler.getChests())) {
                 e.setCancelled(true);
                 String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),

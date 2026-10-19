@@ -50,9 +50,15 @@ public class SetGroupColor extends BaseCommandMiddle {
             player.sendRichMessage("<red>You do not have permission to modify " + group.getName() + " </red>");
             return;
         }
-        group.setGroupColor(color);
-        player.sendMessage(Component.text("You have changed the group color to ", NamedTextColor.GREEN)
-            .append(Component.text(group.getName()).color(group.getGroupColor())));
+        final TextColor finalColor = color;
+        group.setGroupColorAsync(uuid, finalColor, player.isOp() || player.hasPermission("namelayer.admin"), result -> {
+            if (result.success()) {
+                player.sendMessage(Component.text("You have changed the group color to ", NamedTextColor.GREEN)
+                    .append(Component.text(group.getName()).color(finalColor)));
+            } else {
+                player.sendMessage(Component.text(result.message(), NamedTextColor.RED));
+            }
+        });
     }
 
 }

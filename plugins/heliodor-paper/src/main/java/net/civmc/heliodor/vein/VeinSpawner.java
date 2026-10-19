@@ -3,22 +3,28 @@ package net.civmc.heliodor.vein;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.civmc.heliodor.ChunkPos;
 import net.civmc.heliodor.vein.data.MeteoricIronVeinConfig;
 import net.civmc.heliodor.vein.data.Vein;
 import net.civmc.heliodor.vein.data.VerticalBlockPos;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.NumberConversions;
 
@@ -30,6 +36,7 @@ public class VeinSpawner {
     private final VeinCache cache;
 
     private final MeteoricIronVeinConfig meteoriteVeinConfig;
+    private boolean publicSpawnInProgress;
 
     public VeinSpawner(Plugin plugin, VeinDao dao, VeinCache cache, MeteoricIronVeinConfig meteoriteVeinConfig) {
         this.plugin = plugin;
@@ -40,7 +47,11 @@ public class VeinSpawner {
     }
 
     public void start() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::trySpawns, 20 * 60, 20 * 60);
+        if (meteoriteVeinConfig.publicAnnouncementEnabled()) {
+            Bukkit.getScheduler().runTaskTimer(plugin, this::tryPublicSpawn, 20 * 60, 20 * 60);
+        } else {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::trySpawns, 20 * 60, 20 * 60);
+        }
     }
 
     private void trySpawns() {
@@ -75,9 +86,9 @@ public class VeinSpawner {
         return true;
     }
 
-    public boolean trySpawnMeteoricIron() {
+    public Vein trySpawnMeteoricIron() {
         if (Bukkit.isPrimaryThread()) {
-            return false;
+            return null;
         }
 
         World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
@@ -107,7 +118,7 @@ public class VeinSpawner {
         int radius = meteoriteVeinConfig.config().spawnRadius();
         MeteoritePos mpos = getMeteoricVeinPositionAndBlocks(world, x, z, bury, radius);
         if (mpos == null || mpos.blocks() < meteoriteVeinConfig.config().minBlocks()) {
-            return false;
+            return null;
         }
 
         int inaccuracy = meteoriteVeinConfig.config().inaccuracy();
@@ -119,7 +130,7 @@ public class VeinSpawner {
             offsetX = ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1);
             offsetY = ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1);
             offsetZ = ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1);
-        } while(NumberConversions.square(offsetX) + NumberConversions.square(offsetY) + NumberConversions.square(offsetZ) > NumberConversions.square(meteoriteVeinConfig.config().highDistance() - meteoriteVeinConfig.config().spawnRadius()));
+        } while (NumberConversions.square(offsetX) + NumberConversions.square(offsetY) + NumberConversions.square(offsetZ) > NumberConversions.square(meteoriteVeinConfig.config().highDistance() - meteoriteVeinConfig.config().spawnRadius()));
 
         int ores = ThreadLocalRandom.current().nextInt(meteoriteVeinConfig.config().minOre(), meteoriteVeinConfig.config().maxOre() + 1);
         Vein vein = new Vein(
@@ -142,6 +153,170 @@ public class VeinSpawner {
 
         logger.info("Meteorite vein submitted to database: " + vein);
         return cache.addVein(vein);
+    }
+
+    public MeteorStatus getAnnouncedMeteorStatus() {
+        World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
+        if (world == null) {
+            return MeteorStatus.noSignal();
+        }
+        Vein vein = getLatestMeteoricIronVein(world);
+        if (vein == null || vein.oresRemaining() < vein.ores() * 0.5) {
+            return MeteorStatus.noSignal();
+        }
+        return new MeteorStatus(true, vein.world(), vein.x() + vein.offsetX(), vein.y() + vein.offsetY(),
+            vein.z() + vein.offsetZ());
+    }
+
+    public ForecastWindow getForecastWindow() {
+        if (!meteoriteVeinConfig.publicAnnouncementEnabled()) {
+            return null;
+        }
+        World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
+        if (world == null) {
+            return null;
+        }
+        Vein vein = getLatestMeteoricIronVein(world);
+        if (vein == null) {
+            return null;
+        }
+        long spawnAt = getNextPublicSpawnAt(vein);
+        long windowMillis = Math.max(1L, meteoriteVeinConfig.forecastWindowMinutes()) * 60_000L;
+        long forecastStart = getForecastStart(vein, spawnAt, windowMillis);
+        return new ForecastWindow(forecastStart, forecastStart + windowMillis);
+    }
+
+    public Long getNextPublicSpawnAt() {
+        if (!meteoriteVeinConfig.publicAnnouncementEnabled()) {
+            return null;
+        }
+        World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
+        if (world == null) {
+            return null;
+        }
+        Vein vein = getLatestMeteoricIronVein(world);
+        return vein == null ? null : getNextPublicSpawnAt(vein);
+    }
+
+    public void forcePublicSpawn(Consumer<Vein> callback) {
+        World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
+        if (world == null || !canStartPublicSpawn()) {
+            callback.accept(null);
+            return;
+        }
+
+        startPublicSpawn(world, callback);
+    }
+
+    private void tryPublicSpawn() {
+        World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
+        if (world == null || !canStartPublicSpawn()) {
+            return;
+        }
+        Vein vein = getLatestMeteoricIronVein(world);
+        if (vein != null && getNextPublicSpawnAt(vein) > System.currentTimeMillis()) {
+            return;
+        }
+        startPublicSpawn(world, ignored -> {
+        });
+    }
+
+    private boolean canStartPublicSpawn() {
+        return !publicSpawnInProgress && meteoriteVeinConfig.publicAnnouncementEnabled() && checkValidMeteoricIronConfig();
+    }
+
+    private void startPublicSpawn(World world, Consumer<Vein> callback) {
+        publicSpawnInProgress = true;
+        Vein previousVein = getLatestMeteoricIronVein(world);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final boolean expiredPrevious = previousVein == null || cache.expireVein(previousVein.id());
+            Vein spawnedVein = null;
+            if (expiredPrevious) {
+                for (int i = 0; i < 10; i++) {
+                    spawnedVein = trySpawnMeteoricIron();
+                    if (spawnedVein != null) {
+                        break;
+                    }
+                }
+            }
+            Vein finalSpawnedVein = spawnedVein;
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                publicSpawnInProgress = false;
+                if (finalSpawnedVein == null) {
+                    callback.accept(null);
+                    return;
+                }
+                announceMeteor(finalSpawnedVein);
+                callback.accept(finalSpawnedVein);
+            });
+        });
+    }
+
+    public void playMeteorCrashGlobal() {
+        // 1) Incoming shockwave / bass hit
+        playGlobalSound(Sound.ENTITY_WARDEN_SONIC_BOOM, 4.0f, 0.60f);
+
+        // 2) Main impact, 6 ticks later
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            playGlobalSound(Sound.ENTITY_GENERIC_EXPLODE, 10.0f, 0.50f);
+        }, 6L);
+
+        // 3) Rolling thunder aftermath, 14 ticks later
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            playGlobalSound(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 5.0f, 0.65f);
+        }, 14L);
+    }
+
+    private void playGlobalSound(Sound sound, float volume, float pitch) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.playSound(
+                player,
+                sound,
+                SoundCategory.MASTER,
+                volume,
+                pitch
+            );
+        }
+    }
+
+    private Vein getLatestMeteoricIronVein(World world) {
+        Vein latest = null;
+        for (Vein vein : cache.getVeins()) {
+            if (!MeteoricIronVeinConfig.TYPE_NAME.equals(vein.type()) || !world.getName().equals(vein.world())) {
+                continue;
+            }
+            if (latest == null || vein.spawnedAt() > latest.spawnedAt()) {
+                latest = vein;
+            }
+        }
+        return latest;
+    }
+
+    private long getNextPublicSpawnAt(Vein vein) {
+        long minDelayMillis = 60 * 60_000L;
+        long maxDelayMillis = Math.max(minDelayMillis,
+            Math.max(1L, meteoriteVeinConfig.maxPublicDelayMinutes()) * 60_000L);
+        long delayMillis = minDelayMillis + new Random(getPublicMeteorSeed(vein,
+            meteoriteVeinConfig.spawnTimeSalt()))
+            .nextLong(maxDelayMillis - minDelayMillis + 1L);
+        return vein.spawnedAt() + delayMillis;
+    }
+
+    private long getForecastStart(Vein vein, long spawnAt, long windowMillis) {
+        long offsetMillis = new Random(getPublicMeteorSeed(vein,
+            meteoriteVeinConfig.forecastWindowSalt())).nextLong(windowMillis + 1L);
+        return spawnAt - offsetMillis;
+    }
+
+    private long getPublicMeteorSeed(Vein vein, long salt) {
+        return vein.spawnedAt() ^ ((long) vein.id() << 32) ^ salt;
+    }
+
+    private void announceMeteor(Vein vein) {
+        Bukkit.broadcast(Component.text("A bright flash in the sky appears near " + (vein.x() + vein.offsetX())
+            + " " + (vein.y() + vein.offsetY()) + " " + (vein.z() + vein.offsetZ())
+            + "...", NamedTextColor.GOLD).hoverEvent(Component.text("Use /meteor to check this later")));
+        playMeteorCrashGlobal();
     }
 
     private MeteoritePos getMeteoricVeinPositionAndBlocks(World world, int x, int z, int bury, int radius) {
@@ -175,6 +350,10 @@ public class VeinSpawner {
                 int blocks = 0;
                 Block spawnBlock = world.getHighestBlockAt(x, z);
                 if (spawnBlock.getY() <= world.getMinHeight()) {
+                    logger.log(Level.INFO, "Failed spawn attempt at x = " + x + ", z = " + z);
+                    return;
+                }
+                if (meteoriteVeinConfig.biome() != null && !meteoriteVeinConfig.biome().equals(spawnBlock.getBiome().getKey().asString())) {
                     logger.log(Level.INFO, "Failed spawn attempt at x = " + x + ", z = " + z);
                     return;
                 }
@@ -224,6 +403,17 @@ public class VeinSpawner {
     }
 
     private record MeteoritePos(int blocks, int y) {
+
+    }
+
+    public record MeteorStatus(boolean active, String world, int x, int y, int z) {
+
+        public static MeteorStatus noSignal() {
+            return new MeteorStatus(false, null, 0, 0, 0);
+        }
+    }
+
+    public record ForecastWindow(long startMillis, long endMillis) {
 
     }
 }

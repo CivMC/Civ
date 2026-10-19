@@ -11,10 +11,6 @@ commands:
     description: Gives info on blocks that are clicked
     usage: /bsi and right click a block
     permission: Bastion.normal
-  bsd:
-    description: Removes Bastion Block when clicked
-    usage: /bsd and right click a block
-    permission: Bastion.normal
   bso:
     description: Returns to normal
     usage: /bso set the mode back to normal

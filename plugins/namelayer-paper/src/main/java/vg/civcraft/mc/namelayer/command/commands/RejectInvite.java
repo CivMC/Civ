@@ -15,7 +15,6 @@ import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 public class RejectInvite extends BaseCommandMiddle {
 
@@ -24,28 +23,28 @@ public class RejectInvite extends BaseCommandMiddle {
     @Description("Reject an invitation to a group.")
     @CommandCompletion("@NL_Invites")
     public void execute(Player sender, String targetGroup) {
-        Player player = (Player) sender;
         String groupName = targetGroup;
         Group group = GroupManager.getGroup(groupName);
         if (groupIsNull(sender, groupName, group)) {
             return;
         }
-        UUID uuid = NameLayerAPI.getUUID(player.getName());
-        // The IDE is highlighting this as a potention NullReferenceException
-        // but this is checked for in the above groupIsNull() call.
+        UUID uuid = NameLayerAPI.getUUID(sender.getName());
         GroupManager.PlayerType type = group.getInvite(uuid);
         if (type == null) {
-            player.sendMessage(ChatColor.RED + "You were not invited to that group.");
+            sender.sendMessage(ChatColor.RED + "You were not invited to that group.");
             return;
         }
         if (group.isMember(uuid)) {
-            player.sendMessage(ChatColor.RED + "You cannot reject an invite to a group that you're already a member of.");
-            group.removeInvite(uuid, true);
+            sender.sendMessage(ChatColor.RED + "You cannot reject an invite to a group that you're already a member of.");
             return;
         }
-        group.removeInvite(uuid, true);
-        PlayerListener.removeNotification(uuid, group);
-        player.sendMessage(ChatColor.GREEN + "You've successfully declined that group invitation.");
+        group.removeInviteAsync(uuid, uuid, false, result -> {
+            if (result.success()) {
+                sender.sendMessage(ChatColor.GREEN + "You've successfully declined that group invitation.");
+            } else {
+                sender.sendMessage(ChatColor.RED + result.message());
+            }
+        });
     }
 
     @TabComplete("NL_Invites")

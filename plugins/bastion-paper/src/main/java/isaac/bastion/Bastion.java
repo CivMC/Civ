@@ -124,7 +124,6 @@ public final class Bastion extends ACivMod {
             context -> new ArrayList<>(BastionType.getTypeNames()));
         commandManager.registerCommand(new BastionCommandManager());
         getCommand("bsi").setExecutor(new ModeChangeCommand(Mode.INFO));
-        getCommand("bsd").setExecutor(new ModeChangeCommand(Mode.DELETE));
         getCommand("bso").setExecutor(new ModeChangeCommand(Mode.NORMAL));
         getCommand("bsb").setExecutor(new ModeChangeCommand(Mode.BASTION));
         getCommand("bsf").setExecutor(new ModeChangeCommand(Mode.OFF));

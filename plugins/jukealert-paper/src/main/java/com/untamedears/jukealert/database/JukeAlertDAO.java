@@ -23,9 +23,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -344,6 +346,9 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
         final SnitchTypeManager snitchTypeManager = JukeAlert.getInstance().getSnitchConfigManager();
         final SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
         final WorldIDManager worldIDManager = CivModCorePlugin.getInstance().getWorldIdManager();
+
+        Set<Short> unknownWorldIds = new HashSet<>();
+
         try (final Connection connection = this.db.getConnection();
              final PreparedStatement statement = connection.prepareStatement(
                  "SELECT ja_snitches.id, x, y, z, world_id, type_id, group_id, name, last_refresh, toggle_lever, placer FROM ja_snitches" +
@@ -358,8 +363,10 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
                 final short snitchWorldID = results.getShort(5);
                 final World snitchWorld = worldIDManager.getWorldByInternalID(snitchWorldID);
                 if (snitchWorld == null) {
-                    this.logger.warning(
-                        "Could not load world [" + snitchWorldID + "] for snitch [" + snitchID + "]");
+                    if (unknownWorldIds.add(snitchWorldID)) {
+                        this.logger.warning(
+                            "Could not load world [" + snitchWorldID + "] for snitch [" + snitchID + "]");
+                    }
                     continue;
                 }
                 final int snitchTypeID = results.getInt(6);

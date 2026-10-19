@@ -38,10 +38,11 @@ public class CmdPearlBroadcast extends PearlCommand {
         }
 
         // First check for a group
+        String groupName = argAsString(0);
         if (plugin.isNameLayerEnabled()) {
             GroupManager gm = NameLayerAPI.getGroupManager();
             // First look for a matching group
-            Group g = GroupManager.getGroup(argAsString(0));
+            Group g = GroupManager.getGroup(groupName);
 
             if (g != null) {
                 if (!gm.hasAccess(g, player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
@@ -51,13 +52,13 @@ public class CmdPearlBroadcast extends PearlCommand {
                 } else {
                     //If they are already broadcasting to group then remove the listener for that group
                     if (pearl.isBroadcastingTo(g)) {
-                        pearl.removeBroadcastListener(new NLGroupBroadcastListener(g));
+                        pearl.removeBroadcastListener(new NLGroupBroadcastListener(groupName));
                         msg(Lang.groupStoppedBcasting, g.getName());
                         return;
                     }
 
                     // Ok the group exists and the player has permission. Create the listener
-                    pearl.addBroadcastListener(new NLGroupBroadcastListener(g));
+                    pearl.addBroadcastListener(new NLGroupBroadcastListener(groupName));
                     msg(Lang.groupNowBcasting, g.getName());
                     return;
                 }
@@ -65,7 +66,7 @@ public class CmdPearlBroadcast extends PearlCommand {
         }
 
         // No group found, try to find a player
-        Player player = plugin.getPlayer(argAsString(0));
+        Player player = plugin.getPlayer(groupName);
         if (player == null) {
             msg(Lang.pearlNoPlayer);
             return;

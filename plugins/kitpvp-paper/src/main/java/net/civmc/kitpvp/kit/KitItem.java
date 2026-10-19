@@ -157,6 +157,8 @@ public enum KitItem {
     BREAD(Material.BREAD, KitCategory.FOOD, 0),
     COOKED_CHICKEN(Material.COOKED_CHICKEN, KitCategory.FOOD, 0),
     CHORUS_FRUIT(Material.CHORUS_FRUIT, KitCategory.FOOD, 10),
+    COMPARATOR(Material.COMPARATOR, KitCategory.BLOCK, 0),
+    OBSERVER(Material.OBSERVER, KitCategory.BLOCK, 0),
     ;
 
     private static final Map<KitCategory, List<KitItem>> itemsByCategory = new EnumMap<>(KitCategory.class);

@@ -27,6 +27,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.listener.ModeListener;
@@ -113,6 +114,7 @@ public class HologramManager {
         private long timeStamp;
         private final boolean hasPermission;
         private Location cachedPlayerLocation;
+        private @Nullable Component cachedContent;
         private final long cullDelay;
 
         public PlayerHolo(Player player, Reinforcement reinforcement) {
@@ -155,18 +157,23 @@ public class HologramManager {
         }
 
         private void sendUpdatePacket() {
+            final Component content = createHoloContent();
+            if (content.equals(cachedContent)) {
+                return;
+            }
             List<EntityData<?>> metadata = new ArrayList<>();
             // Index 10: Interpolation duration (INT) - for display entities
             metadata.add(new EntityData<>(10, EntityDataTypes.INT, 2));
             // Index 15: Billboard constraint (BYTE) - 3 = CENTER (always faces player)
             metadata.add(new EntityData<>(15, EntityDataTypes.BYTE, (byte) 3));
             // Index 23: Text content (ADV_COMPONENT) - the hologram text
-            metadata.add(new EntityData<>(23, EntityDataTypes.ADV_COMPONENT, createHoloContent()));
+            metadata.add(new EntityData<>(23, EntityDataTypes.ADV_COMPONENT, content));
             // Index 27: Display entity flags (BYTE) - 0x02 = see through
             metadata.add(new EntityData<>(27, EntityDataTypes.BYTE, (byte) 0x02));
 
             WrapperPlayServerEntityMetadata metadataPacket = new WrapperPlayServerEntityMetadata(hologramId, metadata);
             PacketEvents.getAPI().getPlayerManager().sendPacket(player, metadataPacket);
+            cachedContent = content;
         }
 
         private Component createHoloContent() {
@@ -236,6 +243,7 @@ public class HologramManager {
             WrapperPlayServerDestroyEntities destroyPacket = new WrapperPlayServerDestroyEntities(hologramId);
             PacketEvents.getAPI().getPlayerManager().sendPacket(player, destroyPacket);
             hologramId = 0;
+            cachedContent = null;
         }
 
     }

@@ -27,7 +27,7 @@ public class Reinforce extends BaseCommand {
     @CommandCompletion("@CT_Groups")
     public void execute(Player player, @Optional String targetGroup) {
         UUID uuid = NameLayerAPI.getUUID(player.getName());
-        String groupName = null;
+        String groupName;
         if (targetGroup == null) {
             groupName = NameLayerAPI.getGroupManager().getDefaultGroup(uuid);
             if (groupName == null) {
@@ -60,6 +60,6 @@ public class Reinforce extends BaseCommand {
                 return;
             }
         }
-        stateManager.setState(player, new ReinforcingState(player, group));
+        stateManager.setState(player, new ReinforcingState(player, group.getName()));
     }
 }

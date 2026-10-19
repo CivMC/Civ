@@ -111,7 +111,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         if (getChest().getType() != Material.CHEST && getChest().getType() != Material.TRAPPED_CHEST && !Tag.COPPER_CHESTS.isTagged(getChest().getType())) {
             return null;
         }
-        Chest chestBlock = (Chest) (getChest().getState());
+        Chest chestBlock = (Chest) (getChest().getState(false));
         return chestBlock.getInventory();
     }
 
@@ -145,20 +145,20 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         for (BlockFace relativeFace : ioTypeFunc.apply(getFurnaceIOSelector()).apply(facing)) {
             Block relBlock = fblock.getRelative(relativeFace);
             if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(relBlock.getType())) {
-                combinedInvList.add(((Chest) relBlock.getState()).getInventory());
+                combinedInvList.add(((Chest) relBlock.getState(false)).getInventory());
             }
             if (relBlock.getType() == Material.BARREL) {
-                combinedInvList.add(((Barrel) relBlock.getState()).getInventory());
+                combinedInvList.add(((Barrel) relBlock.getState(false)).getInventory());
             }
         }
         Block tblock = fccs.getCraftingTable();
         for (BlockFace relativeFace : ioTypeFunc.apply(getTableIOSelector()).apply(facing)) {
             Block relBlock = tblock.getRelative(relativeFace);
             if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST || Tag.COPPER_CHESTS.isTagged(relBlock.getType())) {
-                combinedInvList.add(((Chest) relBlock.getState()).getInventory());
+                combinedInvList.add(((Chest) relBlock.getState(false)).getInventory());
             }
             if (relBlock.getType() == Material.BARREL) {
-                combinedInvList.add(((Barrel) relBlock.getState()).getInventory());
+                combinedInvList.add(((Barrel) relBlock.getState(false)).getInventory());
             }
         }
     }
@@ -225,8 +225,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         if (fblock.getType() != Material.FURNACE) {
             return null;
         }
-        Furnace fstate = (Furnace) fblock.getState();
-        org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
+        final org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fblock.getBlockData();
         return fdata.getFacing();
     }
 
@@ -238,7 +237,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         if (getFurnace().getType() != Material.FURNACE) {
             return null;
         }
-        Furnace furnaceBlock = (Furnace) (getFurnace().getState());
+        Furnace furnaceBlock = (Furnace) (getFurnace().getState(false));
         return furnaceBlock.getInventory();
     }
 
@@ -276,28 +275,11 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             return;
         }
 
-        //If Autoselect is on
-        if (autoSelect) {
-            //If the factory is in disrepair and we got autoSelect on, we want to repair it
-            if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
-                IRecipe autoRepair = getRepairRecipe();
-                //Just incase any factory for some reason cannot be repaired.
-                if (autoRepair == null) {
-                    if (p != null) {
-                        p.sendMessage(ChatColor.RED + "The factory doesn't have a repair recipe.");
-                    }
-                    return;
-                } else {
-                    if (p != null) {
-                        p.sendMessage(ChatColor.GOLD + "Automatically selected recipe " + autoRepair.getName());
-                    }
-                    setRecipe(autoRepair);
-                }
-            }
-
-            // If we run out of input materials, try to auto-select a new recipe
-            if (!hasInputMaterials()) {
-                IRecipe autoSelected = getAutoSelectRecipe();
+        //If Autoselect is on. Auto select never repairs, a factory in disrepair has to be repaired by hand
+        if (autoSelect && !rm.inDisrepair()) {
+            // On start, run the first recipe in the factory's list that has materials, so the list order is the priority
+            IRecipe autoSelected = getAutoSelectRecipe();
+            if (autoSelected != currentRecipe) {
                 if (autoSelected == null) {
                     if (p != null) {
                         p.sendMessage(ChatColor.RED + "Not enough materials available to run any recipe");
@@ -311,17 +293,17 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
                 }
             }
         } else {
-            //We are running the factory manually, so we just do the usual checks
-            if (!hasInputMaterials()) {
-                if (p != null) {
-                    p.sendMessage(ChatColor.RED + "Not enough materials available");
-                }
-                return;
-            }
+            //We are running the factory manually or it is in disrepair, so we just do the usual checks
             //The factory is broken and needs to be repaired
             if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
                 if (p != null) {
-                    p.sendMessage(ChatColor.RED + "This factory is in disrepair, you have to repair it before using it");
+                    p.sendMessage(ChatColor.RED + "This factory is in disrepair, select its repair recipe to repair it before using it");
+                }
+                return;
+            }
+            if (!hasInputMaterials()) {
+                if (p != null) {
+                    p.sendMessage(ChatColor.RED + "Not enough materials available");
                 }
                 return;
             }
@@ -348,7 +330,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         }
 
         // Ensure the recipe effect can be applied
-        var effectFeasibility = currentRecipe.evaluateEffectFeasibility(getInputInventory(), getOutputInventory());
+        var effectFeasibility = currentRecipe.evaluateEffectFeasibility(getInputInventory(), getOutputInventory(), this);
         if (!(effectFeasibility.isFeasible())) {
             LoggingUtils.log(String.format("Skipping activation of recipe [%s], since the effect wasn't feasible.", currentRecipe.getName()));
             if (p != null) {
@@ -386,7 +368,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             if (currentRecipe instanceof InputRecipe) {
                 int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0 ? ((InputRecipe) currentRecipe)
                     .getFuelConsumptionIntervall() : pm.getPowerConsumptionIntervall();
-                if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime() / consumptionIntervall)) {
+                if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime(this) / consumptionIntervall)) {
                     p.sendMessage(ChatColor.RED
                         + "You don't have enough fuel, the factory will run out of it before completing");
                 }
@@ -488,12 +470,18 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
     @Override
     public void run() {
         if (active && mbs.isComplete()) {
+            Block f = getFurnace();
+            if (currentRecipe.mustBeLoaded() && !f.getWorld().isChunkLoaded(f.getLocation().getBlockX() >> 4, f.getLocation().getBlockZ() >> 4)) {
+                sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because the chunk was unloaded");
+                deactivate();
+                return;
+            }
             // if the materials required to produce the current recipe are in
             // the factory inventory
             if (hasInputMaterials()) {
                 // if the factory has been working for less than the required
                 // time for the recipe
-                if (currentProductionTimer < currentRecipe.getProductionTime()) {
+                if (currentProductionTimer < currentRecipe.getProductionTime(this)) {
                     int consumptionIntervall;
                     if (currentRecipe instanceof InputRecipe) {
                         consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0
@@ -736,16 +724,12 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
      * @return null if no suitable recipe was found
      */
     public IRecipe getAutoSelectRecipe() {
+        final Inventory inputInventory = getInputInventory();
         var selectedRecipe = recipes.stream()
-            .filter(it -> {
-                // We want to select a repair recipe if and only if the factory is in disrepair
-                if (rm.inDisrepair()) {
-                    return it instanceof RepairRecipe;
-                } else {
-                    return !(it instanceof RepairRecipe);
-                }
-            })
-            .filter(it -> it.enoughMaterialAvailable(getInputInventory()))
+            // Repairs are left to the player, so are the recipes marked as making repair kits
+            .filter(it -> !rm.inDisrepair() && !(it instanceof RepairRecipe)
+                && !(it instanceof InputRecipe input && input.isRepairKit()))
+            .filter(it -> it.enoughMaterialAvailable(inputInventory))
             .findFirst()
             .orElse(null);
 
@@ -824,6 +808,9 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 
     @Override
     public int getUpdateTime() {
+        if (!currentRecipe.canApplySpeed()) {
+            return updateTime;
+        }
         return switch (speedLevel) {
             case 0 -> updateTime;
             case 1 -> Math.ceilDiv(updateTime, 2);

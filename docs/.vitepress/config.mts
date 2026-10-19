@@ -135,8 +135,8 @@ export default defineConfig({
                             link: "/wiki/new-player-guide",
                         },
                         {
-                            text: "CivMini",
-                            link: "/wiki/CivMini",
+                            text: "Zorweth",
+                            link: "/wiki/Zorweth",
                         },
                         { text: "Change Log", link: "/wiki/changelog" },
                         {
@@ -201,6 +201,10 @@ export default defineConfig({
                                         {
                                             text: "Transport Changes",
                                             link: "wiki//plugins/unique/Transport",
+                                        },
+                                        {
+                                            text: "Bleeze",
+                                            link: "wiki/plugins/unique/bleeze",
                                         },
                                         {
                                             text: "Chunk Limits",

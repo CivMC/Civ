@@ -15,6 +15,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -100,7 +101,14 @@ public class BackpackListener implements Listener {
                 }
             }
             case HOTBAR_SWAP -> {
-                if (isIllegalItem(event.getWhoClicked().getInventory().getStorageContents()[event.getHotbarButton()])) {
+                ItemStack item;
+                if (event.getClick() == ClickType.SWAP_OFFHAND) {
+                    item = event.getWhoClicked().getInventory().getItemInOffHand();
+                } else {
+                    item = event.getWhoClicked().getInventory().getStorageContents()[event.getHotbarButton()];
+                }
+
+                if (isIllegalItem(item)) {
                     event.setCancelled(true);
                 }
             }

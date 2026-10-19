@@ -1,6 +1,10 @@
 package com.untamedears.jukealert;
 
 import com.untamedears.jukealert.commands.JACommandManager;
+import com.untamedears.jukealert.broadcaster.BungeeSnitchAlertBroadcaster;
+import com.untamedears.jukealert.broadcaster.BungeeSnitchAlertListener;
+import com.untamedears.jukealert.broadcaster.NoopSnitchAlertBroadcaster;
+import com.untamedears.jukealert.broadcaster.SnitchAlertBroadcaster;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChainFactory;
 import com.untamedears.jukealert.database.JukeAlertDAO;
@@ -35,6 +39,7 @@ public class JukeAlert extends ACivMod {
     private SnitchCullManager cullManager;
     private TaskChainFactory taskChainFactory;
     private JACommandManager commandManager;
+    private SnitchAlertBroadcaster broadcaster;
 
     public JAConfigManager getConfigManager() {
         return configManager;
@@ -66,6 +71,10 @@ public class JukeAlert extends ACivMod {
 
     public TaskChainFactory getTaskChainFactory() {
         return this.taskChainFactory;
+    }
+
+    public SnitchAlertBroadcaster getBroadcaster() {
+        return broadcaster;
     }
 
     @Override
@@ -101,6 +110,14 @@ public class JukeAlert extends ACivMod {
         if (!configManager.parse()) {
             Bukkit.shutdown();
             return;
+        }
+
+        if (configManager.getServerBroadcastAlerts()) {
+            broadcaster = new BungeeSnitchAlertBroadcaster();
+            getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeSnitchAlertListener());
+        } else {
+            broadcaster = new NoopSnitchAlertBroadcaster();
         }
 
         snitchManager = new SnitchManager(api);

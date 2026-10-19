@@ -1,0 +1,172 @@
+package vg.civcraft.mc.namelayer.rabbitmq;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DeliverCallback;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.civmc.namelayer.sync.NameLayerInvalidationMessage;
+import net.civmc.namelayer.sync.NameLayerRabbitMqTopology;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
+import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
+
+public final class NameLayerInvalidationConsumer implements AutoCloseable {
+
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
+
+    private final ConnectionFactory connectionFactory;
+    private final String serverId;
+    private final Logger logger;
+    private final String database;
+    private final JavaPlugin plugin;
+    private Connection connection;
+    private Channel channel;
+
+    public NameLayerInvalidationConsumer(
+        final ConnectionFactory connectionFactory,
+        final String serverId,
+        final Logger logger, String database,
+        final JavaPlugin plugin
+    ) {
+        this.connectionFactory = connectionFactory;
+        this.serverId = serverId;
+        this.logger = logger;
+        this.database = database;
+        this.plugin = plugin;
+    }
+
+    public boolean start() {
+        return connect(false);
+    }
+
+    private boolean connect(final boolean fullResyncBeforeConsume) {
+        try {
+            if (fullResyncBeforeConsume) {
+                GroupManager.fullResyncCache();
+            }
+            connection = connectionFactory.newConnection("namelayer-paper-invalidations-" + serverId);
+            channel = connection.createChannel();
+            channel.exchangeDeclare(
+                NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE,
+                NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE_TYPE,
+                NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE_DURABLE
+            );
+            AMQP.Queue.DeclareOk declare = channel.queueDeclare();
+            String queueName = declare.getQueue();
+            channel.queueBind(queueName, NameLayerRabbitMqTopology.INVALIDATION_EXCHANGE, database);
+            channel.basicQos(1);
+            final DeliverCallback deliverCallback = (consumerTag, delivery) -> handleDelivery(delivery.getBody(), delivery.getEnvelope().getDeliveryTag());
+            channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
+            });
+            logger.log(Level.INFO, "NameLayer consuming invalidations from " + queueName);
+            return true;
+        } catch (ConnectException ex) {
+            logger.log(Level.WARNING, "Retrying RabbitMQ connection");
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> connect(true), 20 * 5);
+            return false;
+        } catch (final IOException | TimeoutException exception) {
+            logger.log(Level.SEVERE, "Failed to connect NameLayer RabbitMQ invalidation consumer", exception);
+            return false;
+        } catch (final RuntimeException exception) {
+            logger.log(Level.SEVERE, "Failed to resync NameLayer before RabbitMQ reconnect", exception);
+            return false;
+        }
+    }
+
+    private void handleDelivery(final byte[] body, final long deliveryTag) throws IOException {
+        try {
+            final NameLayerInvalidationMessage invalidation = GSON.fromJson(
+                new String(body, StandardCharsets.UTF_8),
+                NameLayerInvalidationMessage.class
+            );
+            if (applyInvalidation(invalidation)) {
+                channel.basicAck(deliveryTag, false);
+            } else {
+                channel.basicNack(deliveryTag, false, true);
+            }
+        } catch (final JsonParseException exception) {
+            logger.log(Level.WARNING, "Rejecting malformed NameLayer invalidation", exception);
+            channel.basicReject(deliveryTag, false);
+        } catch (final RuntimeException exception) {
+            logger.log(Level.WARNING, "Failed to apply NameLayer invalidation; requeueing", exception);
+            channel.basicNack(deliveryTag, false, true);
+        }
+    }
+
+    private boolean applyInvalidation(final NameLayerInvalidationMessage invalidation) {
+        if (invalidation.requiresFullResync()) {
+            logger.log(Level.INFO, "Applying NameLayer full-resync invalidation");
+            GroupManager.fullResyncCache();
+            return true;
+        }
+        logger.log(Level.INFO, "Applying NameLayer targeted invalidation for "
+            + invalidation.affectedGroupIds().size() + " groups, "
+            + (invalidation.defaultGroupAssignments().size() + invalidation.defaultGroupClears().size())
+            + " default groups, "
+            + invalidation.autoAcceptAssignments().size() + " auto-accept entries");
+        if (!invalidation.affectedGroupIds().isEmpty()
+            && !GroupManager.reloadGroupsById(new ArrayList<>(invalidation.affectedGroupIds()))) {
+            return false;
+        }
+        final DefaultGroupHandler defaultGroupHandler = NameLayerPlugin.getDefaultGroupHandler();
+        if (defaultGroupHandler != null) {
+            for (final Map.Entry<UUID, String> entry : invalidation.defaultGroupAssignments().entrySet()) {
+                defaultGroupHandler.applyAssignment(entry.getKey(), entry.getValue());
+            }
+            for (final UUID playerUuid : invalidation.defaultGroupClears()) {
+                defaultGroupHandler.applyClear(playerUuid);
+            }
+        }
+        final AutoAcceptHandler autoAcceptHandler = NameLayerPlugin.getAutoAcceptHandler();
+        if (autoAcceptHandler != null) {
+            for (final Map.Entry<UUID, Boolean> entry : invalidation.autoAcceptAssignments().entrySet()) {
+                autoAcceptHandler.applyAssignment(entry.getKey(), entry.getValue());
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void close() {
+        closeChannel();
+        closeConnection();
+    }
+
+    private void closeChannel() {
+        if (channel == null) {
+            return;
+        }
+        try {
+            channel.close();
+        } catch (final IOException | TimeoutException exception) {
+            logger.log(Level.WARNING, "Failed to close NameLayer RabbitMQ channel", exception);
+        }
+    }
+
+    private void closeConnection() {
+        if (connection == null) {
+            return;
+        }
+        try {
+            connection.close();
+        } catch (final IOException exception) {
+            logger.log(Level.WARNING, "Failed to close NameLayer RabbitMQ connection", exception);
+        }
+    }
+}

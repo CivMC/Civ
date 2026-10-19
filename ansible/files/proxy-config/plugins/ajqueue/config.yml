@@ -199,7 +199,7 @@ enable-server-command: true
 slash-servers:
   - "main"
   - "pvp"
-  - "mini"
+  - "zorweth"
 
 # Should we enable /send as an alias for /ajQueue send?
 # If on bungeecord, this requires extra setup (same as replacing the server command but with send instead)

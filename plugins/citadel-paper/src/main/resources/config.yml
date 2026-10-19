@@ -268,6 +268,10 @@ world-border-buffers:
       x: 0.5
       z: 0.5
 
+# Reinforcements in these biomes decay from creation time, just like decaying border buffers.
+# Map world names to lists of namespaced biome keys, e.g. world: ["minecraft:basalt_deltas"].
+decay-biomes: {}
+
 reinforcementBreakMultipliers: []
 
 # number of times a tool can break a reinforcement before it gets damaged by one durability
