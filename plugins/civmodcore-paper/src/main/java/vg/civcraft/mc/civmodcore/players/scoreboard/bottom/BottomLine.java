@@ -75,8 +75,9 @@ public class BottomLine implements Comparable<BottomLine> {
     }
 
     public void removePlayer(UUID uuid) {
-        texts.remove(uuid);
-        BottomLineAPI.refreshIndividually(uuid);
+        if (texts.remove(uuid) != null) {
+            BottomLineAPI.refreshIndividually(uuid);
+        }
     }
 
     Map<UUID, String> getAll() {
