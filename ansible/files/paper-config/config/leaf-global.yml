@@ -211,7 +211,7 @@ fixes:
 #  GAMEPLAY  #
 ##############
 gameplay-mechanisms:
-  ice-and-snow-chance: 96
+  ice-and-snow-chance: 192
   use-spigot-item-merging-mechanism: false
   # This section contains settings for mob spawner blocks.
   spawner-settings:
