@@ -724,11 +724,12 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
      * @return null if no suitable recipe was found
      */
     public IRecipe getAutoSelectRecipe() {
+        final Inventory inputInventory = getInputInventory();
         var selectedRecipe = recipes.stream()
             // Repairs are left to the player, so are the recipes marked as making repair kits
             .filter(it -> !rm.inDisrepair() && !(it instanceof RepairRecipe)
                 && !(it instanceof InputRecipe input && input.isRepairKit()))
-            .filter(it -> it.enoughMaterialAvailable(getInputInventory()))
+            .filter(it -> it.enoughMaterialAvailable(inputInventory))
             .findFirst()
             .orElse(null);
 

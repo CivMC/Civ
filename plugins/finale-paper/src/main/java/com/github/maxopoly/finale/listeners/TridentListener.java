@@ -113,6 +113,10 @@ public class TridentListener implements Listener {
         }
 
         Player player = event.getPlayer();
+        final Trident returnTrident = returnToOffhand.get(player.getUniqueId());
+        if (returnTrident == null) {
+            return;
+        }
         if (player.getInventory().firstEmpty() != -1) {
             return;
         }
@@ -131,11 +135,6 @@ public class TridentListener implements Listener {
 
             Player shooter = (Player) trident.getShooter();
             if (!player.getUniqueId().equals(shooter.getUniqueId())) continue;
-
-            Trident returnTrident = returnToOffhand.get(shooter.getUniqueId());
-            if (returnTrident == null) {
-                return;
-            }
 
             if (trident.getTicksLived() < 60) {
                 return;
@@ -191,12 +190,14 @@ public class TridentListener implements Listener {
     @EventHandler
     public void onSurfaceRiptide(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        if (!player.isHandRaised()) {
+            return;
+        }
         ItemStack mainhand = player.getInventory().getItemInMainHand();
         ItemStack offhand = player.getInventory().getItemInOffHand();
         boolean mainhandRiptideTrident = mainhand != null && mainhand.getType() == Material.TRIDENT && mainhand.getItemMeta().hasEnchant(Enchantment.RIPTIDE);
         boolean offhandRiptideTrident = offhand != null && offhand.getType() == Material.TRIDENT && offhand.getItemMeta().hasEnchant(Enchantment.RIPTIDE);
-        ;
-        if (player.isHandRaised() && (mainhandRiptideTrident || offhandRiptideTrident)) {
+        if (mainhandRiptideTrident || offhandRiptideTrident) {
             TridentHandler tridentHandler = Finale.getPlugin().getManager().getTridentHandler();
             if (tridentHandler.isRiptideOnCooldown(player)) {
                 event.setCancelled(true);
