@@ -24,6 +24,7 @@ public final class PlayerCap extends BasicHack implements CommandExecutor {
 
     private @Nullable PlayerCapController controller;
     private @Nullable PlayerCapController.Settings settings;
+    private @Nullable PlayerCapPlaceholders placeholders;
 
     public PlayerCap(final SimpleAdminHacks plugin, final BasicHackConfig config) {
         super(plugin, config);
@@ -33,6 +34,10 @@ public final class PlayerCap extends BasicHack implements CommandExecutor {
     public void onEnable() {
         super.onEnable();
         plugin().registerCommand("setplayercap", this);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            placeholders = new PlayerCapPlaceholders(this);
+            placeholders.register();
+        }
         if (config().getBase().getBoolean("auto.enabled", false)) {
             try {
                 enableAutomatic();
@@ -45,7 +50,17 @@ public final class PlayerCap extends BasicHack implements CommandExecutor {
     @Override
     public void onDisable() {
         super.onDisable();
+        if (placeholders != null) {
+            placeholders.unregister();
+            placeholders = null;
+        }
         controller = null;
+    }
+
+    public double getTps() {
+        final PlayerCapController current = controller;
+        final double mspt = current == null ? Double.NaN : current.getSmoothedMspt();
+        return Math.min(20, Double.isNaN(mspt) ? Bukkit.getTPS()[0] : 1000 / mspt);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

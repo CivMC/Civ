@@ -8,7 +8,7 @@ header-footer:
     - "&2&lMain: &6%playercount_main% &4&lPvP: &6%playercount_pvp% &d&lZorweth: &6%online%"
   footer:
     - '&9Modmail at &6reddit.com/r/civmc'
-    - '&a%tps% TPS &r&6discord.gg/nDnsU6vJqg'
+    - '&a%playercap_tps% TPS &r&6discord.gg/nDnsU6vJqg'
     - '&cPatreon: &6patreon.com/Civ_MC'
     - '&6Admins: Wingzero54, RedDevel, Okx, zenron_, snw'
   per-world:
@@ -136,7 +136,7 @@ scoreboard:
         - "* &eStaff&7: &f%staffonline%"
         - " "
         - "&6Server Info:"
-        - "* &bTPS&7: %tps%"
+        - "* &bTPS&7: %playercap_tps%"
         - "* &bUptime&7: &f%server_uptime%"
         - "* &bMemory&7: &f%memory-used%&7/&4%memory-max%"
         - "%animation:MyAnimation1%"
