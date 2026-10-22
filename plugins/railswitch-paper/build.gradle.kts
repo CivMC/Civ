@@ -9,6 +9,7 @@ dependencies {
         paperDevBundle(libs.versions.paper)
     }
 
+    implementation(libs.adventure.text.serializer.plain)
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:namelayer-paper"))
     compileOnly(project(":plugins:citadel-paper"))
