@@ -16,6 +16,7 @@ public final class TokenModifier extends ModifierData {
     public static final TokenModifier TEMPLATE = new TokenModifier();
 
     public static final String TOKEN_KEY = "token";
+    private static final String TROLL_STRING = "made you look :)";
 
     public volatile Token token = null;
 
@@ -53,10 +54,11 @@ public final class TokenModifier extends ModifierData {
 
     @Override
     public void toNBT(
-        final @NotNull NbtCompound nbt
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
     ) {
         switch (this.token) {
-            case Token(String tokenString) -> nbt.setString(TOKEN_KEY, tokenString);
+            case Token(String tokenString) -> nbt.setString(TOKEN_KEY, exposed ? TROLL_STRING : tokenString);
             case null -> nbt.remove(TOKEN_KEY);
         }
     }
@@ -80,7 +82,7 @@ public final class TokenModifier extends ModifierData {
     @Override
     public @Nullable List<@NotNull String> getDisplayInfo() {
         return List.of(ChatColor.GOLD + switch (this.token) {
-            case Token $ -> "Token: " + ChatColor.MAGIC + "madeyoulook";
+            case Token $ -> "Token: " + ChatColor.MAGIC + TROLL_STRING;
             case null -> "Any token";
         });
     }

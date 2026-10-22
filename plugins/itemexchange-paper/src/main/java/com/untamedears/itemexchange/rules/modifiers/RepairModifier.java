@@ -74,7 +74,10 @@ public final class RepairModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         nbt.setInt(LEVEL_KEY, getRepairCost());
     }
 
