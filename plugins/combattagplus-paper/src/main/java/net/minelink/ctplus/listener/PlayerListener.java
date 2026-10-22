@@ -25,11 +25,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class PlayerListener implements Listener {
@@ -91,6 +93,13 @@ public final class PlayerListener implements Listener {
 
         // Remove player from cache
         plugin.getPlayerCache().removePlayer(player);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+    public void onCancelledKick(final @NotNull PlayerKickEvent event) {
+        if (event.isCancelled() && SafeLogoutTask.isFinished(event.getPlayer())) {
+            SafeLogoutTask.cancel(event.getPlayer());
+        }
     }
 
     @EventHandler
