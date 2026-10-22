@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -48,7 +51,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
     private int interval = 20;
     private int algorithm = 0;
     private double decayAmount = 1.0;
-    private double maxDamage = 25.0;
+    private double maxDamage = 30.0;
     private double potionDamage = 6.0;
 
     /**
@@ -78,6 +81,11 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
             if (!log.decayDamage(decayAmount) && !pearlApi.isPlayerTagged(playerId)) {
                 it.remove();
                 pearlApi.log("Stopped tracking damage for player %s:{%s}", pearlApi.getRealPlayerName(playerId), playerId.toString());
+                Player player = Bukkit.getPlayer(playerId);
+                if (player != null) {
+                    player.sendMessage(Component.text("Your pearl timer has expired.", TextColor.color(0xC4A7E7))
+                        .hoverEvent(HoverEvent.showText(Component.text("You will no longer be pearled if you die, but will simply respawn."))));
+                }
             }
         }
     }
