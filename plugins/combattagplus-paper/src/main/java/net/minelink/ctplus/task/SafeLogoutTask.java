@@ -51,6 +51,9 @@ public final class SafeLogoutTask extends BukkitRunnable {
             return;
         }
 
+        // Keep the completed task queued until the delayed quit event has been handled.
+        if (finished) return;
+
         // Cancel the task if player has moved
         if (hasMoved(player)) {
             if (!plugin.getSettings().getLogoutCancelledMessage().isEmpty()) {
@@ -67,11 +70,7 @@ public final class SafeLogoutTask extends BukkitRunnable {
             finished = true;
             plugin.getTagManager().untag(playerId);
 
-            if (!plugin.getSettings().getLogoutSuccessMessage().isEmpty()) {
-                player.kickPlayer(plugin.getSettings().getLogoutSuccessMessage());
-            }
-
-            cancel();
+            player.kickPlayer(plugin.getSettings().getLogoutSuccessMessage());
             return;
         }
 

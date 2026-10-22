@@ -48,7 +48,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
     private int interval = 20;
     private int algorithm = 0;
     private double decayAmount = 1.0;
-    private double maxDamage = 30.0;
+    private double maxDamage = 25.0;
     private double potionDamage = 6.0;
 
     /**
