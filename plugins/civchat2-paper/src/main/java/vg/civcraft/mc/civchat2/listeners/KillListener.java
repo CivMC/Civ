@@ -21,11 +21,13 @@ public class KillListener implements Listener {
     private CivChat2SettingsManager settingsMan;
     private CivChat2Config config;
     private CivChatDAO dao;
+    private PearlDeathTracker pearlDeathTracker;
 
-    public KillListener(CivChat2Config config, CivChatDAO dao, CivChat2SettingsManager settingsMan) {
+    public KillListener(CivChat2Config config, CivChatDAO dao, CivChat2SettingsManager settingsMan, PearlDeathTracker pearlDeathTracker) {
         this.config = config;
         this.dao = dao;
         this.settingsMan = settingsMan;
+        this.pearlDeathTracker = pearlDeathTracker;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -46,10 +48,12 @@ public class KillListener implements Listener {
         ItemStack item = killer.getInventory().getItemInMainHand();
         String victimFormattedName = String.format("%s%s", ChatColor.ITALIC, victim.getDisplayName());
         String killerFormattedName = String.format("%s%s", ChatColor.ITALIC, killer.getDisplayName());
-
+        boolean victimWasPearled = pearlDeathTracker != null && pearlDeathTracker.wasPearledOnDeath(victim.getUniqueId());
+        boolean wasPearled = victimWasPearled && settingsMan.getUsePearledDeathMessage(killer.getUniqueId());
+        String killVerb = wasPearled ? "was pearled by" : "was killed by";
         if (item == null || MaterialUtils.isAir(item.getType())) {
-            msg = String.format("%s%s %swas killed by %s %sby hand", ChatColor.DARK_GRAY, victimFormattedName,
-                ChatColor.DARK_GRAY, killerFormattedName, ChatColor.DARK_GRAY);
+            msg = String.format("%s%s %s%s %s %sby hand", ChatColor.DARK_GRAY, victimFormattedName,
+                ChatColor.DARK_GRAY, killVerb, killerFormattedName, ChatColor.DARK_GRAY);
         } else {
             String itemName = ItemUtils.getItemName(item);
             String displayName = ItemUtils.getDisplayName(item);
@@ -68,8 +72,8 @@ public class KillListener implements Listener {
                 }
             }
 
-            msg = String.format("%s%s %swas killed by %s %s%s", ChatColor.DARK_GRAY, victimFormattedName,
-                ChatColor.DARK_GRAY, killerFormattedName, ChatColor.DARK_GRAY, displayName);
+            msg = String.format("%s%s %s%s %s %s%s", ChatColor.DARK_GRAY, victimFormattedName,
+                ChatColor.DARK_GRAY, killVerb, killerFormattedName, ChatColor.DARK_GRAY, displayName);
         }
         Location killLoc = victim.getLocation();
         for (Player p : Bukkit.getOnlinePlayers()) {
