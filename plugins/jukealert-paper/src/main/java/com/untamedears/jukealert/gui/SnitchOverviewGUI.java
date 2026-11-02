@@ -11,12 +11,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.FastMultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -40,7 +38,7 @@ public class SnitchOverviewGUI {
             Snitch snitch = snitches.get(i);
             // Base the snitch icon on the snitch type
             final var icon = snitch.getType().getItem().clone();
-            ItemUtils.handleItemMeta(icon, (ItemMeta meta) -> {
+            icon.editMeta((meta) -> {
                 meta.displayName(Component.text(snitch.getName(), NamedTextColor.GOLD));
                 final var location = snitch.getLocation();
                 List<Component> lore = new ArrayList<>();
@@ -66,7 +64,6 @@ public class SnitchOverviewGUI {
                 }
                 lore.add(ChatUtils.newComponent("Right click to send waypoint").color(NamedTextColor.GOLD));
                 meta.lore(lore);
-                return true;
             });
             clickables.add(new Clickable(icon) {
                 @Override

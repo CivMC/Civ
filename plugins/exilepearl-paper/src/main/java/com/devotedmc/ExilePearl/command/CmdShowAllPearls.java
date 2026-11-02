@@ -27,7 +27,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
@@ -109,7 +108,7 @@ public class CmdShowAllPearls extends PearlCommand {
                     itemReadyFuture::complete);
 
                 Consumer<ItemStack> itemMetaMod = itemToMod ->
-                    ItemUtils.handleItemMeta(itemToMod, (ItemMeta meta) -> {
+                    itemToMod.editMeta((meta) -> {
                         // Pearled player's name
                         meta.displayName(ChatUtils.newComponent(pearl.getPlayerName())
                             .color(NamedTextColor.AQUA)
@@ -162,7 +161,6 @@ public class CmdShowAllPearls extends PearlCommand {
                                 ChatUtils.newComponent("Click to receive a waypoint")
                                     .color(NamedTextColor.GREEN));
                         }
-                        return true;
                     });
 
                 itemMetaMod.accept(item);
@@ -215,7 +213,7 @@ public class CmdShowAllPearls extends PearlCommand {
 
     private IClickable constructBannedPearlsToggleClick(final boolean bannedPearlToggle) {
         final var item = new ItemStack(Material.BARRIER);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
+        item.editMeta((meta) -> {
             meta.displayName(Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
@@ -227,7 +225,6 @@ public class CmdShowAllPearls extends PearlCommand {
                     .color(NamedTextColor.AQUA)
                     .content("Currently turned " + (bannedPearlToggle ? "on" : "off"))
                     .build());
-            return true;
         });
         return new Clickable(item) {
             @Override

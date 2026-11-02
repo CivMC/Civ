@@ -13,10 +13,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
@@ -63,7 +61,7 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
             (nbt) -> nbt.put(BULK_KEY, itemNBT.internal())
         );
 
-        ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
+        item.editMeta((meta) -> {
             meta.displayName(Component.text()
                 .color(NamedTextColor.RED)
                 .content("Bulk Rule Block")
@@ -72,7 +70,6 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
                 String.format(
                     "This rule block holds %s exchange rule%s.",
                     this.rules.size(), this.rules.size() == 1 ? "" : "s")));
-            return true;
         });
         return item;
     }

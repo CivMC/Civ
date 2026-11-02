@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.items;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
@@ -68,15 +67,9 @@ public class ItemMetaTests {
     public void testAdvancedDisplayNameEquality() {
         // Setup
         final var formerItem = TEMPLATE_ITEM.clone();
-        ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
-            meta.setDisplayName("Hello!");
-            return true;
-        });
+        formerItem.editMeta((meta) -> meta.setDisplayName("Hello!"));
         final var latterItem = TEMPLATE_ITEM.clone();
-        ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
-            meta.displayName(Component.text("Hello!"));
-            return true;
-        });
+        latterItem.editMeta((meta) -> meta.displayName(Component.text("Hello!")));
         // Check
         Assertions.assertTrue(ChatUtils.areComponentsEqual(
             ItemUtils.getComponentDisplayName(formerItem),
@@ -92,15 +85,9 @@ public class ItemMetaTests {
     public void testBaseComponent() {
         // Setup
         final var formerItem = TEMPLATE_ITEM.clone();
-        ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
-            meta.setDisplayName("Hello!");
-            return true;
-        });
+        formerItem.editMeta((meta) -> meta.setDisplayName("Hello!"));
         final var latterItem = TEMPLATE_ITEM.clone();
-        ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
-            meta.displayName(Component.text("Hello!"));
-            return true;
-        });
+        latterItem.editMeta((meta) -> meta.displayName(Component.text("Hello!")));
         // Check
         Assertions.assertTrue(ChatUtils.isBaseComponent(
             ItemUtils.getComponentDisplayName(formerItem)));

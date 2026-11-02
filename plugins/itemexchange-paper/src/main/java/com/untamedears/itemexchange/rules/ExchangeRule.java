@@ -442,10 +442,9 @@ public final class ExchangeRule implements ExchangeData {
             (nbt) -> nbt.put(RULE_KEY, itemNBT.internal())
         );
 
-        ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
+        item.editMeta((meta) -> {
             meta.setDisplayName(getRuleTitle());
             meta.setLore(getRuleDetails());
-            return true;
         });
         return item;
     }
