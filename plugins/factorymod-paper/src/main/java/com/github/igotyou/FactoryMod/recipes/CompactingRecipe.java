@@ -1,13 +1,12 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.compaction.Compaction;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.inventory.Inventory;
@@ -25,13 +24,11 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 public class CompactingRecipe extends InputRecipe {
 
     private List<Material> excludedMaterials;
-    private String compactedLore;
 
     public CompactingRecipe(String identifier, ItemMap input, List<Material> excludedMaterial,
-                            String name, int productionTime, String compactedLore) {
+                            String name, int productionTime) {
         super(identifier, name, productionTime, input);
         this.excludedMaterials = excludedMaterial;
-        this.compactedLore = compactedLore;
     }
 
     @Override
@@ -160,11 +157,7 @@ public class CompactingRecipe extends InputRecipe {
      * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
      */
     private void compactStack(ItemStack is) {
-        is.editMeta(meta -> {
-            List<Component> lore = !meta.hasLore() ? new ArrayList<>() : meta.lore();
-            lore.add(Component.empty().append(Component.text(compactedLore)));
-            meta.lore(lore);
-        });
+        is.editMeta(Compaction::markAsCompacted);
         is.setAmount(1);
     }
 
@@ -190,8 +183,7 @@ public class CompactingRecipe extends InputRecipe {
      * @return True if compacting the stack is allowed, false if not
      */
     private boolean compactable(ItemStack is, ItemMap im) {
-        if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || (is.getItemMeta().getLore() != null &&
-            is.getItemMeta().getLore().contains(compactedLore))) {
+        if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || Compaction.hasCompactedLore(is.getItemMeta())) {
             return false;
         }
         if (Tag.ITEMS_BUNDLES.isTagged(is.getType())) {
@@ -203,10 +195,6 @@ public class CompactingRecipe extends InputRecipe {
     @Override
     public String getTypeIdentifier() {
         return "COMPACT";
-    }
-
-    public String getCompactedLore() {
-        return compactedLore;
     }
 
     public List<Material> getExcludedMaterials() {

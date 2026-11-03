@@ -1,19 +1,17 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.compaction.Compaction;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
@@ -22,12 +20,8 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
  */
 public class DecompactingRecipe extends InputRecipe {
 
-    private final String compactedLore;
-
-    public DecompactingRecipe(String identifier, ItemMap input, String name, int productionTime,
-                              String compactedLore) {
+    public DecompactingRecipe(String identifier, ItemMap input, String name, int productionTime) {
         super(identifier, name, productionTime, input);
-        this.compactedLore = compactedLore;
     }
 
     @Override
@@ -37,7 +31,7 @@ public class DecompactingRecipe extends InputRecipe {
         }
         for (ItemStack is : inputInv.getContents()) {
             if (is != null) {
-                if (isDecompactable(is)) {
+                if (Compaction.isCompacted(is)) {
                     return true;
                 }
             }
@@ -50,10 +44,10 @@ public class DecompactingRecipe extends InputRecipe {
         boolean isFeasible = true;
         for (ItemStack itemStack : inputInv.getContents()) {
             if (itemStack != null) {
-                if (isDecompactable(itemStack)) {
+                if (Compaction.isCompacted(itemStack)) {
                     ItemStack removeClone = itemStack.clone();
                     removeClone.setAmount(1);
-                    removeCompactLore(removeClone);
+                    removeClone.editMeta(Compaction::demarkAsCompacted);
                     ItemMap toAdd = new ItemMap();
                     toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone));
                     if (!InventoryUtils.safelyAddItemsToInventory(
@@ -77,12 +71,12 @@ public class DecompactingRecipe extends InputRecipe {
         if (input.isContainedIn(inputInv)) {
             for (ItemStack is : inputInv.getContents()) {
                 if (is != null) {
-                    if (isDecompactable(is)) {
+                    if (Compaction.isCompacted(is)) {
                         ItemStack removeClone = is.clone();
                         removeClone.setAmount(1);
                         ItemMap toRemove = new ItemMap(removeClone);
                         ItemMap toAdd = new ItemMap();
-                        removeCompactLore(removeClone);
+                        removeClone.editMeta(Compaction::demarkAsCompacted);
                         toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone));
                         ItemStack[] itemsToAdd = toAdd.getItemStackRepresentation().toArray(new ItemStack[0]);
                         if (!InventoryUtils.safelyAddItemsToInventory(
@@ -110,7 +104,7 @@ public class DecompactingRecipe extends InputRecipe {
         List<ItemStack> result = new LinkedList<>();
         if (i == null) {
             ItemStack is = new ItemStack(Material.STONE, 64);
-            ItemUtils.addLore(is, compactedLore);
+            Compaction.markAsCompacted(is.getItemMeta());
             is.setAmount(1);
             result.add(is);
             return result;
@@ -118,7 +112,7 @@ public class DecompactingRecipe extends InputRecipe {
         result = createLoredStacksForInfo(i);
         for (ItemStack is : i.getContents()) {
             if (is != null) {
-                if (isDecompactable(is)) {
+                if (Compaction.isCompacted(is)) {
                     ItemStack compactedStack = is.clone();
                     result.add(compactedStack);
                     break;
@@ -142,9 +136,9 @@ public class DecompactingRecipe extends InputRecipe {
         }
         for (ItemStack is : i.getContents()) {
             if (is != null) {
-                if (isDecompactable(is)) {
+                if (Compaction.isCompacted(is)) {
                     ItemStack copy = is.clone();
-                    removeCompactLore(copy);
+                    copy.editMeta(Compaction::demarkAsCompacted);
                     ItemMap output = new ItemMap();
                     output.addItemAmount(copy, CompactingRecipe.getCompactStackSize(copy));
                     result.addAll(output.getItemStackRepresentation());
@@ -154,39 +148,9 @@ public class DecompactingRecipe extends InputRecipe {
         return result;
     }
 
-    private boolean isDecompactable(ItemStack is) {
-        if (Tag.ITEMS_BUNDLES.isTagged(is.getType())) {
-            return false;
-        }
-        List<String> lore = is.getItemMeta().getLore();
-        if (lore != null) {
-            for (String content : lore) {
-                if (content.equals(compactedLore)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void removeCompactLore(ItemStack is) {
-        is.editMeta(meta -> {
-            if (!meta.hasLore()) {
-                return;
-            }
-            List<Component> lore = meta.lore();
-            lore.remove(Component.empty().append(Component.text(compactedLore)));
-            meta.lore(lore);
-        });
-    }
-
     @Override
     public String getTypeIdentifier() {
         return "DECOMPACT";
-    }
-
-    public String getCompactedLore() {
-        return compactedLore;
     }
 
     @Override
