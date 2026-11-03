@@ -1,32 +1,25 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
-import com.google.common.base.Strings;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import java.security.SecureRandom;
+import java.util.Random;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.md_5.bungee.api.ChatColor;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.bee.Bee;
-import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import org.apache.commons.collections4.IterableUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -35,19 +28,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class BeeKeeping extends BasicHack {
 
@@ -122,104 +105,79 @@ public final class BeeKeeping extends BasicHack {
     // Bee Hive/Nest Details
     // ------------------------------------------------------------
 
-    private static final String BEES_LIST_KEY = "Bees";
-    private static final String BEE_DATA_KEY = "EntityData";
-    private static final String BEE_NAME_KEY = "CustomName";
-
-    private static final Set<Material> HIVE_MATERIALS = Set.of(
-        Material.BEE_NEST,
-        Material.BEEHIVE);
-
     @EventHandler(ignoreCancelled = true)
     public void showHiveDetails(final PlayerInteractEvent event) {
-        final Player player = event.getPlayer();
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        final Block block = event.getClickedBlock();
+        if (block == null) {
+            return;
+        }
+        final Material blockMaterial = block.getType();
+        if (!Tag.BEEHIVES.isTagged(blockMaterial)) {
             return;
         }
         final ItemStack held = event.getItem();
         if (ItemUtils.isValidItem(held)) {
             return;
         }
-        final Block block = Objects.requireNonNull(event.getClickedBlock());
-        if (!HIVE_MATERIALS.contains(block.getType())) {
-            return;
-        }
-        final BeehiveBlockEntity beehive = getBeeHive(block);
-        if (beehive.isEmpty()) {
-            player.sendMessage(ChatColor.GOLD + "There aren't any bees in that hive.");
-            return;
-        }
-        final List<BeeData> bees = getBeesFromHive(beehive);
-        final int numberOfUnnamed = (int) IterableUtils.countMatches(bees, BeeData::isNameless);
-        bees.removeIf(BeeData::isNameless);
-        // Start building response
-        final var response = Component.text().color(NamedTextColor.GOLD);
-        final Iterator<BeeData> nameIterator = bees.iterator();
-        boolean doneFirstElement = false;
-        while (nameIterator.hasNext()) {
-            final BeeData bee = nameIterator.next();
-            if (nameIterator.hasNext() || numberOfUnnamed > 0) {
-                if (doneFirstElement) {
-                    response.append(Component.text(", "));
+        record HiveState(int count, boolean sedated) {}
+        final HiveState state = switch (block.getState()) {
+            case final org.bukkit.block.Beehive hive -> new HiveState(hive.getEntityCount(), hive.isSedated());
+            case null, default -> null;
+        };
+        enum HoneyLevel { EMPTY, PARTIAL, FULL }
+        final HoneyLevel level = switch (block.getBlockData()) {
+            case final org.bukkit.block.data.type.Beehive hive -> {
+                final int tempLevel = hive.getHoneyLevel();
+                if (tempLevel <= 0) {
+                    yield HoneyLevel.EMPTY;
                 }
-            } else if (numberOfUnnamed == 0) {
-                response.append(Component.text(", and "));
+                if (tempLevel >= hive.getMaximumHoneyLevel()) {
+                    yield HoneyLevel.FULL;
+                }
+                yield HoneyLevel.PARTIAL;
             }
-            assert bee.name != null;
-            response.append(bee.name);
-            doneFirstElement = true;
-        }
-        if (numberOfUnnamed > 0) {
-            if (bees.isEmpty()) {
-                response.append(Component.text("There are " + numberOfUnnamed + " bees"));
-            } else {
-                response.append(Component.text(", and " + numberOfUnnamed + " others are"));
+            case null, default -> null;
+        };
+        event.getPlayer().sendMessage(Component.textOfChildren(
+            Component.text("Hive type: ", NamedTextColor.YELLOW),
+            Component.text()
+                .color(NamedTextColor.WHITE)
+                .append(Component.translatable(blockMaterial))
+                .hoverEvent(HoverEvent.showText(Component.translatable(
+                    "chat.coordinates",
+                    Component.text(block.getX()),
+                    Component.text(block.getY()),
+                    Component.text(block.getZ())
+                ))),
+            Component.newline(),
+            Component.text("Bee count: ", NamedTextColor.YELLOW),
+            switch (state) {
+                case null -> Component.text("unknown", NamedTextColor.RED);
+                case HiveState(var amount, _) when amount == 1 -> Component.text("1 bee", NamedTextColor.WHITE);
+                case HiveState(var amount, _) -> Component.text("%s bees".formatted(amount), NamedTextColor.WHITE);
+            },
+            Component.newline(),
+            Component.text("Condition: ", NamedTextColor.YELLOW),
+            switch (state) {
+                case null -> Component.text("unknown", NamedTextColor.RED);
+                case HiveState(_, var sedated) when sedated -> Component.text("sedated", NamedTextColor.WHITE);
+                case HiveState(_, _) -> Component.text("normal", NamedTextColor.WHITE);
+            },
+            Component.newline(),
+            Component.text("Honey level: ", NamedTextColor.YELLOW),
+            switch (level) {
+                case null -> Component.text("unknown", NamedTextColor.RED);
+                case EMPTY -> Component.text("empty", NamedTextColor.WHITE);
+                case PARTIAL -> Component.text("insufficient", NamedTextColor.WHITE);
+                case FULL -> Component.text("full", NamedTextColor.WHITE);
             }
-        } else {
-            response.append(Component.text(" are"));
-        }
-        if (beehive.isSedated()) {
-            response.append(Component.text(" sedated"));
-        } else {
-            response.append(Component.text(" happily buzzing"));
-        }
-        response.append(Component.text(" in that hive."));
-        player.sendMessage(response);
-    }
-
-    private static BeehiveBlockEntity getBeeHive(@NotNull final Block block) {
-        final CraftBlock craftBlock = (CraftBlock) block;
-        final CraftWorld craftWorld = craftBlock.getCraftWorld();
-        final ServerLevel worldServer = craftWorld.getHandle();
-        final BlockEntity tileEntity = worldServer.getBlockEntity(craftBlock.getPosition());
-        return (BeehiveBlockEntity) Objects.requireNonNull(tileEntity);
-    }
-
-    private static List<BeeData> getBeesFromHive(@NotNull final BeehiveBlockEntity hive) {
-        List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES).bees();
-
-		return bees.stream().map(bee -> bee.entityData().copyTagWithoutId()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
-	}
-
-    private static final class BeeData {
-
-        public final Component name;
-
-        public BeeData(@NotNull final CompoundTag nbt) {
-            // Parse name
-            final String rawName = nbt.getString(BEE_NAME_KEY).get();
-            if (Strings.isNullOrEmpty(rawName)) {
-                this.name = null;
-            } else {
-                final var componentName = GsonComponentSerializer.gson().deserialize(rawName);
-                this.name = ChatUtils.isNullOrEmpty(componentName) ? null : componentName;
-            }
-        }
-
-        public boolean isNameless() {
-            return this.name == null;
-        }
-
+        ));
     }
 
 }
