@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -13,17 +12,13 @@ import co.aikar.commands.annotation.Syntax;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
-import vg.civcraft.mc.civmodcore.commands.TabComplete;
 
 public final class PlayerStatistics extends BasicHack {
 
@@ -91,34 +86,16 @@ public final class PlayerStatistics extends BasicHack {
         @CommandCompletion("@players @stats @nothing")
         public void setPlayerStatistic(final CommandSender sender,
                                        final String playerName,
-                                       final String statName,
+                                       final Statistic statistic,
                                        final int value) {
             final Player player = Bukkit.getPlayer(playerName);
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + "Could not find that player.");
                 return;
             }
-            final Statistic statistic = EnumUtils.getEnumIgnoreCase(Statistic.class, statName);
-            if (statistic == null) {
-                sender.sendMessage(ChatColor.RED + "Could not find that statistic.");
-                return;
-            }
             player.setStatistic(statistic, value);
             sender.sendMessage(ChatColor.GOLD + player.getName() + " [" + statistic.name() + "] set to: " +
                 ChatColor.WHITE + player.getStatistic(statistic));
-        }
-
-        @TabComplete("stats")
-        public List<String> tabCompleteStatistics(final BukkitCommandCompletionContext context) {
-            final List<String> results = new ArrayList<>();
-            for (final Statistic statistic : Statistic.values()) {
-                final String slug = statistic.name();
-                if (!StringUtils.startsWith(slug, context.getInput())) {
-                    continue;
-                }
-                results.add(slug);
-            }
-            return results;
         }
 
     }
