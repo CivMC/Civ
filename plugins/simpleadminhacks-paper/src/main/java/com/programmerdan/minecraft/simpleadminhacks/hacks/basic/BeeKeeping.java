@@ -8,7 +8,6 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.world.entity.animal.bee.Bee;
 import org.bukkit.Bukkit;
@@ -146,15 +145,7 @@ public final class BeeKeeping extends BasicHack {
         };
         event.getPlayer().sendMessage(Component.textOfChildren(
             Component.text("Hive type: ", NamedTextColor.YELLOW),
-            Component.text()
-                .color(NamedTextColor.WHITE)
-                .append(Component.translatable(blockMaterial))
-                .hoverEvent(HoverEvent.showText(Component.translatable(
-                    "chat.coordinates",
-                    Component.text(block.getX()),
-                    Component.text(block.getY()),
-                    Component.text(block.getZ())
-                ))),
+            Component.translatable(block, NamedTextColor.WHITE),
             Component.newline(),
             Component.text("Bee count: ", NamedTextColor.YELLOW),
             switch (state) {
