@@ -118,10 +118,12 @@ public final class BanHandler {
             player.setBan(ban);
 
             if (spigotPlayer != null) {
-                if (banEnd != null) {
-                    spigotPlayer.kickPlayer(message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd));
+                final String kickMessage = banEnd != null
+                    ? message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd) : message;
+                if (Bukkit.isPrimaryThread()) {
+                    spigotPlayer.kickPlayer(kickMessage);
                 } else {
-                    spigotPlayer.kickPlayer(message);
+                    Bukkit.getScheduler().runTask(BanStick.getPlugin(), () -> spigotPlayer.kickPlayer(kickMessage));
                 }
             }
 

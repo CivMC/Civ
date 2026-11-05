@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.banstick.handler;
 
 import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.commands.BanPlayerCommand;
 import com.programmerdan.minecraft.banstick.commands.BanRegistrarCommand;
 import com.programmerdan.minecraft.banstick.commands.BanSaveCommand;
 import com.programmerdan.minecraft.banstick.commands.BanStickCommand;
@@ -29,6 +30,7 @@ public class BanStickCommandHandler {
 
     private void registerCommands() {
         safeRegisterCommand(BanStickCommand.name, new BanStickCommand());
+        safeRegisterCommand("banplayer", new BanPlayerCommand());
         safeRegisterCommand(DoubleTapCommand.name, new DoubleTapCommand());
         safeRegisterCommand(ForgiveCommand.name, new ForgiveCommand());
         safeRegisterCommand(BanSaveCommand.name, new BanSaveCommand());

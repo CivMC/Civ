@@ -1,3 +1,9 @@
+banplayer:
+  # Hints support MiniMessage formatting and are only shown to the moderator.
+  rules:
+    - rule: Other
+      hint: ''
+
 # Define here the database connection primitives.
 #  poolsize: How many connections to maintain at maximum
 #  connectionTimeout: In milliseconds, how long to wait for replies before timing out

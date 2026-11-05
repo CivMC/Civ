@@ -43,7 +43,7 @@ public class AdvancedFortificationState extends AbstractPlayerState {
             return;
         }
         Group group = GroupManager.getGroup(setup.groupName);
-        boolean hadError = CitadelUtility.attemptReinforcementCreation(e.getBlock(), setup.type, group, setup.groupName, e.getPlayer());
+        boolean hadError = CitadelUtility.attemptReinforcementCreation(e.getBlock(), setup.type, group, setup.groupName, e.getPlayer(), e.getHand());
         if (hadError) {
             e.setCancelled(true);
             Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);

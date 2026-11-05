@@ -1,3 +1,50 @@
+# Rules offered by /banplayer, also shown in the ban message. Multiple selections are allowed.
+banplayer:
+  # Hints support MiniMessage formatting and are only shown to the moderator.
+  rules:
+    - rule: Alting
+      hint: <red>Permanent ban
+    - rule: Harassment, discrimination, or hateful conduct
+      hint: ''
+    - rule: Graphically NSFW content
+      hint: ''
+    - rule: Doxxing or sharing another player's personal information
+      hint: ''
+    - rule: Failure to report known rule breaking
+      hint: ''
+    - rule: Strong association with rule breakers
+      hint: ''
+    - rule: Overall unpleasant person
+      hint: ''
+    - rule: Playing while under 13
+      hint: ''
+    - rule: VPN, VPS, or proxy use
+      hint: <red>Permanent ban
+    - rule: Trading in-game goods or services for out-of-game value
+      hint: ''
+    - rule: Distributing malicious code
+      hint: ''
+    - rule: Xray or obtaining otherwise unavailable information
+      hint: <red>6 months
+    - rule: Bug abuse or item duplication
+      hint: ''
+    - rule: Block glitching into or accessing inaccessible areas
+      hint: <red>3 months
+    - rule: Bots or scripts directly assisting combat
+      hint: ''
+    - rule: World downloads, maps, or replays revealing otherwise unknown information
+      hint: ''
+    - rule: Y-levels or map cave mode outside the Nether
+      hint: <red>1 month
+    - rule: Non-vanilla world reading or placement beyond non-gameplay vanity builds
+      hint: ''
+    - rule: Illegal client modifications
+      hint: ''
+    - rule: Illegal botting
+      hint: ''
+    - rule: Other
+      hint: ''
+
 # Define here the database connection primitives.
 #  poolsize: How many connections to maintain at maximum
 #  connectionTimeout: In milliseconds, how long to wait for replies before timing out

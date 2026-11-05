@@ -10,8 +10,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -138,8 +141,34 @@ public class CitadelUtility {
         return true;
     }
 
+    private static boolean reinforcementRemovalTouchesPlacementStack(final @NotNull PlayerInventory inventory,
+                                                                      final @NotNull ItemStack reinforcementItem,
+                                                                      final @NotNull EquipmentSlot placementHand) {
+        final boolean mainHand = placementHand == EquipmentSlot.HAND;
+        final ItemStack placingStack = inventory.getItem(placementHand);
+        if (!placingStack.isSimilar(reinforcementItem)) {
+            return false;
+        }
+
+        int remaining = reinforcementItem.getAmount();
+        final ItemStack[] storage = inventory.getStorageContents();
+        for (int slot = 0; slot < storage.length; slot++) {
+            if (remaining <= 0) {
+                return false;
+            }
+            if (mainHand && slot == inventory.getHeldItemSlot()) {
+                return true;
+            }
+            final ItemStack stack = storage[slot];
+            if (stack != null && stack.isSimilar(reinforcementItem)) {
+                remaining -= stack.getAmount();
+            }
+        }
+        return !mainHand && remaining > 0;
+    }
+
     public static boolean attemptReinforcementCreation(Block block, ReinforcementType type, Group group, String groupName,
-                                                       Player player) {
+                                                       Player player, final @Nullable EquipmentSlot placementHand) {
         // check if group still exists
         if (group == null || !group.isValid()) {
             CitadelUtility.sendAndLog(player, ChatColor.RED,
@@ -181,22 +210,11 @@ public class CitadelUtility {
         // check inventory
         int available = playerItems.getAmount(type.getItem());
         int required = type.getItem().getAmount();
-        // special handling if the reinforcement material is also the block being placed
-        // consuming the reinforcement material once will count the block being placed as reinforcing itself
-        // so detect that and consume an extra one
-        boolean consumeExtra = false;
-        //We do this over a material check to keep lore/name support intact etc
-        ItemStack offfhandStack = player.getInventory().getItemInOffHand().clone();
-        offfhandStack.setAmount(1);
-
-        boolean blockIsAlsoReinforcement = block.getType() == type.getItem().getType();
-        if (blockIsAlsoReinforcement) {
-            boolean placingFromReinforcementStack = (player.getInventory().getHeldItemSlot() == player.getInventory().first(block.getType())) ||
-                (offfhandStack.equals(type.getItem()));
-            if (placingFromReinforcementStack) {
-                consumeExtra = true;
-                required++;
-            }
+        // Paper skips its placement deduction if we modify the placing stack during the event.
+        final boolean consumeExtra = placementHand != null
+            && reinforcementRemovalTouchesPlacementStack(player.getInventory(), type.getItem(), placementHand);
+        if (consumeExtra) {
+            required++;
         }
         if (available < required) {
             Citadel.getInstance().getStateManager().setState(player, null);
