@@ -7,6 +7,10 @@ api-version: 1.21.3
 depend: [ CivModCore ]
 softdepend: [ IP-Check, NameLayer ]
 commands:
+  banplayer:
+    description: Ban a player using a dialog with expiration, rules, and an extra note.
+    permission: banstick.ban
+    usage: /<command> <player>
   banstick:
     description: Swing that banstick, send nerds flying.
     aliases: [ bst, stickofdoom, banhammer ]

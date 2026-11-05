@@ -21,6 +21,8 @@ services:
     # Note that config and plugins are mounted into the DATA directory, to avoid propagating to the config bind mount
     volumes:
       - ./PrivateConfig/paper/plugins/Vulcan.jar:/privateconfig/plugins/Vulcan.jar
+      - ./PrivateConfig/paper/plugins/NM.jar:/privateconfig/plugins/NM.jar
+      - ./PrivateConfig/paper/config/NM/config.yml:/privateconfig/plugins/NM/config.yml
       - ./PrivateConfig/paper/plugins/packetevents-spigot-2.10.1.jar:/privateconfig/plugins/packetevents-spigot-2.10.1.jar
       - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml
       - ./PrivateConfig/paper/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml

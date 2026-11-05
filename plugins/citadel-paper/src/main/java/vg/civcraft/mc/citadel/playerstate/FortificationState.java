@@ -45,7 +45,7 @@ public class FortificationState extends AbstractPlayerState {
         if (ReinforcementLogic.getReinforcementAt(block.getLocation()) != null) {
             return;
         }
-        if (CitadelUtility.attemptReinforcementCreation(block, type, getGroup(), groupName, player)) { // true == fail
+        if (CitadelUtility.attemptReinforcementCreation(block, type, getGroup(), groupName, player, event.getHand())) { // true == fail
             Citadel.getInstance().getStateManager().setState(player, null);
             event.setCancelled(true);
             //return;
