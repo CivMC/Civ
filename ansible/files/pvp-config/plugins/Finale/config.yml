@@ -653,6 +653,6 @@ fireworkExplosions: true
 rebalanceTntMinecart: true
 
 mace:
-  cooldown: 800
+  cooldown: 400
   max_damage: 38
   wind_cooldown: 3
