@@ -80,7 +80,7 @@ public class KiraGateway {
             queueStatusTask = proxy.getScheduler().buildTask(this, () -> {
                 final QueueServer main = AjQueueAPI.getInstance().getQueueManager().findServer("main");
                 if (main != null) {
-                    rabbitCommands.sendQueueStatus(main.getQueueHolder().getTotalQueueSize());
+                    rabbitCommands.sendQueueStatus(main.getQueueHolder().getTotalOnlineQueueSize());
                 }
             }).delay(Duration.ofSeconds(1)).repeat(Duration.ofSeconds(30)).schedule();
         }
