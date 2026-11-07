@@ -10,7 +10,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
-import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
 public final class NBTEncodings {
@@ -34,7 +33,7 @@ public final class NBTEncodings {
             if (!MoreMapUtils.validEntry(entry)) {
                 continue;
             }
-            nbt.setInt(KeyedUtils.getString(entry.getKey()), entry.getValue());
+            nbt.setInt(entry.getKey().key().asString(), entry.getValue());
         }
         return nbt;
     }
