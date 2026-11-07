@@ -63,7 +63,10 @@ public final class LoreModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         if (this.lore == null) {
             nbt.remove(LORE_KEY);
         } else {

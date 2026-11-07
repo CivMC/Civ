@@ -208,7 +208,10 @@ public final class ExchangeRule implements ExchangeData {
     }
 
     @Override
-    public void toNBT(@NotNull final NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         nbt.setInt(VERSION_KEY, 4);
         nbt.setString(TYPE_KEY, this.type.name());
         nbt.setString(MATERIAL_KEY, this.material.name());
@@ -216,7 +219,7 @@ public final class ExchangeRule implements ExchangeData {
         nbt.setCompoundArray(MODIFIERS_KEY, this.modifiers.stream()
             .map((modifier) -> {
                 final var modifierNBT = new NbtCompound();
-                modifier.toNBT(modifierNBT);
+                modifier.toNBT(modifierNBT, exposed);
                 modifierNBT.setString(CLASS_KEY, modifier.getSlug());
                 return modifierNBT;
             })
@@ -434,7 +437,7 @@ public final class ExchangeRule implements ExchangeData {
     public ItemStack toItem() {
         ItemStack item = ItemExchangeConfig.getRuleItem();
 		final var itemNBT = new NbtCompound();
-		toNBT(itemNBT);
+		toNBT(itemNBT, false);
 
         CustomData.update(
             DataComponents.CUSTOM_DATA,

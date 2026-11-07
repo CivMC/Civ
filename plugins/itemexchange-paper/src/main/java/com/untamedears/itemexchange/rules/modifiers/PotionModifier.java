@@ -77,7 +77,10 @@ public final class PotionModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         nbt.setCompound(BASE_KEY, NBTEncodings.encodePotionData(this.base));
         nbt.setCompoundArray(EFFECTS_KEY, getEffects().stream()
             .map(NBTEncodings::encodePotionEffect)

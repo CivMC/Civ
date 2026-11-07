@@ -70,7 +70,7 @@ public abstract class ModifierData extends BaseCommand
      */
     public final ModifierData duplicate() {
         final var nbt = new NbtCompound();
-        toNBT(nbt);
+        toNBT(nbt, false);
         return NBTSerialization.getDeserializer(getClass()).fromNBT(nbt);
     }
 

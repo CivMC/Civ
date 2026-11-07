@@ -87,7 +87,10 @@ public final class BookModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         if (hasTitle()) {
             nbt.setString(TITLE_KEY, this.title);
         }
