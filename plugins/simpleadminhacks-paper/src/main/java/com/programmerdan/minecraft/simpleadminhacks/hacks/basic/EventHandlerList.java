@@ -33,7 +33,6 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
-import vg.civcraft.mc.civmodcore.commands.TabComplete;
 
 public final class EventHandlerList extends BasicHack {
 
@@ -102,7 +101,6 @@ public final class EventHandlerList extends BasicHack {
             sender.sendMessage(ChatColor.AQUA + "End of handlers.");
         }
 
-        @TabComplete("handlers")
         public List<String> tabCompleteEvents(final BukkitCommandCompletionContext context) {
             final List<String> results = new ArrayList<>();
             for (final Class<? extends Event> clazz : this.handlers.getHandlerCache().keySet()) {

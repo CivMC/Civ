@@ -5,19 +5,8 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.CommandCompletions;
-import co.aikar.commands.CommandCompletions.CommandCompletionHandler;
 import co.aikar.commands.CommandContexts;
-import com.google.common.base.Strings;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
@@ -94,14 +83,6 @@ public class CommandManager extends BukkitCommandManager {
     public final void registerCommand(@NotNull final BaseCommand command, final boolean forceReplace) {
         super.registerCommand(Objects.requireNonNull(command), forceReplace);
         this.logger.info("Command [" + command.getClass().getSimpleName() + "] registered.");
-        getTabCompletions(command.getClass()).forEach((method, annotation) -> {
-            if (annotation.async()) {
-                getCommandCompletions().registerAsyncCompletion(annotation.value(), (context) -> runCommandCompletion(context, command, annotation.value(), method));
-            } else {
-                getCommandCompletions().registerCompletion(annotation.value(), (context) -> runCommandCompletion(context, command, annotation.value(), method));
-            }
-            this.logger.info("Command Completer [" + annotation.value() + "] registered.");
-        });
     }
 
     /**
@@ -109,21 +90,10 @@ public class CommandManager extends BukkitCommandManager {
      *
      * @param command The command instance to register.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public final void unregisterCommand(@NotNull final BaseCommand command) {
         super.unregisterCommand(Objects.requireNonNull(command));
         this.logger.info("Command [" + command.getClass().getSimpleName() + "] unregistered.");
-        final Map<String, CommandCompletionHandler<BukkitCommandCompletionContext>> internal;
-        try {
-            internal = (HashMap<String, CommandCompletionHandler<BukkitCommandCompletionContext>>) FieldUtils.readField(getCommandCompletions(), "completionMap", true);
-        } catch (final Throwable exception) {
-            throw new UnsupportedOperationException("Could not get internal completion map.", exception);
-        }
-        for (final TabComplete complete : getTabCompletions(command.getClass()).values()) {
-            internal.remove(complete.value().toLowerCase(Locale.ENGLISH));
-            this.logger.info("Command Completer [" + complete.value() + "] unregistered.");
-        }
     }
 
     /**
@@ -139,60 +109,6 @@ public class CommandManager extends BukkitCommandManager {
     public final void reset() {
         unregisterCommands();
         unregisterCompletions();
-    }
-
-    // ------------------------------------------------------------
-    // Tab Completions
-    // ------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    private List<String> runCommandCompletion(final BukkitCommandCompletionContext context, final BaseCommand command, final String id, final Method method) {
-        try {
-            method.setAccessible(true);
-            return switch (method.getParameterCount()) {
-                case 0 -> (List<String>) method.invoke(command);
-                case 1 -> (List<String>) method.invoke(command, context);
-                default -> throw new UnsupportedOperationException("Unsupported number of parameters.");
-            };
-        } catch (final Throwable exception) {
-            this.logger.log(Level.WARNING, "Could not tab complete [@" + id + "]: an error with the handler!", exception);
-            return Collections.emptyList();
-        }
-    }
-
-    private static Map<Method, TabComplete> getTabCompletions(final Class<? extends BaseCommand> clazz) {
-        final var completions = new HashMap<Method, TabComplete>();
-        if (clazz == null) {
-            return completions;
-        }
-        for (final Method method : clazz.getDeclaredMethods()) {
-            if (!Modifier.isPublic(method.getModifiers())) {
-                continue;
-            }
-            if (!List.class.isAssignableFrom(method.getReturnType())) {
-                continue;
-            }
-            // TODO add a generic type check here when possible
-            switch (method.getParameterCount()) {
-                case 0:
-                    break;
-                case 1:
-                    if (BukkitCommandCompletionContext.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        break;
-                    }
-                default:
-                    continue;
-            }
-            final TabComplete tabComplete = method.getAnnotation(TabComplete.class);
-            if (tabComplete == null) {
-                continue;
-            }
-            if (Strings.isNullOrEmpty(tabComplete.value())) {
-                continue;
-            }
-            completions.put(method, tabComplete);
-        }
-        return completions;
     }
 
 }
