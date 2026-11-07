@@ -480,13 +480,11 @@ public final class OldEnchanting extends BasicHack {
         if (!ItemUtils.isValidItem(result)) {
             return;
         }
-        ItemUtils.handleItemMeta(result, (Repairable meta) -> {
+        result.editMeta(Repairable.class, (meta) -> {
             final int newRepairCost = this.maxRepairCost - 2;
-            if (meta.getRepairCost() < newRepairCost) {
-                return false;
+            if (meta.getRepairCost() > newRepairCost) {
+                meta.setRepairCost(newRepairCost);
             }
-            meta.setRepairCost(newRepairCost);
-            return true;
         });
         event.setResult(result);
     }

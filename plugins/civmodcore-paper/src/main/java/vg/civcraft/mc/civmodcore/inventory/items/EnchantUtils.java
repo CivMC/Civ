@@ -4,8 +4,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -16,7 +16,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
@@ -213,8 +212,7 @@ public final class EnchantUtils {
                                          @NotNull final Enchantment enchantment,
                                          final int level,
                                          final boolean onlyAllowSafeEnchantments) {
-        return ItemUtils.handleItemMeta(Objects.requireNonNull(item), (ItemMeta meta) ->
-            meta.addEnchant(enchantment, level, !onlyAllowSafeEnchantments));
+        return item.editMeta((meta) -> meta.addEnchant(enchantment, level, !onlyAllowSafeEnchantments));
     }
 
     /**
@@ -226,9 +224,7 @@ public final class EnchantUtils {
      */
     public static boolean removeEnchantment(@NotNull final ItemStack item,
                                             @Nullable final Enchantment enchant) {
-        return enchant == null
-            || ItemUtils.handleItemMeta(Objects.requireNonNull(item),
-            (ItemMeta meta) -> meta.removeEnchant(enchant));
+        return enchant == null || item.editMeta((meta) -> meta.removeEnchant(enchant));
     }
 
     /**
@@ -237,10 +233,7 @@ public final class EnchantUtils {
      * @param item The item to clear enchantment from.
      */
     public static void clearEnchantments(@NotNull final ItemStack item) {
-        ItemUtils.handleItemMeta(Objects.requireNonNull(item), (ItemMeta meta) -> {
-            meta.getEnchants().forEach((key, value) -> meta.removeEnchant(key));
-            return true;
-        });
+        item.unsetData(DataComponentTypes.ENCHANTMENTS);
     }
 
 }
