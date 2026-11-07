@@ -12452,7 +12452,6 @@ recipes:
           ==: ItemMeta
           lore:
             - Crate
-    compact_lore: Compacted Item
     excluded_materials:
       - BOOK
   decompact:
@@ -12461,7 +12460,6 @@ recipes:
     name: Decompact
     type: DECOMPACT
     input:
-    compact_lore: Compacted Item
   repair_compactor:
     production_time: 4s
     name: Repair Factory

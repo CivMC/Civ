@@ -57,7 +57,6 @@ public class FactoryModManager {
     private int maxOutputChests;
     private int maxFuelChests;
     private int maxTotalIOFChests;
-    private Set<String> compactLore;
     private Set<String> forceInclude;
     private FactoryModPlayerSettings playerSettings;
     private boolean canUpgrade;
@@ -86,7 +85,6 @@ public class FactoryModManager {
         factories = new HashSet<>();
         totalSetupCosts = new HashMap<>();
         recipes = new HashMap<>();
-        compactLore = new HashSet<>();
         forceInclude = new HashSet<>();
         playerSettings = new FactoryModPlayerSettings(plugin);
 
@@ -108,25 +106,8 @@ public class FactoryModManager {
         possibleInteractionBlock.add(Material.DISPENSER);
     }
 
-    /**
-     * Sets the lore used for compacting recipes. This is needed for the compact
-     * item listeners
-     *
-     * @param lore Lore used for compacting items
-     */
-    public void addCompactLore(String lore) {
-        compactLore.add(lore);
-    }
-
     public boolean logInventories() {
         return logInventories;
-    }
-
-    /**
-     * @return Lore given to compacted items
-     */
-    public boolean isCompactLore(String lore) {
-        return compactLore.contains(lore);
     }
 
     /**
