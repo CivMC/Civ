@@ -15,4 +15,5 @@ dependencies {
     compileOnly(project(":plugins:heliodor-paper"))
     compileOnly(project(":plugins:zorweth-paper"))
     compileOnly(libs.worldedit)
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.6.3.jar"))
 }
