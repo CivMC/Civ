@@ -20365,12 +20365,12 @@ recipes:
     input:
       aluminium:
         custom-key: aluminium_ingot
-        amount: 8
+        amount: 4
       phantom_membrane:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PHANTOM_MEMBRANE
-        amount: 4
+        amount: 2
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC

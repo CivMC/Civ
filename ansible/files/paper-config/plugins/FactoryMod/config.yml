@@ -20370,7 +20370,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PHANTOM_MEMBRANE
-        amount: 4
+        amount: 2
         meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
