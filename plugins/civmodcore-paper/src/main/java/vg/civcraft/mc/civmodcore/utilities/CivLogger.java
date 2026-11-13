@@ -4,12 +4,10 @@ import com.destroystokyo.paper.utils.PaperPluginLogger;
 import java.util.Objects;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import io.papermc.paper.plugin.configuration.PluginMeta;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,18 +58,14 @@ public final class CivLogger extends Logger {
     private static CivLogger INTERNAL_generateLogger(@NotNull final ClassLoader loader,
                                                      @NotNull final Class<?> clazz) {
         if (loader instanceof final PluginClassLoader pluginClassLoader) {
-            final var plugin = pluginClassLoader.getPlugin();
+            final JavaPlugin plugin = pluginClassLoader.getPlugin();
             if (plugin != null) {
                 return new CivLogger(plugin.getLogger(), clazz.getSimpleName());
             }
-            // Plugin has been constructed but not initialised yet
-            final var descriptionField = FieldUtils.getDeclaredField(PluginClassLoader.class, "description", true);
-            try {
-                final var description = (PluginDescriptionFile) descriptionField.get(loader);
-                final var logger = PaperPluginLogger.getLogger((PluginMeta) description);
-                return new CivLogger(logger, clazz.getSimpleName());
-            } catch (final IllegalAccessException ignored) {
-            }
+            return new CivLogger(
+                PaperPluginLogger.getLogger(pluginClassLoader.getConfiguration()),
+                clazz.getSimpleName()
+            );
         }
         return new CivLogger(Bukkit.getLogger(), clazz.getSimpleName());
     }
