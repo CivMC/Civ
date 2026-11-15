@@ -1,8 +1,8 @@
 package sh.okx.railswitch;
 
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -31,14 +31,13 @@ public class DestSignListener implements Listener {
         var firstLine = plainSerializer.serialize(clickedSide.line(0)).trim();
         if (!destStrings.contains(firstLine)) return;
 
-        List<String> destinations = new ArrayList<>();
-        for (int i = 1; i < 4; i++) {
-            var line = plainSerializer.serialize(clickedSide.line(i));
-            // remove "/dest " from start if it exists as some players include it
-            line = line.replaceFirst("^/dest ", "").trim();
-            if (line.isEmpty()) continue;
-            destinations.add(line);
-        }
+        List<String> destinations = clickedSide.lines()
+            .stream()
+            .skip(1L) // Skip the [SET DEST] line
+            .map(plainSerializer::serialize)
+            .map((line) -> line.replaceFirst("^/dest ", "").trim())
+            .filter(Predicate.not(String::isEmpty))
+            .toList();
         if (destinations.isEmpty()) return;
 
         String currentDest = SettingsManager.getDestination(event.getPlayer());
