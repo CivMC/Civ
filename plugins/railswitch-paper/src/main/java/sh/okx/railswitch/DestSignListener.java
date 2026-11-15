@@ -1,7 +1,9 @@
 package sh.okx.railswitch;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.block.Block;
@@ -14,8 +16,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import sh.okx.railswitch.settings.SettingsManager;
 
 public class DestSignListener implements Listener {
+    private static final Set<String> DEST_STRINGS; static {
+        final Set<String> temp = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        temp.add("[SET DEST]");
+        temp.add("[SET DESTINATION]");
+        DEST_STRINGS = Collections.unmodifiableSet(temp);
+    }
 
-    private final List<String> destStrings = Arrays.asList("[SET DEST]", "[SET DESTINATION]");
     private static final PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
     @EventHandler
@@ -29,7 +36,7 @@ public class DestSignListener implements Listener {
 
         SignSide clickedSide = sign.getTargetSide(event.getPlayer());
         var firstLine = plainSerializer.serialize(clickedSide.line(0)).trim();
-        if (!destStrings.contains(firstLine)) return;
+        if (!DEST_STRINGS.contains(firstLine)) return;
 
         List<String> destinations = clickedSide.lines()
             .stream()
