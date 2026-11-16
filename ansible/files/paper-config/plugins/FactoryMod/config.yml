@@ -1540,7 +1540,7 @@ factories:
       resin:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: RESIN
+        type: RESIN_CLUMP
         amount: 32
       ancient_debris:
         v: 3839
@@ -19689,7 +19689,7 @@ recipes:
       resin:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: RESIN
+        type: RESIN_CLUMP
         amount: 4
       ancient_debris:
         v: 3839
@@ -19750,7 +19750,7 @@ recipes:
       resin:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: RESIN
+        type: RESIN_CLUMP
         amount: 4
       ancient_debris:
         v: 3839
