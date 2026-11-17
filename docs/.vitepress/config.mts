@@ -322,7 +322,7 @@ export default defineConfig({
 
         footer: {
             message: "NOT AN OFFICIAL MINECRAFT SERVER. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.",
-            'Copyright © 2023-present CivMC <a href="mailto:contact@civmc.net">Contact us</a>',
+            copyright: 'Copyright © 2023-present CivMC | <a href="mailto:contact@civmc.net">Contact us</a>',
         },
     },
 });
