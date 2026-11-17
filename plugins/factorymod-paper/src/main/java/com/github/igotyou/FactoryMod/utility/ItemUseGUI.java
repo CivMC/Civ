@@ -1,6 +1,7 @@
 package com.github.igotyou.FactoryMod.utility;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.compaction.Compaction;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
@@ -137,8 +138,7 @@ public class ItemUseGUI {
             }
         }
         if (recipe instanceof CompactingRecipe) {
-            CompactingRecipe output = (CompactingRecipe) recipe;
-            if (String.join("", ItemUtils.getLore(item)).equals(output.getCompactedLore())) {
+            if (Compaction.isCompacted(item)) {
                 return getItemRecipeStack(fccEgg, recipe, item);
             }
         }

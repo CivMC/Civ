@@ -482,7 +482,6 @@ factories:
 #           material: CHEST
 #           lore:
 #            - Crate
-#   compact_lore: Compacted Item
 #   excluded_materials:
 #    - BOOK
 
@@ -490,8 +489,6 @@ factories:
 #type always has to be COMPACT for this type of recipe
 
 #input specifies the compaction cost, ergo items that are consumed addtionally to the stack which is turned into a single item
-
-#compact_lore is the lore that will be added to the item to signalized that it's compacted
 
 #excluded_materials allows you to list materials, which will not be compactable. Per default anything that has a stack size of 1,
 #has lore or enchants is not compactable, but if you also want to prevent other items from being compactable, you can do that here.
@@ -509,15 +506,11 @@ factories:
 #   name: Decompaction recipe
 #   production_time: 5s
 #   input:
-#   compact_lore: Compact Item
 
 
 #type always has to be DECOMPACT here.
 
 #input is a list of items that get consumed as decompaction cost
-
-#compact_lore is the lore that is required on the compacted item. Ensure that the lore here and the one in the compaction recipe
-#are the same.
 
 
 #4. Repairrecipe
