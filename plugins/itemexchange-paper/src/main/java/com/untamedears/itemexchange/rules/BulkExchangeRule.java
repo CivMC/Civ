@@ -35,11 +35,14 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
     }
 
     @Override
-    public void toNBT(@NotNull final NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         nbt.setCompoundArray(RULES_KEY, this.rules.stream()
             .map((rule) -> {
                 final var ruleNBT = new NbtCompound();
-                rule.toNBT(ruleNBT);
+                rule.toNBT(ruleNBT, exposed);
                 return ruleNBT;
             })
             .toArray(NbtCompound[]::new));
@@ -55,7 +58,7 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
     public ItemStack toItem() {
         ItemStack item = ItemExchangeConfig.getRuleItem();
 		final var itemNBT = new NbtCompound();
-		toNBT(itemNBT);
+		toNBT(itemNBT, false);
 
         CustomData.update(
             DataComponents.CUSTOM_DATA,
