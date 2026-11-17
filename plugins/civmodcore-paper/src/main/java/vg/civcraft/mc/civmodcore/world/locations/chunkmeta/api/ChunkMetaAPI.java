@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMetaFactory;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMetaMemoryStats;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedStorageEngine;
@@ -98,6 +101,21 @@ public class ChunkMetaAPI {
         existingViews.put(plugin.getName(), view);
         ChunkMetaViewTracker.getInstance().put(view);
         return view;
+    }
+
+    /** Inspects cached block arrays only; must be called on the server thread. */
+    public static @NotNull Map<String, ChunkMetaMemoryStats> getMemoryStats() {
+        final Map<Short, ChunkMetaMemoryStats> statistics = CivModCorePlugin.getInstance()
+            .getChunkMetaManager().getMemoryStats();
+        final Map<String, ChunkMetaMemoryStats> namedStatistics = new TreeMap<>();
+        for (final Map.Entry<String, APIView> entry : existingViews.entrySet()) {
+            final ChunkMetaMemoryStats stats = statistics.remove(entry.getValue().pluginID);
+            if (stats != null) {
+                namedStatistics.put(entry.getKey(), stats);
+            }
+        }
+        statistics.forEach((id, stats) -> namedStatistics.put("Plugin ID " + id, stats));
+        return namedStatistics;
     }
 
     static void removePlugin(JavaPlugin plugin) {

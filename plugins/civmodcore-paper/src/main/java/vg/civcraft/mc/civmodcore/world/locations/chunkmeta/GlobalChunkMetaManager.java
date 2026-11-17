@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaViewTracker;
 import vg.civcraft.mc.civmodcore.world.locations.global.CMCWorldDAO;
@@ -152,6 +153,15 @@ public class GlobalChunkMetaManager {
         }
         WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id, this.chunkLoadingThreadCount, this.logger);
         worldToManager.put(world.getUID(), manager);
+    }
+
+    /** Returns an approximate snapshot of resident block-cache arrays across all worlds. */
+    public @NotNull Map<Short, ChunkMetaMemoryStats> getMemoryStats() {
+        final Map<Short, ChunkMetaMemoryStats> statistics = new TreeMap<>();
+        for (final WorldChunkMetaManager manager : worldToManager.values()) {
+            manager.collectMemoryStats(statistics);
+        }
+        return statistics;
     }
 
     public void disableWorlds() {

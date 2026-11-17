@@ -3,8 +3,10 @@ package vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block;
 import java.util.function.Consumer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMetaMemoryStats;
 
 /**
  * Four level cache holding abstract block tied data. This is similar to
@@ -342,6 +344,45 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
                 }
             }
         }
+    }
+
+    /** Inspects allocated arrays without loading data or allocating cache branches. */
+    public @NotNull ChunkMetaMemoryStats getMemoryStats() {
+        long level2Arrays = 0;
+        long level3Arrays = 0;
+        long level4Arrays = 0;
+        long allocatedSlots = 0;
+        long occupiedSlots = 0;
+        long estimatedBytes = ChunkMetaMemoryStats.estimateArrayBytes(data.length);
+        for (final BlockDataObject<D>[][][] level2 : data) {
+            if (level2 == null) {
+                continue;
+            }
+            level2Arrays++;
+            estimatedBytes += ChunkMetaMemoryStats.estimateArrayBytes(level2.length);
+            for (final BlockDataObject<D>[][] level3 : level2) {
+                if (level3 == null) {
+                    continue;
+                }
+                level3Arrays++;
+                estimatedBytes += ChunkMetaMemoryStats.estimateArrayBytes(level3.length);
+                for (final BlockDataObject<D>[] level4 : level3) {
+                    if (level4 == null) {
+                        continue;
+                    }
+                    level4Arrays++;
+                    estimatedBytes += ChunkMetaMemoryStats.estimateArrayBytes(level4.length);
+                    allocatedSlots += level4.length;
+                    for (final BlockDataObject<D> entry : level4) {
+                        if (entry != null) {
+                            occupiedSlots++;
+                        }
+                    }
+                }
+            }
+        }
+        return new ChunkMetaMemoryStats(1, level2Arrays, level3Arrays, level4Arrays,
+            allocatedSlots, occupiedSlots, estimatedBytes);
     }
 
     public static int modulo(int a) {

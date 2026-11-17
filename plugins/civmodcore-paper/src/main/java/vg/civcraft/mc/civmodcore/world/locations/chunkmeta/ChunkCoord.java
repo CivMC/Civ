@@ -10,8 +10,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaViewTracker;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 
 public class ChunkCoord extends XZWCoord {
@@ -84,6 +86,18 @@ public class ChunkCoord extends XZWCoord {
         }
         if (chunkMeta != null) {
             persistChunkMeta(chunkMeta);
+        }
+    }
+
+    public void collectMemoryStats(final @NotNull Map<Short, ChunkMetaMemoryStats> statistics) {
+        final List<ChunkMeta<?>> values;
+        synchronized (chunkMetas) {
+            values = new ArrayList<>(chunkMetas.values());
+        }
+        for (final ChunkMeta<?> meta : values) {
+            if (meta instanceof BlockBasedChunkMeta<?, ?> blockMeta) {
+                statistics.merge(meta.getPluginID(), blockMeta.getMemoryStats(), ChunkMetaMemoryStats::add);
+            }
         }
     }
 

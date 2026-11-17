@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Stores Chunk metadata for all plugins for one specific world. Metadata is
@@ -190,6 +191,16 @@ public class WorldChunkMetaManager {
     void loadChunk(int x, int z) {
         ChunkCoord chunkCoord = getChunkCoord(x, z, true, true);
         chunkCoord.minecraftChunkLoaded();
+    }
+
+    public void collectMemoryStats(final @NotNull Map<Short, ChunkMetaMemoryStats> statistics) {
+        final List<ChunkCoord> coordinates;
+        synchronized (metas) {
+            coordinates = new ArrayList<>(metas.values());
+        }
+        for (final ChunkCoord coordinate : coordinates) {
+            coordinate.collectMemoryStats(statistics);
+        }
     }
 
     private void registerRegularSaveRunnable() {

@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -29,7 +30,7 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
         this.plugin.registerListener(this);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Block brokenBlock = event.getBlock();
         if (!checkIfLeafBlock(brokenBlock)) {

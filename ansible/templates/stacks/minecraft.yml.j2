@@ -31,6 +31,7 @@ services:
 
             INIT_MEMORY: 3G
             MAX_MEMORY: 4G
+            JVM_OPTS: '-XX:-UseBASE64Intrinsics'
             CIV_POSTGRES_HOST: minecraft_postgres
             CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
             CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
@@ -119,7 +120,7 @@ services:
             CIV_WATCHDOG_TIMEOUT_TIME: 60
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
-            JVM_OPTS: '-agentpath:./libti.so -XX:ObjectAlignmentInBytes=16'
+            JVM_OPTS: '-agentpath:./libti.so -XX:ObjectAlignmentInBytes=16 -XX:-UseBASE64Intrinsics'
         volumes:
             # Persistence
             - /opt/stacks/minecraft/paper-data:/data
@@ -211,7 +212,7 @@ services:
             CIV_WATCHDOG_TIMEOUT_TIME: 60
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
-            JVM_OPTS: '-agentpath:./libti.so'
+            JVM_OPTS: '-agentpath:./libti.so -XX:-UseBASE64Intrinsics'
         volumes:
             # Persistence
             - /opt/stacks/minecraft/zorweth-data:/data
@@ -301,6 +302,7 @@ services:
             CIV_WATCHDOG_TIMEOUT_TIME: 60
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
+            JVM_OPTS: '-XX:-UseBASE64Intrinsics'
         volumes:
             # Persistence
             - /opt/stacks/minecraft/pvp-data:/data
