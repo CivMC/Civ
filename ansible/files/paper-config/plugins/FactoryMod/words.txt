@@ -17954,7 +17954,7 @@ Haitis
 Hajj
 Hajjar
 Hake
-Hakenkreuz
+StateProperty
 Hakumen
 Hakurei
 Halal
