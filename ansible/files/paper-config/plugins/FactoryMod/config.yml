@@ -15751,9 +15751,9 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: PRISMARINE_SHARD
           amount: 1
-      # Trash - 70% of total (0.175 each)
+      # Trash - 70% of total (0.175 each, cobblestone 0.17454545 to make room for Heart of the Sea)
       cobblestone:
-        chance: 0.175
+        chance: 0.17454545
         cobblestone:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -15779,6 +15779,14 @@ recipes:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: TERRACOTTA
+          amount: 1
+      # Rare - Heart of the Sea (0.00045454545)
+      heart_of_the_sea:
+        chance: 0.00045454545
+        heart_of_the_sea:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: HEART_OF_THE_SEA
           amount: 1
       # Spawn eggs - 2% of total (0.00045454545 each)
       vindicator:
