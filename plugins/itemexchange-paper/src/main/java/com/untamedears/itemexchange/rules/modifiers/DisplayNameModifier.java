@@ -59,7 +59,10 @@ public final class DisplayNameModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NbtCompound nbt) {
+    public void toNBT(
+        final @NotNull NbtCompound nbt,
+        final boolean exposed
+    ) {
         if (hasDisplayName()) {
             nbt.setString(DISPLAY_NAME_KEY, getDisplayName());
         } else {

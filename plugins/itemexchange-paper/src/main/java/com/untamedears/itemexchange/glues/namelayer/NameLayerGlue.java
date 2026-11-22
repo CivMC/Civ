@@ -25,7 +25,7 @@ public final class NameLayerGlue extends DependencyGlue {
             final GroupModifier modifier = event.getTrade().getInput().getModifiers().get(GroupModifier.class);
             if (!Validation.checkValidity(modifier)
                 || PermissionsGlue.PURCHASE_PERMISSION.testPermission(
-                GroupManager.getGroup(modifier.getGroupId()), event.getBrowser())) {
+                GroupManager.getGroup(modifier.getGroupName()), event.getBrowser())) {
                 return;
             }
             event.limitToBrowsing();

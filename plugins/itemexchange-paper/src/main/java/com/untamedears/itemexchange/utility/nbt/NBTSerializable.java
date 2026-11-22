@@ -6,15 +6,27 @@ import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 @Deprecated
 public interface NBTSerializable {
+    /// @param exposed Whether the resulting NBT will be exposed to the public and thus may need to conceal secrets.
+    default @NotNull NbtCompound toNBT(
+        final boolean exposed
+    ) {
+        final var nbt = new NbtCompound();
+        this.toNBT(nbt, exposed);
+        return nbt;
+    }
+
     /**
      * Serializes this class onto a given NBTCompound.
      *
      * @param nbt The NBTCompound to serialize into, which <i>should</i> NEVER be null, so feel free to throw an
      *            {@link NBTSerializationException} if it is. You can generally assume that the NBTCompound is new and
      *            therefore empty, but you <i>may</i> wish to check that.
+     *
+     * @param exposed Whether the resulting NBT will be exposed to the public and thus may need to conceal secrets.
      */
     void toNBT(
-        final @NotNull NbtCompound nbt
+        @NotNull NbtCompound nbt,
+        boolean exposed
     );
 
     /**
