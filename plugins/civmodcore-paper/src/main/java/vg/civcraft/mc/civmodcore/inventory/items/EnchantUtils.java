@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
-import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
 /**
  * Class of static utilities for Enchantments.
@@ -118,7 +117,7 @@ public final class EnchantUtils {
         }
         Enchantment enchantment;
         // From NamespacedKey
-        final var enchantmentKey = KeyedUtils.fromString(value);
+        final var enchantmentKey = NamespacedKey.fromString(value);
         if (enchantmentKey != null) {
             enchantment = Enchantment.getByKey(enchantmentKey);
             if (enchantment != null) {
