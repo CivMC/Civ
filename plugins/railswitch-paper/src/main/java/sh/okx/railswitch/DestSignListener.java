@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import sh.okx.railswitch.settings.SettingsManager;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class DestSignListener implements Listener {
     private static final Set<String> DEST_STRINGS; static {
@@ -26,7 +27,6 @@ public class DestSignListener implements Listener {
         DEST_STRINGS = Collections.unmodifiableSet(temp);
     }
 
-    BlockFace[] faces = { BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
 
 
     private static final PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
@@ -73,7 +73,7 @@ public class DestSignListener implements Listener {
     public void triggerObserver(Block block){
         Location signLoc = block.getLocation();
 
-        for (BlockFace face :  faces){
+        for (BlockFace face : WorldUtils.ALL_SIDES){
             Block faced = block.getRelative(face);
             if (faced.getBlockData() instanceof Observer observerData){
                 Location faceLoc = faced.getRelative(observerData.getFacing()).getLocation();
