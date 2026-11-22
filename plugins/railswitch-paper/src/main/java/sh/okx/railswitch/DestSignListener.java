@@ -6,14 +6,18 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.Observer;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import sh.okx.railswitch.settings.SettingsManager;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class DestSignListener implements Listener {
     private static final Set<String> DEST_STRINGS; static {
@@ -22,6 +26,8 @@ public class DestSignListener implements Listener {
         temp.add("[SET DESTINATION]");
         DEST_STRINGS = Collections.unmodifiableSet(temp);
     }
+
+
 
     private static final PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
@@ -61,5 +67,28 @@ public class DestSignListener implements Listener {
             nextIndex = 0;
         }
         SettingsManager.setDestination(event.getPlayer(), destinations.get(nextIndex));
+        triggerObserver(block);
     }
+
+    public void triggerObserver(Block block){
+        Location signLoc = block.getLocation();
+
+        for (BlockFace face : WorldUtils.ALL_SIDES){
+            Block faced = block.getRelative(face);
+            if (faced.getBlockData() instanceof Observer observerData){
+                Location faceLoc = faced.getRelative(observerData.getFacing()).getLocation();
+                if (signLoc.equals(faceLoc)){
+                    observerData.setPowered(true);
+                    faced.setBlockData(observerData);
+                    observerData.setPowered(false);
+                    faced.setBlockData(observerData);
+                }
+            }
+
+
+        }
+    }
+
+
+
 }
