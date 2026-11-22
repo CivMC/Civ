@@ -22,7 +22,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.Componentify;
 import vg.civcraft.mc.civmodcore.dialog.DialogHelpers;
@@ -148,7 +147,7 @@ public class SnitchLogGUI {
 
     private IClickable INTERNAL_constructInfoStack() {
         final var item = new ItemStack(Material.PAPER);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
+        item.editMeta((meta) -> {
             meta.displayName(Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
@@ -174,7 +173,6 @@ public class SnitchLogGUI {
                     .content("Type: ")
                     .append(Component.text(this.snitch.getType().getName()))
                     .build());
-            return true;
         });
         return new DecorationStack(item);
     }
@@ -182,7 +180,7 @@ public class SnitchLogGUI {
     private IClickable INTERNAL_constructLeverToggleClick() {
         final var leverAppender = this.snitch.getAppender(LeverToggleAppender.class);
         final var item = new ItemStack(Material.LEVER);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
+        item.editMeta((meta) -> {
             meta.displayName(Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
@@ -194,7 +192,6 @@ public class SnitchLogGUI {
                     .color(NamedTextColor.AQUA)
                     .content("Currently turned " + (leverAppender.shouldToggle() ? "on" : "off"))
                     .build());
-            return true;
         });
         if (INTERNAL_hasPermission(JukeAlertPermissionHandler.getToggleLevers())) {
             return new Clickable(item) {
@@ -271,7 +268,7 @@ public class SnitchLogGUI {
 
     public static IClickable constructExitClick() {
         final var item = new ItemStack(Material.OAK_DOOR);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
+        item.editMeta((meta) -> {
             meta.displayName(Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
@@ -283,7 +280,6 @@ public class SnitchLogGUI {
                     .color(NamedTextColor.AQUA)
                     .content("Click to exit GUI")
                     .build());
-            return true;
         });
         return new Clickable(item) {
             @Override

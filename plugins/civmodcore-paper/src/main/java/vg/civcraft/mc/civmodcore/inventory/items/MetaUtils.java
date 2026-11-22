@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
- * Class of static utilities for when you already have an instance of {@link ItemMeta}, such as inside of
- * {@link ItemUtils#handleItemMeta(ItemStack, Predicate)}'s handler, thus all the methods defined below will assume the
+ * Class of static utilities for when you already have an instance of {@link ItemMeta}, such as inside a
+ * {@link ItemStack#editMeta(Consumer)} handler, thus all the methods defined below will assume the
  * presence of a valid meta instance.
  */
 public final class MetaUtils {

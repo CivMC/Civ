@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
 import net.minecraft.core.component.DataComponents;
@@ -432,36 +431,6 @@ public final class ItemUtils {
             Objects.requireNonNull(editor)
         );
     }
-
-	/**
-	 * Handles an item's metadata.
-	 *
-	 * @param <T> The item meta type, which might not extend ItemMeta (Damageable for example)
-	 * @param item The item to handle the metadata of.
-	 * @param handler The item metadata handler, which should return true if modifications were made.
-	 * @return Returns true if the metadata was successfully handled.
-	 *
-	 * @see ItemStack#getItemMeta()
-	 */
-	@Contract("null, _ -> false; _, null -> false")
-	@SuppressWarnings("unchecked")
-	public static <T> boolean handleItemMeta(@Nullable final ItemStack item,
-											 @Nullable final Predicate<T> handler) {
-		if (item == null || handler == null) {
-			return false;
-		}
-		try {
-			final T meta = (T) item.getItemMeta();
-			if (meta == null) {
-				return false;
-			}
-			if (handler.test(meta)) {
-				return item.setItemMeta((ItemMeta) meta);
-			}
-		}
-		catch (ClassCastException ignored) { }
-		return false;
-	}
 
     // ------------------------------------------------------------
     // Deprecated Functions
