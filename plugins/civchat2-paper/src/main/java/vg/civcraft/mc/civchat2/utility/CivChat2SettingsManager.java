@@ -30,6 +30,7 @@ public class CivChat2SettingsManager {
     private BooleanSetting showPvpStarPrefix;
     private DisplayLocationSetting afkStatusLocation;
     private BooleanSetting showGroupColors;
+    private BooleanSetting usePearledDeathMessage;
 
     public CivChat2SettingsManager() {
         initSettings();
@@ -59,6 +60,9 @@ public class CivChat2SettingsManager {
             "Receive kill broadcasts from ignored players", "civChatReceiveKillsIgnored",
             "Do you want to receive kill broadcasts from killers you have ignored");
         PlayerSettingAPI.registerSetting(receiveKillsFromIgnoredPlayers, menu);
+
+        usePearledDeathMessage = new BooleanSetting(CivChat2.getInstance(), true, "Show 'pearled' on ExilePearl Deaths", "civChatPearledDeathMessage", "When enabled, kills where the victim was pearled will show 'was pearled by' instead of your chosen format word");
+        PlayerSettingAPI.registerSetting(usePearledDeathMessage, menu);
 
         showChatGroup = new BooleanSetting(CivChat2.getInstance(), true, "Show current chat group", "showChatGroup",
             "Should player chat group be shown?");
@@ -160,6 +164,10 @@ public class CivChat2SettingsManager {
         return showGroupColors.getValue(uuid);
     }
 
+    public boolean getUsePearledDeathMessage(UUID uuid) {
+        return  usePearledDeathMessage.getValue(uuid);
+    }
+    
     public DisplayLocationSetting getAfkStatusLocation() { return afkStatusLocation; }
 
     public enum KillMessageFormat {
