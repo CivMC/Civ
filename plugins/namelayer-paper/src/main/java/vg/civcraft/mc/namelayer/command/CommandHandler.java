@@ -10,6 +10,7 @@ import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
+import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.command.commands.AcceptInvite;
 import vg.civcraft.mc.namelayer.command.commands.AddBlacklist;
 import vg.civcraft.mc.namelayer.command.commands.CreateGroup;
@@ -94,5 +95,6 @@ public class CommandHandler extends CommandManager {
         completions.registerCompletion("NL_Perms", (context) ->
             PermissionType.getAllPermissions().stream().map(PermissionType::getName).collect(Collectors.toList()));
         completions.registerCompletion("ADV_Colors", (context) -> NamedTextColor.NAMES.keys());
+        completions.registerCompletion("NL_Invites", (context) -> InviteTabCompleter.complete(context.getInput(), context.getPlayer()));
     }
 }

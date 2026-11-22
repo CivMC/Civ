@@ -57,7 +57,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.commands.TabComplete;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
@@ -102,6 +101,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 
         plugin().registerListener(this);
         plugin().getCommands().registerCommand(this.commands);
+        plugin().getCommands().getCommandCompletions().registerCompletion(OTTCommand.REQUESTS_TAB_COMPLETE, this.commands::getRequestsToMe);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin(), BUNGEE_CHANNEL);
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin(), BUNGEE_CHANNEL, this);
     }
@@ -109,6 +109,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
     @Override
     public void onDisable() {
         plugin().getCommands().unregisterCommand(this.commands);
+        plugin().getCommands().getCommandCompletions().unregisterCompletion(OTTCommand.REQUESTS_TAB_COMPLETE);
         HandlerList.unregisterAll(this);
         Bukkit.getMessenger().unregisterOutgoingPluginChannel(plugin(), BUNGEE_CHANNEL);
         Bukkit.getMessenger().unregisterIncomingPluginChannel(plugin(), BUNGEE_CHANNEL, this);
@@ -255,7 +256,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
             }
         }
 
-        @TabComplete("sah_ott_requests")
+        public static final String REQUESTS_TAB_COMPLETE = "sah_ott_requests";
         public List<String> getRequestsToMe(
             final @NotNull BukkitCommandCompletionContext context
         ) {
